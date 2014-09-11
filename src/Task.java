@@ -27,6 +27,8 @@ public class Task {
 		
 	}
 	
+	
+	/**************** Accessors ***********************/
 	public String getTaskName() {	return _taskName; }
 	
 	public String getTaskID() {	return _taskID; }
@@ -38,6 +40,37 @@ public class Task {
 	public String getTaskWorkLoad() {	return _taskWorkLoad; }
 	
 	public String getTaskDescription() {	return _taskDescription; }
+	
+	
+	/**************** Mutators ************************/
+	public void changeTaskName(String newTaskName) {
+		_taskName = newTaskName;
+	}
+	
+	/*
+	 *  TaskID may be unique
+	 *  
+	public void changeTaskID(String newTaskID) {
+		_taskID =  newTaskID;
+	}
+	*/
+	
+	
+	public void changeTaskStatus(String newTaskStatus) {
+		_taskStatus =  newTaskStatus;
+	}
+	
+	public void changeDeadLine(String newTaskDeadLine) {
+		_taskDeadLine =  newTaskDeadLine;
+	}
+	
+	public void changeTaskWorkLoad(String newTaskWordLoad) {
+		_taskWorkLoad =  newTaskWordLoad;
+	}
+	
+	public void changeTaskDescription(String newTaskDescription) {
+		_taskDescription =  newTaskDescription;
+	}
 	
 	
 	// Some other methods below(maybe)
