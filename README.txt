@@ -14,6 +14,8 @@ Logic
 =====
 addTask(Task toDo) : void
 deleteTask(Task toDo) : void
+editTask(Task toDo) : void
+addDate(Task toDo, Date deadline) : void  //not sure about this functions param, and whether we want to have a date class
 viewList() : void
 viewCal() : void
 undo(int numOfTimes) : void         //numOfTimes is the number of commands in the stack to undo
