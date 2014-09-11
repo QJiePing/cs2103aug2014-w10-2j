@@ -1,19 +1,19 @@
 
 public class Task {
 	
-	private String _taskName = null;
-	private String _taskID = null;
-	private String _taskStatus = null;
-	private String _taskDeadLine = null;
-	private String _taskWorkLoad = null;
-	private String _taskDescription = null;
+	private String _taskName;
+	private String _taskID;
+	private String _taskStatus;
+	private String _taskDeadLine;
+	private String _taskWorkLoad;
+	private String _taskDescription;
 	
 	
 	public Task() {
 	}
 	
 	/*
-	 * Here I assume that some parameter may be null
+	 * Here I assume that some parameters may be null
 	 */
 	public Task(String taskName, String taskID, String taskStatus, String taskDeadLine,
 			  	String taskWorkLoad, String taskDescription) {
