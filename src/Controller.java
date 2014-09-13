@@ -10,7 +10,7 @@ public class Controller {
 	private enum CMDtype {
 		ADD, DELETE, EDIT, VIEW, FIND, ARCHIVE, UNDO, INVALID
 	}
-	public void executeCMD(String commandString){
+	public void executeCMD(String commandString) throws Exception{
 		String command = getFirstWord(commandString);
 		CMDtype commandType = determineCMDtype(command);
 		switch(commandType){
@@ -28,14 +28,23 @@ public class Controller {
 			Logic.editTask(taskID, paramEDIT);
 			break;
 		case VIEW:
+			String paramVIEW = getParamVIEW(commandString);
+			Logic.view(paramVIEW);
 			break;
-		case FIND: 
+		case FIND:
+			String tagTypeFIND = getTagFIND_ARCHIVE(commandString);
+			String paramFIND = removeTag(getParam(commandString));
+			Logic.find(tagTypeFIND, paramFIND);
 			break;
 		case ARCHIVE:
+			String tagTypeARCHIVE = getTagFIND_ARCHIVE(commandString);
+			Logic.archive(tagTypeARCHIVE, paramARCHIVE);
 			break;
 		case UNDO:
+			Logic.undo();
 			break;
 		case INVALID:
+			System.out.println("Invalid command");
 			break;
 		default:
 			throw new Error("");
@@ -65,6 +74,7 @@ public class Controller {
 		String paramString = removeFirstWord(commandString);
 		String[] paramArray = paramString.split("\\s+");
 		String[] fullParamArray = new String[MAX_ADD_PARAMETERS];
+		
 		for(int i = 0; i < paramArray.length; i++){
 			String tag = getTag(paramArray[i]);
 			String param = removeTag(paramArray[i]);
@@ -91,14 +101,66 @@ public class Controller {
 		if(determineTagType(getTag(taskIDParam)).equals("TASK_ID")){
 			return removeTag(taskIDParam);
 		} else {
-			
+			return "Invalid Command";
 		}
 	}
 	
 	private static String[] getParamEDIT(String commandString){
 		String[] paramArray = commandString.trim().split("\\s+");
-		paramArray = Arrays.copyOfRange(paramArray, 2, MAX_EDIT_PARAMETERS);
-		return paramArray;
+		String[] fullParamArray = new String[MAX_EDIT_PARAMETERS];
+		
+		for(int i = 2; i < paramArray.length; i++){
+			String tag = getTag(paramArray[i]);
+			String param = removeTag(paramArray[i]);
+			switch(determineTagType(tag)){
+			case "NAME":
+				fullParamArray[0] = param;
+				break;
+			case "COMPLETEION_TAG":
+				fullParamArray[1] = param;
+				break;
+			case "DATE":
+				fullParamArray[2] = param;
+				break;
+			case "WORKLOAD":
+				fullParamArray[3] = param;
+				break;
+			case "DESCRIPTION":
+				fullParamArray[4] = param;
+				break;
+			}
+		}
+		return fullParamArray;
+	}
+	
+	private static String getParamVIEW(String commandString){
+		String tag = determineTagType(getParam(commandString));
+		switch(tag){
+		case "LIST":
+			return tag;
+		case "CALENDAR":
+			return tag;
+		default:
+			return "Invalid command";
+		}
+	}
+	
+	private static String getTagFIND_ARCHIVE(String commandString){
+		String tag = determineTagType(getParam(commandString));
+		switch(tag){
+		case "KEYWORD":
+			return tag;
+		case "DATE":
+			return tag;
+		case "MONTH":
+			return tag;
+		case "YEAR":
+			return tag;
+		case "WORKLOAD":
+			return tag;
+		default:
+			return "Invalid command";
+		}
 	}
 	
 	private static String getTag(String param){
@@ -127,6 +189,12 @@ public class Controller {
 			return "CALENDAR";
 		case "-l":
 			return "LIST";
+		case "-m":
+			return "MONTH";
+		case "-y":
+			return "YEAR";
+		case "-k":
+			return "KEYWORD";
 		default:
 			return "INVALID";
 		}
