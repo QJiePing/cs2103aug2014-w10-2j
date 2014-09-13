@@ -12,13 +12,15 @@ executeCMD(String cmd) : void       //calls functions in the logic class with th
 
 Logic
 =====
-addTask(Task toDo) : void
-deleteTask(Task toDo) : void
-editTask(Task toDo) : void
-addDate(Task toDo, Date deadline) : void  //not sure about this functions param, and whether we want to have a date class
+addTask(String[] parameters) : void //the parameters are in the order (date, workload, name, description)
+									//any fields not entered by the user will be null
+deleteTask(String taskID) : void
+editTask(String taskID, String[] parameters) : void //the parameters are in the order 
+													//(name, doneTag, date, workload, description)
+													//any fields not entered by the user will be null
 viewList() : void
 viewCal() : void
-undo(int numOfTimes) : void         //numOfTimes is the number of commands in the stack to undo
+undo() : void
 simpleSearch(String key) : Task
 
 Storage
