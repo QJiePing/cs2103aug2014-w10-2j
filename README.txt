@@ -9,6 +9,10 @@ display(Task toShow): void          //??? is this function supposed to be here ?
 Controller
 ===========
 executeCMD(String cmd) : void       //calls functions in the logic class with the correct params
+- 	Atm, for commands add and edit, it can accept commands with less than max parameters,
+	even zero params, like adding a floating task, but it cannot correct duplicate tags
+	for example "add -d0222 -d0111 ..." would ignore the first instance of -d
+
 
 Logic
 =====
