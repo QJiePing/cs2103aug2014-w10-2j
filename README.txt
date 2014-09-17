@@ -2,6 +2,15 @@ cs2103aug2014-w10-2j
 ====================
 API
 
+Global
+======
+- Create a Taskaler class which calls the constructors of UI, Controller, Logic classes
+- store a global integer variable for taskID
+- store an arraylist of Task objects
+- controller calls storage functions as well
+- add now has 2 params
+- edit key switching will be changed to separate functions
+
 UI
 ====
 display(Task toShow): void          //??? is this function supposed to be here ???
