@@ -40,9 +40,6 @@ public class UI extends Application {
     public void start(Stage stage) {
         try {
             
-            java.io.File f = new java.io.File("");
-            System.out.println(getClass().getResource(FXML_ROOT).toString());
-            
             stage.getIcons().add(new Image(getClass().getResourceAsStream(ICON_PNG)));
             stage.setTitle(TITLE);
             
