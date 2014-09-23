@@ -40,8 +40,10 @@ simpleSearch(String key) : Task
 
 Storage
 =======
-saveToFile(): boolean               //rewrites the storage file and saves the global task list into it
-readFile(): String                  //reads the storage file and returns the task list(not sure what format to return as)
+//using external jar: json-simple.jar to output format in json format
+//using external jar: json-simple.jar to read in information in json format
+writeToFile(): boolean               //output task information in json format in storage file
+readFromFile(): String               //read storage file for task information and initialise all task object and put into the global task arrayList
 
 Task
 ====
