@@ -3,30 +3,53 @@ import java.util.Arrays;
 
 public class Controller {
 	
-	private static final int MAX_ADD_PARAMETERS = 4;
-	private static final int MAX_EDIT_PARAMETERS = 5;
-	private static final int TAG_LENGTH = 2;
+	private static final int INVALID_VALUE = -1;
+	private static final int MAX_ADD_PARAMETERS = 2;
+	private static final int MAX_EDIT_PARAMETERS = 2;
+	private static final int TAG_LENGTH = 4;
+	private static final String EMPTY_STRING = "";
 	
 	private enum CMDtype {
-		ADD, DELETE, EDIT, VIEW, FIND, ARCHIVE, UNDO, INVALID
+		ADD, DELETE, EDIT, DATE, WORKLOAD, COMPLETION_TAG, 
+		VIEW, FIND, ARCHIVE, UNDO, INVALID
 	}
-	public void executeCMD(String commandString) throws Exception{
+	public void executeCMD(String commandString) {
 		String command = getFirstWord(commandString);
 		CMDtype commandType = determineCMDtype(command);
 		switch(commandType){
 		case ADD:
-			String[] paramADD = getParamADD(commandString);
-			Logic.addTask(paramADD);
+			String[] param_ADD = getParam_ADD(commandString);
+			String name_ADD = param_ADD[0];
+			String description_ADD = param_ADD[1];
+			Logic.addTask(name_ADD, description_ADD);
 			break;
 		case DELETE:
-			String paramDELETE = getParam(commandString);
-			Logic.deleteTask(paramDELETE);
+			String taskID_DELETE = getTaskID(commandString);
+			Logic.deleteTask(taskID_DELETE);
 			break;
 		case EDIT:
-			String taskID = getTaskIDforEDIT(commandString);
-			String[] paramEDIT = getParamEDIT(commandString);
-			Logic.editTask(taskID, paramEDIT);
+			String taskID_EDIT = getTaskID(commandString);
+			String[] param_EDIT = getParam_EDIT(commandString);
+			String name_EDIT = param_EDIT[0];
+			String description_EDIT = param_EDIT[1];
+			Logic.editTask(taskID_EDIT, name_EDIT, description_EDIT);
 			break;
+		case DATE:
+			String taskID_DATE = getTaskID(commandString);
+			String[] date = getParam_DATE(commandString);
+			String day = date[0];
+			String month = date[1];
+			String year = date[2];
+			Logic.editDate(taskID, day, month, year);
+			break;
+		case WORKLOAD:
+			String taskID_WORKLOAD = getTaskID(commandString);
+			String workloadAttribute = getParam_WL(commandString);
+			Logic.editWorkload(taskID, workloadAttribute);
+			break;
+		case COMPLETION_TAG:
+			String taskID = getTaskID(commandString);
+			Logic.switchTag(taskID);
 		case VIEW:
 			String paramVIEW = getParamVIEW(commandString);
 			Logic.view(paramVIEW);
@@ -59,6 +82,12 @@ public class Controller {
 			return CMDtype.DELETE;
 		case "edit":
 			return CMDtype.EDIT;
+		case "date":
+			return CMDtype.DATE;
+		case "priority":
+			return CMDtype.WORKLOAD;
+		case "completed":
+			return CMDtype.COMPLETION_TAG;
 		case "view":
 			return CMDtype.VIEW;
 		case "find":
@@ -70,68 +99,63 @@ public class Controller {
 		}
 	}
 	
-	private static String[] getParamADD(String commandString){
+	private static String[] getParam_ADD(String commandString){
+		int name = 0;
+		int description = 1;
+		
 		String paramString = removeFirstWord(commandString);
-		String[] paramArray = paramString.split("\\s+");
-		String[] fullParamArray = new String[MAX_ADD_PARAMETERS];
-		
-		for(int i = 0; i < paramArray.length; i++){
-			String tag = getTag(paramArray[i]);
-			String param = removeTag(paramArray[i]);
-			switch(determineTagType(tag)){
-			case "DATE":
-				fullParamArray[0] = param;
-				break;
-			case "WORKLOAD":
-				fullParamArray[1] = param;
-				break;
-			case "NAME":
-				fullParamArray[2] = param;
-				break;
-			case "DESCRIPTION":
-				fullParamArray[3] = param;
-				break;
-			}
+		String[] paramADD = new String[MAX_ADD_PARAMETERS];
+		if(paramString.isEmpty()){
+			return paramADD;
 		}
-		return fullParamArray;
+		int descriptionTagIndex = paramString.indexOf(" -d ");
+		
+		if(descriptionTagIndex == INVALID_VALUE){
+			paramADD[name] = paramString;
+		} 
+		else {
+			paramADD[name] = paramString.substring(0, descriptionTagIndex);
+			paramADD[description] = paramString.substring(descriptionTagIndex + TAG_LENGTH);
+		}
+		return paramADD;
 	}
 	
-	private static String getTaskIDforEDIT(String commandString){
-		String taskIDParam = getFirstWord(removeFirstWord(commandString));
-		if(determineTagType(getTag(taskIDParam)).equals("TASK_ID")){
-			return removeTag(taskIDParam);
-		} else {
-			return "Invalid Command";
-		}
+	private static String getTaskID(String commandString){
+		String TaskID = getFirstWord(removeFirstWord(commandString));
+		return TaskID;
 	}
 	
-	private static String[] getParamEDIT(String commandString){
-		String[] paramArray = commandString.trim().split("\\s+");
-		String[] fullParamArray = new String[MAX_EDIT_PARAMETERS];
+	private static String[] getParam_EDIT(String commandString){
+		int name = 0;
+		int description = 1;
+		String[] paramEDIT = new String[MAX_EDIT_PARAMETERS];
 		
-		for(int i = 2; i < paramArray.length; i++){
-			String tag = getTag(paramArray[i]);
-			String param = removeTag(paramArray[i]);
-			switch(determineTagType(tag)){
-			case "NAME":
-				fullParamArray[0] = param;
-				break;
-			case "COMPLETEION_TAG":
-				fullParamArray[1] = param;
-				break;
-			case "DATE":
-				fullParamArray[2] = param;
-				break;
-			case "WORKLOAD":
-				fullParamArray[3] = param;
-				break;
-			case "DESCRIPTION":
-				fullParamArray[4] = param;
-				break;
+		int nameTagIndex = commandString.indexOf(" -n ");
+		int descriptionTagIndex = commandString.indexOf(" -d ");
+		
+		if(nameTagIndex > descriptionTagIndex){
+			paramEDIT[name] = commandString.substring(nameTagIndex + TAG_LENGTH);
+			if(descriptionTagIndex != INVALID_VALUE){
+				paramEDIT[description] = 
+						commandString.substring(descriptionTagIndex + TAG_LENGTH, nameTagIndex);
 			}
 		}
-		return fullParamArray;
+		else if(nameTagIndex < descriptionTagIndex){
+			paramEDIT[description] = commandString.substring(descriptionTagIndex + TAG_LENGTH);
+			if(nameTagIndex != INVALID_VALUE){
+				paramEDIT[name] = 
+						commandString.substring(nameTagIndex + TAG_LENGTH, descriptionTagIndex);
+			}
+		} 
+		return paramEDIT;
 	}
+	
+	private static String getParam_DATE(String commandString){
+		String date = removeFirstWord(commandString);
+		
+	}
+	
+	
 	
 	private static String getParamVIEW(String commandString){
 		String tag = determineTagType(getParam(commandString));
@@ -163,49 +187,8 @@ public class Controller {
 		}
 	}
 	
-	private static String getTag(String param){
-		return ""+param.charAt(0) + param.charAt(1);
-	}
-	
-	private static String removeTag(String param){
-		return param.substring(TAG_LENGTH);
-	}
-	
-	private static String determineTagType(String tag){
-		switch(tag){
-		case "-t":
-			return "TASK_ID";
-		case "-d":
-			return "DATE";
-		case "-w":
-			return "WORKLOAD";
-		case "-n":
-			return "NAME";
-		case "-s":
-			return "COMPLETION_TAG";
-		case "-x":
-			return "DESCRIPTION";
-		case "-c":
-			return "CALENDAR";
-		case "-l":
-			return "LIST";
-		case "-m":
-			return "MONTH";
-		case "-y":
-			return "YEAR";
-		case "-k":
-			return "KEYWORD";
-		default:
-			return "INVALID";
-		}
-	}
-	
 	private static String removeFirstWord(String line){
 		return line.replace(getFirstWord(line), "").trim();
-	}
-	
-	private static String getParam(String commandString) {
-		return removeFirstWord(commandString);
 	}
 	
 	private static String getFirstWord(String commandString){
