@@ -12,12 +12,12 @@ public class Taskaler extends
         Application {
 
     // Global Instances
-    private static Controller controller = null;
-    private static Logic logic = null;
-    private static OPLogic opLogic = null;
-    private static Storage storage = null;
-    private static UI ui = null;
-    private static ViewLogic viewLogic = null;
+    public static Controller controller = null;
+    public static Logic logic = null;
+    public static OPLogic opLogic = null;
+    public static Storage storage = null;
+    public static UI ui = null;
+    public static ViewLogic viewLogic = null;
 
     // Global Task ArrayList
     public static ArrayList<Task> taskList = null;
@@ -46,7 +46,7 @@ public class Taskaler extends
         controller = new Controller();
         ui = new UI();
         ui.start(primaryStage);
-
+        
     }
 
 }
