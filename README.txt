@@ -18,21 +18,14 @@ display(Task toShow): void          //??? is this function supposed to be here ?
 Controller
 ===========
 executeCMD(String cmd) : void       //calls functions in the logic class with the correct params
-- 	Atm, for commands add and edit, it can accept commands with less than max parameters,
-	even zero params, like adding a floating task, but it cannot correct duplicate tags
-	for example "add -d0222 -d0111 ..." would ignore the first instance of -d
+handleError(String error) : void    //handles all errors of the taskaler
 
 
 Logic
 =====
-//for the params, the tags have been taken away in executeCMD already, for example, 
-//"edit -t0021 -nhmwk -xivle" --> editTask("0021", {"hmwk", null, null, null, ivle})
-addTask(String[] parameters) : void //the parameters are in the order (date, workload, name, description)
-									//any fields not entered by the user will be null
+addTask(String name, String description) : void     //any fields not entered by the user will be null
 deleteTask(String taskID) : void
-editTask(String taskID, String[] parameters) : void //the parameters are in the order 
-													//(name, doneTag, date, workload, description)
-													//any fields not entered by the user will be null
+editTask(String taskID, String name, String description) : void //any fields not entered will be null
 viewList() : void
 viewCal() : void
 undo() : void

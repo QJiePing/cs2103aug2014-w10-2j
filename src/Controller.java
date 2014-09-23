@@ -6,6 +6,7 @@ public class Controller {
 	private static final int INVALID_VALUE = -1;
 	private static final int MAX_ADD_PARAMETERS = 2;
 	private static final int MAX_EDIT_PARAMETERS = 2;
+	private static final int MAX_DATE_PARAMETERS = 3;
 	private static final int TAG_LENGTH = 4;
 	private static final String EMPTY_STRING = "";
 	
@@ -13,7 +14,7 @@ public class Controller {
 		ADD, DELETE, EDIT, DATE, WORKLOAD, COMPLETION_TAG, 
 		VIEW, FIND, ARCHIVE, UNDO, INVALID
 	}
-	public void executeCMD(String commandString) {
+	public static void executeCMD(String commandString) {
 		String command = getFirstWord(commandString);
 		CMDtype commandType = determineCMDtype(command);
 		switch(commandType){
@@ -36,15 +37,15 @@ public class Controller {
 			break;
 		case DATE:
 			String taskID_DATE = getTaskID(commandString);
-			String[] date = getParam_DATE(commandString);
-			String day = date[0];
-			String month = date[1];
-			String year = date[2];
+			int[] date = getParam_DATE(commandString);
+			int day = date[0];
+			int month = date[1];
+			int year = date[2];
 			Logic.editDate(taskID, day, month, year);
 			break;
 		case WORKLOAD:
 			String taskID_WORKLOAD = getTaskID(commandString);
-			String workloadAttribute = getParam_WL(commandString);
+			int workloadAttribute = getParam_WL(commandString);
 			Logic.editWorkload(taskID, workloadAttribute);
 			break;
 		case COMPLETION_TAG:
@@ -67,14 +68,18 @@ public class Controller {
 			Logic.undo();
 			break;
 		case INVALID:
-			System.out.println("Invalid command");
+			handleError("invalid command");
 			break;
 		default:
-			throw new Error("");
+			handleError("unknown error");
 		}
 	}
 	
-	public CMDtype determineCMDtype(String command){
+	public static void handleError(String error){
+		
+	}
+	
+	private static CMDtype determineCMDtype(String command){
 		switch(command.toLowerCase()){
 		case "add":
 			return CMDtype.ADD;
@@ -150,12 +155,37 @@ public class Controller {
 		return paramEDIT;
 	}
 	
-	private static String getParam_DATE(String commandString){
+	private static int[] getParam_DATE(String commandString){
 		String date = removeFirstWord(commandString);
-		
+		int[] paramDATE = new int[3];
+		String[] dateArray = date.split("/");
+		if(dateArray.length != MAX_DATE_PARAMETERS){
+			handleError("invalid format");
+		} 
+		else {
+			for(int i =0; i < dateArray.length; i++){
+				try{
+					int num = Integer.parseInt(dateArray[i]);
+					paramDATE[i] = num;
+				} catch(NumberFormatException e){
+					handleError("invalid number");
+				}	
+			}
+		}
+		return paramDATE;
 	}
 	
-	
+	private static int getParam_WL(String commandString){
+		String paramString = removeFirstWord(commandString);
+		int paramWL = 0;
+		try{
+			paramWL = Integer.parseInt(paramString);
+		}
+		catch(NumberFormatException e){
+			handleError("invalid number");
+		}
+		return paramWL;
+	}
 	
 	private static String getParamVIEW(String commandString){
 		String tag = determineTagType(getParam(commandString));
