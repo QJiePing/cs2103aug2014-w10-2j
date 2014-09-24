@@ -63,8 +63,10 @@ Additional Notes:
 ===========
 Controller
 ===========
-executeCMD(String cmd) : void       //calls functions in the logic class with the correct params
-handleError(String error) : void    //handles all errors of the taskaler
++executeCMD(String cmd) : void       //calls functions in the logic class with the correct params
++handleError(String error) : void    //handles all errors of the taskaler
+-getParams
+-getTag
 
 =====
 Logic
