@@ -21,6 +21,10 @@ public class Taskaler extends
 
     // Global Task ArrayList
     public static ArrayList<Task> taskList = null;
+    
+    // Global Task ID. Need to reload from storage
+    // This line of code need to be changed
+    public static int taskID = 0;
 
     /**
      * Main method to start process
