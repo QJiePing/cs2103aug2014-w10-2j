@@ -15,14 +15,14 @@ public class OPLogic extends Logic {
 	public static boolean addTask(String name_ADD, String description_ADD) {
 		
 		//assume task name cannot be null
-		if(name_ADD == null){
+		if(name_ADD == null || name_ADD.length() == 0) {
 			Controller.handleError("ADD_NO_CONTENT");
 			
 			//fail to add a new task
 			return false;
 		} else {
 			Taskaler.taskID++;
-			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), null, null, null, description_ADD);
+			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), "Not Done", null, null, description_ADD);
 			Taskaler.taskList.add(newTask);
 			
 			//success to add a new task
@@ -58,7 +58,7 @@ public class OPLogic extends Logic {
 			
 			//fail to edit a task
 			return false;
-		} else if (name_EDIT == null && description_EDIT == null) {
+		} else if ((name_EDIT == null || name_EDIT.length() == 0) && description_EDIT == null) {
 			Controller.handleError(EDIT_NO_CONTENT);
 			
 			//fail to edit a task
@@ -67,12 +67,12 @@ public class OPLogic extends Logic {
 		
 		
 		//assume name will not change to null
-		if(name_EDIT != null) {
+		if(name_EDIT != null && name_EDIT.length() != 0) {
 			Taskaler.taskList.get(taskIDIndex).changeTaskName(name_EDIT);
 		}
 		
 		//assume description will not change to null
-		if(description_EDIT != null) {
+		if(description_EDIT != null && description_EDIT.length() != 0) {
 			Taskaler.taskList.get(taskIDIndex).changeTaskDescription(description_EDIT);
 		}
 		
@@ -131,7 +131,7 @@ public class OPLogic extends Logic {
 	
 	public static ArrayList<Task> find(String tagTypeFIND, String paramFIND){
 		
-		switch(tagTypeFIND){
+		switch(tagTypeFIND.toUpperCase()){
 		case "KEYWORD":
 			return findByKeyword(paramFIND);
 		case "DATE":
