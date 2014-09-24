@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -18,10 +19,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 /**
- * Main Class to create the required UI
- * for the application This class also
- * serves as the Action Event Controller
- * for the UI. i.e. OnClick Events
+ * Main Class to create the required UI for the application This class also
+ * serves as the Action Event Controller for the UI. i.e. OnClick Events
  * 
  * @author Cheah Kit Weng, A0059806W
  *
@@ -42,81 +41,58 @@ public class UI extends Application {
     private TextField txtCmdInput;
 
     /**
-     * Method to start rendering the UI
-     * elements of Taskaler
+     * Method to start rendering the UI elements of Taskaler
      * 
      * @param stage
-     *            Main stage to render
-     *            UI
+     *            Main stage to render UI
      */
     @Override
     public void start(Stage stage) {
         try {
 
-            stage.getIcons()
-                    .add(new Image(
-                            getClass()
-                                    .getResourceAsStream(
-                                            ICON_PNG)));
+            stage.getIcons().add(
+                    new Image(getClass().getResourceAsStream(ICON_PNG)));
             stage.setTitle(TITLE);
             stage.setResizable(false);
 
-            FXMLLoader root = new FXMLLoader(
-                    getClass()
-                            .getResource(
-                                    FXML_ROOT));
+            FXMLLoader root = new FXMLLoader(getClass().getResource(FXML_ROOT));
             root.setController(this);
             Parent pane = root.load();
-            Scene scene = new Scene(
-                    pane, 400, 485);
+            Scene scene = new Scene(pane, 400, 485);
 
             stage.setScene(scene);
             stage.show();
 
             displayCalendar();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Method which is binded to the
-     * KeyPressed event of txtCmdInput
-     * element This method passes user
-     * input to the controller
+     * Method which is binded to the KeyPressed event of txtCmdInput element
+     * This method passes user input to the controller
      * 
      * @param e
      *            Key pressed event
      */
     @FXML
-    private void txtCmdInputKeyPressed(
-            KeyEvent e) {
+    private void txtCmdInputKeyPressed(KeyEvent e) {
         if (e.getCode() == KeyCode.ENTER) {
-            try {
-                Taskaler.controller
-                        .executeCMD(txtCmdInput
-                                .getText());
-            } catch (Exception e1) {
-                // TODO Auto-generated
-                // catch block
-                e1.printStackTrace();
-            }
+            Controller.executeCMD(txtCmdInput.getText());
         }
     }
 
     /**
-     * Method to render the calendar
-     * view
+     * Method to render the calendar view
      * 
      */
     public void displayCalendar() {
-        anchorPaneDisplay.getChildren()
-                .clear();
+        anchorPaneDisplay.getChildren().clear();
         try {
             CalendarPane pane = new CalendarPane();
-            anchorPaneDisplay
-                    .getChildren().add(
-                            pane);
+            anchorPaneDisplay.getChildren().add(pane);
 
         } catch (IOException e) {
             // TODO Auto-generated catch
@@ -129,18 +105,43 @@ public class UI extends Application {
      * Method to render the list view()
      * 
      */
-    public void displayList()
-            throws Exception {
+    public void displayList() throws Exception {
         // TODO Implement a list view
-        throw new Exception(
-                "Not Yet Implemented");
+        throw new Exception("Not Yet Implemented");
+    }
+
+    /**
+     * Method stub to render a view, either in list or calendar. This method
+     * uses default configurations to determine if view should be in calendar or
+     * list
+     * 
+     * @throws Exception
+     *             Thrown if error encountered while reading FXML
+     */
+    public void display() throws Exception {
+        throw new Exception("Not yet implemented");
+    }
+
+    /**
+     * Method to render a view for an individual task
+     * 
+     * @param t
+     *            The task to be rendered
+     */
+    public void displayTask(Task t) {
+        anchorPaneDisplay.getChildren().clear();
+        try {
+            TaskPane pane = new TaskPane(t);
+            anchorPaneDisplay.getChildren().add(pane);
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
     }
 }
 
 /**
- * Class that acts as a controller for
- * calendarPane FXML This class renders
- * the calendar view
+ * Class that acts as a controller for calendarPane FXML This class renders the
+ * calendar view
  *
  */
 class CalendarPane extends BorderPane {
@@ -165,14 +166,11 @@ class CalendarPane extends BorderPane {
      * Default Constructor
      * 
      * @throws IOException
-     *             Thrown when error met
-     *             while reading FXML
+     *             Thrown when error met while reading FXML
      */
-    public CalendarPane()
-            throws IOException {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource(
-                        FXML_CALENDAR));
+    public CalendarPane() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource(FXML_CALENDAR));
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
@@ -181,8 +179,7 @@ class CalendarPane extends BorderPane {
     }
 
     /**
-     * Method to set the title of the
-     * calendar
+     * Method to set the title of the calendar
      * 
      * @param s
      *            String to set title to
@@ -192,46 +189,30 @@ class CalendarPane extends BorderPane {
     }
 
     /**
-     * Method to populate the calendar
-     * grids
+     * Method to populate the calendar grids
      * 
      * @param date
-     *            The calendar object to
-     *            set the month and year
-     *            of the calendar
+     *            The calendar object to set the month and year of the calendar
      */
-    public void populateCalendar(
-            Calendar date) {
-        Calendar cal = Calendar
-                .getInstance();
-        cal.set(Calendar.YEAR,
-                date.get(Calendar.YEAR));
-        cal.set(Calendar.MONTH, date
-                .get(Calendar.MONTH));
-        cal.set(Calendar.DAY_OF_MONTH,
-                1);
+    public void populateCalendar(Calendar date) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, date.get(Calendar.YEAR));
+        cal.set(Calendar.MONTH, date.get(Calendar.MONTH));
+        cal.set(Calendar.DAY_OF_MONTH, 1);
 
         cal.setFirstDayOfWeek(Calendar.SUNDAY);
 
-        SimpleDateFormat formatter = new SimpleDateFormat(
-                REG_MONTH_YEAR);
-        currentMonthAndYear = formatter
-                .format(cal.getTime());
+        SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
+        currentMonthAndYear = formatter.format(cal.getTime());
         setTitle(currentMonthAndYear);
 
-        int dayOfTheWeekIterator = cal
-                .get(Calendar.DAY_OF_WEEK) - 1;
+        int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK) - 1;
         int weekOfTheMonthIterator = 1;
 
-        for (int i = 1; i <= cal
-                .getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+        for (int i = 1; i <= cal.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
             try {
-                CellDate day = new CellDate(
-                        i + "");
-                gridView.add(
-                        day,
-                        dayOfTheWeekIterator,
-                        weekOfTheMonthIterator);
+                CellDate day = new CellDate(i + "");
+                gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
                 dayOfTheWeekIterator++;
                 if (isThisDaySunday(dayOfTheWeekIterator)) {
                     weekOfTheMonthIterator++;
@@ -246,34 +227,27 @@ class CalendarPane extends BorderPane {
     }
 
     /**
-     * Method to determine if the day is
-     * next sunday
+     * Method to determine if the day is next Sunday
      * 
      * @param dayOfTheWeekIterator
      *            The day to be checked
-     * @return True if the day is next
-     *         Sunday; False otherwise
+     * @return True if the day is next Sunday; False otherwise
      */
-    private boolean isThisDaySunday(
-            int dayOfTheWeekIterator) {
+    private boolean isThisDaySunday(int dayOfTheWeekIterator) {
         return dayOfTheWeekIterator % 7 == 0;
     }
 
     /**
-     * Method to quickly reset the
-     * calendar to System current month
-     * and year
+     * Method to quickly reset the calendar to System current month and year
      * 
      */
     public void resetToToday() {
-        populateCalendar(Calendar
-                .getInstance());
+        populateCalendar(Calendar.getInstance());
     }
 }
 
 /**
- * Class that acts as the controller for
- * cellDate FXML. This class modifies a
+ * Class that acts as the controller for cellDate FXML. This class modifies a
  * single cell of the calendar
  *
  */
@@ -290,21 +264,95 @@ class CellDate extends AnchorPane {
      * Default overloaded constructor
      * 
      * @param date
-     *            The date to set the
-     *            cell to
+     *            The date to set the cell to
      * @throws IOException
-     *             Thrown when error met
-     *             while reading FXML
+     *             Thrown when error met while reading FXML
      */
-    public CellDate(String date)
-            throws IOException {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource(
-                        FXML_CELL_DATE));
+    public CellDate(String date) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                FXML_CELL_DATE));
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
 
         lblDate.setText(date);
+    }
+}
+
+/**
+ * Class that acts as the controller for taskPane FXML. This class renders a
+ * view for a task
+ *
+ */
+class TaskPane extends BorderPane {
+
+    // FXML File Constant
+    private static final String FXML_TASK_PANE = "/fxml/taskPane.fxml";
+
+    // Binded FXML Elements
+    @FXML
+    private Label lblDueBy;
+
+    @FXML
+    private Label lblHigh;
+
+    @FXML
+    private Label lblMedium;
+
+    @FXML
+    private Label lblLow;
+
+    @FXML
+    private Label lblDefault;
+    
+    @FXML
+    private Label lblStatus;
+
+    @FXML
+    private Label lblTaskID;
+
+    @FXML
+    private Label lblTaskName;
+
+    @FXML
+    private TextArea txtTaskDescription;
+
+    /**
+     * Default constructor
+     * 
+     * @param t
+     *            The task to be associated with this view
+     * @throws IOException
+     *             Thrown if error encountered while reading FXML
+     */
+    public TaskPane(Task t) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                FXML_TASK_PANE));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+
+        populateDetails(t);
+    }
+
+    /**
+     * Method to populate the fields on the view
+     * 
+     * @param t
+     *            The task containing the value fields
+     */
+    public void populateDetails(Task t) {
+        lblTaskName.setText(t.getTaskName());
+        lblTaskID.setText(t.getTaskID());
+        lblStatus.setText(t.getTaskStatus());
+        lblDueBy.setText(t.getTaskDeadLine());
+
+        switch (t.getTaskWorkLoad()) {
+        default:
+            lblDefault.setVisible(true);
+            break;
+        }
+
+        txtTaskDescription.setText(t.getTaskDescription());
     }
 }

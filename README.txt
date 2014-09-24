@@ -49,12 +49,19 @@ for the UI. i.e. OnClick Events
 +displayList(): void		  // Can be called to display the list
 				  // TODO: NOT YET IMPLEMENTED!!!!
 
++display(): void		  // Method stub to render a view, either in list or calendar. This method
+				  // uses default configurations to determine if view should be in calendar or
+				  // list
+				  // TODO: NOT YET IMPLEMENTED!!!!
+
++displayTask(Task): void	  // Method to render a view for an individual task
+				  // TODO: Workload not implemented; All tasks' workload are "Not Set"
+
 -start(Stage): void		  // Method to start rendering the UI elements of Taskaler
 
 -txtCmdInputKeyPressed(KeyEvent e): void
 				  // Method which is binded to the KeyPressed event of txtCmdInput
 				  // element This method passes user input to the controller
-				  // TODO: Not yet implemented error handling
 
 Additional Notes:
 - Many other classes reside in the same class file as UI.java.
