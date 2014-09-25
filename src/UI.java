@@ -1,22 +1,31 @@
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBuilder;
 
 /**
  * Main Class to create the required UI for the application This class also
@@ -35,7 +44,7 @@ public class UI extends Application {
 
     // FXML Element Bindings
     @FXML
-    private AnchorPane anchorPaneDisplay;
+    private Pane anchorPaneDisplay;
 
     @FXML
     private TextField txtCmdInput;
@@ -58,7 +67,7 @@ public class UI extends Application {
             FXMLLoader root = new FXMLLoader(getClass().getResource(FXML_ROOT));
             root.setController(this);
             Parent pane = root.load();
-            Scene scene = new Scene(pane, 400, 485);
+            Scene scene = new Scene(pane, 400, 475);
 
             stage.setScene(scene);
             stage.show();
@@ -80,7 +89,10 @@ public class UI extends Application {
     @FXML
     private void txtCmdInputKeyPressed(KeyEvent e) {
         if (e.getCode() == KeyCode.ENTER) {
-            Controller.executeCMD(txtCmdInput.getText());
+            String cmd = txtCmdInput.getText();
+            txtCmdInput.clear();
+            anchorPaneDisplay.requestFocus();
+            Controller.executeCMD(cmd);
         }
     }
 
@@ -102,12 +114,22 @@ public class UI extends Application {
     }
 
     /**
-     * Method to render the list view()
+     * Method to render the list view
      * 
+     * @param list
+     *            The list to be rendered
      */
-    public void displayList() throws Exception {
-        // TODO Implement a list view
-        throw new Exception("Not Yet Implemented");
+    public void displayList(ArrayList<Task> list) throws Exception {
+        anchorPaneDisplay.getChildren().clear();
+        try {
+            ListPane pane = new ListPane("test", list);
+            anchorPaneDisplay.getChildren().add(pane);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch
+            // block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -147,13 +169,20 @@ public class UI extends Application {
 class CalendarPane extends BorderPane {
 
     // Special Constants
+    private static final int ZERO_INDEX = 0;
+    private static final int OFFSET_BY_ONE = 1;
+    private static final String FXML_ELEMENT_GROUP = "Group";
+    private static final String FXML_ELEMENT_ANCHOR_PANE = "AnchorPane";
     private static final String REG_MONTH_YEAR = "MMM yyyy";
+    private static final int MAX_RENDERABLE_ROWS = 5;
+    private static final int MAX_DAYS_IN_A_WEEK = 7;
 
     // FXML File Constant
     private static final String FXML_CALENDAR = "/fxml/calendarPane.fxml";
 
     // Class Variables
-    private String currentMonthAndYear = "";
+    private int currMonth = 0;
+    private int currYear = 0;
 
     // Binded FXML Elements
     @FXML
@@ -179,6 +208,22 @@ class CalendarPane extends BorderPane {
     }
 
     /**
+     * Default Overloaded Constructor for inbuilt goto
+     * 
+     * @throws IOException
+     *             Thrown when error met while reading FXML
+     */
+    public CalendarPane(Calendar c) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource(FXML_CALENDAR));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+
+        goToDate(c);
+    }
+
+    /**
      * Method to set the title of the calendar
      * 
      * @param s
@@ -194,29 +239,34 @@ class CalendarPane extends BorderPane {
      * @param date
      *            The calendar object to set the month and year of the calendar
      */
-    public void populateCalendar(Calendar date) {
+    private void populateCalendar(Calendar date) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, date.get(Calendar.YEAR));
         cal.set(Calendar.MONTH, date.get(Calendar.MONTH));
-        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.DAY_OF_MONTH, OFFSET_BY_ONE);
 
         cal.setFirstDayOfWeek(Calendar.SUNDAY);
 
         SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
-        currentMonthAndYear = formatter.format(cal.getTime());
+        String currentMonthAndYear = formatter.format(cal.getTime());
         setTitle(currentMonthAndYear);
 
-        int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK) - 1;
-        int weekOfTheMonthIterator = 1;
+        int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK)
+                - OFFSET_BY_ONE;
+        int weekOfTheMonthIterator = OFFSET_BY_ONE;
 
-        for (int i = 1; i <= cal.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+        for (int i = OFFSET_BY_ONE; i <= cal
+                .getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
             try {
                 CellDate day = new CellDate(i + "");
                 gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
                 dayOfTheWeekIterator++;
                 if (isThisDaySunday(dayOfTheWeekIterator)) {
                     weekOfTheMonthIterator++;
-                    dayOfTheWeekIterator = 0;
+                    dayOfTheWeekIterator = ZERO_INDEX;
+                    if (hasOverflowedCalendarUI(weekOfTheMonthIterator)) {
+                        weekOfTheMonthIterator = OFFSET_BY_ONE;
+                    }
                 }
             } catch (IOException e) {
                 // TODO Auto-generated
@@ -227,6 +277,18 @@ class CalendarPane extends BorderPane {
     }
 
     /**
+     * Method to detect if the number of cells has overflowed the maximum number
+     * of rows
+     * 
+     * @param weekOfTheMonthIterator
+     *            the number of rows to check
+     * @return True if overflow detected; False otherwise
+     */
+    private boolean hasOverflowedCalendarUI(int weekOfTheMonthIterator) {
+        return weekOfTheMonthIterator > MAX_RENDERABLE_ROWS;
+    }
+
+    /**
      * Method to determine if the day is next Sunday
      * 
      * @param dayOfTheWeekIterator
@@ -234,7 +296,7 @@ class CalendarPane extends BorderPane {
      * @return True if the day is next Sunday; False otherwise
      */
     private boolean isThisDaySunday(int dayOfTheWeekIterator) {
-        return dayOfTheWeekIterator % 7 == 0;
+        return dayOfTheWeekIterator % MAX_DAYS_IN_A_WEEK == 0;
     }
 
     /**
@@ -242,7 +304,79 @@ class CalendarPane extends BorderPane {
      * 
      */
     public void resetToToday() {
-        populateCalendar(Calendar.getInstance());
+        Calendar now = Calendar.getInstance();
+        goToDate(now);
+    }
+
+    /**
+     * Method to move calendar to a specified month and year
+     * 
+     * @param now
+     *            The calendar object that represent the desired month and year
+     */
+    public void goToDate(Calendar now) {
+        clearGrid();
+        currMonth = now.get(Calendar.MONTH);
+        currYear = now.get(Calendar.YEAR);
+        populateCalendar(now);
+    }
+
+    /**
+     * Method to move the calendar forward by one month
+     * 
+     */
+    public void nextMonth() {
+        currMonth++;
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.MONTH, currMonth);
+        goToDate(now);
+    }
+
+    /**
+     * Method to move the calendar backward by one month
+     * 
+     */
+    public void prevMonth() {
+        currMonth--;
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.MONTH, currMonth);
+        goToDate(now);
+    }
+
+    /**
+     * Method to move the calendar forward by one year
+     * 
+     */
+    public void nextYear() {
+        currYear++;
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.YEAR, currYear);
+        goToDate(now);
+    }
+
+    /**
+     * Method to move the calendar backward by one year
+     * 
+     */
+    public void prevYear() {
+        currYear--;
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.YEAR, currYear);
+        goToDate(now);
+    }
+
+    /**
+     * Method to clear the elements in the calendar
+     * 
+     */
+    private void clearGrid() {
+        Object[] list = gridView.getChildren().toArray();
+        for (Object node : list) {
+            if (!node.getClass().getName().contains(FXML_ELEMENT_ANCHOR_PANE)
+                    && !node.getClass().getName().contains(FXML_ELEMENT_GROUP)) {
+                gridView.getChildren().remove(node);
+            }
+        }
     }
 }
 
@@ -304,7 +438,7 @@ class TaskPane extends BorderPane {
 
     @FXML
     private Label lblDefault;
-    
+
     @FXML
     private Label lblStatus;
 
@@ -354,5 +488,66 @@ class TaskPane extends BorderPane {
         }
 
         txtTaskDescription.setText(t.getTaskDescription());
+    }
+}
+
+/**
+ * Class that acts as the controller for listPane FXML. This class renders a
+ * list view for any purpose
+ * 
+ */
+class ListPane extends TitledPane {
+
+    // Special Constants
+    private static final String REG_TASK_DISPLAY = "[%s]%s: %s";
+    private static final int MAX_TEXT_WIDTH = 350;
+
+    // FXML File Constant
+    private static final String FXML_CELL_DATE = "/fxml/listPane.fxml";
+
+    // Binded FXML Elements
+    @FXML
+    private TitledPane paneListView;
+
+    @FXML
+    private ListView<Text> listBody;
+
+    /**
+     * Default Overloaded Constructor
+     * 
+     * @param title
+     *            The title associated with this list
+     * @param list
+     *            The list to be displayed
+     * @throws IOException
+     *             Thrown if error encountered while reading FXML
+     */
+    public ListPane(String title, ArrayList<Task> list) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                FXML_CELL_DATE));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+
+        paneListView.setText(title);
+        populateList(list);
+    }
+
+    /**
+     * Method to populate the view with data
+     * 
+     * @param list
+     *            The list to display on the view
+     */
+    private void populateList(ArrayList<Task> list) {
+        if (list == null)
+            return;
+        for (Task t : list) {
+            String temp = String.format(REG_TASK_DISPLAY, t.getTaskDeadLine(),
+                    t.getTaskID(), t.getTaskName());
+            Text text = new Text(temp);
+            text.wrappingWidthProperty().setValue(MAX_TEXT_WIDTH);
+            listBody.getItems().add(text);
+        }
     }
 }

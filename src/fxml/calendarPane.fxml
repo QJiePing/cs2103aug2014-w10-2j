@@ -7,58 +7,86 @@
 
 <fx:root fx:id="calendarPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" type="BorderPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <GridPane fx:id="gridView" alignment="CENTER" gridLinesVisible="true" prefHeight="350.0" BorderPane.alignment="CENTER">
+      <GridPane fx:id="gridView" alignment="CENTER" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="400.0" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
         </rowConstraints>
          <children>
             <AnchorPane prefHeight="60.0">
                <children>
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" text="Sun" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" style="-fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="Sun" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="60.0" GridPane.columnIndex="1">
                <children>
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" text="Mon" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" style="-fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="Mon" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="60.0" GridPane.columnIndex="2">
                <children>
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" text="Tue" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" style="-fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="Tue" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="60.0" GridPane.columnIndex="3">
                <children>
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" text="Wed" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" style="-fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="Wed" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="60.0" GridPane.columnIndex="4">
                <children>
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" text="Thur" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="1.0" prefHeight="60.0" style="-fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="Thur" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="60.0" GridPane.columnIndex="5">
                <children>
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="2.0" prefHeight="60.0" text="Fri" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="2.0" prefHeight="60.0" style="-fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="Fri" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="60.0" GridPane.columnIndex="6">
                <children>
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="3.0" prefHeight="60.0" text="Sat" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="29.0" layoutY="3.0" prefHeight="60.0" style="-fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="Sat" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
          </children>
@@ -67,9 +95,9 @@
    <top>
       <AnchorPane prefHeight="50.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="lblCurrent" alignment="CENTER" contentDisplay="TEXT_ONLY" text="September 2014" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label fx:id="lblCurrent" alignment="CENTER" contentDisplay="TEXT_ONLY" style="-fx-border-color: BLACK; -fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="September 2014" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
-                  <Font size="31.0" />
+                  <Font name="System Bold" size="31.0" />
                </font>
             </Label>
          </children>
