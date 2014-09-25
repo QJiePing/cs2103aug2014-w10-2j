@@ -91,8 +91,8 @@ Storage
 =======
 //using external jar: json-simple.jar to output format in json format
 //using external jar: json-simple.jar to read in information in json format
-writeToFile(): boolean               //output task information in json format in storage file
-readFromFile(): boolean               //read storage file for task information and initialise all task object and put into the global task arrayList
++writeToFile(): boolean               //output task information in json format in storage file
++readFromFile(): boolean               //read storage file for task information and initialise all task object and put into the global task arrayList
 
 ====
 Task
