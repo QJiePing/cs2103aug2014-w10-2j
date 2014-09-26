@@ -46,8 +46,9 @@ for the UI. i.e. OnClick Events
 +displayCalendar(): void          // Can be called to display the calendar
 				  // TODO: Sync days with Tasks
 
-+displayList(): void		  // Can be called to display the list
-				  // TODO: NOT YET IMPLEMENTED!!!!
++displayList(ArrayList<Task>): void
+				  // Can be called to display any list. The elements in the array list passed 
+				  // in will be used to populate the list
 
 +display(): void		  // Method stub to render a view, either in list or calendar. This method
 				  // uses default configurations to determine if view should be in calendar or

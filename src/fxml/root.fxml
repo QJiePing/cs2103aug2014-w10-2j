@@ -5,9 +5,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="479.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <AnchorPane fx:id="anchorPaneDisplay" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" />
+      <Pane fx:id="anchorPaneDisplay" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" />
    </center>
    <bottom>
       <TextField fx:id="txtCmdInput" onKeyPressed="#txtCmdInputKeyPressed" prefHeight="40.0" promptText="Enter Command Here..." BorderPane.alignment="CENTER">
@@ -16,7 +16,7 @@
          </font></TextField>
    </bottom>
    <top>
-      <MenuBar prefHeight="40.0" BorderPane.alignment="CENTER">
+      <MenuBar maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
