@@ -14,6 +14,25 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
+      <Pane fx:id="paneBody" layoutX="6.0" layoutY="7.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="55.0" style="-fx-background-color: linear-gradient(#CCFFFF, #00FFFF);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0">
+         <children>
+            <Label fx:id="lblPlus" layoutX="18.0" layoutY="-6.0" text="+" />
+            <Label fx:id="lblNumber" layoutX="2.0" layoutY="-8.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="18.0" text="9">
+               <font>
+                  <Font size="32.0" />
+               </font>
+            </Label>
+            <Label layoutX="17.0" layoutY="13.0" text=" Tasks">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+            <Circle fx:id="circleGrey" fill="#a6a6a6" layoutX="16.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fx:id="circleGreen" fill="#9bbb59" layoutX="26.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fx:id="circleOrange" fill="#f79646" layoutX="37.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fx:id="circleRed" fill="#c0504d" layoutX="48.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+         </children>
+      </Pane>
    </children>
    <opaqueInsets>
       <Insets />

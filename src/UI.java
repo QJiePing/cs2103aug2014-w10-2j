@@ -24,6 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBuilder;
 
@@ -387,12 +388,41 @@ class CalendarPane extends BorderPane {
  */
 class CellDate extends AnchorPane {
 
+    // Special Constants
+    private enum CIRCLE_COLOR {
+        GREY, GREEN, ORANGE, RED
+    }
+    private static final String EMPTY_STRING = "";
+    private static final int MAX_NUMBER_OF_TASKS_FOR_DISPLAY = 9;
+    private static final int MIN_NUMBER_OF_TASK_FOR_DISPLAY = 1;
+
     // FXML File Constant
     private static final String FXML_CELL_DATE = "/fxml/cellDate.fxml";
 
     // Binded FXML Elements
     @FXML
     private Label lblDate;
+
+    @FXML
+    private Pane paneBody;
+
+    @FXML
+    private Label lblPlus;
+
+    @FXML
+    private Label lblNumber;
+
+    @FXML
+    private Circle circleGrey;
+
+    @FXML
+    private Circle circleGreen;
+
+    @FXML
+    private Circle circleOrange;
+
+    @FXML
+    private Circle circleRed;
 
     /**
      * Default overloaded constructor
@@ -410,6 +440,89 @@ class CellDate extends AnchorPane {
         loader.load();
 
         lblDate.setText(date);
+    }
+
+    /**
+     * Method to make the body of the cell visible
+     * 
+     * @param isVisible
+     *            The boolean to determine if the body is visible
+     */
+    public void setBodyVisible(boolean isVisible) {
+        paneBody.setVisible(isVisible);
+    }
+
+    /**
+     * Method to set the number of tasks
+     * 
+     * @param totalNumberOfTasks
+     *            The total number of tasks
+     */
+    public void setNumberOfTasks(int totalNumberOfTasks) {
+        if (totalNumberOfTasks < MIN_NUMBER_OF_TASK_FOR_DISPLAY) {
+            setBodyVisible(false);
+            return;
+        }
+        if (totalNumberOfTasks > MAX_NUMBER_OF_TASKS_FOR_DISPLAY) {
+            lblPlus.setVisible(true);
+            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + EMPTY_STRING);
+        } else {
+            lblPlus.setVisible(false);
+            lblNumber.setText(totalNumberOfTasks + EMPTY_STRING);
+        }
+    }
+
+    /**
+     * Method to reset visibility of all circles to false
+     * 
+     */
+    private void resetCircleVisibility() {
+        circleGrey.setVisible(false);
+        circleGreen.setVisible(false);
+        circleOrange.setVisible(false);
+        circleRed.setVisible(false);
+    }
+
+    /**
+     * Method to set the visibility of each circle
+     * 
+     * @param grey
+     *            Boolean for the visibility of the grey circle
+     * @param green
+     *            Boolean for the visibility of the green circle
+     * @param orange
+     *            Boolean for the visibility of the orange circle
+     * @param red
+     *            Boolean for the visibility of the red circle
+     */
+    public void setCircleVisible(boolean grey, boolean green, boolean orange,
+            boolean red) {
+        resetCircleVisibility();
+        setCircleVisible(CIRCLE_COLOR.GREY, grey);
+        setCircleVisible(CIRCLE_COLOR.GREEN, green);
+        setCircleVisible(CIRCLE_COLOR.ORANGE, orange);
+        setCircleVisible(CIRCLE_COLOR.RED, red);
+    }
+
+    /**
+     * Private method to set the visibility of a circle
+     * 
+     * @param color
+     *            The color of the circle to be set
+     * @param isVisible
+     *            The boolean to determine if circle is visible
+     */
+    private void setCircleVisible(CIRCLE_COLOR color, boolean isVisible) {
+        switch (color) {
+        case GREY:
+            circleGrey.setVisible(isVisible);
+        case GREEN:
+            circleGreen.setVisible(isVisible);
+        case ORANGE:
+            circleOrange.setVisible(isVisible);
+        case RED:
+            circleRed.setVisible(isVisible);
+        }
     }
 }
 
