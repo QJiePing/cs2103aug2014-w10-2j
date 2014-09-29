@@ -108,6 +108,8 @@ public class Controller {
 		case "find":
 			return CMDtype.FIND;
 		case "arch":
+			return CMDtype.ARCHIVE;
+		case "undo":
 			return CMDtype.UNDO;
 		default:
 			return CMDtype.INVALID;
