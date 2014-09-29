@@ -98,7 +98,7 @@ public class OPLogic extends Logic {
 		return true;
 	}
 	
-	public static boolean editDate(String taskID, int workloadAttribute) {
+	public static boolean editWorkload(String taskID, int workloadAttribute) {
 		
 		int taskIDIndex = findTaskByID(taskID);
 		

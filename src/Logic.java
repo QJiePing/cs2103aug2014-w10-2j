@@ -20,7 +20,7 @@ public class Logic {
 		return false;
 	}
 	
-	public static boolean editDate(String taskID, int workloadAttribute) {
+	public static boolean editWorkload(String taskID, int workloadAttribute) {
 		return false;
 	}
 
