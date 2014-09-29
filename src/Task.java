@@ -1,10 +1,12 @@
+import java.util.Calendar;
+
 
 public class Task {
 	
 	private String _taskName;
 	private String _taskID;
 	private String _taskStatus;
-	private String _taskDeadLine;
+	private Calendar _taskDeadLine;
 	private String _taskWorkLoad;
 	private String _taskDescription;
 	
@@ -15,7 +17,7 @@ public class Task {
 	/*
 	 * Here I assume that some parameters may be null
 	 */
-	public Task(String taskName, String taskID, String taskStatus, String taskDeadLine,
+	public Task(String taskName, String taskID, String taskStatus, Calendar taskDeadLine,
 			  	String taskWorkLoad, String taskDescription) {
 		
 		_taskName = taskName;
@@ -35,7 +37,7 @@ public class Task {
 	
 	public String getTaskStatus() {	return _taskStatus; }
 	
-	public String getTaskDeadLine() {	return _taskDeadLine; }
+	public Calendar getTaskDeadLine() {	return _taskDeadLine; }
 	
 	public String getTaskWorkLoad() {	return _taskWorkLoad; }
 	
@@ -60,7 +62,7 @@ public class Task {
 		_taskStatus =  newTaskStatus;
 	}
 	
-	public void changeDeadLine(String newTaskDeadLine) {
+	public void changeDeadLine(Calendar newTaskDeadLine) {
 		_taskDeadLine =  newTaskDeadLine;
 	}
 	
