@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 
 public class OPLogic extends Logic {
@@ -15,14 +17,19 @@ public class OPLogic extends Logic {
 	public static boolean addTask(String name_ADD, String description_ADD) {
 		
 		//assume task name cannot be null
-		if(name_ADD == null || name_ADD.length() == 0) {
-			Controller.handleError("ADD_NO_CONTENT");
+		if(name_ADD == null) {
+			Controller.handleError(ADD_NO_CONTENT);
 			
 			//fail to add a new task
 			return false;
 		} else {
+			
+			if(description_ADD == null) {
+				description_ADD = "";
+			}
+			
 			Taskaler.taskID++;
-			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), "Not Done", null, null, description_ADD);
+			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), "Not Done", null, "", description_ADD);
 			Taskaler.taskList.add(newTask);
 			
 			//success to add a new task
@@ -58,7 +65,7 @@ public class OPLogic extends Logic {
 			
 			//fail to edit a task
 			return false;
-		} else if ((name_EDIT == null || name_EDIT.length() == 0) && description_EDIT == null) {
+		} else if (name_EDIT == null && description_EDIT == null) {
 			Controller.handleError(EDIT_NO_CONTENT);
 			
 			//fail to edit a task
@@ -67,12 +74,12 @@ public class OPLogic extends Logic {
 		
 		
 		//assume name will not change to null
-		if(name_EDIT != null && name_EDIT.length() != 0) {
+		if(name_EDIT != null) {
 			Taskaler.taskList.get(taskIDIndex).changeTaskName(name_EDIT);
 		}
 		
 		//assume description will not change to null
-		if(description_EDIT != null && description_EDIT.length() != 0) {
+		if(description_EDIT != null) {
 			Taskaler.taskList.get(taskIDIndex).changeTaskDescription(description_EDIT);
 		}
 		
@@ -82,7 +89,7 @@ public class OPLogic extends Logic {
 	
 	public static boolean editDate(String taskID, int day, int month, int year) {
 		
-		String taskDeadLine = String.format("%s/%s/%s", day, month, year);
+		Calendar newDeadLine = new GregorianCalendar(year, month, day);
 		
 		int taskIDIndex = findTaskByID(taskID);
 		
@@ -93,7 +100,7 @@ public class OPLogic extends Logic {
 			return false;
 		}
 		
-		Taskaler.taskList.get(taskIDIndex).changeDeadLine(taskDeadLine);
+		Taskaler.taskList.get(taskIDIndex).changeDeadLine(newDeadLine);
 		
 		return true;
 	}
@@ -167,8 +174,9 @@ public class OPLogic extends Logic {
 		
 		for(int i = 0; i < Taskaler.taskList.size(); i++){
 			if(Taskaler.taskList.get(i).getTaskDeadLine() != null) {
-				String[] deadline = Taskaler.taskList.get(i).getTaskDeadLine().split("/");
-				if(deadline[tagType].equals(paramFIND)) {
+				Calendar taskDeadLine = Taskaler.taskList.get(i).getTaskDeadLine();
+				int[] deadline = {taskDeadLine.get(Calendar.DAY_OF_MONTH), taskDeadLine.get(Calendar.MONTH),taskDeadLine.get(Calendar.YEAR)};
+				if(deadline[tagType] == Integer.parseInt(paramFIND)) {
 					searchResultList.add(Taskaler.taskList.get(i));
 				}
 			}
