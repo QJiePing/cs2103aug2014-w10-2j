@@ -22,7 +22,7 @@ public class Controller {
 			String[] param_ADD = getParam_ADD(commandString);
 			String name_ADD = param_ADD[0];
 			String description_ADD = param_ADD[1];
-			Logic.addTask(name_ADD, description_ADD);
+			OPLogic.addTask(name_ADD, description_ADD);
 			break;
 		case DELETE:
 			String taskID_DELETE = getTaskID(commandString);
@@ -41,31 +41,31 @@ public class Controller {
 			int day = date[0];
 			int month = date[1];
 			int year = date[2];
-			Logic.editDate(taskID, day, month, year);
+			//Logic.editDate(taskID, day, month, year);
 			break;
 		case WORKLOAD:
 			String taskID_WORKLOAD = getTaskID(commandString);
 			int workloadAttribute = getParam_WL(commandString);
-			Logic.editWorkload(taskID, workloadAttribute);
+			//Logic.editWorkload(taskID, workloadAttribute);
 			break;
 		case COMPLETION_TAG:
 			String taskID = getTaskID(commandString);
 			Logic.switchTag(taskID);
 		case VIEW:
 			String paramVIEW = getParamVIEW(commandString);
-			Logic.view(paramVIEW);
+			//Logic.view(paramVIEW);
 			break;
 		case FIND:
 			String tagTypeFIND = getTagFIND_ARCHIVE(commandString);
-			String paramFIND = removeTag(getParam(commandString));
-			Logic.find(tagTypeFIND, paramFIND);
+			//String paramFIND = removeTag(getParam(commandString));
+			//Logic.find(tagTypeFIND, paramFIND);
 			break;
 		case ARCHIVE:
 			String tagTypeARCHIVE = getTagFIND_ARCHIVE(commandString);
-			Logic.archive(tagTypeARCHIVE, paramARCHIVE);
+			//Logic.archive(tagTypeARCHIVE, paramARCHIVE);
 			break;
 		case UNDO:
-			Logic.undo();
+			//Logic.undo();
 			break;
 		case INVALID:
 			handleError("invalid command");
@@ -188,33 +188,35 @@ public class Controller {
 	}
 	
 	private static String getParamVIEW(String commandString){
-		String tag = determineTagType(getParam(commandString));
-		switch(tag){
-		case "LIST":
-			return tag;
-		case "CALENDAR":
-			return tag;
-		default:
-			return "Invalid command";
-		}
+//		String tag = determineTagType(getParam(commandString));
+//		switch(tag){
+//		case "LIST":
+//			return tag;
+//		case "CALENDAR":
+//			return tag;
+//		default:
+//			return "Invalid command";
+//		}
+	    return "";
 	}
 	
 	private static String getTagFIND_ARCHIVE(String commandString){
-		String tag = determineTagType(getParam(commandString));
-		switch(tag){
-		case "KEYWORD":
-			return tag;
-		case "DATE":
-			return tag;
-		case "MONTH":
-			return tag;
-		case "YEAR":
-			return tag;
-		case "WORKLOAD":
-			return tag;
-		default:
-			return "Invalid command";
-		}
+//		String tag = determineTagType(getParam(commandString));
+//		switch(tag){
+//		case "KEYWORD":
+//			return tag;
+//		case "DATE":
+//			return tag;
+//		case "MONTH":
+//			return tag;
+//		case "YEAR":
+//			return tag;
+//		case "WORKLOAD":
+//			return tag;
+//		default:
+//			return "Invalid command";
+//		}
+	    return "";
 	}
 	
 	private static String removeFirstWord(String line){

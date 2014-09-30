@@ -17,7 +17,21 @@ public class Task {
 	 */
 	public Task(String taskName, String taskID, String taskStatus, String taskDeadLine,
 			  	String taskWorkLoad, String taskDescription) {
+		if(taskStatus == null){
+		    taskStatus = "";
+		}
 		
+		if(taskDeadLine == null){
+            taskDeadLine = "";
+        }
+		
+		if(taskWorkLoad == null){
+            taskWorkLoad = "";
+        }
+		
+		if(taskDescription == null){
+            taskWorkLoad = "";
+        }
 		_taskName = taskName;
 		_taskID = taskID;
 		_taskStatus = taskStatus;

@@ -47,6 +47,7 @@ public class Taskaler extends
     @Override
     public void start(Stage primaryStage)
             throws Exception {
+        taskList = new ArrayList<Task>();
         controller = new Controller();
         ui = new UI();
         ui.start(primaryStage);
