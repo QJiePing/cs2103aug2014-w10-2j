@@ -3,17 +3,18 @@ import java.util.Arrays;
 
 public class Controller {
 	
+	// Magic Strings/Numbers
 	private static final int INVALID_VALUE = -1;
 	private static final int MAX_ADD_PARAMETERS = 2;
 	private static final int MAX_EDIT_PARAMETERS = 2;
 	private static final int MAX_DATE_PARAMETERS = 3;
+	private static final int FIND_PARAMETERS = 2;
 	private static final int TAG_LENGTH = 4;
 	private static final String EMPTY_STRING = "";
+
 	
-	private enum CMDtype {
-		ADD, DELETE, EDIT, DATE, WORKLOAD, COMPLETION_TAG, 
-		VIEW, FIND, ARCHIVE, UNDO, INVALID
-	}
+/*********************************** Public Functions ***********************************/
+	
 	public static void executeCMD(String commandString) {
 		String command = getFirstWord(commandString);
 		CMDtype commandType = determineCMDtype(command);
@@ -26,14 +27,14 @@ public class Controller {
 			break;
 		case DELETE:
 			String taskID_DELETE = getTaskID(commandString);
-			Logic.deleteTask(taskID_DELETE);
+			OPLogic.deleteTask(taskID_DELETE);
 			break;
 		case EDIT:
 			String taskID_EDIT = getTaskID(commandString);
 			String[] param_EDIT = getParam_EDIT(commandString);
 			String name_EDIT = param_EDIT[0];
 			String description_EDIT = param_EDIT[1];
-			Logic.editTask(taskID_EDIT, name_EDIT, description_EDIT);
+			OPLogic.editTask(taskID_EDIT, name_EDIT, description_EDIT);
 			break;
 		case DATE:
 			String taskID_DATE = getTaskID(commandString);
@@ -41,17 +42,26 @@ public class Controller {
 			int day = date[0];
 			int month = date[1];
 			int year = date[2];
+<<<<<<< HEAD
 			//Logic.editDate(taskID, day, month, year);
+=======
+			OPLogic.editDate(taskID_DATE, day, month, year);
+>>>>>>> origin/master
 			break;
 		case WORKLOAD:
 			String taskID_WORKLOAD = getTaskID(commandString);
 			int workloadAttribute = getParam_WL(commandString);
+<<<<<<< HEAD
 			//Logic.editWorkload(taskID, workloadAttribute);
+=======
+			OPLogic.editWorkload(taskID_WORKLOAD, workloadAttribute);
+>>>>>>> origin/master
 			break;
 		case COMPLETION_TAG:
 			String taskID = getTaskID(commandString);
-			Logic.switchTag(taskID);
+			OPLogic.switchTag(taskID);
 		case VIEW:
+<<<<<<< HEAD
 			String paramVIEW = getParamVIEW(commandString);
 			//Logic.view(paramVIEW);
 			break;
@@ -66,6 +76,23 @@ public class Controller {
 			break;
 		case UNDO:
 			//Logic.undo();
+=======
+			String paramVIEW = getParam_VIEW(commandString);
+			OPLogic.view(paramVIEW);
+			break;
+		case FIND:
+			String[] paramFIND = getParam_FIND(commandString);
+			String tagTypeFIND = paramFIND[0];
+			String toSearch = paramFIND[1];
+			OPLogic.find(tagTypeFIND, toSearch);
+			break;
+		case ARCHIVE:
+			String tagTypeARCHIVE = getTagFIND_ARCHIVE(commandString);
+			OPLogic.archive(tagTypeARCHIVE, paramARCHIVE);
+			break;
+		case UNDO:
+			OPLogic.undo();
+>>>>>>> origin/master
 			break;
 		case INVALID:
 			handleError("invalid command");
@@ -73,12 +100,20 @@ public class Controller {
 		default:
 			handleError("unknown error");
 		}
+		Storage.writeToFile(file);
 	}
 	
 	public static void handleError(String error){
 		
 	}
 	
+/****************************** Command Type Functions ***********************************/	
+	
+	private enum CMDtype {
+		ADD, DELETE, EDIT, DATE, WORKLOAD, COMPLETION_TAG, 
+		VIEW, FIND, ARCHIVE, UNDO, INVALID
+	}
+
 	private static CMDtype determineCMDtype(String command){
 		switch(command.toLowerCase()){
 		case "add":
@@ -98,11 +133,15 @@ public class Controller {
 		case "find":
 			return CMDtype.FIND;
 		case "arch":
+			return CMDtype.ARCHIVE;
+		case "undo":
 			return CMDtype.UNDO;
 		default:
 			return CMDtype.INVALID;
 		}
 	}
+
+/**************************** Getting Parameter Functions ********************************/
 	
 	private static String[] getParam_ADD(String commandString){
 		int name = 0;
@@ -156,7 +195,7 @@ public class Controller {
 	}
 	
 	private static int[] getParam_DATE(String commandString){
-		String date = removeFirstWord(commandString);
+		String date = removeFirstWord(removeFirstWord(commandString));
 		int[] paramDATE = new int[3];
 		String[] dateArray = date.split("/");
 		if(dateArray.length != MAX_DATE_PARAMETERS){
@@ -187,6 +226,7 @@ public class Controller {
 		return paramWL;
 	}
 	
+<<<<<<< HEAD
 	private static String getParamVIEW(String commandString){
 //		String tag = determineTagType(getParam(commandString));
 //		switch(tag){
@@ -217,7 +257,46 @@ public class Controller {
 //			return "Invalid command";
 //		}
 	    return "";
+=======
+	private static String getParam_VIEW(String commandString){
+		String paramString = removeFirstWord(commandString);
+		
+		if(paramString.equals("-l")){
+			return "LIST";
+		} 
+		else if(paramString.equals("-c")){
+			return "CALENDAR";
+		}
+		else {
+			return paramString;
+		}
 	}
+	
+	private static String[] getParam_FIND(String commandString){
+		int tag = 0;
+		int toSearch = 1;
+		
+		String[] paramArray = new String[FIND_PARAMETERS];
+		String paramString = removeFirstWord(commandString);
+		String tagType = getFirstWord(paramString);
+		
+		if(tagType.equals("-t")){
+			paramArray[tag] = "DATE";
+			paramArray[toSearch] = removeFirstWord(paramString);
+		}
+		else if(tagType.equals("-w")){
+			paramArray[tag] = "WORKLOAD";
+			paramArray[toSearch] = removeFirstWord(paramString);
+		}
+		else {
+			paramArray[tag] = "KEYWORD";
+			paramArray[toSearch] = paramString;
+		}
+		return paramArray;
+>>>>>>> origin/master
+	}
+	
+/********************************** Helper Functions *************************************/	
 	
 	private static String removeFirstWord(String line){
 		return line.replace(getFirstWord(line), "").trim();

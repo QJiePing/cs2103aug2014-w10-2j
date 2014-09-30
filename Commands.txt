@@ -1,0 +1,82 @@
+*First line is what is typed into command line, " -" shows what is supposed to happen
+
+ADD:
+add CS2101 homework 
+ - adds a task with name, "CS2101 homework", description, null
+add CS2101 homework -d progress report
+ - adds a task with name, "CS2101 homework", and description, "progress report"
+add -d progress report
+ - adds a task with name, "-d progress report", description, null
+add
+ - ERROR
+
+DELETE:
+delete T24
+ - deletes a task with taskID, T24
+delete asdf
+ - ERROR
+delete
+ - ERROR
+
+EDIT:
+edit T24 -n cs2101 homework
+ - edits a task with taskID, T24, new name is "cs2101 homework"
+edit T24 -d report writing
+ - edits a task with taskID, T24, new description is "report writing"
+edit T24 -n cs2101 homework -d report writing
+ - edits a task with taskID, T24, new name is "cs2101 homework", new description is "report writing"
+edit T24 -d report writing -n cs2101 homework
+ - edits a task with taskID, T24, new name is "cs2101 homework", new description is "report writing"
+edit T24
+ - ERROR
+
+DATE:
+date T24 09/09/2014
+ - edits a task with taskID, T24, due date is 09/09/2014
+date T24 9/9/2014
+ - ??????
+date T24 9/january/2014
+ - ??????
+date T24
+ - ERROR
+
+WORKLOAD:
+priority T24 1
+ - edits a task with taskID, T24, with workload attribute, 1
+priority T24 asdf
+ - ERROR
+
+COMPLETION TAG:
+completed T24
+ - switches the tag for task with taskID, T24
+completed 
+ - ERROR
+
+VIEW:
+view -l
+ - view list mode
+view -c
+ - view calendar mode
+view T24
+ - view specific task, T24
+view lala
+ - ERROR
+
+FIND:
+find cs2101
+ - finds the tasks, with name which contains "cs2101"
+find -d 09/09/2014
+ - finds the tasks, with date 09/09/2014
+find -w 2
+ - finds the tasks, with workload attribute, 2
+find -w asdf
+ - ERROR
+find 09/09/2014
+ - finds the tasks, with name which contains "09/09/2014"
+
+UNDO:
+undo
+ - undo's last action
+
+ARCHIVE:
+????????????
