@@ -5,25 +5,25 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root fx:id="calendarPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" type="BorderPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="calendarPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: GREY;" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <GridPane fx:id="gridView" alignment="CENTER" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="400.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="57.0" prefWidth="57.0" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
-          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
-          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
-          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
-            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
-            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="NEVER" />
+          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="NEVER" />
+          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="NEVER" />
+          <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints maxHeight="-Infinity" minHeight="59.0" prefHeight="59.0" valignment="CENTER" vgrow="NEVER" />
         </rowConstraints>
          <children>
             <AnchorPane prefHeight="60.0">
@@ -93,9 +93,9 @@
       </GridPane>
    </center>
    <top>
-      <AnchorPane prefHeight="50.0" BorderPane.alignment="CENTER">
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="lblCurrent" alignment="CENTER" contentDisplay="TEXT_ONLY" style="-fx-border-color: BLACK; -fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="September 2014" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label fx:id="lblCurrent" alignment="CENTER" contentDisplay="TEXT_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" style="-fx-border-color: BLACK; -fx-background-color: linear-gradient(#e2ecfe, #99bcfd);" text="September 2014" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font name="System Bold" size="31.0" />
                </font>

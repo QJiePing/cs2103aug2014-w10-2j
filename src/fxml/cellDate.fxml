@@ -9,30 +9,24 @@
 
 <fx:root fx:id="cellDate" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="59.0" prefWidth="57.0" style="-fx-background-color: WHITE; -fx-border-color: BLACK;" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="lblDate" layoutX="8.0" layoutY="1.0" text="31">
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font>
-      </Label>
-      <Pane fx:id="paneBody" layoutX="6.0" layoutY="7.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="55.0" style="-fx-background-color: linear-gradient(#CCFFFF, #00FFFF);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0">
+      <Pane fx:id="paneBody" layoutX="6.0" layoutY="7.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="lblPlus" layoutX="18.0" layoutY="-6.0" text="+" />
-            <Label fx:id="lblNumber" layoutX="2.0" layoutY="-8.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="18.0" text="9">
+            <Label fx:id="lblNumber" layoutX="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="45.0" text="9+">
                <font>
-                  <Font size="32.0" />
+                  <Font size="33.0" />
                </font>
             </Label>
-            <Label layoutX="17.0" layoutY="13.0" text=" Tasks">
-               <font>
-                  <Font size="12.0" />
-               </font>
-            </Label>
-            <Circle fx:id="circleGrey" fill="#a6a6a6" layoutX="16.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-            <Circle fx:id="circleGreen" fill="#9bbb59" layoutX="26.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-            <Circle fx:id="circleOrange" fill="#f79646" layoutX="37.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
-            <Circle fx:id="circleRed" fill="#c0504d" layoutX="48.0" layoutY="34.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+            <Rectangle fx:id="rectangleGreen" arcHeight="5.0" arcWidth="5.0" fill="#9bbb59" height="17.0" layoutX="14.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
+            <Rectangle fx:id="rectangleOrange" arcHeight="5.0" arcWidth="5.0" fill="#f79646" height="17.0" layoutX="28.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
+            <Rectangle fx:id="rectangleGrey" arcHeight="5.0" arcWidth="5.0" fill="#a6a6a6" height="17.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
+            <Rectangle fx:id="rectangleRed" arcHeight="5.0" arcWidth="5.0" fill="#c0504d" height="17.0" layoutX="41.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" width="15.0" />
          </children>
       </Pane>
+      <Label fx:id="lblDate" alignment="TOP_RIGHT" layoutX="30.0" layoutY="-1.0" prefHeight="31.0" prefWidth="26.0" text="31" textAlignment="RIGHT">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
    </children>
    <opaqueInsets>
       <Insets />

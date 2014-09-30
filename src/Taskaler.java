@@ -48,7 +48,7 @@ public class Taskaler extends
     public void start(Stage primaryStage)
             throws Exception {
         taskList = new ArrayList<Task>();
-        controller = new Controller();
+        //controller = new Controller();
         ui = new UI();
         ui.start(primaryStage);
         

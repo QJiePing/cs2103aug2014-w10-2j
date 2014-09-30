@@ -42,41 +42,18 @@ public class Controller {
 			int day = date[0];
 			int month = date[1];
 			int year = date[2];
-<<<<<<< HEAD
-			//Logic.editDate(taskID, day, month, year);
-=======
 			OPLogic.editDate(taskID_DATE, day, month, year);
->>>>>>> origin/master
 			break;
 		case WORKLOAD:
 			String taskID_WORKLOAD = getTaskID(commandString);
 			int workloadAttribute = getParam_WL(commandString);
-<<<<<<< HEAD
-			//Logic.editWorkload(taskID, workloadAttribute);
-=======
+
 			OPLogic.editWorkload(taskID_WORKLOAD, workloadAttribute);
->>>>>>> origin/master
 			break;
 		case COMPLETION_TAG:
 			String taskID = getTaskID(commandString);
 			OPLogic.switchTag(taskID);
 		case VIEW:
-<<<<<<< HEAD
-			String paramVIEW = getParamVIEW(commandString);
-			//Logic.view(paramVIEW);
-			break;
-		case FIND:
-			String tagTypeFIND = getTagFIND_ARCHIVE(commandString);
-			//String paramFIND = removeTag(getParam(commandString));
-			//Logic.find(tagTypeFIND, paramFIND);
-			break;
-		case ARCHIVE:
-			String tagTypeARCHIVE = getTagFIND_ARCHIVE(commandString);
-			//Logic.archive(tagTypeARCHIVE, paramARCHIVE);
-			break;
-		case UNDO:
-			//Logic.undo();
-=======
 			String paramVIEW = getParam_VIEW(commandString);
 			OPLogic.view(paramVIEW);
 			break;
@@ -92,7 +69,6 @@ public class Controller {
 			break;
 		case UNDO:
 			OPLogic.undo();
->>>>>>> origin/master
 			break;
 		case INVALID:
 			handleError("invalid command");
