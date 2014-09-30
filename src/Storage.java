@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -17,7 +19,7 @@ public class Storage {
 			Iterator<JSONObject> iterator=jsonArr.iterator();
 			while(iterator.hasNext()){
 				JSONObject jObj= iterator.next();
-				Task temp= new Task(jObj.get("Name").toString(),jObj.get("ID").toString(),jObj.get("Status").toString(),jObj.get("Deadline").toString(),jObj.get("Workload").toString(),jObj.get("Description").toString());
+				Task temp= new Task(jObj.get("Name").toString(),jObj.get("ID").toString(),jObj.get("Status").toString(),(Calendar)jObj.get("Deadline"),jObj.get("Workload").toString(),jObj.get("Description").toString());
 				globalArrList.add(temp);
 			}
 		}catch(Exception e){
