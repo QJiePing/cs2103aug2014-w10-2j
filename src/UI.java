@@ -90,7 +90,6 @@ public class UI extends Application {
         if (e.getCode() == KeyCode.ENTER) {
             String cmd = txtCmdInput.getText();
             txtCmdInput.clear();
-            anchorPaneDisplay.requestFocus();
             Controller.executeCMD(cmd);
         }
     }
@@ -99,17 +98,10 @@ public class UI extends Application {
      * Method to render the calendar view
      * 
      */
-    public void displayCalendar() {
+    public void displayCalendar() throws Exception {
         anchorPaneDisplay.getChildren().clear();
-        try {
-            CalendarPane pane = new CalendarPane();
-            anchorPaneDisplay.getChildren().add(pane);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch
-            // block
-            e.printStackTrace();
-        }
+        CalendarPane pane = new CalendarPane();
+        anchorPaneDisplay.getChildren().add(pane);
     }
 
     /**
@@ -118,17 +110,11 @@ public class UI extends Application {
      * @param list
      *            The list to be rendered
      */
-    public void displayList(ArrayList<Task> list) throws Exception {
+    public void displayList(String title, ArrayList<Task> list)
+            throws Exception {
         anchorPaneDisplay.getChildren().clear();
-        try {
-            ListPane pane = new ListPane("test", list);
-            anchorPaneDisplay.getChildren().add(pane);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch
-            // block
-            e.printStackTrace();
-        }
+        ListPane pane = new ListPane(title, list);
+        anchorPaneDisplay.getChildren().add(pane);
     }
 
     /**
@@ -136,11 +122,19 @@ public class UI extends Application {
      * uses default configurations to determine if view should be in calendar or
      * list
      * 
-     * @throws Exception
-     *             Thrown if error encountered while reading FXML
      */
-    public void display() throws Exception {
-        throw new Exception("Not yet implemented");
+    public void display(String args) {
+
+        try {
+            if (args.equals("LIST") || args.isEmpty()) {
+                displayList("All current tasks", Taskaler.taskList);
+            }else{
+                displayCalendar();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -149,14 +143,11 @@ public class UI extends Application {
      * @param t
      *            The task to be rendered
      */
-    public void displayTask(Task t) {
+    public void displayTask(Task t) throws Exception {
         anchorPaneDisplay.getChildren().clear();
-        try {
-            TaskPane pane = new TaskPane(t);
-            anchorPaneDisplay.getChildren().add(pane);
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
+        TaskPane pane = new TaskPane(t);
+        anchorPaneDisplay.getChildren().add(pane);
+
     }
 }
 
@@ -390,6 +381,7 @@ class CellDate extends AnchorPane {
     private enum CIRCLE_COLOR {
         GREY, GREEN, ORANGE, RED
     }
+
     private static final String EMPTY_STRING = "";
     private static final String PLUS_STRING = "+";
     private static final int MAX_NUMBER_OF_TASKS_FOR_DISPLAY = 9;

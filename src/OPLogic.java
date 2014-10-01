@@ -32,7 +32,6 @@ public class OPLogic extends Logic {
 			
 			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), "Not Done", null, "", description_ADD);
 			Taskaler.taskList.add(newTask);
-			Taskaler.ui.displayTask(newTask);
 			
 			//success to add a new task
 			return true;
