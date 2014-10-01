@@ -60,7 +60,9 @@ public class Controller {
                 break;
             case COMPLETION_TAG:
                 String taskID = getTaskID(commandString);
-                OPLogic.switchTag(taskID);
+                result = OPLogic.switchTag(taskID);
+                Taskaler.ui.displayTask(result);
+                break;
             case VIEW:
                 String paramVIEW = getParam_VIEW(commandString);
                 Taskaler.ui.display(paramVIEW);

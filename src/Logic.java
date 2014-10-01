@@ -24,8 +24,8 @@ public class Logic {
 		return null;
 	}
 
-	public static boolean switchTag(String taskID) {
-		return false;
+	public static Task switchTag(String taskID) {
+		return null;
 	}
 	
 	public static ArrayList<Task> find(String tagTypeFIND, String paramFIND){

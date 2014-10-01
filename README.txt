@@ -79,13 +79,13 @@ Controller
 =====
 Logic
 =====
-addTask(String name, String description) : void     //any fields not entered by the user will be null
-deleteTask(String taskID) : void
-editTask(String taskID, String name, String description) : void //any fields not entered will be null
+addTask(String name, String description) : Task     //any fields not entered by the user will be null
+deleteTask(String taskID) : Task
+editTask(String taskID, String name, String description) : Task //any fields not entered will be null
 viewList() : void
 viewCal() : void
 undo() : void
-simpleSearch(String key) : Task
+simpleSearch(String key) : ArrayList<Task>
 
 =======
 Storage
