@@ -30,7 +30,7 @@ public class OPLogic extends Logic {
 			
 			Taskaler.taskID++;
 			
-			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), "Not Done", null, "", description_ADD);
+			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), "Not Done", Calendar.getInstance(), "", description_ADD);
 			Taskaler.taskList.add(newTask);
 			
 			//success to add a new task
@@ -88,7 +88,7 @@ public class OPLogic extends Logic {
 		
 	}
 	
-	public static boolean editDate(String taskID, int day, int month, int year) {
+	public static Task editDate(String taskID, int day, int month, int year) {
 		
 		Calendar newDeadLine = new GregorianCalendar(year, month, day);
 		
@@ -98,15 +98,15 @@ public class OPLogic extends Logic {
 			Controller.handleError(TASKID_NOT_EXIST);
 			
 			//fail to edit a task
-			return false;
+			return null;
 		}
 		
 		Taskaler.taskList.get(taskIDIndex).changeDeadLine(newDeadLine);
 		
-		return true;
+		return Taskaler.taskList.get(taskIDIndex);
 	}
 	
-	public static boolean editWorkload(String taskID, int workloadAttribute) {
+	public static Task editWorkload(String taskID, int workloadAttribute) {
 		
 		int taskIDIndex = findTaskByID(taskID);
 		
@@ -114,13 +114,13 @@ public class OPLogic extends Logic {
 			Controller.handleError(TASKID_NOT_EXIST);
 			
 			//fail to edit a task
-			return false;
+			return null;
 		}
 		
 		//assume workloadAttribute is within the range of 1-9
 		Taskaler.taskList.get(taskIDIndex).changeTaskWorkLoad(Integer.toString(workloadAttribute));
 		
-		return true;
+		return Taskaler.taskList.get(taskIDIndex);
 	}
 	
 	public static boolean switchTag(String taskID) {

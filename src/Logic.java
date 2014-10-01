@@ -16,12 +16,12 @@ public class Logic {
 		return null;
 	}
 	
-	public static boolean editDate(String taskID, int day, int month, int year) {
-		return false;
+	public static Task editDate(String taskID, int day, int month, int year) {
+		return null;
 	}
 	
-	public static boolean editWorkload(String taskID, int workloadAttribute) {
-		return false;
+	public static Task editWorkload(String taskID, int workloadAttribute) {
+		return null;
 	}
 
 	public static boolean switchTag(String taskID) {
