@@ -3,17 +3,17 @@ import java.util.ArrayList;
 
 public class Logic {
 
-	public static boolean addTask(String name_ADD, String description_ADD) {
-		return false;
+	public static Task addTask(String name_ADD, String description_ADD) {
+		return null;
 	}
 
-	public static boolean deleteTask(String taskID_DELETE) {
-		return false;
+	public static Task deleteTask(String taskID_DELETE) {
+		return null;
 	}
 
-	public static boolean editTask(String taskID_EDIT, String name_EDIT,
+	public static Task editTask(String taskID_EDIT, String name_EDIT,
 			String description_EDIT) {
-		return false;
+		return null;
 	}
 	
 	public static boolean editDate(String taskID, int day, int month, int year) {

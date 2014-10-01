@@ -578,7 +578,7 @@ class TaskPane extends BorderPane {
         lblTaskName.setText(t.getTaskName());
         lblTaskID.setText(t.getTaskID());
         lblStatus.setText(t.getTaskStatus());
-        lblDueBy.setText(t.getTaskDeadLine().toString());
+        lblDueBy.setText("None");
 
         switch (t.getTaskWorkLoad()) {
         default:

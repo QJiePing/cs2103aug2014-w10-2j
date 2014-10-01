@@ -20,13 +20,19 @@ public class Controller {
 	public static void executeCMD(String commandString) {
 		String command = getFirstWord(commandString);
 		CMDtype commandType = determineCMDtype(command);
-		boolean res = false;
+		Task result = null;
 		switch(commandType){
 		case ADD:
 			String[] param_ADD = getParam_ADD(commandString);
 			String name_ADD = param_ADD[0];
 			String description_ADD = param_ADD[1];
-			OPLogic.addTask(name_ADD, description_ADD);
+			result = OPLogic.addTask(name_ADD, description_ADD);
+			try {
+				Taskaler.ui.displayTask(result);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
 		case DELETE:
 			String taskID_DELETE = getTaskID(commandString);
@@ -50,7 +56,6 @@ public class Controller {
 		case WORKLOAD:
 			String taskID_WORKLOAD = getTaskID(commandString);
 			int workloadAttribute = getParam_WL(commandString);
-
 			OPLogic.editWorkload(taskID_WORKLOAD, workloadAttribute);
 			break;
 		case COMPLETION_TAG:
@@ -89,6 +94,10 @@ public class Controller {
 	}
 	
 	public static void handleError(String error){
+		
+	}
+	
+	public static void handleError(Exception error){
 		
 	}
 	

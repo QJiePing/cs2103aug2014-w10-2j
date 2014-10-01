@@ -14,14 +14,14 @@ public class OPLogic extends Logic {
 	public static int TAG_TYPE_YEAR = 2;
 	
 	
-	public static boolean addTask(String name_ADD, String description_ADD) {
+	public static Task addTask(String name_ADD, String description_ADD) {
 		
 		//assume task name cannot be null
 		if(name_ADD == null) {
 			Controller.handleError(ADD_NO_CONTENT);
 			
 			//fail to add a new task
-			return false;
+			return null;
 		} else {
 			
 			if(description_ADD == null) {
@@ -34,12 +34,12 @@ public class OPLogic extends Logic {
 			Taskaler.taskList.add(newTask);
 			
 			//success to add a new task
-			return true;
+			return newTask;
 		}
 		
 	}
 	
-	public static boolean deleteTask(String taskID_DELETE) {
+	public static Task deleteTask(String taskID_DELETE) {
 		
 		int taskIDIndex = findTaskByID(taskID_DELETE);
 		
@@ -47,16 +47,16 @@ public class OPLogic extends Logic {
 			Controller.handleError(TASKID_NOT_EXIST);
 			
 			//fail to delete a task
-			return false;
+			return null;
 		}
+		Task taskToBeRemoved = Taskaler.taskList.remove(taskIDIndex);
 		
-		Taskaler.taskList.remove(taskIDIndex);
-		return true;
+		return taskToBeRemoved;
 	
 	}
 
 	
-	public static boolean editTask(String taskID_EDIT, String name_EDIT,
+	public static Task editTask(String taskID_EDIT, String name_EDIT,
 			String description_EDIT) {
 		
 		int taskIDIndex = findTaskByID(taskID_EDIT);
@@ -65,12 +65,12 @@ public class OPLogic extends Logic {
 			Controller.handleError(TASKID_NOT_EXIST);
 			
 			//fail to edit a task
-			return false;
+			return null;
 		} else if (name_EDIT == null && description_EDIT == null) {
 			Controller.handleError(EDIT_NO_CONTENT);
 			
 			//fail to edit a task
-			return false;
+			return null;
 		}
 		
 		
@@ -84,7 +84,7 @@ public class OPLogic extends Logic {
 			Taskaler.taskList.get(taskIDIndex).changeTaskDescription(description_EDIT);
 		}
 		
-		return true;
+		return Taskaler.taskList.get(taskIDIndex);
 		
 	}
 	
