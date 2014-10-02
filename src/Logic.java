@@ -3,29 +3,29 @@ import java.util.ArrayList;
 
 public class Logic {
 
-	public static boolean addTask(String name_ADD, String description_ADD) {
-		return false;
+	public static Task addTask(String name_ADD, String description_ADD) {
+		return null;
 	}
 
-	public static boolean deleteTask(String taskID_DELETE) {
-		return false;
+	public static Task deleteTask(String taskID_DELETE) {
+		return null;
 	}
 
-	public static boolean editTask(String taskID_EDIT, String name_EDIT,
+	public static Task editTask(String taskID_EDIT, String name_EDIT,
 			String description_EDIT) {
-		return false;
+		return null;
 	}
 	
-	public static boolean editDate(String taskID, int day, int month, int year) {
-		return false;
+	public static Task editDate(String taskID, int day, int month, int year) {
+		return null;
 	}
 	
-	public static boolean editWorkload(String taskID, int workloadAttribute) {
-		return false;
+	public static Task editWorkload(String taskID, int workloadAttribute) {
+		return null;
 	}
 
-	public static boolean switchTag(String taskID) {
-		return false;
+	public static Task switchTag(String taskID) {
+		return null;
 	}
 	
 	public static ArrayList<Task> find(String tagTypeFIND, String paramFIND){

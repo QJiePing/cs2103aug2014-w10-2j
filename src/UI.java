@@ -521,6 +521,7 @@ class TaskPane extends BorderPane {
 
     // FXML File Constant
     private static final String FXML_TASK_PANE = "/fxml/taskPane.fxml";
+    private static final String REG_MONTH_YEAR = "dd/MM/yyyy";
 
     // Binded FXML Elements
     @FXML
@@ -578,9 +579,23 @@ class TaskPane extends BorderPane {
         lblTaskName.setText(t.getTaskName());
         lblTaskID.setText(t.getTaskID());
         lblStatus.setText(t.getTaskStatus());
-        lblDueBy.setText(t.getTaskDeadLine().toString());
+        SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
+        String deadline = formatter.format(t.getTaskDeadLine().getTime());
+        lblDueBy.setText(deadline);
 
         switch (t.getTaskWorkLoad()) {
+        case "1":
+            lblLow.setVisible(true);
+            lblDefault.setVisible(false);
+            break;
+        case "2":
+            lblMedium.setVisible(true);
+            lblDefault.setVisible(false);
+            break;
+        case "3":
+            lblHigh.setVisible(true);
+            lblDefault.setVisible(false);
+            break;
         default:
             lblDefault.setVisible(true);
             break;
@@ -603,6 +618,7 @@ class ListPane extends TitledPane {
 
     // FXML File Constant
     private static final String FXML_CELL_DATE = "/fxml/listPane.fxml";
+	private static final String REG_MONTH_YEAR = "dd/MM/yyyy";
 
     // Binded FXML Elements
     @FXML
@@ -642,7 +658,9 @@ class ListPane extends TitledPane {
         if (list == null)
             return;
         for (Task t : list) {
-            String temp = String.format(REG_TASK_DISPLAY, t.getTaskDeadLine(),
+        	SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
+            String deadline = formatter.format(t.getTaskDeadLine().getTime());
+            String temp = String.format(REG_TASK_DISPLAY, deadline,
                     t.getTaskID(), t.getTaskName());
             Text text = new Text(temp);
             text.wrappingWidthProperty().setValue(MAX_TEXT_WIDTH);
