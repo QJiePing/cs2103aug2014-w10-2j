@@ -143,9 +143,9 @@ public class OPLogic extends Logic {
 	
 	/**
 	 * 
-	 * Task editDate(String taskID, int day, int month, int year) is to edit a existing task with given ID
-	 * 															  in taskList:ArrayList<Task> by given
-	 * 															  name and/or description
+	 * Task editDate(String taskID, String day, String month, String year) is to edit a existing task with given ID
+	 * 															           in taskList:ArrayList<Task> by given
+	 * 															           name and/or description
 	 * 
 	 * @param taskID
 	 * @param day
@@ -153,9 +153,9 @@ public class OPLogic extends Logic {
 	 * @param year
 	 * @return return null if given task ID not exist, edited task otherwise
 	 */
-	public static Task editDate(String taskID, int day, int month, int year) {
+	public static Task editDate(String taskID, String day, String month, String year) {
 		
-		Calendar newDeadLine = setNewCalenderDate(day, month, year);
+		Calendar newDeadLine = setNewCalenderDate(Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year));
 
 		int taskIDIndex = findTaskByID(taskID);
 		
@@ -191,7 +191,7 @@ public class OPLogic extends Logic {
 	
 	/**
 	 * 
-	 * Task editWorkload(String taskID, int workloadAttribute) 	is to change the workload attribute of a task with given
+	 * Task editWorkload(String taskID, String workloadAttribute) 	is to change the workload attribute of a task with given
 	 * 															task ID in taskList:ArrayList<Task> to new workload
 	 * 															attribute
 	 * 
@@ -199,8 +199,8 @@ public class OPLogic extends Logic {
 	 * @param workloadAttribute
 	 * @return return null if given task ID not exist, edited task otherwise
 	 */
-	public static Task editWorkload(String taskID, int workloadAttribute) {
-		
+	public static Task editWorkload(String taskID, String workloadAttribute) {
+		int workloadAtt = Integer.parseInt(workloadAttribute);
 		int taskIDIndex = findTaskByID(taskID);
 		
 		if(taskIDIndex == TAG_TASK_NOT_EXIST) {
@@ -210,8 +210,8 @@ public class OPLogic extends Logic {
 			return null;
 		}
 		
-		//assume workloadAttribute is within the range of 1-9
-		Taskaler.taskList.get(taskIDIndex).changeTaskWorkLoad(Integer.toString(workloadAttribute));
+		//assume workloadAtt is within the range of 1-9
+		Taskaler.taskList.get(taskIDIndex).changeTaskWorkLoad(Integer.toString(workloadAtt));
 		
 		return Taskaler.taskList.get(taskIDIndex);
 	}
@@ -257,14 +257,14 @@ public class OPLogic extends Logic {
 		case "YEAR":
 			return findByDeadLine(TAG_TYPE_YEAR, paramFIND);
 		case "WORKLOAD":
-			return findByWordload(paramFIND);
+			return findByWorkload(paramFIND);
 		}
 		return null;
 	}
 	
 	
 	
-	private static ArrayList<Task> findByWordload(String paramFIND) {
+	private static ArrayList<Task> findByWorkload(String paramFIND) {
 		ArrayList<Task> searchResultList = new ArrayList<Task>();
 		
 		for(int i = 0; i < Taskaler.taskList.size(); i++){
@@ -316,7 +316,7 @@ public class OPLogic extends Logic {
 	 * @param taskID
 	 * @return	return a task with Task data type
 	 */
-	private static Task findByID(String taskID) {
+	public static Task findByID(String taskID) {
 		int taskIDIndex = findTaskIndex(taskID);
 		
 		if(taskIDIndex == TAG_TASK_NOT_EXIST) {
