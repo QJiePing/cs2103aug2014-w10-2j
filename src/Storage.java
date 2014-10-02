@@ -1,53 +1,48 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public class Storage {
-	//temporary  array list to work with
+	//global array list for loading all the task from storage file
 	public static ArrayList<Task> globalArrList = new ArrayList<Task>();
 
 	public static boolean readFromFile(String file){
-		JSONParser parser= new JSONParser();
 		try{
-			Object obj=parser.parse(new FileReader(file));
-			JSONArray jsonArr=(JSONArray)obj;
-			Iterator<JSONObject> iterator=jsonArr.iterator();
-			while(iterator.hasNext()){
-				JSONObject jObj= iterator.next();
-				Task temp= new Task(jObj.get("Name").toString(),jObj.get("ID").toString(),jObj.get("Status").toString(),(Calendar)jObj.get("Deadline"),jObj.get("Workload").toString(),jObj.get("Description").toString());
-				globalArrList.add(temp);
-			}
-		}catch(Exception e){
+			FileReader reader= new FileReader(file);
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.setPrettyPrinting();
+			Gson gson = gsonBuilder.create();
+			globalArrList=gson.fromJson(reader, new TypeToken<ArrayList<Task>>(){}.getType());
+		}catch(IOException e){
 			e.printStackTrace();
 			return false;
 		}
-		return true;	
+		return true;
 	}
 
 	public static boolean writeToFile(String file){
 
-		JSONArray objArr= new JSONArray();
 		try{
 			FileWriter fw= new FileWriter(file);
 
-			for(int index=0;index<globalArrList.size();index++){
-				JSONObject obj= new JSONObject();
-				obj.put("Name", globalArrList.get(index).getTaskName());
-				obj.put("ID", globalArrList.get(index).getTaskID());
-				obj.put("Status", globalArrList.get(index).getTaskStatus());
-				obj.put("Deadline", globalArrList.get(index).getTaskDeadLine());
-				obj.put("Workload", globalArrList.get(index).getTaskWorkLoad());
-				obj.put("Description", globalArrList.get(index).getTaskDescription());
-				objArr.add(obj);
+			GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.setPrettyPrinting();
+			Gson gson = gsonBuilder.create();
+
+			String output= gson.toJson(globalArrList);
+
+			if(globalArrList.isEmpty()){
+				fw.write("");
 			}
-			fw.write(objArr.toJSONString());
+			else{
+				fw.write(output);
+			}
+
 			fw.close();
-		}catch(Exception e){
+		}catch(IOException e){
 			e.printStackTrace();
 			return false;
 		}
