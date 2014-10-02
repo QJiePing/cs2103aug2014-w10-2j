@@ -19,18 +19,7 @@ public class Task {
 	 */
 	public Task(String taskName, String taskID, String taskStatus, Calendar taskDeadLine,
 			  	String taskWorkLoad, String taskDescription) {
-		if(taskStatus == null){
-		    taskStatus = "";
-		}
-		
-		
-		if(taskWorkLoad == null){
-            taskWorkLoad = "";
-        }
-		
-		if(taskDescription == null){
-            taskWorkLoad = "";
-        }
+
 		_taskName = taskName;
 		_taskID = taskID;
 		_taskStatus = taskStatus;

@@ -1,7 +1,12 @@
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
+
+/**
+ * @author Weng Yuan
+ *
+ */
 
 public class OPLogic extends Logic {
 
@@ -11,10 +16,13 @@ public class OPLogic extends Logic {
 	public static String TASK_INITIAL_STATUS = "Not Done";
 	public static String TASK_PARAMETER_DEFAULT_VALUE = "";
 	
+    public static String FORMAT_DAY_MONTH_YEAR = "dd/MM/yyyy";
+	
 	public static int TAG_TYPE_DATE = 0;
 	public static int TAG_TYPE_MONTH = 1;
 	public static int TAG_TYPE_YEAR = 2;
 	public static int TAG_TASK_NOT_EXIST = -1;
+	public static int OFF_SET_BY_ONE = 1;
 	
 	
 	/**
@@ -31,8 +39,6 @@ public class OPLogic extends Logic {
 		
 		//assume task name cannot be null
 		if(name_ADD == null) {
-			Controller.handleError(ADD_NO_CONTENT);
-			
 			//fail to add a new task
 			return null;
 		} else {
@@ -66,8 +72,6 @@ public class OPLogic extends Logic {
 		int taskIDIndex = findTaskByID(taskID_DELETE);
 		
 		if(taskIDIndex == TAG_TASK_NOT_EXIST) {
-			Controller.handleError(TASKID_NOT_EXIST);
-			
 			//fail to delete a task
 			return null;
 		}
@@ -115,7 +119,7 @@ public class OPLogic extends Logic {
 	/**
 	 * 
 	 * isError(String name_EDIT, String description_EDIT, int taskIDIndex) 	is to for error checking. It will check validity
-	 * 																		of all the parameter given
+	 * 																		of all the parameters given
 	 * 
 	 * @param name_EDIT
 	 * @param description_EDIT
@@ -129,12 +133,8 @@ public class OPLogic extends Logic {
 		boolean errorFinder = false;
 		
 		if(taskIDIndex == TAG_TASK_NOT_EXIST) {
-			Controller.handleError(TASKID_NOT_EXIST);
-			
 			errorFinder = true;       //fail to edit a task
 		} else if (name_EDIT == null && description_EDIT == null) {
-			Controller.handleError(EDIT_NO_CONTENT);
-			
 			errorFinder =  true; //fail to edit a task
 		}
 		
@@ -143,7 +143,7 @@ public class OPLogic extends Logic {
 	
 	/**
 	 * 
-	 * Task editDate(String taskID, String day, String month, String year) is to edit a existing task with given ID
+	 * Task editDate(String taskID, String day, String month, String year) is to edit a existing task with same given ID
 	 * 															           in taskList:ArrayList<Task> by given
 	 * 															           name and/or description
 	 * 
@@ -154,14 +154,11 @@ public class OPLogic extends Logic {
 	 * @return return null if given task ID not exist, edited task otherwise
 	 */
 	public static Task editDate(String taskID, String day, String month, String year) {
-		
 		Calendar newDeadLine = setNewCalenderDate(Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year));
 
 		int taskIDIndex = findTaskByID(taskID);
 		
 		if(taskIDIndex == TAG_TASK_NOT_EXIST) {
-			Controller.handleError(TASKID_NOT_EXIST);
-			
 			//fail to edit a task
 			return null;
 		}
@@ -183,7 +180,7 @@ public class OPLogic extends Logic {
 	private static Calendar setNewCalenderDate(int day, int month, int year) {
 		Calendar newDeadLine = Calendar.getInstance();
 		newDeadLine.set(Calendar.YEAR, year);
-		newDeadLine.set(Calendar.MONTH, month);
+		newDeadLine.set(Calendar.MONTH, month-OFF_SET_BY_ONE);
 		newDeadLine.set(Calendar.DAY_OF_MONTH, day);
 		return newDeadLine;
 	}
@@ -191,9 +188,9 @@ public class OPLogic extends Logic {
 	
 	/**
 	 * 
-	 * Task editWorkload(String taskID, String workloadAttribute) 	is to change the workload attribute of a task with given
-	 * 															task ID in taskList:ArrayList<Task> to new workload
-	 * 															attribute
+	 * Task editWorkload(String taskID, String workloadAttribute) 	is to change the workload attribute of a task with same
+	 * 																given task ID in taskList:ArrayList<Task> to new workload
+	 * 																attribute
 	 * 
 	 * @param taskID
 	 * @param workloadAttribute
@@ -204,13 +201,11 @@ public class OPLogic extends Logic {
 		int taskIDIndex = findTaskByID(taskID);
 		
 		if(taskIDIndex == TAG_TASK_NOT_EXIST) {
-			Controller.handleError(TASKID_NOT_EXIST);
-			
 			//fail to edit a task
 			return null;
 		}
 		
-		//assume workloadAtt is within the range of 1-9
+		//assume workloadAtt is within the range of 1-3
 		Taskaler.taskList.get(taskIDIndex).changeTaskWorkLoad(Integer.toString(workloadAtt));
 		
 		return Taskaler.taskList.get(taskIDIndex);
@@ -228,8 +223,6 @@ public class OPLogic extends Logic {
 		int taskIDIndex = findTaskByID(taskID);
 		
 		if(taskIDIndex == TAG_TASK_NOT_EXIST) {
-			Controller.handleError(TASKID_NOT_EXIST);
-			
 			//fail to edit a task
 			return null;
 		}
@@ -239,8 +232,8 @@ public class OPLogic extends Logic {
 	}
 	
 	/**
-	 * find(String tagTypeFIND, String paramFIND)	is to find all the tasks in taskList:ArrayList<Task> with given
-	 * 												information(type and parameter)
+	 * find(String tagTypeFIND, String paramFIND)	is to find all the tasks in taskList:ArrayList<Task> with same
+	 * 												information(type and parameter) given
 	 * @param tagTypeFIND
 	 * @param paramFIND
 	 * @return return a list of tasks
@@ -251,11 +244,7 @@ public class OPLogic extends Logic {
 		case "KEYWORD":
 			return findByKeyword(paramFIND);
 		case "DATE":
-			return findByDeadLine(TAG_TYPE_DATE, paramFIND);
-		case "MONTH":
-			return findByDeadLine(TAG_TYPE_MONTH, paramFIND);
-		case "YEAR":
-			return findByDeadLine(TAG_TYPE_YEAR, paramFIND);
+			return findByDeadLine(paramFIND);
 		case "WORKLOAD":
 			return findByWorkload(paramFIND);
 		}
@@ -263,7 +252,14 @@ public class OPLogic extends Logic {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * findByWorkload(String paramFIND)	is to find all the tasks in taskList:ArrayList<Task> with same workload given
+	 * 									attribute
+	 * 
+	 * @param paramFIND
+	 * @return return list of Tasks (can be empty if nothing is found)
+	 */
 	private static ArrayList<Task> findByWorkload(String paramFIND) {
 		ArrayList<Task> searchResultList = new ArrayList<Task>();
 		
@@ -278,15 +274,21 @@ public class OPLogic extends Logic {
 		return searchResultList;
 	}
 
-	private static ArrayList<Task> findByDeadLine(int tagType, String paramFIND) {
+	/**
+	 * 
+	 * findByDeadLine(String paramFIND)	is to find all the tasks in taskList:ArrayList<Task> with same date given
+	 * 
+	 * @param paramFIND
+	 * @return return list of Tasks (can be empty if nothing is found)
+	 */
+	private static ArrayList<Task> findByDeadLine(String paramFIND) {
 
 		ArrayList<Task> searchResultList = new ArrayList<Task>();
 		
 		for(int i = 0; i < Taskaler.taskList.size(); i++){
 			if(Taskaler.taskList.get(i).getTaskDeadLine() != null) {
-				Calendar taskDeadLine = Taskaler.taskList.get(i).getTaskDeadLine();
-				int[] deadline = {taskDeadLine.get(Calendar.DAY_OF_MONTH), taskDeadLine.get(Calendar.MONTH),taskDeadLine.get(Calendar.YEAR)};
-				if(deadline[tagType] == Integer.parseInt(paramFIND)) {
+				String deadLine = getDeadline(i);
+				if(deadLine.equals(paramFIND)) {
 					searchResultList.add(Taskaler.taskList.get(i));
 				}
 			}
@@ -295,6 +297,29 @@ public class OPLogic extends Logic {
 		return searchResultList;
 	}
 
+	/**
+	 * 
+	 * getDeadline(int indexOfTask) will convert a deadline with data type of calendar into string
+	 * 
+	 * @param indexOfTask
+	 * @return return a deadline with string data type
+	 */
+	private static String getDeadline(int indexOfTask) {
+	
+		Calendar taskDeadLine = Taskaler.taskList.get(indexOfTask).getTaskDeadLine();
+		SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_DAY_MONTH_YEAR);
+		String deadLine = formatter.format(taskDeadLine.getTime());
+		System.out.println(deadLine);
+		return deadLine;
+	}
+
+	/**
+	 * 
+	 * findByKeyword(String paramFIND)	is to find all the tasks in taskList:ArrayList<Task> with same keyword given
+	 * 
+	 * @param paramFIND
+	 * @return return list of Tasks (can be empty if nothing is found)
+	 */
 	private static ArrayList<Task> findByKeyword(String paramFIND) {
 		ArrayList<Task> searchResultList = new ArrayList<Task>();
 		
@@ -308,10 +333,34 @@ public class OPLogic extends Logic {
 		return searchResultList;
 	}
 
+	/**
+	 * 
+	 * findByMonthAndYear(String MonthFIND, String YearFind)	is to find all the tasks in taskList:ArrayList<Task>
+	 * 															with same month and year given
+	 * @param MonthFIND
+	 * @param YearFind
+	 * @return return list of Tasks (can be empty if nothing is found)
+	 */
+	public static ArrayList<Task> findByMonthAndYear(String MonthFIND, String YearFind) {
+
+		ArrayList<Task> searchResultList = new ArrayList<Task>();
+		
+		for(int i = 0; i < Taskaler.taskList.size(); i++){
+			if(Taskaler.taskList.get(i).getTaskDeadLine() != null) {
+				String deadLine = getDeadline(i);
+				String[] date = deadLine.split("/");
+				if(date[1].equals(MonthFIND) && date[2].equals(YearFind)) {
+					searchResultList.add(Taskaler.taskList.get(i));
+				}
+			}
+		}
+		
+		return searchResultList;
+	}
 	
 	/**
 	 * 
-	 * findById(string taskID) function is to find a specify task with give taksID
+	 * findById(string taskID) function is to find a specify task with same taksID given
 	 * 
 	 * @param taskID
 	 * @return	return a task with Task data type
@@ -329,7 +378,7 @@ public class OPLogic extends Logic {
 	
 	/**
 	 * 
-	 * findTaskByID(String taskID) function is to find a specify task with give taksID
+	 * findTaskByID(String taskID) function is to find a specify task with same taksID given
 	 * 
 	 * @param taskID
 	 * @return return task ID
@@ -342,7 +391,7 @@ public class OPLogic extends Logic {
 
 	/**
 	 * 
-	 * findTaskIndex(String taskID) is to find the task index in taskList:ArrayList<Task> with given taskID
+	 * findTaskIndex(String taskID) is to find the task index in taskList:ArrayList<Task> with same taskID given
 	 * @param taskID
 	 * @return	return index of the task in taskList
 	 */
