@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -11,6 +12,7 @@ public class Controller {
 	private static final int FIND_PARAMETERS = 2;
 	private static final int TAG_LENGTH = 4;
 	private static final String EMPTY_STRING = "";
+	private static final String file ="task_list";
 
 	
 /*********************************** Public Functions ***********************************/
@@ -18,6 +20,7 @@ public class Controller {
 	public static void executeCMD(String commandString) {
 		String command = getFirstWord(commandString);
 		CMDtype commandType = determineCMDtype(command);
+		boolean res = false;
 		switch(commandType){
 		case ADD:
 			String[] param_ADD = getParam_ADD(commandString);
@@ -42,57 +45,39 @@ public class Controller {
 			int day = date[0];
 			int month = date[1];
 			int year = date[2];
-<<<<<<< HEAD
-			//Logic.editDate(taskID, day, month, year);
-=======
 			OPLogic.editDate(taskID_DATE, day, month, year);
->>>>>>> origin/master
 			break;
 		case WORKLOAD:
 			String taskID_WORKLOAD = getTaskID(commandString);
 			int workloadAttribute = getParam_WL(commandString);
-<<<<<<< HEAD
-			//Logic.editWorkload(taskID, workloadAttribute);
-=======
+
 			OPLogic.editWorkload(taskID_WORKLOAD, workloadAttribute);
->>>>>>> origin/master
 			break;
 		case COMPLETION_TAG:
 			String taskID = getTaskID(commandString);
 			OPLogic.switchTag(taskID);
 		case VIEW:
-<<<<<<< HEAD
-			String paramVIEW = getParamVIEW(commandString);
-			//Logic.view(paramVIEW);
-			break;
-		case FIND:
-			String tagTypeFIND = getTagFIND_ARCHIVE(commandString);
-			//String paramFIND = removeTag(getParam(commandString));
-			//Logic.find(tagTypeFIND, paramFIND);
-			break;
-		case ARCHIVE:
-			String tagTypeARCHIVE = getTagFIND_ARCHIVE(commandString);
-			//Logic.archive(tagTypeARCHIVE, paramARCHIVE);
-			break;
-		case UNDO:
-			//Logic.undo();
-=======
 			String paramVIEW = getParam_VIEW(commandString);
-			OPLogic.view(paramVIEW);
+			Taskaler.ui.display(paramVIEW);
 			break;
 		case FIND:
 			String[] paramFIND = getParam_FIND(commandString);
 			String tagTypeFIND = paramFIND[0];
 			String toSearch = paramFIND[1];
-			OPLogic.find(tagTypeFIND, toSearch);
+			ArrayList<Task> searchResult = OPLogic.find(tagTypeFIND, toSearch);
+			try {
+                Taskaler.ui.displayList("Search Result for " + toSearch, searchResult);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 			break;
 		case ARCHIVE:
-			String tagTypeARCHIVE = getTagFIND_ARCHIVE(commandString);
-			OPLogic.archive(tagTypeARCHIVE, paramARCHIVE);
+			//String tagTypeARCHIVE = getTagFIND_ARCHIVE(commandString);
+			//OPLogic.archive(tagTypeARCHIVE, paramARCHIVE);
 			break;
 		case UNDO:
-			OPLogic.undo();
->>>>>>> origin/master
+			//OPLogic.undo();
 			break;
 		case INVALID:
 			handleError("invalid command");
@@ -226,38 +211,6 @@ public class Controller {
 		return paramWL;
 	}
 	
-<<<<<<< HEAD
-	private static String getParamVIEW(String commandString){
-//		String tag = determineTagType(getParam(commandString));
-//		switch(tag){
-//		case "LIST":
-//			return tag;
-//		case "CALENDAR":
-//			return tag;
-//		default:
-//			return "Invalid command";
-//		}
-	    return "";
-	}
-	
-	private static String getTagFIND_ARCHIVE(String commandString){
-//		String tag = determineTagType(getParam(commandString));
-//		switch(tag){
-//		case "KEYWORD":
-//			return tag;
-//		case "DATE":
-//			return tag;
-//		case "MONTH":
-//			return tag;
-//		case "YEAR":
-//			return tag;
-//		case "WORKLOAD":
-//			return tag;
-//		default:
-//			return "Invalid command";
-//		}
-	    return "";
-=======
 	private static String getParam_VIEW(String commandString){
 		String paramString = removeFirstWord(commandString);
 		
@@ -293,7 +246,6 @@ public class Controller {
 			paramArray[toSearch] = paramString;
 		}
 		return paramArray;
->>>>>>> origin/master
 	}
 	
 /********************************** Helper Functions *************************************/	

@@ -23,9 +23,6 @@ public class Task {
 		    taskStatus = "";
 		}
 		
-		if(taskDeadLine == null){
-            taskDeadLine = "";
-        }
 		
 		if(taskWorkLoad == null){
             taskWorkLoad = "";

@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -25,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBuilder;
 
@@ -92,7 +90,6 @@ public class UI extends Application {
         if (e.getCode() == KeyCode.ENTER) {
             String cmd = txtCmdInput.getText();
             txtCmdInput.clear();
-            anchorPaneDisplay.requestFocus();
             Controller.executeCMD(cmd);
         }
     }
@@ -101,17 +98,10 @@ public class UI extends Application {
      * Method to render the calendar view
      * 
      */
-    public void displayCalendar() {
+    public void displayCalendar() throws Exception {
         anchorPaneDisplay.getChildren().clear();
-        try {
-            CalendarPane pane = new CalendarPane();
-            anchorPaneDisplay.getChildren().add(pane);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch
-            // block
-            e.printStackTrace();
-        }
+        CalendarPane pane = new CalendarPane();
+        anchorPaneDisplay.getChildren().add(pane);
     }
 
     /**
@@ -120,17 +110,11 @@ public class UI extends Application {
      * @param list
      *            The list to be rendered
      */
-    public void displayList(ArrayList<Task> list) throws Exception {
+    public void displayList(String title, ArrayList<Task> list)
+            throws Exception {
         anchorPaneDisplay.getChildren().clear();
-        try {
-            ListPane pane = new ListPane("test", list);
-            anchorPaneDisplay.getChildren().add(pane);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch
-            // block
-            e.printStackTrace();
-        }
+        ListPane pane = new ListPane(title, list);
+        anchorPaneDisplay.getChildren().add(pane);
     }
 
     /**
@@ -138,11 +122,19 @@ public class UI extends Application {
      * uses default configurations to determine if view should be in calendar or
      * list
      * 
-     * @throws Exception
-     *             Thrown if error encountered while reading FXML
      */
-    public void display() throws Exception {
-        throw new Exception("Not yet implemented");
+    public void display(String args) {
+
+        try {
+            if (args.equals("LIST") || args.isEmpty()) {
+                displayList("All current tasks", Taskaler.taskList);
+            }else{
+                displayCalendar();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -151,14 +143,11 @@ public class UI extends Application {
      * @param t
      *            The task to be rendered
      */
-    public void displayTask(Task t) {
+    public void displayTask(Task t) throws Exception {
         anchorPaneDisplay.getChildren().clear();
-        try {
-            TaskPane pane = new TaskPane(t);
-            anchorPaneDisplay.getChildren().add(pane);
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
+        TaskPane pane = new TaskPane(t);
+        anchorPaneDisplay.getChildren().add(pane);
+
     }
 }
 
@@ -392,7 +381,9 @@ class CellDate extends AnchorPane {
     private enum CIRCLE_COLOR {
         GREY, GREEN, ORANGE, RED
     }
+
     private static final String EMPTY_STRING = "";
+    private static final String PLUS_STRING = "+";
     private static final int MAX_NUMBER_OF_TASKS_FOR_DISPLAY = 9;
     private static final int MIN_NUMBER_OF_TASK_FOR_DISPLAY = 1;
 
@@ -407,22 +398,19 @@ class CellDate extends AnchorPane {
     private Pane paneBody;
 
     @FXML
-    private Label lblPlus;
-
-    @FXML
     private Label lblNumber;
 
     @FXML
-    private Circle circleGrey;
+    private Rectangle rectangleGrey;
 
     @FXML
-    private Circle circleGreen;
+    private Rectangle rectangleGreen;
 
     @FXML
-    private Circle circleOrange;
+    private Rectangle rectangleOrange;
 
     @FXML
-    private Circle circleRed;
+    private Rectangle rectangleRed;
 
     /**
      * Default overloaded constructor
@@ -464,10 +452,8 @@ class CellDate extends AnchorPane {
             return;
         }
         if (totalNumberOfTasks > MAX_NUMBER_OF_TASKS_FOR_DISPLAY) {
-            lblPlus.setVisible(true);
-            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + EMPTY_STRING);
+            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + PLUS_STRING);
         } else {
-            lblPlus.setVisible(false);
             lblNumber.setText(totalNumberOfTasks + EMPTY_STRING);
         }
     }
@@ -477,10 +463,10 @@ class CellDate extends AnchorPane {
      * 
      */
     private void resetCircleVisibility() {
-        circleGrey.setVisible(false);
-        circleGreen.setVisible(false);
-        circleOrange.setVisible(false);
-        circleRed.setVisible(false);
+        rectangleGrey.setVisible(false);
+        rectangleGreen.setVisible(false);
+        rectangleOrange.setVisible(false);
+        rectangleRed.setVisible(false);
     }
 
     /**
@@ -515,13 +501,13 @@ class CellDate extends AnchorPane {
     private void setCircleVisible(CIRCLE_COLOR color, boolean isVisible) {
         switch (color) {
         case GREY:
-            circleGrey.setVisible(isVisible);
+            rectangleGrey.setVisible(isVisible);
         case GREEN:
-            circleGreen.setVisible(isVisible);
+            rectangleGreen.setVisible(isVisible);
         case ORANGE:
-            circleOrange.setVisible(isVisible);
+            rectangleOrange.setVisible(isVisible);
         case RED:
-            circleRed.setVisible(isVisible);
+            rectangleRed.setVisible(isVisible);
         }
     }
 }
@@ -592,7 +578,7 @@ class TaskPane extends BorderPane {
         lblTaskName.setText(t.getTaskName());
         lblTaskID.setText(t.getTaskID());
         lblStatus.setText(t.getTaskStatus());
-        lblDueBy.setText(t.getTaskDeadLine());
+        lblDueBy.setText(t.getTaskDeadLine().toString());
 
         switch (t.getTaskWorkLoad()) {
         default:
