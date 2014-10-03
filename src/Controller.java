@@ -74,7 +74,7 @@ public class Controller {
                     Taskaler.ui.displayTask(result);
                 }
                 else {
-                    Taskaler.ui.display(params[1]);
+                    Taskaler.ui.display(params[0]);
                 }
                 break;
             case FIND:
@@ -350,9 +350,9 @@ public class Controller {
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[VIEW_PARAMETERS];
         if (paramString.equals("-l")) {
-            paramArray[1] =  "LIST";
+            paramArray[0] =  "LIST";
         } else if (paramString.equals("-c")) {
-            paramArray[1] = "CALENDAR";
+            paramArray[0] = "CALENDAR";
         } else {
             paramArray[0] = "TASK";
             paramArray[1] = paramString;
