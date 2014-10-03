@@ -25,6 +25,9 @@ public class Taskaler extends
     // Global Task ID. Need to reload from storage
     // This line of code need to be changed
     public static int taskID = 0;
+    
+    // Special Constants
+    private static final String file = "task_list";
 
     /**
      * Main method to start process
@@ -48,6 +51,7 @@ public class Taskaler extends
     public void start(Stage primaryStage)
             throws Exception {
         taskList = new ArrayList<Task>();
+        Storage.readFromFile(file);
         controller = new Controller();
         ui = new UI();
         ui.start(primaryStage);

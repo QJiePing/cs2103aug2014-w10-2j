@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 /**
  * @author Brendan
  *
@@ -69,7 +71,7 @@ public class Controller {
                 Taskaler.ui.displayTask(result);
                 break;
             case VIEW:
-                if(params[0].equals("TASK")){
+                if(params[0] != null && params[0].equals("TASK")){
                     result = OPLogic.findByID(params[1]);
                     Taskaler.ui.displayTask(result);
                 }
@@ -119,7 +121,8 @@ public class Controller {
      * @param error
      */
     public static void handleError(Exception error) {
-
+        error.printStackTrace();
+        JOptionPane.showMessageDialog(null, error.getStackTrace(),error.toString(),JOptionPane.ERROR_MESSAGE);
     }
 
     /****************************** Command Type Functions ***********************************/

@@ -71,7 +71,7 @@ public class UI extends Application {
             stage.setScene(scene);
             stage.show();
 
-            displayCalendar();
+            displayCalendar(Taskaler.taskList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,9 +98,9 @@ public class UI extends Application {
      * Method to render the calendar view
      * 
      */
-    public void displayCalendar() throws Exception {
+    public void displayCalendar(ArrayList<Task> list) throws Exception {
         anchorPaneDisplay.getChildren().clear();
-        CalendarPane pane = new CalendarPane();
+        CalendarPane pane = new CalendarPane(list, Calendar.getInstance());
         anchorPaneDisplay.getChildren().add(pane);
     }
 
@@ -123,18 +123,12 @@ public class UI extends Application {
      * list
      * 
      */
-    public void display(String args) {
-
-        try {
-            if (args.equals("LIST") || args.isEmpty()) {
+    public void display(String args) throws Exception{
+            if (args.equals("LIST")) {
                 displayList("All current tasks", Taskaler.taskList);
-            }else{
-                displayCalendar();
+            } else {
+                displayCalendar(Taskaler.taskList);
             }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -166,6 +160,7 @@ class CalendarPane extends BorderPane {
     private static final String REG_MONTH_YEAR = "MMM yyyy";
     private static final int MAX_RENDERABLE_ROWS = 5;
     private static final int MAX_DAYS_IN_A_WEEK = 7;
+    private static final int MAX_NUMBER_OF_DAYS = 31;
 
     // FXML File Constant
     private static final String FXML_CALENDAR = "/fxml/calendarPane.fxml";
@@ -173,6 +168,7 @@ class CalendarPane extends BorderPane {
     // Class Variables
     private int currMonth = 0;
     private int currYear = 0;
+    private ArrayList<Task> currentList = null;
 
     // Binded FXML Elements
     @FXML
@@ -183,32 +179,37 @@ class CalendarPane extends BorderPane {
 
     /**
      * Default Constructor
-     * 
-     * @throws IOException
-     *             Thrown when error met while reading FXML
+     * @throws Exception 
      */
-    public CalendarPane() throws IOException {
+    public CalendarPane() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass()
                 .getResource(FXML_CALENDAR));
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
+
+        currentList = Taskaler.taskList;
 
         resetToToday();
     }
 
     /**
-     * Default Overloaded Constructor for inbuilt goto
+     * Overloaded Constructor for inbuilt goto and listing items
      * 
-     * @throws IOException
-     *             Thrown when error met while reading FXML
+     * @param list
+     *            list to display
+     * @param c
+     *            Date to go to
+     * @throws Exception 
      */
-    public CalendarPane(Calendar c) throws IOException {
+    public CalendarPane(ArrayList<Task> list, Calendar c) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass()
                 .getResource(FXML_CALENDAR));
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
+
+        currentList = Taskaler.taskList;
 
         goToDate(c);
     }
@@ -229,7 +230,7 @@ class CalendarPane extends BorderPane {
      * @param date
      *            The calendar object to set the month and year of the calendar
      */
-    private void populateCalendar(Calendar date) {
+    private void populateCalendar(Calendar date) throws Exception {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, date.get(Calendar.YEAR));
         cal.set(Calendar.MONTH, date.get(Calendar.MONTH));
@@ -241,29 +242,54 @@ class CalendarPane extends BorderPane {
         String currentMonthAndYear = formatter.format(cal.getTime());
         setTitle(currentMonthAndYear);
 
+        int[] numberOfTasksByDay = countTasks(cal.get(Calendar.MONTH));
+
         int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK)
                 - OFFSET_BY_ONE;
         int weekOfTheMonthIterator = OFFSET_BY_ONE;
 
         for (int i = OFFSET_BY_ONE; i <= cal
                 .getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
-            try {
-                CellDate day = new CellDate(i + "");
-                gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
-                dayOfTheWeekIterator++;
-                if (isThisDaySunday(dayOfTheWeekIterator)) {
-                    weekOfTheMonthIterator++;
-                    dayOfTheWeekIterator = ZERO_INDEX;
-                    if (hasOverflowedCalendarUI(weekOfTheMonthIterator)) {
-                        weekOfTheMonthIterator = OFFSET_BY_ONE;
-                    }
+
+            CellDate day = new CellDate(i + "");
+            if (numberOfTasksByDay[i] > 0) {
+                day.setNumberOfTasks(numberOfTasksByDay[i]);
+                day.setBodyVisible(true);
+            }else{
+                day.setBodyVisible(false);
+            }
+            gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
+            dayOfTheWeekIterator++;
+            if (isThisDaySunday(dayOfTheWeekIterator)) {
+                weekOfTheMonthIterator++;
+                dayOfTheWeekIterator = ZERO_INDEX;
+                if (hasOverflowedCalendarUI(weekOfTheMonthIterator)) {
+                    weekOfTheMonthIterator = OFFSET_BY_ONE;
                 }
-            } catch (IOException e) {
-                // TODO Auto-generated
-                // catch block
-                e.printStackTrace();
+            }
+
+        }
+    }
+
+    /**
+     * Method to count the number of tasks for each day of the month
+     * 
+     * @param month
+     *            The month to count
+     * @return returns an array of int with each index representing the the day
+     *         and the value representing the total tasks
+     */
+    private int[] countTasks(int month) {
+        int[] result = new int[MAX_NUMBER_OF_DAYS + OFFSET_BY_ONE];
+
+        for (int i = ZERO_INDEX; i < currentList.size(); i++) {
+            Task currentTask = currentList.get(i);
+            if (currentTask.getTaskDeadLine().get(Calendar.MONTH) == month) {
+                result[currentTask.getTaskDeadLine().get(Calendar.DATE)]++;
             }
         }
+
+        return result;
     }
 
     /**
@@ -291,9 +317,10 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to quickly reset the calendar to System current month and year
+     * @throws Exception 
      * 
      */
-    public void resetToToday() {
+    public void resetToToday() throws Exception {
         Calendar now = Calendar.getInstance();
         goToDate(now);
     }
@@ -303,8 +330,9 @@ class CalendarPane extends BorderPane {
      * 
      * @param now
      *            The calendar object that represent the desired month and year
+     * @throws Exception 
      */
-    public void goToDate(Calendar now) {
+    public void goToDate(Calendar now) throws Exception {
         clearGrid();
         currMonth = now.get(Calendar.MONTH);
         currYear = now.get(Calendar.YEAR);
@@ -313,9 +341,10 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar forward by one month
+     * @throws Exception 
      * 
      */
-    public void nextMonth() {
+    public void nextMonth() throws Exception {
         currMonth++;
         Calendar now = Calendar.getInstance();
         now.set(Calendar.MONTH, currMonth);
@@ -324,9 +353,10 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar backward by one month
+     * @throws Exception 
      * 
      */
-    public void prevMonth() {
+    public void prevMonth() throws Exception {
         currMonth--;
         Calendar now = Calendar.getInstance();
         now.set(Calendar.MONTH, currMonth);
@@ -335,9 +365,10 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar forward by one year
+     * @throws Exception 
      * 
      */
-    public void nextYear() {
+    public void nextYear() throws Exception {
         currYear++;
         Calendar now = Calendar.getInstance();
         now.set(Calendar.YEAR, currYear);
@@ -346,9 +377,10 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar backward by one year
+     * @throws Exception 
      * 
      */
-    public void prevYear() {
+    public void prevYear() throws Exception {
         currYear--;
         Calendar now = Calendar.getInstance();
         now.set(Calendar.YEAR, currYear);
@@ -618,7 +650,7 @@ class ListPane extends TitledPane {
 
     // FXML File Constant
     private static final String FXML_CELL_DATE = "/fxml/listPane.fxml";
-	private static final String REG_MONTH_YEAR = "dd/MM/yyyy";
+    private static final String REG_MONTH_YEAR = "dd/MM/yyyy";
 
     // Binded FXML Elements
     @FXML
@@ -658,7 +690,7 @@ class ListPane extends TitledPane {
         if (list == null)
             return;
         for (Task t : list) {
-        	SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
+            SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
             String deadline = formatter.format(t.getTaskDeadLine().getTime());
             String temp = String.format(REG_TASK_DISPLAY, deadline,
                     t.getTaskID(), t.getTaskName());
