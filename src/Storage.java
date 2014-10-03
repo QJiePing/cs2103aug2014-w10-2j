@@ -6,24 +6,25 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class Storage {
-	//global array list for loading all the task from storage file
-	public static ArrayList<Task> globalArrList = new ArrayList<Task>();
 
-	public static boolean readFromFile(String file){
+	public static ArrayList<Task> readFromFile(String file){
+		
+		ArrayList<Task> resultArrayList = new ArrayList<Task>();
+		
 		try{
 			FileReader reader= new FileReader(file);
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.setPrettyPrinting();
 			Gson gson = gsonBuilder.create();
-			globalArrList=gson.fromJson(reader, new TypeToken<ArrayList<Task>>(){}.getType());
+			resultArrayList=gson.fromJson(reader, new TypeToken<ArrayList<Task>>(){}.getType());
 		}catch(IOException e){
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+		return resultArrayList;
 	}
 
-	public static boolean writeToFile(String file){
+	public static boolean writeToFile(String file, ArrayList<Task> arrayList){
 
 		try{
 			FileWriter fw= new FileWriter(file);
@@ -32,9 +33,9 @@ public class Storage {
 			gsonBuilder.setPrettyPrinting();
 			Gson gson = gsonBuilder.create();
 
-			String output= gson.toJson(globalArrList);
+			String output= gson.toJson(arrayList);
 
-			if(globalArrList.isEmpty()){
+			if(arrayList.isEmpty()){
 				fw.write("");
 			}
 			else{
