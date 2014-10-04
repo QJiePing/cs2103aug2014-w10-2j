@@ -24,7 +24,6 @@ public class Taskaler extends
     
     // Global Task ID. Need to reload from storage
     // This line of code need to be changed
-    public static int taskID = 0;
     
     // Special Constants
     private static final String file = "task_list";

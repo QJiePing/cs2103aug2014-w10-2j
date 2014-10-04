@@ -22,7 +22,10 @@ public class OPLogic extends Logic {
 	public static int TAG_TYPE_MONTH = 1;
 	public static int TAG_TYPE_YEAR = 2;
 	public static int TAG_TASK_NOT_EXIST = -1;
+	
 	public static int OFF_SET_BY_ONE = 1;
+	
+	public static int DEFAULT_TASK_ID = 0;
 	
 	
 	/**
@@ -49,14 +52,35 @@ public class OPLogic extends Logic {
 			}
 			
 			//generate a new task ID
-			Taskaler.taskID++;
-			Task newTask = new Task(name_ADD, Integer.toString(Taskaler.taskID), TASK_INITIAL_STATUS,
+			int newTaskID = generateTaskID();
+			
+			Task newTask = new Task(name_ADD, Integer.toString(newTaskID), TASK_INITIAL_STATUS,
 									Calendar.getInstance(), TASK_PARAMETER_DEFAULT_VALUE, description_ADD);
 			Taskaler.taskList.add(newTask);
 			
 			return newTask;
 		}
 		
+	}
+
+	/**
+	 * 
+	 * generateTaskID() will generate a unique new task ID for taskList:ArrayList<Task>
+	 * 
+	 * @return return new taskID
+	 */
+	private static int generateTaskID() {
+		int taskID = DEFAULT_TASK_ID;
+		
+		if(Taskaler.taskList.isEmpty()) {
+			taskID = 1;
+		} else {
+			int numOfTask = Taskaler.taskList.size();
+			String lastTaskID = Taskaler.taskList.get(numOfTask-1).getTaskID();
+			taskID = Integer.parseInt(lastTaskID) + 1;
+		}
+		
+		return taskID;
 	}
 	
 	/**
