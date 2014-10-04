@@ -50,8 +50,11 @@ public class Taskaler extends
     @Override
     public void start(Stage primaryStage)
             throws Exception {
-        taskList = new ArrayList<Task>();
-        Storage.readFromFile(file);
+        
+        taskList = Storage.readFromFile(file);
+        if(taskList == null){
+            taskList = new ArrayList<Task>();
+        }
         controller = new Controller();
         ui = new UI();
         ui.start(primaryStage);

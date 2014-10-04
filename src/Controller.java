@@ -98,7 +98,7 @@ public class Controller {
             default:
                 handleError("unknown error");
             }
-            Storage.writeToFile(file);
+            Storage.writeToFile(file, Taskaler.taskList);
         } catch (Exception e) {
             handleError(e);
         }
