@@ -3,6 +3,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.swing.JOptionPane;
+
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -138,9 +140,13 @@ public class UI extends Application {
      *            The task to be rendered
      */
     public void displayTask(Task t) throws Exception {
-        anchorPaneDisplay.getChildren().clear();
-        TaskPane pane = new TaskPane(t);
-        anchorPaneDisplay.getChildren().add(pane);
+        if(t != null){
+            anchorPaneDisplay.getChildren().clear();
+            TaskPane pane = new TaskPane(t);
+            anchorPaneDisplay.getChildren().add(pane);   
+        }else{
+            JOptionPane.showMessageDialog(null, "Task does not exist","Nothing to display", JOptionPane.INFORMATION_MESSAGE, null);
+        }
 
     }
 }
@@ -645,7 +651,7 @@ class TaskPane extends BorderPane {
 class ListPane extends TitledPane {
 
     // Special Constants
-    private static final String REG_TASK_DISPLAY = "[%s]%s: %s";
+    private static final String REG_TASK_DISPLAY = "[%s]ID=%s: %s";
     private static final int MAX_TEXT_WIDTH = 350;
 
     // FXML File Constant

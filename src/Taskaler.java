@@ -24,7 +24,6 @@ public class Taskaler extends
     
     // Global Task ID. Need to reload from storage
     // This line of code need to be changed
-    public static int taskID = 0;
     
     // Special Constants
     private static final String file = "task_list";
@@ -50,8 +49,11 @@ public class Taskaler extends
     @Override
     public void start(Stage primaryStage)
             throws Exception {
-        taskList = new ArrayList<Task>();
-        Storage.readFromFile(file);
+        
+        taskList = Storage.readFromFile(file);
+        if(taskList == null){
+            taskList = new ArrayList<Task>();
+        }
         controller = new Controller();
         ui = new UI();
         ui.start(primaryStage);
