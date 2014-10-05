@@ -5,28 +5,28 @@ import java.util.Stack;
  */
 public class UndoFunction {
 	
-	private History history;
+	private OperationRecords opRecord;
 
 	public UndoFunction(){
-		history= new History();
+		opRecord= new OperationRecords();
 	}
 	
 	public void saveOperation(String operation){
-		history.addRecord(operation);
+		opRecord.addRecord(operation);
 	}
 }
 
-class History{
-	private Stack<String> historyRecord;
+class OperationRecords{
+	private Stack<String> record;
 
-	public History(){
-		historyRecord= new Stack<String>();
+	public OperationRecords(){
+		record= new Stack<String>();
 	}
 	
-	public void addRecord(String record){
-		historyRecord.push(record);
+	public void addRecord(String r){
+		record.push(r);
 	}
 	public void removedRecord(){
-		historyRecord.pop();
+		record.pop();
 	}
 }
