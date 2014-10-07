@@ -41,9 +41,9 @@ date T24
  - ERROR
 
 WORKLOAD:
-priority T24 1
+workload T24 1
  - edits a task with taskID, T24, with workload attribute, 1
-priority T24 asdf
+workload T24 asdf
  - ERROR
 
 COMPLETION TAG:
