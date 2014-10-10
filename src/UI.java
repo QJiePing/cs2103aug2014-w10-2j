@@ -2,9 +2,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import javax.swing.JOptionPane;
-
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,10 +21,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextBuilder;
+import javafx.util.Duration;
 
 /**
  * Main Class to create the required UI for the application This class also
@@ -50,6 +47,9 @@ public class UI extends Application {
     @FXML
     private TextField txtCmdInput;
 
+    @FXML
+    private Label lblToast;
+
     /**
      * Method to start rendering the UI elements of Taskaler
      * 
@@ -64,6 +64,8 @@ public class UI extends Application {
                     new Image(getClass().getResourceAsStream(ICON_PNG)));
             stage.setTitle(TITLE);
             stage.setResizable(false);
+            stage.setWidth(410.0);
+            stage.setHeight(525.0);
 
             FXMLLoader root = new FXMLLoader(getClass().getResource(FXML_ROOT));
             root.setController(this);
@@ -72,12 +74,26 @@ public class UI extends Application {
 
             stage.setScene(scene);
             stage.show();
-
             displayCalendar(Taskaler.taskList);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Method to show a toast notification on the interface
+     * 
+     * @param text
+     *            Text to be shown on the toast
+     */
+    public void showToast(String text) {
+        lblToast.setText(text);
+        lblToast.setVisible(true);
+        FadeTransition ft = new FadeTransition(Duration.millis(5000), lblToast);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+        ft.play();
     }
 
     /**
@@ -125,12 +141,13 @@ public class UI extends Application {
      * list
      * 
      */
-    public void display(String args) throws Exception{
-            if (args.equals("LIST")) {
-                displayList("All current tasks", Taskaler.taskList);
-            } else {
-                displayCalendar(Taskaler.taskList);
-            }
+    public void display(String args) throws Exception {
+        if (args.equals("LIST")) {
+            displayList("All current tasks", Taskaler.taskList);
+        } else {
+            displayCalendar(Taskaler.taskList);
+        }
+        txtCmdInput.requestFocus();
     }
 
     /**
@@ -140,12 +157,15 @@ public class UI extends Application {
      *            The task to be rendered
      */
     public void displayTask(Task t) throws Exception {
-        if(t != null){
+        if (t != null) {
             anchorPaneDisplay.getChildren().clear();
             TaskPane pane = new TaskPane(t);
-            anchorPaneDisplay.getChildren().add(pane);   
-        }else{
-            JOptionPane.showMessageDialog(null, "Task does not exist","Nothing to display", JOptionPane.INFORMATION_MESSAGE, null);
+            anchorPaneDisplay.getChildren().add(pane);
+        } else {
+            // JOptionPane.showMessageDialog(null,
+            // "Task does not exist","Nothing to display",
+            // JOptionPane.INFORMATION_MESSAGE, null);
+            showToast("Task does not exist");
         }
 
     }
@@ -185,7 +205,8 @@ class CalendarPane extends BorderPane {
 
     /**
      * Default Constructor
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
     public CalendarPane() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass()
@@ -206,7 +227,7 @@ class CalendarPane extends BorderPane {
      *            list to display
      * @param c
      *            Date to go to
-     * @throws Exception 
+     * @throws Exception
      */
     public CalendarPane(ArrayList<Task> list, Calendar c) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass()
@@ -261,7 +282,7 @@ class CalendarPane extends BorderPane {
             if (numberOfTasksByDay[i] > 0) {
                 day.setNumberOfTasks(numberOfTasksByDay[i]);
                 day.setBodyVisible(true);
-            }else{
+            } else {
                 day.setBodyVisible(false);
             }
             gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
@@ -323,7 +344,8 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to quickly reset the calendar to System current month and year
-     * @throws Exception 
+     * 
+     * @throws Exception
      * 
      */
     public void resetToToday() throws Exception {
@@ -336,7 +358,7 @@ class CalendarPane extends BorderPane {
      * 
      * @param now
      *            The calendar object that represent the desired month and year
-     * @throws Exception 
+     * @throws Exception
      */
     public void goToDate(Calendar now) throws Exception {
         clearGrid();
@@ -347,7 +369,8 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar forward by one month
-     * @throws Exception 
+     * 
+     * @throws Exception
      * 
      */
     public void nextMonth() throws Exception {
@@ -359,7 +382,8 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar backward by one month
-     * @throws Exception 
+     * 
+     * @throws Exception
      * 
      */
     public void prevMonth() throws Exception {
@@ -371,7 +395,8 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar forward by one year
-     * @throws Exception 
+     * 
+     * @throws Exception
      * 
      */
     public void nextYear() throws Exception {
@@ -383,7 +408,8 @@ class CalendarPane extends BorderPane {
 
     /**
      * Method to move the calendar backward by one year
-     * @throws Exception 
+     * 
+     * @throws Exception
      * 
      */
     public void prevYear() throws Exception {

@@ -10,7 +10,7 @@ import javafx.stage.Stage;
  */
 public class Taskaler extends
         Application {
-
+    
     // Global Instances
     public static Controller controller = null;
     public static Logic logic = null;
@@ -28,6 +28,8 @@ public class Taskaler extends
     // Special Constants
     private static final String file = "task_list";
 
+    // public native static String getTest();
+    
     /**
      * Main method to start process
      * 
@@ -35,6 +37,8 @@ public class Taskaler extends
      */
     public static void main(
             String[] args) {
+        
+        //System.loadLibrary("JNILibrary64");
         launch(args);
     }
 
@@ -49,7 +53,7 @@ public class Taskaler extends
     @Override
     public void start(Stage primaryStage)
             throws Exception {
-        
+        //System.out.println(getTest());
         taskList = Storage.readFromFile(file);
         if(taskList == null){
             taskList = new ArrayList<Task>();
@@ -57,7 +61,6 @@ public class Taskaler extends
         controller = new Controller();
         ui = new UI();
         ui.start(primaryStage);
-        
     }
 
 }
