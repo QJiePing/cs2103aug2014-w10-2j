@@ -305,7 +305,7 @@ public class OPLogic extends Logic {
 	 * @param paramFIND
 	 * @return return list of Tasks (can be empty if nothing is found)
 	 */
-	private static ArrayList<Task> findByDeadLine(String paramFIND) {
+	public static ArrayList<Task> findByDeadLine(String paramFIND) {
 
 		ArrayList<Task> searchResultList = new ArrayList<Task>();
 		
