@@ -58,6 +58,8 @@ public class OPLogic extends Logic {
 									Calendar.getInstance(), TASK_PARAMETER_DEFAULT_VALUE, description_ADD);
 			Taskaler.taskList.add(newTask);
 			
+			//operationSaveForUndo("delete", newTask);
+			
 			return newTask;
 		}
 		
@@ -101,6 +103,9 @@ public class OPLogic extends Logic {
 		}
 		Task taskToBeRemoved = Taskaler.taskList.remove(taskIDIndex);
 		
+		
+		//operationSaveForUndo("add", taskToBeRemoved);
+		
 		return taskToBeRemoved;
 	
 	}
@@ -125,6 +130,8 @@ public class OPLogic extends Logic {
 		if(isError(name_EDIT, description_EDIT, taskIDIndex)) {
 			return null;
 		}
+		
+		//operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
 		
 		//assume name will not change to null
 		if(name_EDIT != null) {
@@ -187,6 +194,8 @@ public class OPLogic extends Logic {
 			return null;
 		}
 		
+		//operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
+		
 		Taskaler.taskList.get(taskIDIndex).changeDeadLine(newDeadLine);
 		
 		return Taskaler.taskList.get(taskIDIndex);
@@ -229,6 +238,8 @@ public class OPLogic extends Logic {
 			return null;
 		}
 		
+		//operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
+		
 		//assume workloadAtt is within the range of 1-3
 		Taskaler.taskList.get(taskIDIndex).changeTaskWorkLoad(Integer.toString(workloadAtt));
 		
@@ -251,9 +262,19 @@ public class OPLogic extends Logic {
 			return null;
 		}
 		
+		
+		//operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
+		
 		Taskaler.taskList.get(taskIDIndex).changeTaskStatus("Done");
 		return Taskaler.taskList.get(taskIDIndex);
 	}
+	
+	/*
+	private static void operationSaveForUndo(String type, Task newTask) {
+		UndoFunction.saveOperation(type, newTask);
+	}
+	*/
+	
 	
 	/**
 	 * find(String tagTypeFIND, String paramFIND)	is to find all the tasks in taskList:ArrayList<Task> with same
