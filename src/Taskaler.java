@@ -26,7 +26,7 @@ public class Taskaler extends
     // This line of code need to be changed
     
     // Special Constants
-    private static final String file = "task_list";
+    public static final String file = "task_list";
 
     // public native static String getTest();
     
