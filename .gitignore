@@ -16,7 +16,6 @@ local.properties
 .settings/
 .loadpath
 
-*.class
 
 # External tool builders
 .externalToolBuilders/
@@ -219,3 +218,6 @@ pip-log.txt
 bin/Storage.class
 bin/OPLogic.class
 bin/Storage.class
+task_list
+task_list
+task_list

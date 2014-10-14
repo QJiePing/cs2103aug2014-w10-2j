@@ -386,7 +386,7 @@ public class OPLogic extends Logic {
 	 * @param YearFind
 	 * @return return list of Tasks (can be empty if nothing is found)
 	 */
-	public static ArrayList<Task> findByMonthAndYear(String MonthFIND, String YearFind) {
+	public static ArrayList<Task> findByMonthAndYear(String monthFind, String yearFind) {
 
 		ArrayList<Task> searchResultList = new ArrayList<Task>();
 		
@@ -394,7 +394,7 @@ public class OPLogic extends Logic {
 			if(Taskaler.taskList.get(i).getTaskDeadLine() != null) {
 				String deadLine = getDeadline(i);
 				String[] date = deadLine.split("/");
-				if(date[1].equals(MonthFIND) && date[2].equals(YearFind)) {
+				if(date[1].equals(monthFind) && date[2].equals(yearFind)) {
 					searchResultList.add(Taskaler.taskList.get(i));
 				}
 			}
