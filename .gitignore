@@ -215,9 +215,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
-bin/Storage.class
-bin/OPLogic.class
-bin/Storage.class
 task_list
-task_list
-task_list
+*.class
