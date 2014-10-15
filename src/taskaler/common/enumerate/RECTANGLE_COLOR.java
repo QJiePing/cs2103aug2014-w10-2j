@@ -12,3 +12,4 @@ package taskaler.common.enumerate;
 public enum RECTANGLE_COLOR {
     GREY, GREEN, ORANGE, RED
 }
+
