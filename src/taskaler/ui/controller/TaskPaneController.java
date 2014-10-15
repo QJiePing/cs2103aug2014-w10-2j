@@ -3,11 +3,10 @@
  */
 package taskaler.ui.controller;
 
-import taskaler.common.enumerate.RECTANGLE_COLOR;
 import taskaler.ui.model.TaskPaneModel;
+import taskaler.common.data.FXML_CONSTANTS;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,9 +24,6 @@ import javafx.scene.layout.BorderPane;
 public class TaskPaneController extends BorderPane implements IController {
     // Current model associated with this controller
     private TaskPaneModel currentModel = null;
-    
-    // FXML File Constant
-    private static final String FXML_TASK_PANE = "/fxml/taskPane.fxml";
 
     // Binded FXML Elements
     @FXML
@@ -60,40 +56,38 @@ public class TaskPaneController extends BorderPane implements IController {
     /**
      * Default constructor
      * 
-     * @param t
-     *            The task to be associated with this view
+     * @param model
+     *            Model to be associated with this view
      * @throws IOException
      *             Thrown if error encountered while reading FXML
      */
     public TaskPaneController(TaskPaneModel model) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                FXML_TASK_PANE));
-        loader.setRoot(this);
-        loader.setController(this);
-        loader.load();
+        
 
         currentModel = model;
         
-        initialize();
-        
+        initialize(FXML_CONSTANTS.FXML_TASK_PANE);
+        update();
     }
     
 
     @Override
-    public void initialize() {
-        setTitle(currentModel.taskName);
-        setContent(currentModel.taskDescription);
-        populateDetails(currentModel);
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
     }
 
-    @Override
     public void setTitle(String title) {
         lblTaskName.setText(title);
     }
 
     @Override
-    public void setContent(String content) {
-        txtTaskDescription.setText(content);
+    public void update() {
+        setTitle(currentModel.taskName);
+        populateDetails(currentModel);
         
     }
 
@@ -107,7 +101,8 @@ public class TaskPaneController extends BorderPane implements IController {
         lblTaskID.setText(model.taskID);
         lblStatus.setText(model.taskStatus);
         lblDueBy.setText(model.taskDueDate);
-
+        txtTaskDescription.setText(model.taskDescription);
+        
         switch (model.taskWorkload) {
         case GREEN:
             lblLow.setVisible(true);

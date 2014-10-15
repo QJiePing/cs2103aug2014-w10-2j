@@ -4,6 +4,8 @@
 package taskaler.ui.controller;
 
 import taskaler.ui.model.CellDateModel;
+import taskaler.common.data.FXML_CONSTANTS;
+import taskaler.common.enumerate.RECTANGLE_COLOR;
 
 import java.io.IOException;
 
@@ -21,19 +23,14 @@ import javafx.scene.shape.Rectangle;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-public class CellDateController extends AnchorPane implements IController{
-    
+public class CellDateController extends AnchorPane implements IController {
+
     // Current model associated with this controller
     private CellDateModel currentModel = null;
-    
+
     // Special Constants
-    private static final String EMPTY_STRING = "";
-    private static final String PLUS_STRING = "+";
     private static final int MAX_NUMBER_OF_TASKS_FOR_DISPLAY = 9;
     private static final int MIN_NUMBER_OF_TASK_FOR_DISPLAY = 1;
-
-    // FXML File Constant
-    private static final String FXML_CELL_DATE = "/taskaler/ui/view/cellDate.fxml";
 
     // Binded FXML Elements
     @FXML
@@ -66,35 +63,37 @@ public class CellDateController extends AnchorPane implements IController{
      *             Thrown when error met while reading FXML
      */
     public CellDateController(CellDateModel model) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                FXML_CELL_DATE));
+
+        currentModel = model;
+
+        initialize(FXML_CONSTANTS.FXML_CELL_DATE);
+        update();
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
         loader.setRoot(this);
         loader.setController(this);
         loader.load();
-
-        currentModel = model;
-        
-        initialize();
-    }
-    
-    @Override
-    public void initialize() {
-        setTitle(currentModel.currentDate + EMPTY_STRING);
-        setContent(currentModel.currentNumberOfEvents + EMPTY_STRING);
     }
 
-    @Override
     public void setTitle(String title) {
         lblDate.setText(title);
-        
     }
 
     @Override
-    public void setContent(String content) {
-        int totalNumberOfTasks = Integer.parseInt(content);
-        setNumberOfTasks(totalNumberOfTasks);
+    public void update() {
+        setTitle(currentModel.currentDate + FXML_CONSTANTS.EMPTY_STRING);
+        int totalNumberOfTasks = currentModel.currentNumberOfEvents;
+        if(totalNumberOfTasks > 0){
+            setNumberOfTasks(totalNumberOfTasks);
+            setBodyVisible(true);
+        }else{
+            setBodyVisible(false);
+        }
     }
-    
+
     /**
      * Method to make the body of the cell visible
      * 
@@ -117,9 +116,9 @@ public class CellDateController extends AnchorPane implements IController{
             return;
         }
         if (totalNumberOfTasks > MAX_NUMBER_OF_TASKS_FOR_DISPLAY) {
-            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + PLUS_STRING);
+            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + FXML_CONSTANTS.PLUS_STRING);
         } else {
-            lblNumber.setText(totalNumberOfTasks + EMPTY_STRING);
+            lblNumber.setText(totalNumberOfTasks + FXML_CONSTANTS.EMPTY_STRING);
         }
     }
 
@@ -149,10 +148,10 @@ public class CellDateController extends AnchorPane implements IController{
     private void setCircleVisible(boolean grey, boolean green, boolean orange,
             boolean red) {
         resetCircleVisibility();
-        setCircleVisible(CellDateModel.RECTANGLE_COLOR.GREY, grey);
-        setCircleVisible(CellDateModel.RECTANGLE_COLOR.GREEN, green);
-        setCircleVisible(CellDateModel.RECTANGLE_COLOR.ORANGE, orange);
-        setCircleVisible(CellDateModel.RECTANGLE_COLOR.RED, red);
+        setCircleVisible(RECTANGLE_COLOR.GREY, grey);
+        setCircleVisible(RECTANGLE_COLOR.GREEN, green);
+        setCircleVisible(RECTANGLE_COLOR.ORANGE, orange);
+        setCircleVisible(RECTANGLE_COLOR.RED, red);
     }
 
     /**
@@ -163,7 +162,7 @@ public class CellDateController extends AnchorPane implements IController{
      * @param isVisible
      *            The boolean to determine if circle is visible
      */
-    private void setCircleVisible(CellDateModel.RECTANGLE_COLOR color, boolean isVisible) {
+    private void setCircleVisible(RECTANGLE_COLOR color, boolean isVisible) {
         switch (color) {
         case GREY:
             rectangleGrey.setVisible(isVisible);

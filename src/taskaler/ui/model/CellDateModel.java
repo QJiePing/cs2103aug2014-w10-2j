@@ -13,7 +13,7 @@ import taskaler.common.enumerate.RECTANGLE_COLOR;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-public class CellDateModel {
+public class CellDateModel extends AbstractModel{
     
     public int currentDate;
     

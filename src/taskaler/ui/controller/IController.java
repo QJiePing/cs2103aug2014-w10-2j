@@ -3,33 +3,30 @@
  */
 package taskaler.ui.controller;
 
+import java.io.IOException;
+
 /**
- * Interface to be implmented by all controllers
+ * Interface to be implemented by all controllers
  * 
  * @author Cheah Kit Weng, A0059806W
  *
  */
-public interface IController{
-    
-    /**
-     * Method to initalize the controller
-     * 
-     */
-    public abstract void initialize();
+public interface IController {
 
     /**
-     * Method to set the title of the view
+     * Method to initialize the view
      * 
-     * @param title
-     *            String to set the title to
+     * @throws IOException
+     *             Thrown if an error is encountered while loading FXML file
+     * 
      */
-    public abstract void setTitle(String title);
+    public abstract void initialize(String FXML) throws IOException;
 
     /**
-     * Method to set the body of the content
+     * Method to update the view
      * 
-     * @param content
-     *            Content to set the body to
+     * @throws IOException
+     *             Thrown if an IO error is encountered while updating a view
      */
-    public abstract void setContent(String content);
+    public abstract void update() throws IOException;
 }
