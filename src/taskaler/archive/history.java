@@ -25,7 +25,7 @@ public class history {
 			fileName = fileNameGenerator();
 		} else {
 			String[] fileNameDate = date.split("/");
-			fileName = String.format("History_%s_%s_%s", fileNameDate[0], fileNameDate[1], fileNameDate[2]);
+			fileName = String.format("History_%s_%s_%s.log", fileNameDate[0], fileNameDate[1], fileNameDate[2]);
 		}
 	
 		String currentHistory = Storage.readFromHistoryLogger(fileName);
