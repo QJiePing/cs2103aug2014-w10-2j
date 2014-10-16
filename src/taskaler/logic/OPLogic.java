@@ -1,6 +1,10 @@
+package taskaler.logic;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import taskaler.common.data.Task;
 
 
 /**
@@ -8,7 +12,7 @@ import java.util.Calendar;
  *
  */
 
-public class OPLogic extends Logic {
+public class OPLogic {
 
 	public static String ADD_NO_CONTENT = "No content is added";
 	public static String EDIT_NO_CONTENT = "NO content, cannot be edited";

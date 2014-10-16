@@ -96,6 +96,16 @@ Storage
 +readFromFile(): ArrayList<Task>      //read the storage file and return an array list of task object
 
 ====
+ArchiveFunction
+====
++exceptionLogger(Exception error): void		//logger for exception, log file name format is Exception_dd_MM_yyyy.log
++historyLogger(String message): void		//logger for successful operation, log file name format is History_dd_MM_yyyy.log
++archiveHistory(String date): String		//read the log file and return an string with all the operation on the date, default date is current date 
+
+
+====
 Task
 ====
+
+
 
