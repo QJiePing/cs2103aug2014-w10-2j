@@ -28,5 +28,20 @@
     },
     "_taskWorkLoad": "",
     "_taskDescription": ""
+  },
+  {
+    "_taskName": "CS2103T homework",
+    "_taskID": "3",
+    "_taskStatus": "Not Done",
+    "_taskDeadLine": {
+      "year": 2014,
+      "month": 9,
+      "dayOfMonth": 7,
+      "hourOfDay": 21,
+      "minute": 57,
+      "second": 5
+    },
+    "_taskWorkLoad": "3",
+    "_taskDescription": "testing"
   }
 ]
