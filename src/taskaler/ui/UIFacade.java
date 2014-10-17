@@ -37,7 +37,7 @@ public class UIFacade extends Application {
     private static String userDefaultView = DEFAULT_VIEW_CALENDAR;
 
     // File Constants
-    private static final String ICON_PNG = "/images/icon.png";
+    private static final String ICON_PNG = "/res/icon.png";
 
     // Class Variables
     private RootController rootController = null;
