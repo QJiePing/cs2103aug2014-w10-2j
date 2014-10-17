@@ -26,15 +26,15 @@ public class Controller {
             case ADD:
                 String name_ADD = params[0];
                 String description_ADD = params[1];
-                result = OPLogic.addTask(name_ADD, description_ADD);
-                Taskaler.ui.displayTask(result);
+                result =  OPLogic.addTask(name_ADD, description_ADD);
+                Taskaler.ui.display(Task.convertOld2New(result));
                 break;
             case DELETE:
                 String taskID_DELETE = params[0];
                 assert(taskID_DELETE != null);
                 result = OPLogic.deleteTask(taskID_DELETE);
                 String name_DELETED = result.getTaskName();
-                Taskaler.ui.displayList("The task \"" + name_DELETED + "\" has been deleted.", Taskaler.taskList);
+                Taskaler.ui.display("The task \"" + name_DELETED + "\" has been deleted.", Task.convertOldList2NewList(Taskaler.taskList));
                 break;
             case EDIT:
                 String taskID_EDIT = params[0];
@@ -42,7 +42,7 @@ public class Controller {
                 String description_EDIT = params[2];
                 assert(taskID_EDIT != null);
                 result = OPLogic.editTask(taskID_EDIT, name_EDIT, description_EDIT);
-                Taskaler.ui.displayTask(result);
+                Taskaler.ui.display(Task.convertOld2New(result));
                 break;
             case DATE:
                 String taskID_DATE = params[0];
@@ -51,35 +51,35 @@ public class Controller {
                 String year = params[3];
                 assert(taskID_DATE != null);
                 result = OPLogic.editDate(taskID_DATE, day, month, year);
-                Taskaler.ui.displayTask(result);
+                Taskaler.ui.display(Task.convertOld2New(result));
                 break;
             case WORKLOAD:
                 String taskID_WORKLOAD = params[0];
                 String workloadAttribute = params[1];
                 assert(taskID_WORKLOAD != null);
                 result = OPLogic.editWorkload(taskID_WORKLOAD, workloadAttribute);
-                Taskaler.ui.displayTask(result);
+                Taskaler.ui.display(Task.convertOld2New(result));
                 break;
             case COMPLETION_TAG:
                 String taskID_CT = params[0];
                 assert(taskID_CT != null);
                 result = OPLogic.switchTag(taskID_CT);
-                Taskaler.ui.displayTask(result);
+                Taskaler.ui.display(Task.convertOld2New(result));
                 break;
             case VIEW:
                 if(params[0] != null && params[0].equals("TASK")){
                     result = OPLogic.findByID(params[1]);
-                    Taskaler.ui.displayTask(result);
+                    Taskaler.ui.display(Task.convertOld2New(result));
                 }
                 else {
-                    Taskaler.ui.display(params[0]);
+                    Taskaler.ui.display(params[0],  Task.convertOldList2NewList(Taskaler.taskList));
                 }
                 break;
             case FIND:
                 String tagTypeFIND = params[0];
                 String toSearch = params[1];
                 ArrayList<Task> searchResult = OPLogic.find(tagTypeFIND, toSearch);
-                Taskaler.ui.displayList("Search Result for " + toSearch, searchResult);
+                Taskaler.ui.display("Search Result for " + toSearch,  Task.convertOldList2NewList(searchResult));
                 break;
             case ARCHIVE:
                 String date = params[0];

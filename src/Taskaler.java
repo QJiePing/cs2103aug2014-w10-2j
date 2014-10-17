@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+import taskaler.ui.UIFacade;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -16,7 +17,7 @@ public class Taskaler extends
     public static Logic logic = null;
     public static OPLogic opLogic = null;
     public static Storage storage = null;
-    public static UI ui = null;
+    public static UIFacade ui = null;
     public static ViewLogic viewLogic = null;
 
     // Global Task ArrayList
@@ -59,7 +60,7 @@ public class Taskaler extends
             taskList = new ArrayList<Task>();
         }
         controller = new Controller();
-        ui = new UI();
+        ui = new UIFacade();
         ui.start(primaryStage);
     }
 
