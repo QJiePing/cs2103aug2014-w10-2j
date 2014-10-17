@@ -79,7 +79,9 @@ class MyFormatter extends Formatter {
     // this formatter code is modified from http://kodejava.org/how-do-i-create-a-custom-logger-formatter/
     // Create a DateFormat to format the logger timestamp.
     //
-    private static final DateFormat dateFormat = new SimpleDateFormat("[dd/MM/yyyy] [hh:mm:ss]");
+
+	public static String FORMAT_YEAR_TO_SECOND = "[dd/MM/yyyy] [hh:mm:ss]";
+    private static final DateFormat dateFormat = new SimpleDateFormat(FORMAT_YEAR_TO_SECOND);
     
     public String format(LogRecord record) {
     	StringBuilder builder = new StringBuilder(1000);

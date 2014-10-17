@@ -7,43 +7,50 @@ import java.util.Calendar;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
+import taskaler.common.util.parser.calendarToString;
 import taskaler.storage.Storage;
 
 public class history {
-	public static String FORMAT_DAY_MONTH_YEAR = "dd_MM_yyyy";
-	public static String HISTORY_FILE_NAME = "History_%s.log";
+	public static String HISTORY_FILE_NAME = "History_%s_%s_%s.log";
+	public static String NO_DATE_SPECIFIED = "";
+	public static String NO_HISTORY_RECORD_MESSAGE = "No history found";
 	
+	public static int DAY_INDEX = 0;
+	public static int MONTH_INDEX = 1;
+	public static int YEAR_INDEX = 2;
 
 	public static void logHistory(String message) throws Exception {
-		String fileName = fileNameGenerator();
-		//Storage.writeToHistoryLogger(fileName, message);
+		String fileName = fileNameGenerator(NO_DATE_SPECIFIED);
+		// Storage.writeToHistoryLogger(fileName, message);
 	}
-	
+
 	public static String retrieveHistory(String date) {
-		String fileName;
-		if(date.length() == 0) {
-			fileName = fileNameGenerator();
-		} else {
-			String[] fileNameDate = date.split("/");
-			fileName = String.format("History_%s_%s_%s.log", fileNameDate[0], fileNameDate[1], fileNameDate[2]);
+		String fileName = fileNameGenerator(date);
+
+		// String currentHistory = Storage.readFromHistoryLogger(fileName);
+
+		if ("currentHistory" == null) {
+			return NO_HISTORY_RECORD_MESSAGE;
 		}
-	
-		//String currentHistory = Storage.readFromHistoryLogger(fileName);
-		
-		if("currentHistory" == null) {
-			return "No history";
-		}
-		
+
 		return "currentHistory";
-		
+
 	}
-	
-	
-	private static String fileNameGenerator() {
-		Calendar currentDate = Calendar.getInstance();
-		SimpleDateFormat calendarFformatter = new SimpleDateFormat(FORMAT_DAY_MONTH_YEAR);
-		String date = calendarFformatter.format(currentDate.getTime());
+
+	private static String fileNameGenerator(String date) {
+		String fileName;
+		String[] fileNameDate;
+		if (date.length() == 0) {
+			fileNameDate = calendarToString.toArray(Calendar.getInstance());
+		} else {
+			fileNameDate = date.split("/");
+		}
 		
-		return String.format(HISTORY_FILE_NAME, date);
+		fileName = String.format(HISTORY_FILE_NAME,
+				fileNameDate[DAY_INDEX], fileNameDate[MONTH_INDEX],
+				fileNameDate[YEAR_INDEX]);
+		
+		return fileName;
 	}
+
 }
