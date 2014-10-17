@@ -13,13 +13,13 @@ import taskaler.common.data.Task;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-public class ListPaneModel extends AbstractModel {
+public class ListPaneModel {
 
     public String currentTitle;
-    
+
     public ArrayList<Task> currentItemList;
-    
-    public ListPaneModel(){
+
+    public ListPaneModel() {
         currentTitle = "";
         currentItemList = new ArrayList<Task>();
     }

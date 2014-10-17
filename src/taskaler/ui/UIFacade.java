@@ -62,15 +62,17 @@ public class UIFacade extends Application {
      * default configurations to determine if view should be in calendar or list
      * 
      */
-    public void display(String args, ArrayList<Task> list){
+    public void display(String args, ArrayList<Task> list) {
         if (list == null) {
             list = new ArrayList<Task>();
         }
         try {
-            if (args.equals("LIST")) {
+            if (args.compareToIgnoreCase("LIST") == 0) {
                 rootController.displayList("All current tasks", list);
-            } else {
+            } else if (args.compareToIgnoreCase("CAL") == 0) {
                 rootController.displayCalendar(list, Calendar.getInstance());
+            } else {
+                rootController.displayList(args, list);
             }
         } catch (IOException e) {
             rootController.showToast("IO error encountered!");
@@ -82,10 +84,10 @@ public class UIFacade extends Application {
      * Method to render a view in Task view.
      * 
      */
-    public void display(Task t){
+    public void display(Task t) {
         if (t == null) {
             rootController.showToast("No task to be displayed");
-        }else{
+        } else {
             try {
                 rootController.displayTask(t);
             } catch (IOException e) {
@@ -94,5 +96,5 @@ public class UIFacade extends Application {
             }
         }
     }
-    
+
 }

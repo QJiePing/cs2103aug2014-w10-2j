@@ -11,7 +11,7 @@ import taskaler.common.enumerate.RECTANGLE_COLOR;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-public class TaskPaneModel extends AbstractModel{
+public class TaskPaneModel {
     
     public String taskName;
     

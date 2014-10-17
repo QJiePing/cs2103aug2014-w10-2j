@@ -16,10 +16,14 @@ public class CommonLogger {
 	public static String EXCEPTION_FILE_NAME = "resource/Exception_%s.log";
 	
 	public static void exceptionLogger(Exception error) throws Exception {
-		String fileName = fileNameGenerator(EXCEPTION_FILE_NAME);
-		handler_formatterSetUp(fileName);
-		
-		logger.log(Level.WARNING, error.getMessage(), error);
+		try {
+			String fileName = fileNameGenerator(EXCEPTION_FILE_NAME);
+			handler_formatterSetUp(fileName);
+			
+			logger.log(Level.WARNING, error.getMessage(), error);
+		} catch (Exception LOGGERFAIL) {
+			//Log Fail
+		}
 	}
 
 

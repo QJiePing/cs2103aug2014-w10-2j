@@ -9,11 +9,11 @@ import java.util.Scanner;
 
 import taskaler.common.data.FXML_CONSTANTS;
 import taskaler.common.enumerate.RECTANGLE_COLOR;
+import taskaler.common.util.parser.calendarToString;
 import taskaler.ui.controller.CalendarPaneController;
 import taskaler.ui.controller.ListPaneController;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.controller.TaskPaneController;
-import taskaler.ui.model.AbstractModel;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
@@ -69,7 +69,7 @@ public class TestDriver extends Application {
                 TaskPaneModel taskPaneModel = new TaskPaneModel();
                 taskPaneModel.taskName = "Test";
                 taskPaneModel.taskID = "T35+";
-                taskPaneModel.taskDueDate = AbstractModel.parseDate(Calendar
+                taskPaneModel.taskDueDate = calendarToString.parseDate(Calendar
                         .getInstance());
                 taskPaneModel.taskStatus = "Not Completed";
                 taskPaneModel.taskWorkload = RECTANGLE_COLOR.GREEN;

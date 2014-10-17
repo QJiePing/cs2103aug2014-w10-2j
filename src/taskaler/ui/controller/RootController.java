@@ -17,7 +17,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import taskaler.ui.model.AbstractModel;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
@@ -25,6 +24,7 @@ import taskaler.ui.model.TaskPaneModel;
 import taskaler.common.data.FXML_CONSTANTS;
 import taskaler.common.data.Task;
 import taskaler.common.enumerate.RECTANGLE_COLOR;
+import taskaler.common.util.parser.calendarToString;
 
 /**
  * Controller associated with the RootView
@@ -103,7 +103,7 @@ public class RootController extends BorderPane implements IController {
         if (e.getCode() == KeyCode.ENTER) {
             String cmd = txtCmdInput.getText();
             txtCmdInput.clear();
-            // Controller.executeCMD(cmd);
+            //Taskaler.Controller.executeCMD(cmd);
         }
     }
 
@@ -164,7 +164,7 @@ public class RootController extends BorderPane implements IController {
         model.taskName = t.getTaskName();
         model.taskID = t.getTaskID();
         model.taskStatus = t.getTaskStatus();
-        model.taskDueDate = AbstractModel.parseDate(t.getTaskDeadLine());
+        model.taskDueDate = calendarToString.parseDate(t.getTaskDeadLine());
         model.taskWorkload = parseWorkload(t.getTaskWorkLoad());
         model.taskDescription = t.getTaskDescription();
         TaskPaneController pane = new TaskPaneController(model);

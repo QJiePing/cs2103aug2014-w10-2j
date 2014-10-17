@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -74,7 +75,24 @@ public class Task {
 		_taskDescription =  newTaskDescription;
 	}
 	
+	public static taskaler.common.data.Task convertOld2New(Task t){
+	    taskaler.common.data.Task newTask = new taskaler.common.data.Task(
+	            t.getTaskName(), t.getTaskID(), t.getTaskStatus(), t.getTaskDeadLine(),
+                t.getTaskWorkLoad(), t.getTaskDescription()
+	            );
+	    
+	    return newTask;
+	}
 	
+	public static ArrayList<taskaler.common.data.Task> convertOldList2NewList(ArrayList<Task> tList){
+        ArrayList<taskaler.common.data.Task> newList = new ArrayList<taskaler.common.data.Task>();
+        
+        for(Task t : tList){
+            newList.add(convertOld2New(t));
+        }
+        
+        return newList;
+	}
 	// Some other methods below(maybe)
 	// ...
 }
