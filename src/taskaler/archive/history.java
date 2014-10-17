@@ -16,7 +16,7 @@ public class history {
 
 	public static void logHistory(String message) throws Exception {
 		String fileName = fileNameGenerator();
-		Storage.writeToHistoryLogger(fileName, message);
+		//Storage.writeToHistoryLogger(fileName, message);
 	}
 	
 	public static String retrieveHistory(String date) {
@@ -28,13 +28,13 @@ public class history {
 			fileName = String.format("History_%s_%s_%s.log", fileNameDate[0], fileNameDate[1], fileNameDate[2]);
 		}
 	
-		String currentHistory = Storage.readFromHistoryLogger(fileName);
+		//String currentHistory = Storage.readFromHistoryLogger(fileName);
 		
-		if(currentHistory == null) {
+		if("currentHistory" == null) {
 			return "No history";
 		}
 		
-		return currentHistory;
+		return "currentHistory";
 		
 	}
 	

@@ -7,13 +7,12 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Scanner;
 
-import taskaler.common.data.FXML_CONSTANTS;
-import taskaler.common.enumerate.RECTANGLE_COLOR;
 import taskaler.common.util.parser.calendarToString;
 import taskaler.ui.controller.CalendarPaneController;
 import taskaler.ui.controller.ListPaneController;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.controller.TaskPaneController;
+import taskaler.ui.controller.common;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
@@ -51,7 +50,7 @@ public class TestDriver extends Application {
                 calendarModel.currentCalendar = Calendar.getInstance();
                 calendarModel.currentMonth = Calendar.getInstance().get(
                         Calendar.MONTH)
-                        + FXML_CONSTANTS.OFFSET_BY_ONE;
+                        + common.OFFSET_BY_ONE;
                 calendarModel.currentYear = Calendar.getInstance().get(
                         Calendar.YEAR);
                 CalendarPaneController calendarPane = new CalendarPaneController(
@@ -72,7 +71,7 @@ public class TestDriver extends Application {
                 taskPaneModel.taskDueDate = calendarToString.parseDate(Calendar
                         .getInstance());
                 taskPaneModel.taskStatus = "Not Completed";
-                taskPaneModel.taskWorkload = RECTANGLE_COLOR.GREEN;
+                taskPaneModel.taskWorkload = common.RectangleColor.GREEN;
                 taskPaneModel.taskDescription = "Test\ntest test";
                 TaskPaneController taskPane = new TaskPaneController(
                         taskPaneModel);

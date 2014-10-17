@@ -21,10 +21,10 @@ import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
 import taskaler.ui.model.TaskPaneModel;
-import taskaler.common.data.FXML_CONSTANTS;
 import taskaler.common.data.Task;
-import taskaler.common.enumerate.RECTANGLE_COLOR;
 import taskaler.common.util.parser.calendarToString;
+import taskaler.controller.Controller;
+import taskaler.ui.controller.common;
 
 /**
  * Controller associated with the RootView
@@ -57,7 +57,7 @@ public class RootController extends BorderPane implements IController {
     public RootController(RootModel model) throws IOException {
         currentModel = model;
 
-        initialize(FXML_CONSTANTS.FXML_ROOT);
+        initialize(common.FXML_ROOT);
         update();
     }
 
@@ -103,7 +103,7 @@ public class RootController extends BorderPane implements IController {
         if (e.getCode() == KeyCode.ENTER) {
             String cmd = txtCmdInput.getText();
             txtCmdInput.clear();
-            //Taskaler.Controller.executeCMD(cmd);
+            Controller.getInstance().executeCMD(cmd);
         }
     }
 
@@ -141,7 +141,7 @@ public class RootController extends BorderPane implements IController {
         CalendarPaneModel model = new CalendarPaneModel();
         model.currentCalendar = cal;
         model.currentMonth = cal.get(Calendar.MONTH)
-                + FXML_CONSTANTS.OFFSET_BY_ONE;
+                + common.OFFSET_BY_ONE;
         model.currentYear = cal.get(Calendar.YEAR);
         model.currentTaskList = list;
 
@@ -180,15 +180,15 @@ public class RootController extends BorderPane implements IController {
      *            Value to be parsed
      * @return RECTANGLE_COLOR representation of value
      */
-    private RECTANGLE_COLOR parseWorkload(String taskWorkLoad) {
-        if (taskWorkLoad.compareToIgnoreCase("low") == 0) {
-            return RECTANGLE_COLOR.GREEN;
-        } else if (taskWorkLoad.compareToIgnoreCase("medium") == 0) {
-            return RECTANGLE_COLOR.ORANGE;
-        } else if (taskWorkLoad.compareToIgnoreCase("high") == 0) {
-            return RECTANGLE_COLOR.RED;
+    private common.RectangleColor parseWorkload(String taskWorkLoad) {
+        if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_LOW) == 0) {
+            return common.RectangleColor.GREEN;
+        } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
+            return common.RectangleColor.ORANGE;
+        } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
+            return common.RectangleColor.RED;
         } else {
-            return RECTANGLE_COLOR.GREY;
+            return common.RectangleColor.GREY;
         }
     }
 

@@ -1,8 +1,10 @@
 package taskaler.controller;
 
-import taskaler.common.enumerate.CMD_TYPE;
-
 public class Parser {
+    
+    public enum CmdType {
+        ADD, DELETE, EDIT, DATE, WORKLOAD, COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, INVALID
+    }
     
     // Magic Strings/Numbers
     private static final int INVALID_VALUE = -1;
@@ -15,7 +17,7 @@ public class Parser {
     private static final int TAG_LENGTH = 4;
     
     //Variables
-    private CMD_TYPE command;
+    private CmdType command;
     private String[] parameters;
     
     /**
@@ -27,7 +29,7 @@ public class Parser {
         parseCMD(commandString);
     }
     
-    public CMD_TYPE getCommand(){
+    public CmdType getCommand(){
         return command;
     }
     
@@ -52,30 +54,30 @@ public class Parser {
      * @param command
      * @return CMD_TYPE command type
      */
-    private CMD_TYPE determineCMD_TYPE(String command) {
+    private CmdType determineCMD_TYPE(String command) {
         switch (command.toLowerCase()) {
         case "add":
-            return CMD_TYPE.ADD;
+            return CmdType.ADD;
         case "delete":
-            return CMD_TYPE.DELETE;
+            return CmdType.DELETE;
         case "edit":
-            return CMD_TYPE.EDIT;
+            return CmdType.EDIT;
         case "date":
-            return CMD_TYPE.DATE;
+            return CmdType.DATE;
         case "workload":
-            return CMD_TYPE.WORKLOAD;
+            return CmdType.WORKLOAD;
         case "completed":
-            return CMD_TYPE.COMPLETION_TAG;
+            return CmdType.COMPLETION_TAG;
         case "view":
-            return CMD_TYPE.VIEW;
+            return CmdType.VIEW;
         case "find":
-            return CMD_TYPE.FIND;
+            return CmdType.FIND;
         case "arch":
-            return CMD_TYPE.ARCHIVE;
+            return CmdType.ARCHIVE;
         case "undo":
-            return CMD_TYPE.UNDO;
+            return CmdType.UNDO;
         default:
-            return CMD_TYPE.INVALID;
+            return CmdType.INVALID;
         }
     }
     
@@ -87,7 +89,7 @@ public class Parser {
      * @param commandString
      * @return String[] parameters
      */
-    private static String[] getParams(CMD_TYPE commandType, String commandString) throws Exception{
+    private static String[] getParams(CmdType commandType, String commandString) throws Exception{
         switch(commandType){
         case ADD:
             return getParam_ADD(commandString);

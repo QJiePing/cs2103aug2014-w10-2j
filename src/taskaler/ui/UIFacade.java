@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.swing.JOptionPane;
+
 import taskaler.common.data.Task;
+import taskaler.common.data.TaskList;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.model.RootModel;
 import javafx.application.Application;
@@ -25,6 +28,13 @@ import javafx.stage.Stage;
 public class UIFacade extends Application {
     // Special Constants
     private static final String TITLE = "Taskaler";
+    private static final String DEFAULT_VIEW_CALENDAR = "CALENDAR";
+    private static final String DEFAULT_VIEW_LIST = "LIST";
+    private static final String[] DEFAULT_VIEW_OPTIONS = {
+            DEFAULT_VIEW_CALENDAR, DEFAULT_VIEW_LIST };
+
+    // User Profile Configs
+    private static String userDefaultView = DEFAULT_VIEW_CALENDAR;
 
     // File Constants
     private static final String ICON_PNG = "/images/icon.png";
@@ -35,6 +45,10 @@ public class UIFacade extends Application {
     @Override
     public void start(Stage stage) {
         try {
+            userDefaultView = (String) JOptionPane.showInputDialog(null,
+                    "Choose a default view", "Default View Option",
+                    JOptionPane.INFORMATION_MESSAGE, null,
+                    DEFAULT_VIEW_OPTIONS, DEFAULT_VIEW_OPTIONS[0]);
             stage.getIcons().add(
                     new Image(getClass().getResourceAsStream(ICON_PNG)));
             stage.setTitle(TITLE);
@@ -49,7 +63,6 @@ public class UIFacade extends Application {
 
             stage.setScene(scene);
             stage.show();
-            display("CAL", null);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -58,8 +71,14 @@ public class UIFacade extends Application {
     }
 
     /**
-     * Method to render a view, either in list or calendar. This method uses
-     * default configurations to determine if view should be in calendar or list
+     * Method to render default view for the list of task
+     */
+    public void display(ArrayList<Task> list) {
+        display(userDefaultView, list);
+    }
+
+    /**
+     * Method to render a view, either in list or calendar.
      * 
      */
     public void display(String args, ArrayList<Task> list) {
@@ -67,12 +86,16 @@ public class UIFacade extends Application {
             list = new ArrayList<Task>();
         }
         try {
-            if (args.compareToIgnoreCase("LIST") == 0) {
+            if (args.compareToIgnoreCase(DEFAULT_VIEW_LIST) == 0) {
                 rootController.displayList("All current tasks", list);
-            } else if (args.compareToIgnoreCase("CAL") == 0) {
+            } else if (args.compareToIgnoreCase(DEFAULT_VIEW_CALENDAR) == 0) {
                 rootController.displayCalendar(list, Calendar.getInstance());
             } else {
-                rootController.displayList(args, list);
+                if (userDefaultView.compareToIgnoreCase(DEFAULT_VIEW_LIST) == 0) {
+                    rootController.displayList(args, list);
+                } else {
+                    rootController.displayCalendar(list, Calendar.getInstance());
+                }
             }
         } catch (IOException e) {
             rootController.showToast("IO error encountered!");
@@ -97,4 +120,15 @@ public class UIFacade extends Application {
         }
     }
 
+    /**
+     * Method to show the toast notification.
+     * 
+     * @param t
+     *            String to be displayed
+     */
+    public void display(String t) {
+        if (t != null && !t.isEmpty()) {
+            rootController.showToast(t);
+        }
+    }
 }

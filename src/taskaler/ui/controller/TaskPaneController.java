@@ -4,7 +4,6 @@
 package taskaler.ui.controller;
 
 import taskaler.ui.model.TaskPaneModel;
-import taskaler.common.data.FXML_CONSTANTS;
 
 import java.io.IOException;
 
@@ -66,7 +65,7 @@ public class TaskPaneController extends BorderPane implements IController {
 
         currentModel = model;
         
-        initialize(FXML_CONSTANTS.FXML_TASK_PANE);
+        initialize(common.FXML_TASK_PANE);
         update();
     }
     

@@ -6,7 +6,6 @@ package taskaler.ui.controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import taskaler.common.data.FXML_CONSTANTS;
 import taskaler.common.data.Task;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.CellDateModel;
@@ -51,7 +50,7 @@ public class CalendarPaneController extends BorderPane implements IController {
     public CalendarPaneController(CalendarPaneModel model) throws IOException {
         currentModel = model;
 
-        initialize(FXML_CONSTANTS.FXML_CALENDAR);
+        initialize(common.FXML_CALENDAR);
         update();
     }
 
@@ -84,7 +83,7 @@ public class CalendarPaneController extends BorderPane implements IController {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, date.get(Calendar.YEAR));
         cal.set(Calendar.MONTH, date.get(Calendar.MONTH));
-        cal.set(Calendar.DAY_OF_MONTH, FXML_CONSTANTS.OFFSET_BY_ONE);
+        cal.set(Calendar.DAY_OF_MONTH, common.OFFSET_BY_ONE);
 
         cal.setFirstDayOfWeek(Calendar.SUNDAY);
 
@@ -95,10 +94,10 @@ public class CalendarPaneController extends BorderPane implements IController {
         int[] numberOfTasksByDay = countTasks(cal.get(Calendar.MONTH));
 
         int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK)
-                - FXML_CONSTANTS.OFFSET_BY_ONE;
-        int weekOfTheMonthIterator = FXML_CONSTANTS.OFFSET_BY_ONE;
+                - common.OFFSET_BY_ONE;
+        int weekOfTheMonthIterator = common.OFFSET_BY_ONE;
 
-        for (int i = FXML_CONSTANTS.OFFSET_BY_ONE; i <= cal
+        for (int i = common.OFFSET_BY_ONE; i <= cal
                 .getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
 
             CellDateModel model = new CellDateModel();
@@ -111,9 +110,9 @@ public class CalendarPaneController extends BorderPane implements IController {
             dayOfTheWeekIterator++;
             if (isThisDaySunday(dayOfTheWeekIterator)) {
                 weekOfTheMonthIterator++;
-                dayOfTheWeekIterator = FXML_CONSTANTS.ZERO_INDEX;
+                dayOfTheWeekIterator = common.ZERO_INDEX;
                 if (hasOverflowedCalendarUI(weekOfTheMonthIterator)) {
-                    weekOfTheMonthIterator = FXML_CONSTANTS.OFFSET_BY_ONE;
+                    weekOfTheMonthIterator = common.OFFSET_BY_ONE;
                 }
             }
 
@@ -129,9 +128,9 @@ public class CalendarPaneController extends BorderPane implements IController {
      *         and the value representing the total tasks
      */
     private int[] countTasks(int month) {
-        int[] result = new int[MAX_NUMBER_OF_DAYS + FXML_CONSTANTS.OFFSET_BY_ONE];
+        int[] result = new int[MAX_NUMBER_OF_DAYS + common.OFFSET_BY_ONE];
 
-        for (int i = FXML_CONSTANTS.ZERO_INDEX; i < currentModel.currentTaskList.size(); i++) {
+        for (int i = common.ZERO_INDEX; i < currentModel.currentTaskList.size(); i++) {
             Task currentTask = currentModel.currentTaskList.get(i);
             if (currentTask.getTaskDeadLine().get(Calendar.MONTH) == month) {
                 result[currentTask.getTaskDeadLine().get(Calendar.DATE)]++;
