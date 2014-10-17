@@ -4,10 +4,12 @@
 package taskaler.ui.model;
 
 /**
- * @author Kiwi
+ * Model Associated with the Root
+ * 
+ * @author Cheah Kit Weng, A0059806W
  *
  */
-public class RootModel extends AbstractModel {
+public class RootModel {
 
     public String notification;
     

@@ -5,12 +5,9 @@ package taskaler.ui.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-
 import taskaler.common.data.FXML_CONSTANTS;
 import taskaler.common.data.Task;
-import taskaler.ui.model.AbstractModel;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.CellDateModel;
 import javafx.fxml.FXML;

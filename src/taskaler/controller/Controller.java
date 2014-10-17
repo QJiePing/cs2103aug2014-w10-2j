@@ -6,8 +6,7 @@ package taskaler.controller;
 import taskaler.ArchiveFunction;
 import taskaler.OPLogic;
 import taskaler.Storage;
-import taskaler.common.Task;
-import taskaler.common.Data;
+import taskaler.common.data.Task;
 import taskaler.common.enumerate.CMD_TYPE;
 import taskaler.controller.parser;
 

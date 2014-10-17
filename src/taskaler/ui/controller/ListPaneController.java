@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import taskaler.common.data.FXML_CONSTANTS;
 import taskaler.common.data.Task;
-import taskaler.ui.model.AbstractModel;
+import taskaler.common.util.parser.calendarToString;
 import taskaler.ui.model.ListPaneModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -91,7 +91,7 @@ public class ListPaneController extends TitledPane implements IController {
             return;
         }
         for (Task t : list) {
-            String deadline = AbstractModel.parseDate(t.getTaskDeadLine());
+            String deadline = calendarToString.parseDate(t.getTaskDeadLine());
             String temp = String.format(REG_TASK_DISPLAY, deadline,
                     t.getTaskID(), t.getTaskName());
             Text text = new Text(temp);

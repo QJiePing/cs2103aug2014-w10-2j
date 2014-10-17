@@ -14,17 +14,17 @@ import taskaler.common.data.Task;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-public class CalendarPaneModel extends AbstractModel{
+public class CalendarPaneModel {
 
     public ArrayList<Task> currentTaskList;
-    
+
     public int currentYear;
-    
+
     public int currentMonth;
-    
+
     public Calendar currentCalendar;
-    
-    public CalendarPaneModel(){
+
+    public CalendarPaneModel() {
         currentTaskList = new ArrayList<Task>();
         currentYear = 0;
         currentMonth = 0;

@@ -13,18 +13,18 @@ import taskaler.common.enumerate.RECTANGLE_COLOR;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-public class CellDateModel extends AbstractModel{
-    
+public class CellDateModel {
+
     public int currentDate;
-    
+
     public int currentNumberOfEvents;
-    
+
     public ArrayList<RECTANGLE_COLOR> currentWorkloads;
-    
+
     /**
      * Default Constructor
      */
-    public CellDateModel(){
+    public CellDateModel() {
         currentDate = 1;
         currentNumberOfEvents = 0;
         currentWorkloads = new ArrayList<RECTANGLE_COLOR>();
