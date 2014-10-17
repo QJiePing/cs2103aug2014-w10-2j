@@ -1,5 +1,6 @@
 package taskaler.storage;
 
+import taskaler.common.data.Task;
 import java.io.*;
 import java.util.ArrayList;
 
