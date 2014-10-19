@@ -1,10 +1,8 @@
-/**
- * 
- */
+
 package taskaler.controller;
 
-// import taskaler.ArchiveFunction;
-// import taskaler.Storage;
+import taskaler.undo.UndoFunction;
+import taskaler.archive.history;
 import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
 import taskaler.storage.Storage;
@@ -32,6 +30,8 @@ public class Controller {
     private static TaskList list = null;
 
     private static Controller instance = null;
+    
+    private static UndoFunction undoStack = null;
 
     /*********************************** Public Functions ***********************************/
 
@@ -53,12 +53,14 @@ public class Controller {
                 String name_ADD = params[0];
                 String description_ADD = params[1];
                 result = OPLogic.addTask(name_ADD, description_ADD);
+                undoStack.saveOperation(result, "ADD");
                 ui.display(result);
                 break;
             case DELETE:
                 String taskID_DELETE = params[0];
                 assert (taskID_DELETE != null);
                 result = OPLogic.deleteTask(taskID_DELETE);
+                undoStack.saveOperation(result, "DELETE");
                 String name_DELETED = result.getTaskName();
                 ui.display("The task \"" + name_DELETED
                         + "\" has been deleted.",
@@ -71,6 +73,7 @@ public class Controller {
                 assert (taskID_EDIT != null);
                 result = OPLogic.editTask(taskID_EDIT, name_EDIT,
                         description_EDIT);
+                undoStack.saveOperation(result, "EDIT");
                 ui.display(result);
                 break;
             case DATE:
@@ -113,13 +116,14 @@ public class Controller {
                 break;
             case ARCHIVE:
                 String date = params[0];
-                // ArchiveFunction.archiveHistory(date);
+                history.retrieveHistory(date);
                 break;
             case UNDO:
-                // OPLogic.undo();
+                undoStack.undo();
+                ui.display("LIST", list.toArray(new ArrayList<Task>()));
                 break;
             case INVALID:
-                throw new Exception("Invalid Arguments");
+                throw new Exception("Invalid Command");
             default:
                 throw new Error("Unknown Error");
             }
@@ -172,6 +176,7 @@ public class Controller {
         list = TaskList.getInstance();
         list.addAll(Storage.readFromFile(TASK_LIST_FILE));
         ui = new UIFacade();
+        undoStack = new UndoFunction();
     }
 
     /**

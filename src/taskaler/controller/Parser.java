@@ -303,7 +303,12 @@ public class Parser {
     private static String[] getParam_ARCH(String commandString){
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[1];
-        paramArray[0] = paramString;
+        if(paramString.equals("")){
+            paramArray[0] = null;
+        }
+        else {
+            paramArray[0] = paramString;  
+        }
         return paramArray;
     }
 
