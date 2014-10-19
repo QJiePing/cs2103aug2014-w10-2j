@@ -13,6 +13,8 @@ import taskaler.ui.controller.ListPaneController;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.controller.TaskPaneController;
 import taskaler.ui.controller.common;
+import taskaler.ui.hook.DLLConnector;
+import taskaler.ui.hook.KeyPressHandler;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
@@ -33,6 +35,9 @@ public class TestDriver extends Application {
     // Class variables
     private static Parent TestArea = null;
     private static boolean isTestingFacade = false;
+
+    // Location of current DLL library
+    private static final String DLL_PATH = "/JNILibrary64";
 
     /**
      * Main Method to test the UI component
@@ -86,6 +91,9 @@ public class TestDriver extends Application {
                         listPaneModel);
                 TestArea = listPane;
                 break;
+            case "Hook":
+                new TestDriver().startHookTest();
+                return;
             case "Facade":
                 isTestingFacade = true;
             }
@@ -95,6 +103,24 @@ public class TestDriver extends Application {
             e.printStackTrace();
         }
 
+    }
+
+    private void startHookTest() {
+        System.out.println("Starting hook test...");
+        System.loadLibrary(DLL_PATH);
+        // create an event source - reads from stdin
+        final DLLConnector eventSource = new DLLConnector();
+
+        // create an observer
+        final KeyPressHandler responseHandler = new KeyPressHandler();
+
+        // subscribe the observer to the event source
+        eventSource.addObserver(responseHandler);
+
+        // starts the event thread
+        Thread thread = new Thread(eventSource);
+        thread.start();
+        DLLConnector.isStopped.set(true);
     }
 
     @Override

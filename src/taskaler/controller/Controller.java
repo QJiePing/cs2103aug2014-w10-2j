@@ -9,6 +9,8 @@ import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
 import taskaler.storage.Storage;
 import taskaler.ui.UIFacade;
+import taskaler.archive.History;
+import taskaler.archive.Undo;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.controller.Parser.CmdType;
@@ -16,14 +18,13 @@ import taskaler.controller.Parser.CmdType;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
  * @author Brendan
  *
  */
-public class Controller {
+public class Controller{
 
     private static final String TASK_LIST_FILE = "task_list";
 
@@ -32,6 +33,14 @@ public class Controller {
     private static TaskList list = null;
 
     private static Controller instance = null;
+    
+    private static OPLogic crudLogic = null;
+    
+    private static SearchLogic findLogic = null;
+    
+    private static History history = null;
+    
+    private static Undo undo = null;
 
     /*********************************** Public Functions ***********************************/
 
@@ -52,13 +61,13 @@ public class Controller {
             case ADD:
                 String name_ADD = params[0];
                 String description_ADD = params[1];
-                result = OPLogic.addTask(name_ADD, description_ADD);
+                result = crudLogic.addTask(name_ADD, description_ADD);
                 ui.display(result);
                 break;
             case DELETE:
                 String taskID_DELETE = params[0];
                 assert (taskID_DELETE != null);
-                result = OPLogic.deleteTask(taskID_DELETE);
+                result = crudLogic.deleteTask(taskID_DELETE);
                 String name_DELETED = result.getTaskName();
                 ui.display("The task \"" + name_DELETED
                         + "\" has been deleted.",
@@ -69,7 +78,7 @@ public class Controller {
                 String name_EDIT = params[1];
                 String description_EDIT = params[2];
                 assert (taskID_EDIT != null);
-                result = OPLogic.editTask(taskID_EDIT, name_EDIT,
+                result = crudLogic.editTask(taskID_EDIT, name_EDIT,
                         description_EDIT);
                 ui.display(result);
                 break;
@@ -79,26 +88,26 @@ public class Controller {
                 String month = params[2];
                 String year = params[3];
                 assert (taskID_DATE != null);
-                result = OPLogic.editDate(taskID_DATE, day, month, year);
+                result = crudLogic.editDate(taskID_DATE, day, month, year);
                 ui.display(result);
                 break;
             case WORKLOAD:
                 String taskID_WORKLOAD = params[0];
                 String workloadAttribute = params[1];
                 assert (taskID_WORKLOAD != null);
-                result = OPLogic.editWorkload(taskID_WORKLOAD,
+                result = crudLogic.editWorkload(taskID_WORKLOAD,
                         workloadAttribute);
                 ui.display(result);
                 break;
             case COMPLETION_TAG:
                 String taskID_CT = params[0];
                 assert (taskID_CT != null);
-                result = OPLogic.switchTag(taskID_CT);
+                result = crudLogic.switchTag(taskID_CT);
                 ui.display(result);
                 break;
             case VIEW:
                 if (params[0] != null && params[0].equals("TASK")) {
-                    result = SearchLogic.findByID(params[1]);
+                    result = findLogic.findByID(params[1]);
                     ui.display(result);
                 } else {
                     ui.display(params[0], list.toArray(new ArrayList<Task>()));
@@ -107,16 +116,18 @@ public class Controller {
             case FIND:
                 String tagTypeFIND = params[0];
                 String toSearch = params[1];
-                ArrayList<Task> searchResult = SearchLogic.find(tagTypeFIND,
+                ArrayList<Task> searchResult = findLogic.find(tagTypeFIND,
                         toSearch);
                 ui.display("Search Result for " + toSearch, searchResult);
                 break;
             case ARCHIVE:
                 String date = params[0];
-                // ArchiveFunction.archiveHistory(date);
+                History.retrieveHistory(date);
                 break;
             case UNDO:
-                // OPLogic.undo();
+                result = undo.undo();
+                ui.display(list.toArray(new ArrayList<Task>()));
+                ui.display("Undone last operation");
                 break;
             case INVALID:
                 throw new Exception("Invalid Arguments");
@@ -170,6 +181,12 @@ public class Controller {
      */
     private Controller() {
         list = TaskList.getInstance();
+        crudLogic = new OPLogic();
+        findLogic = new SearchLogic();
+        history = new History();
+        undo = new Undo();
+        crudLogic.addObserver(history);
+        crudLogic.addObserver(undo);
         list.addAll(Storage.readFromFile(TASK_LIST_FILE));
         ui = new UIFacade();
     }

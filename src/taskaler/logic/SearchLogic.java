@@ -23,7 +23,7 @@ public class SearchLogic {
      * @param paramFIND
      * @return return a list of tasks
      */
-    public static ArrayList<Task> find(String tagTypeFIND, String paramFIND) {
+    public ArrayList<Task> find(String tagTypeFIND, String paramFIND) {
 
         switch (tagTypeFIND.toUpperCase()) {
         case "KEYWORD":
@@ -44,7 +44,7 @@ public class SearchLogic {
      * @param paramFIND
      * @return return list of Tasks (can be empty if nothing is found)
      */
-    private static ArrayList<Task> findByWorkload(String paramFIND) {
+    private ArrayList<Task> findByWorkload(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
 
         for (int i = 0; i < TaskList.getInstance().size(); i++) {
@@ -67,7 +67,7 @@ public class SearchLogic {
      * @param paramFIND
      * @return return list of Tasks (can be empty if nothing is found)
      */
-    public static ArrayList<Task> findByDeadLine(String paramFIND) {
+    public ArrayList<Task> findByDeadLine(String paramFIND) {
 
         ArrayList<Task> searchResultList = new ArrayList<Task>();
         String[] filter = paramFIND.split("/");
@@ -95,7 +95,7 @@ public class SearchLogic {
      *            Second deadline
      * @return return true if both are the same deadline; False otherwise
      */
-    private static boolean compareDeadline(String[] deadline1,
+    private boolean compareDeadline(String[] deadline1,
             String[] deadline2) {
         try{
             for(int i = 0; i < deadline1.length; i++){
@@ -117,7 +117,7 @@ public class SearchLogic {
      * @param paramFIND
      * @return return list of Tasks (can be empty if nothing is found)
      */
-    private static ArrayList<Task> findByKeyword(String paramFIND) {
+    private ArrayList<Task> findByKeyword(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
 
         for (int i = 0; i < TaskList.getInstance().size(); i++) {
@@ -139,7 +139,7 @@ public class SearchLogic {
      * @param YearFind
      * @return return list of Tasks (can be empty if nothing is found)
      */
-    public static ArrayList<Task> findByMonthAndYear(String monthFind,
+    public ArrayList<Task> findByMonthAndYear(String monthFind,
             String yearFind) {
 
         ArrayList<Task> searchResultList = new ArrayList<Task>();
@@ -165,7 +165,7 @@ public class SearchLogic {
      * @param taskID
      * @return return a task with Task data type
      */
-    public static Task findByID(String taskID) {
+    public Task findByID(String taskID) {
         int taskIDIndex = findTaskIndex(taskID);
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {

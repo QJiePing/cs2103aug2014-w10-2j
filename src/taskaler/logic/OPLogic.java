@@ -3,7 +3,9 @@ package taskaler.logic;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Observable;
 
+import taskaler.archive.OperationRecord;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 
@@ -12,7 +14,7 @@ import taskaler.common.data.TaskList;
  *
  */
 
-public class OPLogic {
+public class OPLogic extends Observable{
 
     /**
      * addTask(String name_ADD, String description_ADD) will add a new task with
@@ -26,7 +28,7 @@ public class OPLogic {
      *         otherwise.
      * 
      */
-    public static Task addTask(String name_ADD, String description_ADD) {
+    public Task addTask(String name_ADD, String description_ADD) {
 
         // assume task name cannot be null
         if (name_ADD == null) {
@@ -46,8 +48,8 @@ public class OPLogic {
                     common.TASK_INITIAL_STATUS, Calendar.getInstance(),
                     common.TASK_PARAMETER_DEFAULT_VALUE, description_ADD);
             TaskList.getInstance().add(newTask);
-
-            // operationSaveForUndo("delete", newTask);
+            
+            notifyObservers("ADD", newTask);
 
             return newTask;
         }
@@ -61,7 +63,7 @@ public class OPLogic {
      * 
      * @return return new taskID
      */
-    private static int generateTaskID() {
+    private int generateTaskID() {
         int taskID = common.DEFAULT_TASK_ID;
 
         if (TaskList.getInstance().isEmpty()) {
@@ -86,7 +88,7 @@ public class OPLogic {
      *         task
      * 
      */
-    public static Task deleteTask(String taskID_DELETE) {
+    public Task deleteTask(String taskID_DELETE) {
 
         int taskIDIndex = SearchLogic.findTaskByID(taskID_DELETE);
 
@@ -96,7 +98,7 @@ public class OPLogic {
         }
         
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
-        // operationSaveForUndo("add", taskToBeRemoved);
+        notifyObservers("DELETE", taskToBeRemoved);
 
         return taskToBeRemoved;
 
@@ -115,7 +117,7 @@ public class OPLogic {
      *         given are null, edited task otherwise
      * 
      */
-    public static Task editTask(String taskID_EDIT, String name_EDIT,
+    public Task editTask(String taskID_EDIT, String name_EDIT,
             String description_EDIT) {
 
         int taskIDIndex = SearchLogic.findTaskByID(taskID_EDIT);
@@ -124,7 +126,7 @@ public class OPLogic {
             return null;
         }
 
-        // operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
 
         // assume name will not change to null
         if (name_EDIT != null) {
@@ -178,7 +180,7 @@ public class OPLogic {
      * @param year
      * @return return null if given task ID not exist, edited task otherwise
      */
-    public static Task editDate(String taskID, String day, String month,
+    public Task editDate(String taskID, String day, String month,
             String year) {
         Calendar newDeadLine = setNewCalenderDate(Integer.parseInt(day),
                 Integer.parseInt(month), Integer.parseInt(year));
@@ -190,7 +192,7 @@ public class OPLogic {
             return null;
         }
 
-        // operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
 
         TaskList.getInstance().get(taskIDIndex).changeDeadLine(newDeadLine);
 
@@ -225,7 +227,7 @@ public class OPLogic {
      * @param workloadAttribute
      * @return return null if given task ID not exist, edited task otherwise
      */
-    public static Task editWorkload(String taskID, String workloadAttribute) {
+    public Task editWorkload(String taskID, String workloadAttribute) {
         int workloadAtt = Integer.parseInt(workloadAttribute);
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
 
@@ -234,7 +236,7 @@ public class OPLogic {
             return null;
         }
 
-        // operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
 
         // assume workloadAtt is within the range of 1-3
         TaskList.getInstance().get(taskIDIndex)
@@ -251,7 +253,7 @@ public class OPLogic {
      * @param taskID
      * @return return null if given task ID not exist, edited task otherwise
      */
-    public static Task switchTag(String taskID) {
+    public Task switchTag(String taskID) {
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
@@ -259,15 +261,18 @@ public class OPLogic {
             return null;
         }
 
-        // operationSaveForUndo("edit", Taskaler.taskList.get(taskIDIndex));
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
 
         TaskList.getInstance().get(taskIDIndex).changeTaskStatus("Done");
         return TaskList.getInstance().get(taskIDIndex);
     }
 
-    /*
-     * private static void operationSaveForUndo(String type, Task newTask) {
-     * UndoFunction.saveOperation(type, newTask); }
-     */
+    
+     private void notifyObservers(String type, Task task) {
+         setChanged();
+         OperationRecord<Task, String> record = new OperationRecord<Task, String>(task, type);
+         notifyObservers(record);
+     }
+     
 
 }

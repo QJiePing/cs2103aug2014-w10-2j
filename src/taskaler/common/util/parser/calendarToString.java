@@ -27,12 +27,27 @@ public class calendarToString {
 
         return deadline;
     }
-    
+
     /**
-     * Custom calendar parser. Converts the Calendar object into an array.
-     * The resulting array has the following fields 
-     * index 0 => dd
-     * index 1 => MM
+     * Custom calendar parser. The resulting string is in the form of the
+     * specified regex
+     * 
+     * @param c
+     *            The calendar object to be parsed
+     * @param regex
+     *            The format of the output string
+     * @return String representation of the calendar object
+     */
+    public static String parseDate(Calendar c, String regex) {
+        SimpleDateFormat formatter = new SimpleDateFormat(regex);
+        String deadline = formatter.format(c.getTime());
+
+        return deadline;
+    }
+
+    /**
+     * Custom calendar parser. Converts the Calendar object into an array. The
+     * resulting array has the following fields index 0 => dd index 1 => MM
      * index 2 => yyyy
      * 
      * @param c

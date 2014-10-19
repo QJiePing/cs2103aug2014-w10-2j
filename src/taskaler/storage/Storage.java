@@ -93,4 +93,20 @@ public class Storage {
         return gson;
     }
 
+    
+    public static void storageWriteStub(String file, String message){
+        System.out.println("=====================================");
+        System.out.println("Filename : " + file);
+        System.out.println("Content : " + message);
+        System.out.println("=====================================");
+    }
+    
+    public static String storageReadStub(String file){
+        System.out.println("=====================================");
+        System.out.println("Filename : " + file);
+        System.out.println("Giving back Weird String");
+        System.out.println("=====================================");
+        
+        return "WEIRD WEIRD WEIRD\nWEIRD WEIRD WEIRD";
+    }
 }
