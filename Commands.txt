@@ -34,9 +34,9 @@ DATE:
 date T24 09/09/2014
  - edits a task with taskID, T24, due date is 09/09/2014
 date T24 9/9/2014
- - ??????
+ - edits a task with taskID, T24, due date is 09/09/2014
 date T24 9/january/2014
- - ??????
+ - (not supported yet)
 date T24
  - ERROR
 
@@ -65,7 +65,7 @@ view lala
 FIND:
 find cs2101
  - finds the tasks, with name which contains "cs2101"
-find -d 09/09/2014
+find -t 09/09/2014
  - finds the tasks, with date 09/09/2014
 find -w 2
  - finds the tasks, with workload attribute, 2
@@ -80,3 +80,8 @@ undo
 
 ARCHIVE:
 arch 10/10/2014
+ - displays archive for the date 10/10/2014
+arch
+ - displays archive for the present day
+arch asdf
+ - ERROR
