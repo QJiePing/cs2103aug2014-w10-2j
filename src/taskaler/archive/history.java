@@ -21,13 +21,13 @@ public class history {
 
 	public static void logHistory(String message) throws Exception {
 		String fileName = fileNameGenerator(NO_DATE_SPECIFIED);
-		// Storage.writeToHistoryLogger(fileName, message);
+		//Storage.writeToHistory(fileName, message);
 	}
 
 	public static String retrieveHistory(String date) {
 		String fileName = fileNameGenerator(date);
 
-		// String currentHistory = Storage.readFromHistoryLogger(fileName);
+		// String currentHistory = Storage.readFromHistory(fileName);
 
 		if ("currentHistory" == null) {
 			return NO_HISTORY_RECORD_MESSAGE;
