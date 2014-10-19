@@ -14,7 +14,79 @@ import taskaler.common.data.TaskList;
  *
  */
 
-public class OPLogic extends Observable{
+public class OPLogic extends Observable {
+
+    private static OPLogic instance = null;
+
+    /**
+     * Inaccessible default constructor
+     */
+    private OPLogic() {
+
+    }
+
+    /**
+     * Method to get an exist instance of this object
+     * 
+     * @return An instance of this object
+     */
+    public static OPLogic getInstance() {
+        if (instance == null) {
+            instance = new OPLogic();
+        }
+
+        return instance;
+    }
+    
+    /**
+     * Special method for undo feature
+     * 
+     * @param t Task to be re-added into the list
+     * @return Task that has been re-added
+     */
+    public Task addTask(Task t){
+        TaskList.getInstance().add(t);
+        notifyObservers("UNDO", t);
+        return t;
+    }
+    
+    /**
+     * Special method for undo feature
+     * 
+     * @param t Task to be deleted from the list
+     * @return Task that has been deleted
+     */
+    public Task deleteTask(Task t){
+        int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to delete a task
+            return null;
+        }
+
+        Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
+        notifyObservers("UNDO", taskToBeRemoved);
+        return t;
+    }
+    
+    /**
+     * Special method for undo feature
+     * 
+     * @param t Task to be overridden in the list
+     * @return Task that has been overridden
+     */
+    public Task editTask(Task t){
+        int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to delete a task
+            return null;
+        }
+
+        Task oldTask = TaskList.getInstance().set(taskIDIndex, t);
+        notifyObservers("UNDO", oldTask);
+        return oldTask;
+    }
 
     /**
      * addTask(String name_ADD, String description_ADD) will add a new task with
@@ -48,7 +120,7 @@ public class OPLogic extends Observable{
                     common.TASK_INITIAL_STATUS, Calendar.getInstance(),
                     common.TASK_PARAMETER_DEFAULT_VALUE, description_ADD);
             TaskList.getInstance().add(newTask);
-            
+
             notifyObservers("ADD", newTask);
 
             return newTask;
@@ -96,7 +168,7 @@ public class OPLogic extends Observable{
             // fail to delete a task
             return null;
         }
-        
+
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
         notifyObservers("DELETE", taskToBeRemoved);
 
@@ -180,8 +252,7 @@ public class OPLogic extends Observable{
      * @param year
      * @return return null if given task ID not exist, edited task otherwise
      */
-    public Task editDate(String taskID, String day, String month,
-            String year) {
+    public Task editDate(String taskID, String day, String month, String year) {
         Calendar newDeadLine = setNewCalenderDate(Integer.parseInt(day),
                 Integer.parseInt(month), Integer.parseInt(year));
 
@@ -267,12 +338,11 @@ public class OPLogic extends Observable{
         return TaskList.getInstance().get(taskIDIndex);
     }
 
-    
-     private void notifyObservers(String type, Task task) {
-         setChanged();
-         OperationRecord<Task, String> record = new OperationRecord<Task, String>(task, type);
-         notifyObservers(record);
-     }
-     
+    private void notifyObservers(String type, Task task) {
+        setChanged();
+        OperationRecord<Task, String> record = new OperationRecord<Task, String>(
+                task.clone(), type);
+        notifyObservers(record);
+    }
 
 }

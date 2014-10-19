@@ -143,4 +143,17 @@ public class TaskList implements Collection<Task> {
     public Task get(int i) {
         return taskList.get(i);
     }
+
+    /**
+     * Sets the object located at index i to another object
+     * 
+     * @param i
+     *            Index of element
+     * @param task
+     *            The new object to override with
+     * @return The old object
+     */
+    public Task set(int i, Task task) {
+        return taskList.set(i, task);
+    }
 }

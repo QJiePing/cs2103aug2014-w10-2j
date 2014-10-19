@@ -1,15 +1,11 @@
-/**
- * 
- */
+
 package taskaler.controller;
 
-// import taskaler.ArchiveFunction;
-// import taskaler.Storage;
 import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
 import taskaler.storage.Storage;
 import taskaler.ui.UIFacade;
-import taskaler.archive.History;
+import taskaler.archive.PastHistory;
 import taskaler.archive.Undo;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
@@ -38,7 +34,7 @@ public class Controller{
     
     private static SearchLogic findLogic = null;
     
-    private static History history = null;
+    private static PastHistory history = null;
     
     private static Undo undo = null;
 
@@ -66,7 +62,6 @@ public class Controller{
                 break;
             case DELETE:
                 String taskID_DELETE = params[0];
-                assert (taskID_DELETE != null);
                 result = crudLogic.deleteTask(taskID_DELETE);
                 String name_DELETED = result.getTaskName();
                 ui.display("The task \"" + name_DELETED
@@ -122,7 +117,7 @@ public class Controller{
                 break;
             case ARCHIVE:
                 String date = params[0];
-                History.retrieveHistory(date);
+                PastHistory.retrieveHistory(date);
                 break;
             case UNDO:
                 result = undo.undo();
@@ -130,7 +125,7 @@ public class Controller{
                 ui.display("Undone last operation");
                 break;
             case INVALID:
-                throw new Exception("Invalid Arguments");
+                throw new Exception("Invalid Command");
             default:
                 throw new Error("Unknown Error");
             }
@@ -181,9 +176,9 @@ public class Controller{
      */
     private Controller() {
         list = TaskList.getInstance();
-        crudLogic = new OPLogic();
+        crudLogic = OPLogic.getInstance();
         findLogic = new SearchLogic();
-        history = new History();
+        history = new PastHistory();
         undo = new Undo();
         crudLogic.addObserver(history);
         crudLogic.addObserver(undo);

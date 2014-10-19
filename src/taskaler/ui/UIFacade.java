@@ -91,11 +91,7 @@ public class UIFacade extends Application {
             } else if (args.compareToIgnoreCase(DEFAULT_VIEW_CALENDAR) == 0) {
                 rootController.displayCalendar(list, Calendar.getInstance());
             } else {
-                if (userDefaultView.compareToIgnoreCase(DEFAULT_VIEW_LIST) == 0) {
-                    rootController.displayList(args, list);
-                } else {
-                    rootController.displayCalendar(list, Calendar.getInstance());
-                }
+                rootController.displayList(args, list);
             }
         } catch (IOException e) {
             rootController.showToast("IO error encountered!");
