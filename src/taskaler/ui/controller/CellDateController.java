@@ -4,8 +4,6 @@
 package taskaler.ui.controller;
 
 import taskaler.ui.model.CellDateModel;
-import taskaler.common.data.FXML_CONSTANTS;
-import taskaler.common.enumerate.RECTANGLE_COLOR;
 
 import java.io.IOException;
 
@@ -66,7 +64,7 @@ public class CellDateController extends AnchorPane implements IController {
 
         currentModel = model;
 
-        initialize(FXML_CONSTANTS.FXML_CELL_DATE);
+        initialize(common.FXML_CELL_DATE);
         update();
     }
 
@@ -84,7 +82,7 @@ public class CellDateController extends AnchorPane implements IController {
 
     @Override
     public void update() {
-        setTitle(currentModel.currentDate + FXML_CONSTANTS.EMPTY_STRING);
+        setTitle(currentModel.currentDate + common.EMPTY_STRING);
         int totalNumberOfTasks = currentModel.currentNumberOfEvents;
         if(totalNumberOfTasks > 0){
             setNumberOfTasks(totalNumberOfTasks);
@@ -116,9 +114,9 @@ public class CellDateController extends AnchorPane implements IController {
             return;
         }
         if (totalNumberOfTasks > MAX_NUMBER_OF_TASKS_FOR_DISPLAY) {
-            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + FXML_CONSTANTS.PLUS_STRING);
+            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + common.PLUS_STRING);
         } else {
-            lblNumber.setText(totalNumberOfTasks + FXML_CONSTANTS.EMPTY_STRING);
+            lblNumber.setText(totalNumberOfTasks + common.EMPTY_STRING);
         }
     }
 
@@ -148,10 +146,10 @@ public class CellDateController extends AnchorPane implements IController {
     private void setCircleVisible(boolean grey, boolean green, boolean orange,
             boolean red) {
         resetCircleVisibility();
-        setCircleVisible(RECTANGLE_COLOR.GREY, grey);
-        setCircleVisible(RECTANGLE_COLOR.GREEN, green);
-        setCircleVisible(RECTANGLE_COLOR.ORANGE, orange);
-        setCircleVisible(RECTANGLE_COLOR.RED, red);
+        setCircleVisible(common.RectangleColor.GREY, grey);
+        setCircleVisible(common.RectangleColor.GREEN, green);
+        setCircleVisible(common.RectangleColor.ORANGE, orange);
+        setCircleVisible(common.RectangleColor.RED, red);
     }
 
     /**
@@ -162,7 +160,7 @@ public class CellDateController extends AnchorPane implements IController {
      * @param isVisible
      *            The boolean to determine if circle is visible
      */
-    private void setCircleVisible(RECTANGLE_COLOR color, boolean isVisible) {
+    private void setCircleVisible(common.RectangleColor color, boolean isVisible) {
         switch (color) {
         case GREY:
             rectangleGrey.setVisible(isVisible);

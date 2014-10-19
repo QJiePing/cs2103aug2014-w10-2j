@@ -2,8 +2,7 @@
  * 
  */
 package taskaler.ui.model;
-
-import taskaler.common.enumerate.RECTANGLE_COLOR;
+import taskaler.ui.controller.common;
 
 /**
  * Model Associated with the TaskPane
@@ -21,7 +20,7 @@ public class TaskPaneModel {
     
     public String taskDueDate;
     
-    public RECTANGLE_COLOR taskWorkload;
+    public common.RectangleColor taskWorkload;
     
     public String taskDescription;
     
@@ -34,7 +33,7 @@ public class TaskPaneModel {
         taskID = "";
         taskStatus = "";
         taskDueDate = "";
-        taskWorkload = RECTANGLE_COLOR.GREY;
+        taskWorkload = common.RectangleColor.GREY;
         taskDescription = "None";
     }
 }

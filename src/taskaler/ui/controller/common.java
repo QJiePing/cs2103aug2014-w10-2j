@@ -1,14 +1,18 @@
 /**
  * 
  */
-package taskaler.common.data;
+package taskaler.ui.controller;
 
 /**
  * @author Kiwi
  *
  */
-public final class FXML_CONSTANTS {
+public final class common {
 
+    public enum RectangleColor {
+        GREY, GREEN, ORANGE, RED
+    }
+    
     public static final String FXML_ROOT        = "/taskaler/ui/view/RootView.fxml";
     public static final String FXML_CALENDAR    = "/taskaler/ui/view/CalendarPaneView.fxml";
     public static final String FXML_CELL_DATE   = "/taskaler/ui/view/CellDateView.fxml";

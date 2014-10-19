@@ -80,7 +80,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
                                  <image>
-                                    <Image url="@/images/easy.png" />
+                                    <Image url="@/res/easy.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -95,7 +95,7 @@
                            <graphic>
                               <ImageView fitHeight="26.0" fitWidth="26.0" preserveRatio="true">
                                  <image>
-                                    <Image url="@/images/medium.png" />
+                                    <Image url="@/res/medium.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -110,7 +110,7 @@
                            <graphic>
                               <ImageView fitHeight="26.0" fitWidth="26.0" preserveRatio="true">
                                  <image>
-                                    <Image url="@/images/hard.png" />
+                                    <Image url="@/res/hard.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -125,7 +125,7 @@
                            <graphic>
                               <ImageView fitHeight="26.0" fitWidth="26.0" preserveRatio="true">
                                  <image>
-                                    <Image url="@/images/default.png" />
+                                    <Image url="@/res/default.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />

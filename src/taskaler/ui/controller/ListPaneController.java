@@ -6,7 +6,6 @@ package taskaler.ui.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import taskaler.common.data.FXML_CONSTANTS;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
 import taskaler.ui.model.ListPaneModel;
@@ -51,7 +50,7 @@ public class ListPaneController extends TitledPane implements IController {
     public ListPaneController(ListPaneModel model) throws IOException {
         currentModel = model;
 
-        initialize(FXML_CONSTANTS.FXML_LIST_PANE);
+        initialize(common.FXML_LIST_PANE);
         update();
     }
 

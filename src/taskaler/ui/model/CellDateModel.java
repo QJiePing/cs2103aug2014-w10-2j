@@ -5,7 +5,7 @@ package taskaler.ui.model;
 
 import java.util.ArrayList;
 
-import taskaler.common.enumerate.RECTANGLE_COLOR;
+import taskaler.ui.controller.common;
 
 /**
  * Model Associated with the CellDate
@@ -19,7 +19,7 @@ public class CellDateModel {
 
     public int currentNumberOfEvents;
 
-    public ArrayList<RECTANGLE_COLOR> currentWorkloads;
+    public ArrayList<common.RectangleColor> currentWorkloads;
 
     /**
      * Default Constructor
@@ -27,6 +27,6 @@ public class CellDateModel {
     public CellDateModel() {
         currentDate = 1;
         currentNumberOfEvents = 0;
-        currentWorkloads = new ArrayList<RECTANGLE_COLOR>();
+        currentWorkloads = new ArrayList<common.RectangleColor>();
     }
 }
