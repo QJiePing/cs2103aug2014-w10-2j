@@ -1,6 +1,5 @@
 package taskaler.undo;
 import java.util.Stack;
-import java.util.LinkedList;
 import taskaler.common.data.Task;
 import taskaler.logic.OPLogic;
 
@@ -14,12 +13,23 @@ public class UndoFunction {
 	public UndoFunction(){
 		record= new Stack<OperationRecords<Task,String>>();
 	}
-
+	/*
+	 * This method is only used by the controller component to inform the UndoFunction
+	 * what command has been entered so far.
+	 * 
+	 * @param t
+	 * 			Task object that the command interact with
+	 * @param operation
+	 * 			The String that indicate what is the command executed
+	 * 
+	 */
 	public void saveOperation(Task t, String operation){
 		OperationRecords<Task,String> temp= new OperationRecords<Task,String>(t,operation);
 		record.push(temp);
 	}
-	
+	/*
+	 * This method is called when the user enter the undo command
+	 */
 	public void undo(){
 		//get the last operation records
 		OperationRecords<Task,String> opRecord=record.pop();
@@ -36,6 +46,11 @@ public class UndoFunction {
 		}
 		
 	}
+	/*
+	 * Helper method to determine the inverse action to perform
+	 * @param op
+	 * 			The operation of the command
+	 */
 	private String inverseFunction(String op){
 		String result="";
 		switch(op){
@@ -49,16 +64,19 @@ public class UndoFunction {
 		return result;
 		}
 	}
+/*
+ * This is an record object that will only be instantiated and used by UndoFunction
+ */
 
 class OperationRecords<T,S>{
 	private T t;
 	private S op;
 	
-	public OperationRecords(T tObj,S sObj){
+	protected OperationRecords(T tObj,S sObj){
 		this.t=tObj;
 		this.op=sObj;
 	}
-	public S getOp(){
+	protected S getOp(){
 		return this.op;
 	}
 	public T getTask(){

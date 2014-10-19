@@ -1,8 +1,10 @@
 package taskaler.storage;
 
 import taskaler.common.data.Task;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,6 +19,52 @@ import com.google.gson.reflect.TypeToken;
  * To use this class, no instantiation of storage class is needed.
  */
 public class Storage {
+	
+	/*
+	 * Method to write history to the text file
+	 * @param fileName
+	 * 			The directory of the text file
+	 * @param message
+	 * 			The message to be stored in the history file
+	 * 
+	 * @return return a boolean value indicating whether the write operation 
+	 * is success or fail
+	 */
+
+	public static boolean writeToHistory(String fileName, String message){
+		try{
+			FileWriter fw= new FileWriter(fileName);
+			fw.append(message);
+			fw.close();
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/*
+	 * Method to read in history record from the text file
+	 * @param fileName
+	 * 			The directory of the text file
+	 * 
+	 * @return return a String of all the history records
+	 */
+	
+	public static String readFromHistory(String fileName){
+		try{
+			Scanner s= new Scanner(fileName);
+			String result="";
+			while(s.hasNext()){
+				result+=s.nextLine()+"\n";
+			}
+			s.close();
+			return result.trim();
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/*
 	 * Method to read in task data from the text file
@@ -26,10 +74,10 @@ public class Storage {
 	 * @return return an arraylist of saved tasks from the text file
 	 */
 	public static ArrayList<Task> readFromFile(String file){
-		
+
 		//temporary holder to store an arraylist of saved tasks from the text file
 		ArrayList<Task> resultArrayList = new ArrayList<Task>();
-		
+
 		try{
 			FileReader reader= new FileReader(file);
 			Gson gson = createGsonObj();
@@ -73,7 +121,7 @@ public class Storage {
 		}
 		return true;
 	}
-	
+
 	/*
 	 * Method to instantiate a gson object for the reading json object from json formatted
 	 * file and output all saved task information in json format to the text file.
