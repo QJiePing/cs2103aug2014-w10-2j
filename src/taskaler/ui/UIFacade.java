@@ -3,11 +3,13 @@
  */
 package taskaler.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -21,6 +23,8 @@ import javafx.stage.WindowEvent;
 import javax.swing.JOptionPane;
 
 import taskaler.common.data.Task;
+import taskaler.common.util.CommonLogger;
+import taskaler.storage.Storage;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.hook.DLLConnector;
 import taskaler.ui.model.RootModel;
@@ -44,12 +48,15 @@ public class UIFacade extends Application implements Observer {
 
     // File Constants
     private static final String ICON_PNG = "/res/icon.png";
-    private static final String DLL_PATH_32 = "/JNILibrary";
-    private static final String DLL_PATH_64 = "/JNILibrary64";
+    private static final String DLL_PATH_PARENT = "/lib";
+    private static final String DLL_PATH_32 = "/JNILibrary.dll";
+    private static final String DLL_PATH_64 = "/JNILibrary64.dll";
+    private static File libraryLoaded = null;
 
     // Class Variables
     private RootController rootController = null;
     private Stage primaryStage = null;
+    private Storage storage = null;
 
     @Override
     public void start(Stage stage) {
@@ -58,7 +65,6 @@ public class UIFacade extends Application implements Observer {
                     "Choose a default view", "Default View Option",
                     JOptionPane.INFORMATION_MESSAGE, null,
                     DEFAULT_VIEW_OPTIONS, DEFAULT_VIEW_OPTIONS[0]);
-            createHook();
             stage.getIcons().add(
                     new Image(getClass().getResourceAsStream(ICON_PNG)));
             stage.setTitle(TITLE);
@@ -80,6 +86,10 @@ public class UIFacade extends Application implements Observer {
 
             stage.show();
             primaryStage = stage;
+            storage = new Storage();
+
+            createHook();
+            // createCleanUp();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -87,14 +97,46 @@ public class UIFacade extends Application implements Observer {
 
     }
 
+    /**
+     * Method to create clean up procedures
+     * 
+     */
+    private void createCleanUp() {
+        Thread shutDownHook = new Thread() {
+            public void run() {
+                if (libraryLoaded != null) {
+                    storage = null;
+                    System.gc();
+                    while (libraryLoaded.delete() != true) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            CommonLogger.getInstance().exceptionLogger(e,
+                                    Level.SEVERE);
+                        }
+                    }
+                    ;
+                }
+            }
+        };
+        Runtime.getRuntime().addShutdownHook(shutDownHook);
+
+    }
+
+    /**
+     * Method to create the hotkey hook
+     * 
+     */
     private void createHook() {
         try {
             String jvmVer = System.getProperty("sun.arch.data.model");
             if (jvmVer.compareTo("32") == 0) {
-                System.loadLibrary(DLL_PATH_32);
+                libraryLoaded = storage
+                        .loadJarDll(DLL_PATH_PARENT, DLL_PATH_32);
             } else if (jvmVer.compareTo("64") == 0) {
-                System.loadLibrary(DLL_PATH_64);
-            }else{
+                libraryLoaded = storage
+                        .loadJarDll(DLL_PATH_PARENT, DLL_PATH_64);
+            } else {
                 throw new Exception("Unknown JVM version detected");
             }
 
@@ -108,10 +150,9 @@ public class UIFacade extends Application implements Observer {
             Thread thread = new Thread(eventSource);
             thread.start();
         } catch (UnsatisfiedLinkError err) {
-            System.out
-                    .println("Incorrect library configurations due to UnsatisfiedLinkException");
-        } catch(Exception err){
-            System.out.println("Unknown Error Found while creating hook");
+            CommonLogger.getInstance().exceptionLogger(err, Level.WARNING);
+        } catch (Exception err) {
+            CommonLogger.getInstance().exceptionLogger(err, Level.WARNING);
         }
     }
 
@@ -140,7 +181,7 @@ public class UIFacade extends Application implements Observer {
             }
         } catch (IOException e) {
             rootController.showToast("IO error encountered!");
-            e.printStackTrace();
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
         }
     }
 
@@ -156,7 +197,7 @@ public class UIFacade extends Application implements Observer {
                 rootController.displayTask(t);
             } catch (IOException e) {
                 rootController.showToast("IO error encountered!");
-                e.printStackTrace();
+                CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
             }
         }
     }
@@ -171,10 +212,6 @@ public class UIFacade extends Application implements Observer {
         if (t != null && !t.isEmpty()) {
             rootController.showToast(t);
         }
-    }
-
-    public void onClose() {
-
     }
 
     @Override
