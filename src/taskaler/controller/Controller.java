@@ -101,7 +101,7 @@ public class Controller{
                 ui.display(result);
                 break;
             case VIEW:
-                if (params[0] != null && params[0].equals("TASK")) {
+                if (params[1] != null && !params[1].isEmpty() && params[0].equals("TASK")) {
                     result = findLogic.findByID(params[1]);
                     ui.display(result);
                 } else {

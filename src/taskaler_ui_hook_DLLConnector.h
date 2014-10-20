@@ -14,10 +14,26 @@ extern "C" {
 /*
  * Class:     taskaler_ui_hook_DLLConnector
  * Method:    isHotKeyPressed
- * Signature: (IZ)Z
+ * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_taskaler_ui_hook_DLLConnector_isHotKeyPressed
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     taskaler_ui_hook_DLLConnector
+ * Method:    RegisterHotKey
+ * Signature: (IZ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_taskaler_ui_hook_DLLConnector_RegisterHotKey
   (JNIEnv *, jobject, jint, jboolean);
+
+/*
+ * Class:     taskaler_ui_hook_DLLConnector
+ * Method:    UnregisterHotKey
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_taskaler_ui_hook_DLLConnector_UnregisterHotKey
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

@@ -5,9 +5,11 @@ package taskaler.common.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import taskaler.common.util.parser.calendarToString;
+import taskaler.common.data.TaskComparator;
 
 /**
  * Singleton Class to hold the global task list
@@ -45,12 +47,18 @@ public class TaskList implements Collection<Task> {
 
     @Override
     public boolean add(Task task) {
-        return taskList.add(task);
+        boolean result = taskList.add(task);
+        Comparator<Task> c = new TaskComparator();
+        taskList.sort(c);
+        return result;
     }
 
     @Override
     public boolean addAll(Collection<? extends Task> collection) {
-        return taskList.addAll(collection);
+        boolean result = taskList.addAll(collection);
+        Comparator<Task> c = new TaskComparator();
+        taskList.sort(c);
+        return result;
     }
 
     @Override

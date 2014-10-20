@@ -191,5 +191,13 @@ public class RootController extends BorderPane implements IController {
             return common.RectangleColor.GREY;
         }
     }
+    
+    /**
+     * Method to give focus to the window
+     * 
+     */
+    public void giveFocus(){
+       txtCmdInput.requestFocus();
+    }
 
 }

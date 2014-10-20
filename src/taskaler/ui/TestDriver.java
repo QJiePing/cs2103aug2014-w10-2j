@@ -120,7 +120,6 @@ public class TestDriver extends Application {
         // starts the event thread
         Thread thread = new Thread(eventSource);
         thread.start();
-        DLLConnector.isStopped.set(true);
     }
 
     @Override
