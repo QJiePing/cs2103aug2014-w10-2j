@@ -1,10 +1,11 @@
 package taskaler.storage;
 
 import taskaler.common.data.Task;
+import taskaler.common.util.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,51 +21,19 @@ import com.google.gson.reflect.TypeToken;
  */
 public class Storage {
 	
-	/*
-	 * Method to write history to the text file
-	 * @param fileName
-	 * 			The directory of the text file
-	 * @param message
-	 * 			The message to be stored in the history file
-	 * 
-	 * @return return a boolean value indicating whether the write operation 
-	 * is success or fail
-	 */
+	private static CommonLogger log= CommonLogger.getInstance();
+	private static Storage instance= null;
+	
+	private Storage(){
+		
+	}
+	public static Storage getInstance(){
+		if(instance==null){
+			instance=new Storage();
+		}
+		return instance;
+	}
 
-	public static boolean writeToHistory(String fileName, String message){
-		try{
-			FileWriter fw= new FileWriter(fileName);
-			fw.append(message);
-			fw.close();
-			return true;
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	/*
-	 * Method to read in history record from the text file
-	 * @param fileName
-	 * 			The directory of the text file
-	 * 
-	 * @return return a String of all the history records
-	 */
-	
-	public static String readFromHistory(String fileName){
-		try{
-			Scanner s= new Scanner(fileName);
-			String result="";
-			while(s.hasNext()){
-				result+=s.nextLine()+"\n";
-			}
-			s.close();
-			return result.trim();
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-	}
 
 	/*
 	 * Method to read in task data from the text file
@@ -73,7 +42,7 @@ public class Storage {
 	 * 
 	 * @return return an arraylist of saved tasks from the text file
 	 */
-	public static ArrayList<Task> readFromFile(String file){
+	public ArrayList<Task> readFromFile(String file){
 
 		//temporary holder to store an arraylist of saved tasks from the text file
 		ArrayList<Task> resultArrayList = new ArrayList<Task>();
@@ -83,8 +52,9 @@ public class Storage {
 			Gson gson = createGsonObj();
 			TypeToken<ArrayList<Task>> typeToken= new TypeToken<ArrayList<Task>>(){};
 			resultArrayList=gson.fromJson(reader, typeToken.getType());
+			reader.close();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.exceptionLogger(e, Level.ALL);
 			return null;
 		}
 		return resultArrayList;
@@ -100,7 +70,7 @@ public class Storage {
 	 * @return return a boolean indicating whether the write operation
 	 * is a success or fail
 	 */
-	public static boolean writeToFile(String file, ArrayList<Task> arrayList){
+	public boolean writeToFile(String file, ArrayList<Task> arrayList){
 
 		try{
 			FileWriter fw= new FileWriter(file);
@@ -113,10 +83,9 @@ public class Storage {
 			else{
 				fw.write(output);
 			}
-
 			fw.close();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.exceptionLogger(e, Level.ALL);
 			return false;
 		}
 		return true;
@@ -128,7 +97,7 @@ public class Storage {
 	 * 
 	 * @return return a gson object
 	 */
-	private static Gson createGsonObj() {
+	private Gson createGsonObj() {
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.setPrettyPrinting();
 		Gson gson = gsonBuilder.create();
@@ -136,14 +105,14 @@ public class Storage {
 	}
 
     
-    public static void storageWriteStub(String file, String message){
+    public void storageWriteStub(String file, String message){
         System.out.println("=====================================");
         System.out.println("Filename : " + file);
         System.out.println("Content : " + message);
         System.out.println("=====================================");
     }
     
-    public static String storageReadStub(String file){
+    public String storageReadStub(String file){
         System.out.println("=====================================");
         System.out.println("Filename : " + file);
         System.out.println("Giving back Weird String");

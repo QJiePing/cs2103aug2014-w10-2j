@@ -25,15 +25,17 @@ public class PastHistory implements Observer {
 
     public static void logHistory(String message) throws Exception {
         String fileName = fileNameGenerator(NO_DATE_SPECIFIED);
-        Storage.storageWriteStub(fileName, message);
-        // Storage.writeToHistoryLogger(fileName, message);
+        Storage store= Storage.getInstance();
+        store.storageWriteStub(fileName, message);
+        // store.writeToHistoryLogger(fileName, message);
     }
 
     public static String retrieveHistory(String date) {
         String fileName = fileNameGenerator(date);
-
-        // String currentHistory = Storage.readFromHistoryLogger(fileName);
-        String currentHistory = Storage.storageReadStub(fileName);
+        // Storage store= Storage.getInstance();
+        // String currentHistory = store.readFromHistoryLogger(fileName);
+        Storage store= Storage.getInstance();
+        String currentHistory = store.storageReadStub(fileName);
         
         if (currentHistory == null) {
             return NO_HISTORY_RECORD_MESSAGE;

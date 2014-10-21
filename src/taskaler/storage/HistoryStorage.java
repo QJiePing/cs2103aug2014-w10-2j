@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Scanner;
 
+/*
+ * @author Quek Jie Ping A0111798X
+ */
 public class HistoryStorage {
 	
 	private static HistoryStorage instance=null;

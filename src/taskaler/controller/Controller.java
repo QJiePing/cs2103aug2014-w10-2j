@@ -129,7 +129,8 @@ public class Controller{
             default:
                 throw new Error("Unknown Error");
             }
-            Storage.writeToFile(TASK_LIST_FILE, list.toArray(new ArrayList<Task>()));
+            Storage store=Storage.getInstance();
+            store.writeToFile(TASK_LIST_FILE, list.toArray(new ArrayList<Task>()));
         } catch (AssertionError e) {
             Error er = new Error("Task ID was invalid");
             handleError(er);
@@ -182,7 +183,8 @@ public class Controller{
         undo = new Undo();
         crudLogic.addObserver(history);
         crudLogic.addObserver(undo);
-        list.addAll(Storage.readFromFile(TASK_LIST_FILE));
+        Storage store= Storage.getInstance();
+        list.addAll(store.readFromFile(TASK_LIST_FILE));
         ui = new UIFacade();
     }
 

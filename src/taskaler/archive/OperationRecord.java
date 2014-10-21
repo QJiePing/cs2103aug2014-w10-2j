@@ -4,7 +4,7 @@
 package taskaler.archive;
 
 /**
- * @author Quek Jie Ping, <Admin Number>
+ * @author Quek Jie Ping, A0111798X
  *
  */
 public class OperationRecord<T, S> {
