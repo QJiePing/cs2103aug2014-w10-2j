@@ -162,8 +162,7 @@ public class Storage {
                 System.getProperty("java.io.tmpdir"));
         File temp = new File(windowsUserTempDirectory, name);
         if(temp.exists()){
-            System.load(temp.getAbsolutePath());
-            return temp;
+            temp.delete();
         }
         System.out.println("Creating temp dll: " + temp.getAbsolutePath());
         FileOutputStream fos = new FileOutputStream(temp);
