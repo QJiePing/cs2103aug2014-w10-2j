@@ -27,9 +27,6 @@ public class TextPaneController extends TitledPane implements IController {
     private TitledPane titledPane;
 
     @FXML
-    private ScrollPane scrollPane;
-
-    @FXML
     private TextArea txtBody;
 
     /**

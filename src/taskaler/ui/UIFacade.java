@@ -4,7 +4,9 @@
 package taskaler.ui;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Observable;
@@ -62,7 +64,6 @@ public class UIFacade extends Application implements Observer {
     // Class Variables
     private RootController rootController = null;
     private Stage primaryStage = null;
-    private Storage storage = null;
 
     @Override
     public void start(Stage stage) {
@@ -92,7 +93,6 @@ public class UIFacade extends Application implements Observer {
 
             stage.show();
             primaryStage = stage;
-            storage = new Storage();
 
             createHook();
             // createCleanUp();
@@ -111,9 +111,7 @@ public class UIFacade extends Application implements Observer {
         Thread shutDownHook = new Thread() {
             public void run() {
                 if (libraryLoaded != null) {
-                    storage = null;
-                    System.gc();
-                    
+
                 }
             }
         };
@@ -130,15 +128,15 @@ public class UIFacade extends Application implements Observer {
             String jvmVer = System.getProperty("sun.arch.data.model");
             libraryLoaded = new File[2];
             if (jvmVer.compareTo("32") == 0) {
-                libraryLoaded[0] = storage.loadDll(DLL_PATH_PARENT
-                        + DLL_PATH_BIT_32, DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
-                libraryLoaded[1] = storage.loadDll(DLL_PATH_PARENT
-                        + DLL_PATH_BIT_32, DLL_PATH_OUTPUT, DLL_PATH_32);
+                libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
+                        DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
+                libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
+                        DLL_PATH_OUTPUT, DLL_PATH_32);
             } else if (jvmVer.compareTo("64") == 0) {
-                libraryLoaded[0] = storage.loadDll(DLL_PATH_PARENT
-                        + DLL_PATH_BIT_64, DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
-                libraryLoaded[1] = storage.loadDll(DLL_PATH_PARENT
-                        + DLL_PATH_BIT_64, DLL_PATH_OUTPUT, DLL_PATH_64);
+                libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
+                        DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
+                libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
+                        DLL_PATH_OUTPUT, DLL_PATH_64);
             } else {
                 throw new Exception("Unknown JVM version detected");
             }
@@ -157,6 +155,47 @@ public class UIFacade extends Application implements Observer {
         } catch (Exception err) {
             CommonLogger.getInstance().exceptionLogger(err, Level.WARNING);
         }
+    }
+
+    /**
+     * Method to load a dll into the JVM
+     * 
+     * @param parent
+     *            The path to the parent of the library
+     * @param outputFolder
+     *            The destination folder
+     * @param library
+     *            the library to be loaded
+     * @return the file object of the library
+     * @throws IOException
+     *             thrown if there is an error reading the file
+     */
+    public File loadDll(String parent, String outputFolder, String library)
+            throws IOException, UnsatisfiedLinkError {
+        InputStream in = Storage.class.getResourceAsStream(parent + library);
+        byte[] buffer = new byte[1024];
+        int read = -1;
+        File windowsUserTempDirectory = new File(
+                System.getProperty("java.io.tmpdir") + outputFolder);
+        if (!windowsUserTempDirectory.exists()) {
+            windowsUserTempDirectory.mkdir();
+        }
+        File temp = new File(windowsUserTempDirectory, library);
+        if (temp.exists()) {
+            temp.delete();
+        }
+        System.out.println("Creating temp dll: " + temp.getAbsolutePath());
+        FileOutputStream fos = new FileOutputStream(temp);
+
+        while ((read = in.read(buffer)) != -1) {
+            fos.write(buffer, 0, read);
+        }
+        fos.close();
+        in.close();
+
+        System.load(temp.getAbsolutePath());
+
+        return temp;
     }
 
     /**
@@ -214,6 +253,23 @@ public class UIFacade extends Application implements Observer {
     public void display(String t) {
         if (t != null && !t.isEmpty()) {
             rootController.showToast(t);
+        }
+    }
+
+    /**
+     * Method to show a text pane view
+     * 
+     * @param title
+     *            title of the text view
+     * @param text
+     *            body of the text view
+     */
+    public void display(String title, String text) {
+        try {
+            rootController.displayText(title, text);
+        } catch (IOException e) {
+            rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
         }
     }
 
