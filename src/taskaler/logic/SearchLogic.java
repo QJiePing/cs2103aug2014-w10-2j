@@ -4,7 +4,6 @@
 package taskaler.logic;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;

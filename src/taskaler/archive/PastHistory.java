@@ -1,18 +1,12 @@
 package taskaler.archive;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
-import taskaler.storage.Storage;
+import taskaler.storage.HistoryStorage;
 
 public class PastHistory implements Observer {
     public static String HISTORY_FILE_NAME = "History_%s_%s_%s.log";
@@ -25,17 +19,18 @@ public class PastHistory implements Observer {
 
     public static void logHistory(String message) throws Exception {
         String fileName = fileNameGenerator(NO_DATE_SPECIFIED);
-        Storage store= Storage.getInstance();
-        store.storageWriteStub(fileName, message);
-        // store.writeToHistoryLogger(fileName, message);
+        //Storage store= Storage.getInstance();
+        //store.storageWriteStub(fileName, message);
+        HistoryStorage store = HistoryStorage.getInstance();
+        store.writeToHistory(fileName, message);
     }
 
     public static String retrieveHistory(String date) {
         String fileName = fileNameGenerator(date);
-        // Storage store= Storage.getInstance();
-        // String currentHistory = store.readFromHistoryLogger(fileName);
-        Storage store= Storage.getInstance();
-        String currentHistory = store.storageReadStub(fileName);
+        HistoryStorage store = HistoryStorage.getInstance();
+        String currentHistory = store.readFromHistory(fileName);
+        //Storage store= Storage.getInstance();
+        //String currentHistory = store.storageReadStub(fileName);
         
         if (currentHistory == null) {
             return NO_HISTORY_RECORD_MESSAGE;
@@ -48,7 +43,7 @@ public class PastHistory implements Observer {
     private static String fileNameGenerator(String date) {
         String fileName;
         String[] fileNameDate;
-        if (date.equals(NO_DATE_SPECIFIED)) {
+        if (date == null || date.isEmpty()) {
             fileNameDate = calendarToString.toArray(Calendar.getInstance());
         } else {
             fileNameDate = date.split("/");
@@ -65,7 +60,7 @@ public class PastHistory implements Observer {
         if (arg instanceof OperationRecord<?, ?>) {
             OperationRecord<Task, String> currentRecord = (OperationRecord<Task, String>) arg;
             
-            String message ="[" + calendarToString.parseDate(Calendar.getInstance(), "hh_mm_ss") + "]";
+            String message ="[" + calendarToString.parseDate(Calendar.getInstance(), "hh:mm:ss") + "]";
             switch (currentRecord.getOp()) {
             case "ADD":
                 message = message + String.format("Added new Task %s (ID: %s)\n",
