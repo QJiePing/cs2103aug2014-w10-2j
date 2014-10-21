@@ -32,6 +32,20 @@ public class CommonLogger {
     public void exceptionLogger(Exception error, Level logLevel) {
         logger.log(logLevel, error.getMessage(), error);
     }
+    
+    /**
+     * Method to log an error to the log file. If this method fails, an
+     * error message will be thrown
+     * 
+     * @param error
+     *            The throwable to be logged
+     * @param logLevel
+     *            The level of exception to be logged; Accepted log levels are
+     *            ALL, CONFIG, INFO, WARNING, SEVERE
+     */
+    public void exceptionLogger(Error error, Level logLevel) {
+        logger.log(logLevel, error.getMessage(), error);
+    }
 
     /**
      * Method to set up the log file handler.

@@ -47,6 +47,9 @@ public class TaskList implements Collection<Task> {
 
     @Override
     public boolean add(Task task) {
+        if(task == null){
+            return false;
+        }
         boolean result = taskList.add(task);
         Comparator<Task> c = new TaskComparator();
         taskList.sort(c);
@@ -55,6 +58,9 @@ public class TaskList implements Collection<Task> {
 
     @Override
     public boolean addAll(Collection<? extends Task> collection) {
+        if(collection == null){
+            return false;
+        }
         boolean result = taskList.addAll(collection);
         Comparator<Task> c = new TaskComparator();
         taskList.sort(c);

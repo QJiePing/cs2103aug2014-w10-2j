@@ -49,7 +49,8 @@ public class Controller{
      */
     public void executeCMD(String commandString) {
         try {
-            Parser values = new Parser(commandString);
+            Parser values = new Parser();
+            values.parseCMD(commandString);
             CmdType commandType = values.getCommand();
             String[] params = values.getParameters();
             Task result = null;

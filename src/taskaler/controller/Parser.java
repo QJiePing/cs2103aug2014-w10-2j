@@ -25,8 +25,8 @@ public class Parser {
      * 
      * Contructor for Parser
      */
-    public Parser(String commandString) throws Exception{
-        parseCMD(commandString);
+    public Parser() throws Exception{
+        ;
     }
     
     public CmdType getCommand(){
@@ -41,7 +41,7 @@ public class Parser {
      * 
      * Public function to parse the command string
      */
-    private void parseCMD(String commandString) throws Exception{
+    public void parseCMD(String commandString) throws Exception{
         String CMD = getFirstWord(commandString);
         command = determineCMD_TYPE(CMD);
         parameters = getParams(command, commandString);
