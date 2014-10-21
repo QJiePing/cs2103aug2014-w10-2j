@@ -1,17 +1,19 @@
 /**
  * 
  */
-package taskaler.ui;
+package taskaler.ui.test;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Scanner;
 
 import taskaler.common.util.parser.calendarToString;
+import taskaler.ui.UIFacade;
 import taskaler.ui.controller.CalendarPaneController;
 import taskaler.ui.controller.ListPaneController;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.controller.TaskPaneController;
+import taskaler.ui.controller.TextPaneController;
 import taskaler.ui.controller.common;
 import taskaler.ui.hook.DLLConnector;
 import taskaler.ui.hook.KeyPressHandler;
@@ -19,6 +21,7 @@ import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
 import taskaler.ui.model.TaskPaneModel;
+import taskaler.ui.model.TextPaneModel;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -94,6 +97,13 @@ public class TestDriver extends Application {
             case "Hook":
                 new TestDriver().startHookTest();
                 return;
+            case "TextPane":
+                TextPaneModel textPaneModel = new TextPaneModel();
+                textPaneModel.title = "Title Text";
+                textPaneModel.textBody = "WEIRD WEIRD\n WEIRD\n WEIRD WEIRD\n WEIRD\n WEIRD WEIRD\n WEIRD\n ";
+                TextPaneController textPaneController = new TextPaneController(textPaneModel);
+                TestArea = textPaneController;
+                break;
             case "Facade":
                 isTestingFacade = true;
             }

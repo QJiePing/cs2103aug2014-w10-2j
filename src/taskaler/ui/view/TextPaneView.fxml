@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.TilePane?>
+
+
+<fx:root fx:id="titledPane" animated="false" maxHeight="-Infinity"
+	maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+	prefHeight="400.0" prefWidth="400.0" type="TitledPane" xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/8">
+	<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
+		minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+		prefWidth="400.0">
+		<children>
+			<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" layoutX="92.0"
+				layoutY="100.0" maxHeight="-Infinity" maxWidth="-Infinity"
+				minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
+				prefWidth="400.0" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="-10.0"
+				AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="-10.0"
+				AnchorPane.topAnchor="-10.0">
+				<content>
+					<TextArea fx:id="txtBody" editable="false" prefHeight="350.0"
+						prefWidth="400.0" />
+				</content>
+			</ScrollPane>
+		</children>
+	</AnchorPane>
+</fx:root>

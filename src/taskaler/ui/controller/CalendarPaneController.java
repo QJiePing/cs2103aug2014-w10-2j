@@ -5,7 +5,9 @@ package taskaler.ui.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+
 import taskaler.common.data.Task;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.CellDateModel;
@@ -49,7 +51,14 @@ public class CalendarPaneController extends BorderPane implements IController {
      */
     public CalendarPaneController(CalendarPaneModel model) throws IOException {
         currentModel = model;
-
+        if(currentModel.currentTaskList == null){
+            currentModel.currentTaskList = new ArrayList<Task>(); 
+        }
+        
+        if(currentModel.currentCalendar == null){
+            currentModel.currentCalendar = Calendar.getInstance(); 
+        }
+        
         initialize(common.FXML_CALENDAR);
         update();
     }

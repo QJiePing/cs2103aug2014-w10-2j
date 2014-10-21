@@ -185,7 +185,7 @@ public class RootController extends BorderPane implements IController {
             return common.RectangleColor.GREEN;
         } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
             return common.RectangleColor.ORANGE;
-        } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
+        } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0) {
             return common.RectangleColor.RED;
         } else {
             return common.RectangleColor.GREY;
