@@ -118,7 +118,8 @@ public class Controller{
                 break;
             case ARCHIVE:
                 String date = params[0];
-                PastHistory.retrieveHistory(date);
+                String out = PastHistory.retrieveHistory(date);
+                ui.display("History", out);
                 break;
             case UNDO:
                 result = undo.undo();

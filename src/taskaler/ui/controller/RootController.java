@@ -21,6 +21,7 @@ import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
 import taskaler.ui.model.TaskPaneModel;
+import taskaler.ui.model.TextPaneModel;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
 import taskaler.controller.Controller;
@@ -140,8 +141,7 @@ public class RootController extends BorderPane implements IController {
 
         CalendarPaneModel model = new CalendarPaneModel();
         model.currentCalendar = cal;
-        model.currentMonth = cal.get(Calendar.MONTH)
-                + common.OFFSET_BY_ONE;
+        model.currentMonth = cal.get(Calendar.MONTH) + common.OFFSET_BY_ONE;
         model.currentYear = cal.get(Calendar.YEAR);
         model.currentTaskList = list;
 
@@ -173,6 +173,26 @@ public class RootController extends BorderPane implements IController {
     }
 
     /**
+     * Method to render a view that contains text only
+     * 
+     * @param title
+     *            Title for the view
+     * @param text
+     *            The body text
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering text
+     *             pane
+     */
+    public void displayText(String title, String text) throws IOException {
+        anchorPaneDisplay.getChildren().clear();
+        TextPaneModel model = new TextPaneModel();
+        model.title = title;
+        model.textBody = text;
+        TextPaneController pane = new TextPaneController(model);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
      * Method to convert the string representation of the workload attribute to
      * RECTANGLE_COLOR representation
      * 
@@ -191,13 +211,13 @@ public class RootController extends BorderPane implements IController {
             return common.RectangleColor.GREY;
         }
     }
-    
+
     /**
      * Method to give focus to the window
      * 
      */
-    public void giveFocus(){
-       txtCmdInput.requestFocus();
+    public void giveFocus() {
+        txtCmdInput.requestFocus();
     }
 
 }
