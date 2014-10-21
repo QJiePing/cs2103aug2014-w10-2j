@@ -6,6 +6,11 @@ import org.junit.Test;
 
 import taskaler.controller.Parser.CmdType;
 
+/*
+ * Parser just parses the user command string into its arguments, the other components will deal with 
+ * flawed arguments, so there would not be boundary cases for parser
+ */
+
 public class ParserTest {
     private static Parser newParser;
     
@@ -126,7 +131,7 @@ public class ParserTest {
             assertEquals(currentParams[1], "byebye");
             assertEquals(currentParams[2], "hahaha");
             
-          //This is the test case for valid syntax
+            //This is the test case for valid syntax
             reset();
             newParser.parseCMD("edit -d ahah");
             currentCMD = newParser.getCommand();
@@ -136,6 +141,17 @@ public class ParserTest {
             assertEquals(currentParams[0], "-d");
             assertEquals(currentParams[1], null);
             assertEquals(currentParams[2], "ahah");
+            
+            //This is the test for invalid syntax
+            reset();
+            newParser.parseCMD("edit -d lala");
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.EDIT);
+            assertEquals(currentParams.length, 3);
+            assertEquals(currentParams[0], "-d");
+            assertEquals(currentParams[1], null);
+            assertEquals(currentParams[2], "lala");
         }
         catch(Exception e){
             e.printStackTrace();
