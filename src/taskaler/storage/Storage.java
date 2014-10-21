@@ -153,14 +153,17 @@ public class Storage {
         return "WEIRD WEIRD WEIRD\nWEIRD WEIRD WEIRD";
     }
 
-    public File loadJarDll(String parent, String name)
+    public File loadDll(String parent, String outputFolder, String library)
             throws IOException {
-        InputStream in = Storage.class.getResourceAsStream(parent + name);
+        InputStream in = Storage.class.getResourceAsStream(parent + library);
         byte[] buffer = new byte[1024];
         int read = -1;
         File windowsUserTempDirectory = new File(
-                System.getProperty("java.io.tmpdir"));
-        File temp = new File(windowsUserTempDirectory, name);
+                System.getProperty("java.io.tmpdir") + outputFolder);
+        if(! windowsUserTempDirectory.exists()){
+            windowsUserTempDirectory.mkdir();
+        }
+        File temp = new File(windowsUserTempDirectory, library);
         if(temp.exists()){
             temp.delete();
         }

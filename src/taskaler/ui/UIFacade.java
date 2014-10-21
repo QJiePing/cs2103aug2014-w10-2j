@@ -48,10 +48,16 @@ public class UIFacade extends Application implements Observer {
 
     // File Constants
     private static final String ICON_PNG = "/res/icon.png";
+
+    // DLL Constants
+    private static final String DLL_PATH_OUTPUT = "/Taskaler";
     private static final String DLL_PATH_PARENT = "/lib";
+    private static final String DLL_PATH_BIT_32 = "/x86";
+    private static final String DLL_PATH_BIT_64 = "/x64";
     private static final String DLL_PATH_32 = "/JNILibrary.dll";
     private static final String DLL_PATH_64 = "/JNILibrary64.dll";
-    private static File libraryLoaded = null;
+    private static final String DLL_PATH_MSVCR = "/msvcr120.dll";
+    private static File[] libraryLoaded = null;
 
     // Class Variables
     private RootController rootController = null;
@@ -107,15 +113,7 @@ public class UIFacade extends Application implements Observer {
                 if (libraryLoaded != null) {
                     storage = null;
                     System.gc();
-                    while (libraryLoaded.delete() != true) {
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            CommonLogger.getInstance().exceptionLogger(e,
-                                    Level.SEVERE);
-                        }
-                    }
-                    ;
+                    
                 }
             }
         };
@@ -130,12 +128,17 @@ public class UIFacade extends Application implements Observer {
     private void createHook() {
         try {
             String jvmVer = System.getProperty("sun.arch.data.model");
+            libraryLoaded = new File[2];
             if (jvmVer.compareTo("32") == 0) {
-                libraryLoaded = storage
-                        .loadJarDll(DLL_PATH_PARENT, DLL_PATH_32);
+                libraryLoaded[0] = storage.loadDll(DLL_PATH_PARENT
+                        + DLL_PATH_BIT_32, DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
+                libraryLoaded[1] = storage.loadDll(DLL_PATH_PARENT
+                        + DLL_PATH_BIT_32, DLL_PATH_OUTPUT, DLL_PATH_32);
             } else if (jvmVer.compareTo("64") == 0) {
-                libraryLoaded = storage
-                        .loadJarDll(DLL_PATH_PARENT, DLL_PATH_64);
+                libraryLoaded[0] = storage.loadDll(DLL_PATH_PARENT
+                        + DLL_PATH_BIT_64, DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
+                libraryLoaded[1] = storage.loadDll(DLL_PATH_PARENT
+                        + DLL_PATH_BIT_64, DLL_PATH_OUTPUT, DLL_PATH_64);
             } else {
                 throw new Exception("Unknown JVM version detected");
             }

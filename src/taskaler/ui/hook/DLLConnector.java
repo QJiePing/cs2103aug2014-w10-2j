@@ -40,8 +40,9 @@ public class DLLConnector extends Observable implements Runnable {
                 notifyObservers("WM_HOTKEY");
             }
         }
-        new DLLConnector().UnregisterHotKey();
-        return;
+        while(!UnregisterHotKey()){
+            
+        }
 
     }
 
