@@ -71,7 +71,7 @@
       "minute": 36,
       "second": 49
     },
-    "_taskWorkLoad": "NONE",
+    "_taskWorkLoad": "MEDIUM",
     "_taskDescription": "blabla"
   },
   {
@@ -101,7 +101,7 @@
       "minute": 37,
       "second": 49
     },
-    "_taskWorkLoad": "NONE",
+    "_taskWorkLoad": "HIGH",
     "_taskDescription": "testerier"
   }
 ]
