@@ -58,7 +58,11 @@ public class Parser {
         switch (command.toLowerCase()) {
         case "add":
             return CmdType.ADD;
+        case "put":
+            return CmdType.ADD;
         case "delete":
+            return CmdType.DELETE;
+        case "clear":
             return CmdType.DELETE;
         case "edit":
             return CmdType.EDIT;
@@ -68,11 +72,17 @@ public class Parser {
             return CmdType.WORKLOAD;
         case "completed":
             return CmdType.COMPLETION_TAG;
+        case "done":
+            return CmdType.COMPLETION_TAG;
         case "view":
             return CmdType.VIEW;
         case "find":
             return CmdType.FIND;
+        case "search":
+            return CmdType.FIND;
         case "arch":
+            return CmdType.ARCHIVE;
+        case "history":
             return CmdType.ARCHIVE;
         case "undo":
             return CmdType.UNDO;
