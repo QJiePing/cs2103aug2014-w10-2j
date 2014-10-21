@@ -48,7 +48,7 @@ public class PastHistory implements Observer {
     private static String fileNameGenerator(String date) {
         String fileName;
         String[] fileNameDate;
-        if (date == null) {
+        if (date.equals(NO_DATE_SPECIFIED)) {
             fileNameDate = calendarToString.toArray(Calendar.getInstance());
         } else {
             fileNameDate = date.split("/");
