@@ -126,7 +126,7 @@ public class ParserTest {
             assertEquals(currentParams[1], "byebye");
             assertEquals(currentParams[2], "hahaha");
             
-          //This is the test case for valid syntax
+          //This is the test case for invalid syntax
             reset();
             newParser.parseCMD("edit -d ahah");
             currentCMD = newParser.getCommand();
@@ -136,6 +136,24 @@ public class ParserTest {
             assertEquals(currentParams[0], "-d");
             assertEquals(currentParams[1], null);
             assertEquals(currentParams[2], "ahah");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    //This is the boundary case for the Parser
+    @Test
+    public void test_noSuchCommand(){
+        CmdType currentCMD;
+        String[] currentParams;
+        try{
+            reset();
+            newParser.parseCMD("asdf");
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.INVALID);
+            assertNull(currentParams);
         }
         catch(Exception e){
             e.printStackTrace();
