@@ -1,22 +1,9 @@
 package taskaler.controller;
 
+import static taskaler.controller.common.*;
+
 public class Parser {
-    
-    public enum CmdType {
-        ADD, DELETE, EDIT, DATE, WORKLOAD, COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, INVALID
-    }
-    
-    // Magic Strings/Numbers
-    private static final int INVALID_VALUE = -1;
-    private static final int MAX_ADD_PARAMETERS = 2;
-    private static final int MAX_EDIT_PARAMETERS = 3;
-    private static final int MAX_DATE_PARAMETERS = 4;
-    private static final int WORKLOAD_PARAMETERS = 2;
-    private static final int VIEW_PARAMETERS = 2;
-    private static final int FIND_PARAMETERS = 2;
-    private static final int TAG_LENGTH = 4;
-    
-    //Variables
+    // Local Variables
     private CmdType command;
     private String[] parameters;
     
@@ -29,17 +16,28 @@ public class Parser {
         ;
     }
     
+    /**
+     * Method to retrieve the command type
+     * 
+     * @return CmdType
+     */
     public CmdType getCommand(){
         return command;
     }
     
+    /**
+     * Method to retrieve parameters
+     * 
+     * @return String[] array of parameters
+     */
     public String[] getParameters(){
         return parameters;
     }
+    
     /**
-     * @param commandString
-     * 
      * Public function to parse the command string
+     * 
+     * @param commandString
      */
     public void parseCMD(String commandString) throws Exception{
         String CMD = getFirstWord(commandString);
@@ -52,7 +50,7 @@ public class Parser {
      * Method to differentiate between CMD_TYPE(s) when given the user command 
      * 
      * @param command
-     * @return CMD_TYPE command type
+     * @return CmdType command type
      */
     private CmdType determineCMD_TYPE(String command) {
         switch (command.toLowerCase()) {
@@ -61,6 +59,8 @@ public class Parser {
         case "put":
             return CmdType.ADD;
         case "delete":
+            return CmdType.DELETE;
+        case "remove":
             return CmdType.DELETE;
         case "clear":
             return CmdType.DELETE;
@@ -86,6 +86,12 @@ public class Parser {
             return CmdType.ARCHIVE;
         case "undo":
             return CmdType.UNDO;
+        case "next":
+            return CmdType.GOTO;
+        case "back":
+            return CmdType.GOTO;
+        case "goto":
+            return CmdType.GOTO;
         default:
             return CmdType.INVALID;
         }
@@ -121,6 +127,8 @@ public class Parser {
             return getParam_FIND(commandString);
         case ARCHIVE:
             return getParam_ARCH(commandString);
+        case GOTO:
+            return getParam_GOTO(commandString);
         default:
             return null;
         }
@@ -134,21 +142,21 @@ public class Parser {
      * @return String[] parameters for ADD command
      */
     private static String[] getParam_ADD(String commandString) {
-        int name = 0;
-        int description = 1;
+        int name_index = 0;
+        int description_index = 1;
 
         String paramString = removeFirstWord(commandString);
         String[] paramADD = new String[MAX_ADD_PARAMETERS];
         if (paramString.isEmpty()) {
             return paramADD;
         }
-        int descriptionTagIndex = paramString.indexOf(" -d ");
+        int descriptionTagIndex = paramString.toLowerCase().indexOf(" -d ");
 
         if (descriptionTagIndex == INVALID_VALUE) {
-            paramADD[name] = paramString;
+            paramADD[name_index] = paramString;
         } else {
-            paramADD[name] = paramString.substring(0, descriptionTagIndex);
-            paramADD[description] = paramString.substring(descriptionTagIndex + TAG_LENGTH);
+            paramADD[name_index] = paramString.substring(0, descriptionTagIndex);
+            paramADD[description_index] = paramString.substring(descriptionTagIndex + TAG_LENGTH);
         }
         return paramADD;
     }
@@ -185,24 +193,30 @@ public class Parser {
      * @return String[] parameters for EDIT command
      */
     private static String[] getParam_EDIT(String commandString) {
-        int TaskID = 0;
-        int name = 1;
-        int description = 2;
+        int taskID_index = 0;
+        int name_index = 1;
+        int description_index = 2;
         String[] paramEDIT = new String[MAX_EDIT_PARAMETERS];
-        paramEDIT[TaskID] = getTaskID(commandString);
+        paramEDIT[taskID_index] = getTaskID(commandString);
         
-        int nameTagIndex = commandString.indexOf(" -n ");
-        int descriptionTagIndex = commandString.indexOf(" -d ");
+        int nameTagIndex = commandString.toLowerCase().indexOf(" -n ");
+        int descriptionTagIndex = commandString.toLowerCase().indexOf(" -d ");
 
         if (nameTagIndex > descriptionTagIndex) {
-            paramEDIT[name] = commandString.substring(nameTagIndex + TAG_LENGTH);
+            paramEDIT[name_index] = 
+                    commandString.substring(nameTagIndex + TAG_LENGTH);
             if (descriptionTagIndex != INVALID_VALUE) {
-                paramEDIT[description] = commandString.substring(descriptionTagIndex + TAG_LENGTH, nameTagIndex);
+                paramEDIT[description_index] = 
+                        commandString.substring(descriptionTagIndex + TAG_LENGTH, 
+                                nameTagIndex);
             }
         } else if (nameTagIndex < descriptionTagIndex) {
-            paramEDIT[description] = commandString.substring(descriptionTagIndex + TAG_LENGTH);
+            paramEDIT[description_index] = 
+                    commandString.substring(descriptionTagIndex + TAG_LENGTH);
             if (nameTagIndex != INVALID_VALUE) {
-                paramEDIT[name] = commandString.substring(nameTagIndex + TAG_LENGTH, descriptionTagIndex);
+                paramEDIT[name_index] = 
+                        commandString.substring(nameTagIndex + TAG_LENGTH, 
+                                descriptionTagIndex);
             }
         }
         return paramEDIT;
@@ -216,10 +230,10 @@ public class Parser {
      * @return String[] parameters for DATE command
      */
     private static String[] getParam_DATE(String commandString) throws Exception {
-        int taskID = 0;
+        int taskID_index = 0;
         String date = removeCMD_N_TaskID(commandString);
         String[] paramDATE = new String[MAX_DATE_PARAMETERS];
-        paramDATE[taskID] = getTaskID(commandString);
+        paramDATE[taskID_index] = getTaskID(commandString);
         
         String[] dateArray = date.split("/");
         if (dateArray.length != MAX_DATE_PARAMETERS-1) {
@@ -245,19 +259,24 @@ public class Parser {
      * @return String[] parameters for WORKLOAD command
      */
     private static String[] getParam_WL(String commandString) throws Exception{
-        int taskID = 0;
-        int workload = 1;
+        int taskID_index = 0;
+        int workload_index = 1;
         String paramString = removeCMD_N_TaskID(commandString);
         String[] paramArray = new String[WORKLOAD_PARAMETERS];
-        paramArray[taskID] = getTaskID(commandString);
+        paramArray[taskID_index] = getTaskID(commandString);
         String paramWL = "0";
         try {
             int WL = Integer.parseInt(paramString);
-            paramWL = String.valueOf(WL);
+            if(WL >= 1 && WL <= 3){
+                paramWL = String.valueOf(WL);
+            } 
+            else {
+                throw new NumberFormatException();
+            }
         } catch (NumberFormatException e) {
-            throw new Exception("Invalid Number");
+            throw new Exception("Invalid Workload Attribute");
         }
-        paramArray[workload] = paramWL;
+        paramArray[workload_index] = paramWL;
         return paramArray;
     }
 
@@ -271,9 +290,12 @@ public class Parser {
     private static String[] getParam_VIEW(String commandString) {
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[VIEW_PARAMETERS];
-        if (paramString.equals("-l")) {
+        if (paramString.equalsIgnoreCase("-l") ||
+                paramString.equalsIgnoreCase("list") || 
+                paramString.equalsIgnoreCase("all")) {
             paramArray[0] =  "LIST";
-        } else if (paramString.equals("-c")) {
+        } else if (paramString.equalsIgnoreCase("-c") ||
+                paramString.equalsIgnoreCase("calendar")) {
             paramArray[0] = "CALENDAR";
         } else {
             paramArray[0] = "TASK";
@@ -290,34 +312,53 @@ public class Parser {
      * @return String[] parameters for FIND command
      */
     private static String[] getParam_FIND(String commandString) {
-        int tag = 0;
-        int toSearch = 1;
+        int tag_index = 0;
+        int toSearch_index = 1;
 
         String[] paramArray = new String[FIND_PARAMETERS];
         String paramString = removeFirstWord(commandString);
+
         String tagType = getFirstWord(paramString);
 
-        if (tagType.equals("-t")) {
-            paramArray[tag] = "DATE";
-            paramArray[toSearch] = removeFirstWord(paramString);
-        } else if (tagType.equals("-w")) {
-            paramArray[tag] = "WORKLOAD";
-            paramArray[toSearch] = removeFirstWord(paramString);
-        } else {
-            paramArray[tag] = "KEYWORD";
-            paramArray[toSearch] = paramString;
+        if (tagType.equalsIgnoreCase("-t")) {
+            paramArray[tag_index] = "DATE";
+            paramArray[toSearch_index] = removeFirstWord(paramString);
+        } 
+        else if (tagType.equalsIgnoreCase("-w")) {
+            paramArray[tag_index] = "WORKLOAD";
+            paramArray[toSearch_index] = removeFirstWord(paramString);
+        } 
+        else {
+            paramArray[tag_index] = "KEYWORD";
+            paramArray[toSearch_index] = paramString;
         }
+        
         return paramArray;
     }
     
     private static String[] getParam_ARCH(String commandString){
         String paramString = removeFirstWord(commandString);
-        String[] paramArray = new String[1];
+        String[] paramArray = new String[ARCHIVE_PARAMETERS];
         if(paramString.equals("")){
             paramArray[0] = null;
         }
         else {
             paramArray[0] = paramString;  
+        }
+        return paramArray;
+    }
+    
+    private static String[] getParam_GOTO(String commandString){
+        String[] paramArray = new String[GOTO_PARAMETERS];
+        String command = getFirstWord(commandString).toLowerCase();
+        String paramString = removeFirstWord(commandString);
+        switch(command){
+        case "next":
+            ;
+        case "back":
+            ;
+        case "goto":
+            ;
         }
         return paramArray;
     }

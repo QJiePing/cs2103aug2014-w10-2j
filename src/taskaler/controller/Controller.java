@@ -9,7 +9,7 @@ import taskaler.archive.PastHistory;
 import taskaler.archive.Undo;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
-import taskaler.controller.Parser.CmdType;
+import taskaler.controller.common.CmdType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,11 +63,18 @@ public class Controller{
                 break;
             case DELETE:
                 String taskID_DELETE = params[0];
-                result = crudLogic.deleteTask(taskID_DELETE);
-                String name_DELETED = result.getTaskName();
-                ui.display("The task \"" + name_DELETED
-                        + "\" has been deleted.",
-                        list.toArray(new ArrayList<Task>()));
+                if(taskID_DELETE.equalsIgnoreCase("all")){
+                    ;
+                    ui.display("All tasks have been deleted.", 
+                            list.toArray(new ArrayList<Task>()));
+                }
+                else {
+                    result = crudLogic.deleteTask(taskID_DELETE);
+                    String name_DELETED = result.getTaskName();
+                    ui.display("The task \"" + name_DELETED
+                            + "\" has been deleted.",
+                            list.toArray(new ArrayList<Task>()));
+                }
                 break;
             case EDIT:
                 String taskID_EDIT = params[0];
@@ -97,16 +104,17 @@ public class Controller{
                 break;
             case COMPLETION_TAG:
                 String taskID_CT = params[0];
-                assert (taskID_CT != null);
                 result = crudLogic.switchTag(taskID_CT);
                 ui.display(result);
                 break;
             case VIEW:
-                if (params[1] != null && !params[1].isEmpty() && params[0].equals("TASK")) {
+                String tag_VIEW = params[0];
+                String taskID_VIEW = params[1];
+                if (taskID_VIEW != null && !taskID_VIEW.isEmpty() && tag_VIEW.equals("TASK")) {
                     result = findLogic.findByID(params[1]);
                     ui.display(result);
                 } else {
-                    ui.display(params[0], list.toArray(new ArrayList<Task>()));
+                    ui.display(tag_VIEW, list.toArray(new ArrayList<Task>()));
                 }
                 break;
             case FIND:
@@ -126,6 +134,9 @@ public class Controller{
                 ui.display(list.toArray(new ArrayList<Task>()));
                 ui.display("Undone last operation");
                 break;
+            case GOTO:
+                //ui.display(, list);
+                break;
             case INVALID:
                 throw new Exception("Invalid Command");
             default:
@@ -140,7 +151,7 @@ public class Controller{
             handleError(e);
         }
     }
-
+    
     /**
      * Method to handle Errors
      * 
@@ -160,7 +171,8 @@ public class Controller{
     private static void handleError(Exception err) {
         ui.display(err.getMessage());
     }
-
+    
+    
     /**
      * Method to get a static instance of Controller object
      * 
