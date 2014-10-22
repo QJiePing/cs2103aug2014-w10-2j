@@ -364,7 +364,7 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for FIND command
      */
-    private static String[] getParam_FIND(String commandString) {
+    private static String[] getParam_FIND(String commandString) throws Exception{
         int tag_index = 0;
         int toSearch_index = 1;
 
@@ -375,7 +375,8 @@ public class Parser {
 
         if (tagType.equalsIgnoreCase("-t")) {
             paramArray[tag_index] = "DATE";
-            paramArray[toSearch_index] = removeFirstWord(paramString);
+            String date = parseDate(removeFirstWord(paramString));
+            paramArray[toSearch_index] = date;
         } 
         else if (tagType.equalsIgnoreCase("-w")) {
             paramArray[tag_index] = "WORKLOAD";
@@ -389,14 +390,14 @@ public class Parser {
         return paramArray;
     }
     
-    private static String[] getParam_ARCH(String commandString){
+    private static String[] getParam_ARCH(String commandString) throws Exception{
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[ARCHIVE_PARAMETERS];
         if(paramString.equals("")){
             paramArray[0] = null;
         }
         else {
-            paramArray[0] = paramString;  
+            paramArray[0] = parseDate(paramString);  
         }
         return paramArray;
     }
@@ -448,7 +449,7 @@ public class Parser {
      */
     private static String parseDate(String paramDate) throws Exception{
         Calendar cal = Calendar.getInstance();
-        int currentMonth = cal.get(Calendar.MONTH) + OFFSET_OF_MONTH;
+        int currentMonth = cal.get(Calendar.MONTH);
         int currentYear = cal.get(Calendar.YEAR);
         SimpleDateFormat sdf;
         Date date = null;
