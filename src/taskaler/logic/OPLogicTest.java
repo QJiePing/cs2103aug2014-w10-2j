@@ -101,13 +101,13 @@ public class OPLogicTest {
 		
 		/* This is a boundary case for changing deadline of not existed task*/
 		taskID = "1";
-		task = OPLogic.getInstance().editDate(taskID, "22", "10", "2014");
+		task = OPLogic.getInstance().editDate(taskID, "22/10/2014");
 		assertEquals(null, task);
 		
 		/* This is a case for changing deadline successfully*/
 		taskID = "2";
 		assertEquals("21/10/2014", calendarToString.parseDate(search.findByID(taskID).getTaskDeadLine()));
-		task = OPLogic.getInstance().editDate(taskID, "22", "10", "2014");
+		task = OPLogic.getInstance().editDate(taskID, "22/10/2014");
 		assertEquals("22/10/2014", calendarToString.parseDate(search.findByID(taskID).getTaskDeadLine()));
 		
 		

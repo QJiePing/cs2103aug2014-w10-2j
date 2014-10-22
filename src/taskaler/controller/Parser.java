@@ -2,8 +2,15 @@ package taskaler.controller;
 
 import static taskaler.controller.common.*;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+import taskaler.common.util.parser.calendarToString;
+
 public class Parser {
     // Local Variables
+    private static String currentTaskID;
     private CmdType command;
     private String[] parameters;
     
@@ -39,10 +46,11 @@ public class Parser {
      * 
      * @param commandString
      */
-    public void parseCMD(String commandString) throws Exception{
+    public void parseCMD(String commandString, String taskID) throws Exception{
         String CMD = getFirstWord(commandString);
         command = determineCMD_TYPE(CMD);
         parameters = getParams(command, commandString);
+        currentTaskID = taskID;
     }
     
     /**
@@ -110,8 +118,7 @@ public class Parser {
         case ADD:
             return getParam_ADD(commandString);
         case DELETE:
-            String TaskID_DEL = getTaskID(commandString);
-            return new String[]{TaskID_DEL};
+            return getParam_DELETE(commandString);
         case EDIT:
             return getParam_EDIT(commandString);
         case DATE:
@@ -160,7 +167,19 @@ public class Parser {
         }
         return paramADD;
     }
-
+    
+    private static String[] getParam_DELETE(String commandString){
+        int taskID_index = 0;
+        String[] paramDELETE = new String[DELETE_PARAMETERS];
+        String taskID = getTaskID(commandString);
+        if(taskID.isEmpty()){
+            paramDELETE[taskID_index] = currentTaskID;
+        }
+        else {
+            paramDELETE[taskID_index] = taskID;
+        }
+        return paramDELETE;
+    }
     /**
      * 
      * Method to retrieve TaskID from the user's command
@@ -197,8 +216,13 @@ public class Parser {
         int name_index = 1;
         int description_index = 2;
         String[] paramEDIT = new String[MAX_EDIT_PARAMETERS];
-        paramEDIT[taskID_index] = getTaskID(commandString);
-        
+        String taskID = getTaskID(commandString);
+        if(taskID.equals("-n") || taskID.equals("-d")){
+            paramEDIT[taskID_index] = currentTaskID;
+        }
+        else {
+           paramEDIT[taskID_index] = taskID; 
+        }
         int nameTagIndex = commandString.toLowerCase().indexOf(" -n ");
         int descriptionTagIndex = commandString.toLowerCase().indexOf(" -d ");
 
@@ -229,7 +253,7 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for DATE command
      */
-    private static String[] getParam_DATE(String commandString) throws Exception {
+    /*private static String[] getParam_DATE(String commandString) throws Exception {
         int taskID_index = 0;
         String date = removeCMD_N_TaskID(commandString);
         String[] paramDATE = new String[MAX_DATE_PARAMETERS];
@@ -248,6 +272,35 @@ public class Parser {
                 }
             }
         }
+        return paramDATE;
+    }*/
+    private static String[] getParam_DATE(String commandString) throws Exception{
+        int taskID_index = 0;
+        int date_index = 1;
+        String[] paramArray = removeFirstWord(commandString).split("\\s+");
+        String date = removeCMD_N_TaskID(commandString);
+        String[] paramDATE = new String[DATE_PARAMETERS];
+        if(paramArray.length == 1 || (paramArray.length == 3)){
+            paramDATE[taskID_index] = currentTaskID;
+            date = removeFirstWord(commandString);
+        }
+        else if(paramArray.length == 2){
+            if(paramArray[1].matches("^.*[^a-zA-Z0-9 ].*$")){
+                paramDATE[taskID_index] = getTaskID(commandString);
+            }
+            else {
+                paramDATE[taskID_index] = currentTaskID;
+                date = removeFirstWord(commandString);
+            }
+        }
+        else if(paramArray.length == 4){
+            paramDATE[taskID_index] = getTaskID(commandString);
+        }
+        else {
+            throw new Exception("Invalid date syntax");
+        }
+        String dateInFormat = parseDate(date);
+        paramDATE[date_index] = dateInFormat;
         return paramDATE;
     }
 
@@ -366,7 +419,6 @@ public class Parser {
     /********************************** Helper Functions *************************************/
 
     /**
-     * 
      * Method for removing the first word(separated by a whitespace) from a string
      * 
      * @param line
@@ -376,8 +428,7 @@ public class Parser {
         return line.replaceFirst(getFirstWord(line), "").trim();
     }
 
-    /**
-     * 
+    /** 
      * Method for retrieving the first word(separated by a whitespace) from a string
      * 
      * @param commandString
@@ -386,6 +437,46 @@ public class Parser {
     private static String getFirstWord(String commandString) {
         String firstWord = commandString.trim().split("\\s+")[0];
         return firstWord;
+    }
+    
+    /**
+     * Method to check whether the date is in correct syntax, 
+     * and translates it into the default date syntax 
+     * 
+     * @param paramDate
+     * @return
+     */
+    private static String parseDate(String paramDate) throws Exception{
+        Calendar cal = Calendar.getInstance();
+        int currentMonth = cal.get(Calendar.MONTH) + OFFSET_OF_MONTH;
+        int currentYear = cal.get(Calendar.YEAR);
+        SimpleDateFormat sdf;
+        Date date = null;
+        int numOfParams = 0;
+        for(int i = 0; i < availableDateFormats.size(); i++){
+            try{
+                sdf = new SimpleDateFormat(availableDateFormats.get(i)[FORMAT_INDEX]);
+                date = sdf.parse(paramDate);
+                numOfParams = Integer.parseInt(availableDateFormats.get(i)[NUM_OF_PARAMS_INDEX]);
+                break;
+            }
+            catch(Exception e){
+                ;
+            }
+        }
+        if(numOfParams == 0){
+            throw new Exception("Invalid date syntax");
+        }
+        cal.setTime(date);
+        if(numOfParams == 1){
+            cal.set(Calendar.MONTH, currentMonth);
+            cal.set(Calendar.YEAR, currentYear);
+        }
+        else if(numOfParams == 2){
+            cal.set(Calendar.YEAR, currentYear);
+        }
+        String dateString = calendarToString.parseDate(cal);
+        return dateString;
     }
     
 }

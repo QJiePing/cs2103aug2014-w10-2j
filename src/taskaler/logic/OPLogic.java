@@ -1,6 +1,7 @@
 package taskaler.logic;
 
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Observable;
 
 import taskaler.archive.OperationRecord;
@@ -250,9 +251,8 @@ public class OPLogic extends Observable {
      * @param year
      * @return return null if given task ID not exist, edited task otherwise
      */
-    public Task editDate(String taskID, String day, String month, String year) {
-        Calendar newDeadLine = setNewCalenderDate(Integer.parseInt(day),
-                Integer.parseInt(month), Integer.parseInt(year));
+    public Task editDate(String taskID, String date) {
+        Calendar newDeadLine = setNewCalenderDate(date);
 
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
 
@@ -278,11 +278,15 @@ public class OPLogic extends Observable {
      * @param year
      * @return return new calendar date
      */
-    private static Calendar setNewCalenderDate(int day, int month, int year) {
+    private static Calendar setNewCalenderDate(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Calendar newDeadLine = Calendar.getInstance();
-        newDeadLine.set(Calendar.YEAR, year);
-        newDeadLine.set(Calendar.MONTH, month - common.OFF_SET_BY_ONE);
-        newDeadLine.set(Calendar.DAY_OF_MONTH, day);
+        try{
+            newDeadLine.setTime(format.parse(date));
+        }
+        catch(Exception e){
+            ;
+        }
         return newDeadLine;
     }
 

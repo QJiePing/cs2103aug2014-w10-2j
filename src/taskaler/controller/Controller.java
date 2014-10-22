@@ -49,8 +49,10 @@ public class Controller{
      */
     public void executeCMD(String commandString) {
         try {
+            //change this line
+            String currentTaskID = null;
             Parser values = new Parser();
-            values.parseCMD(commandString);
+            values.parseCMD(commandString, currentTaskID);
             CmdType commandType = values.getCommand();
             String[] params = values.getParameters();
             Task result = null;
@@ -87,11 +89,8 @@ public class Controller{
                 break;
             case DATE:
                 String taskID_DATE = params[0];
-                String day = params[1];
-                String month = params[2];
-                String year = params[3];
-                assert (taskID_DATE != null);
-                result = crudLogic.editDate(taskID_DATE, day, month, year);
+                String dateToEdit = params[1];
+                result = crudLogic.editDate(taskID_DATE, dateToEdit);
                 ui.display(result);
                 break;
             case WORKLOAD:
@@ -125,8 +124,8 @@ public class Controller{
                 ui.display("Search Result for " + toSearch, searchResult);
                 break;
             case ARCHIVE:
-                String date = params[0];
-                String out = PastHistory.retrieveHistory(date);
+                String date_ARCH = params[0];
+                String out = PastHistory.retrieveHistory(date_ARCH);
                 ui.display("History", out);
                 break;
             case UNDO:
@@ -144,10 +143,9 @@ public class Controller{
             }
             Storage store=Storage.getInstance();
             store.writeToFile(TASK_LIST_FILE, list.toArray(new ArrayList<Task>()));
-        } catch (AssertionError e) {
-            Error er = new Error("Task ID was invalid");
-            handleError(er);
         } catch (Exception e) {
+            handleError(e);
+        } catch (Error e){
             handleError(e);
         }
     }
