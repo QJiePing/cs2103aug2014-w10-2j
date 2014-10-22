@@ -3,6 +3,9 @@ package taskaler.storage;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Scanner;
+import java.util.logging.Level;
+
+import taskaler.common.util.CommonLogger;
 
 /*
  * @author Quek Jie Ping A0111798X
@@ -10,6 +13,7 @@ import java.util.Scanner;
 public class HistoryStorage {
 	
 	private static HistoryStorage instance=null;
+	private static CommonLogger log= CommonLogger.getInstance();
 	
 	private HistoryStorage(){
 		
@@ -33,13 +37,16 @@ public class HistoryStorage {
 	 * is success or fail
 	 */
 	public boolean writeToHistory(String fileName, String message){
+		if(message==null || message.isEmpty()){
+			return false;
+		}
 		try{
 			FileWriter fw=new FileWriter(fileName,true);
 			fw.append(message+"\n");
 			fw.close();
 			return true;
 		}catch(Exception e){
-			e.printStackTrace();
+			log.exceptionLogger(e, Level.SEVERE);
 			return false;
 		}
 	}
@@ -62,7 +69,7 @@ public class HistoryStorage {
 			reader.close();
 			return result.trim();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.exceptionLogger(e, Level.SEVERE);
 			return null;
 		}
 	}

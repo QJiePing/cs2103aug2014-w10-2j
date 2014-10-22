@@ -3,7 +3,6 @@ package taskaler.storage;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -16,10 +15,10 @@ import taskaler.common.data.Task;
  * @author Quek Jie Ping A0111798X
  */
 public class StorageTestUnit {
-
+	
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		File f= new File("history.txt");
+		File f= new File("testing.txt");
 		f.delete();
 	}
 
@@ -80,26 +79,6 @@ public class StorageTestUnit {
 			}
 		}
 		assertTrue(result);
-	}
-
-	/*
-	 * testing history writer and reader methods
-	 */
-	@Test
-	public void test5()throws IOException{
-		boolean test=false;
-		HistoryStorage store=HistoryStorage.getInstance();
-		store.writeToHistory("history.txt", "line1");
-		store.writeToHistory("history.txt", "line2");
-		
-		String result=store.readFromHistory("history.txt");
-		if(result.split("\n")[0].equals("line1")&&result.split("\n")[1].equals("line2")){
-			test=true;
-			assertTrue(test);
-		}
-		else{
-			assertTrue(false);
-		}
 	}
 	
 }

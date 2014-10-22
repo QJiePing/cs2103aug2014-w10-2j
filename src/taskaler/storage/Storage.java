@@ -54,7 +54,7 @@ public class Storage {
 			resultArrayList=gson.fromJson(reader, typeToken.getType());
 			reader.close();
 		}catch(Exception e){
-			log.exceptionLogger(e, Level.ALL);
+			log.exceptionLogger(e, Level.SEVERE);
 			return null;
 		}
 		return resultArrayList;
@@ -85,7 +85,7 @@ public class Storage {
 			}
 			fw.close();
 		}catch(Exception e){
-			log.exceptionLogger(e, Level.ALL);
+			log.exceptionLogger(e, Level.SEVERE);
 			return false;
 		}
 		return true;
