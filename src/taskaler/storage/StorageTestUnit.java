@@ -9,7 +9,7 @@ import java.util.Calendar;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import taskaler.common.data.Task;
+import taskaler.common.data.*;
 
 /*
  * @author Quek Jie Ping A0111798X
@@ -26,21 +26,21 @@ public class StorageTestUnit {
 	 * This is a equivalence partitioning case for 'null' value partition.
 	 */
 
-	//test for null array list object 
+	//test for null task list object 
 	@Test
 	public void test() {
 		Storage storeObj= Storage.getInstance();
 		boolean result=storeObj.writeToFile("testing.txt", null);
-		assertFalse(result);
+		assertTrue(result);
 	}
 
 	//test for null filename
 	@Test
 	public void test2() {
-		ArrayList<Task> arrList= new ArrayList<Task>();
-		arrList.add(new Task());
+		TaskList taskList= TaskList.getInstance();
+		taskList.add(new Task());
 		Storage storeObj= Storage.getInstance();
-		boolean result=storeObj.writeToFile(null, arrList);
+		boolean result=storeObj.writeToFile(null, taskList);
 		assertFalse(result);
 	}
 
@@ -48,29 +48,31 @@ public class StorageTestUnit {
 	 * testing json writing in and reading out methods
 	 */
 
-	//testing the case of an empty arraylist 
+	//testing the case of an empty task list
 	@Test
 	public void test3(){
-		ArrayList<Task> arrList= new ArrayList<Task>();
+		TaskList taskList= TaskList.getInstance();
+		taskList.clear();
 		Storage storeObj= Storage.getInstance();
-		storeObj.writeToFile("testing.txt", arrList);
+		storeObj.writeToFile("testing.txt", taskList);
 
-		ArrayList<Task> temp= storeObj.readFromFile("testing.txt");
+		TaskList temp= storeObj.readFromFile("testing.txt");
 		assertEquals(null,temp);
 	}
 	//testing the case where there is 2 task
 	@Test
 	public void test4(){
 		boolean result=false;
-		ArrayList<Task> arrList= new ArrayList<Task>();
-		arrList.add(new Task("Task1","1","not done",Calendar.getInstance(),"5","description1"));
-		arrList.add(new Task("Task2","2","done",Calendar.getInstance(),"1","description2"));
+		TaskList taskList= TaskList.getInstance();
+		taskList.clear();
+		taskList.add(new Task("Task1","1","not done",Calendar.getInstance(),"5","description1"));
+		taskList.add(new Task("Task2","2","done",Calendar.getInstance(),"1","description2"));
 		Storage storeObj= Storage.getInstance();
-		storeObj.writeToFile("testing.txt", arrList);
+		storeObj.writeToFile("testing.txt", taskList);
 
-		ArrayList<Task> temp= storeObj.readFromFile("testing.txt");
-		for(int i=0;i<arrList.size();i++){
-			if(arrList.get(i).getTaskID().equals(temp.get(i).getTaskID())){
+		TaskList temp= storeObj.readFromFile("testing.txt");
+		for(int i=0;i<taskList.size();i++){
+			if(taskList.get(i).getTaskID().equals(temp.get(i).getTaskID())){
 				result=true;
 			}
 			else{
