@@ -79,7 +79,7 @@ public class TestDriver extends Application {
                 taskPaneModel.taskDueDate = calendarToString.parseDate(Calendar
                         .getInstance());
                 taskPaneModel.taskStatus = "Not Completed";
-                taskPaneModel.taskWorkload = common.RectangleColor.GREEN;
+                taskPaneModel.taskWorkload = common.RECTANGLE_COLOR_GREEN;
                 taskPaneModel.taskDescription = "Test\ntest test";
                 TaskPaneController taskPane = new TaskPaneController(
                         taskPaneModel);

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -272,6 +273,15 @@ public class UIFacade extends Application implements Observer {
             CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
         }
     }
+    
+    /**
+     * Method to obtain the current state of the view being displayed
+     * 
+     * @return Hashmap representation of the state of view
+     */
+    public HashMap<String, String> getCurrentState(){
+        return rootController.getState();
+    }
 
     @Override
     public void update(Observable arg0, Object arg1) {
@@ -281,9 +291,13 @@ public class UIFacade extends Application implements Observer {
 
                     @Override
                     public void run() {
-                        rootController.giveFocus();
-                        primaryStage.setIconified(false);
-                        primaryStage.toFront();
+                        if(primaryStage.isIconified()){
+                            rootController.giveFocus();
+                            primaryStage.setIconified(false);
+                            primaryStage.toFront();
+                        }else{
+                            primaryStage.setIconified(true);
+                        }
                     }
                 });
             } else {

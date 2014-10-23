@@ -1,16 +1,16 @@
-package taskaler.controller;
+package taskaler.controller.parser;
 
 import static taskaler.controller.common.*;
+import taskaler.common.util.parser.calendarToString;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import taskaler.common.util.parser.calendarToString;
-
 public class Parser {
     // Local Variables
     private static String currentTaskID;
+    private static String currentState;
     private CmdType command;
     private String[] parameters;
     
@@ -61,47 +61,12 @@ public class Parser {
      * @return CmdType command type
      */
     private CmdType determineCMD_TYPE(String command) {
-        switch (command.toLowerCase()) {
-        case "add":
-            return CmdType.ADD;
-        case "put":
-            return CmdType.ADD;
-        case "delete":
-            return CmdType.DELETE;
-        case "remove":
-            return CmdType.DELETE;
-        case "clear":
-            return CmdType.DELETE;
-        case "edit":
-            return CmdType.EDIT;
-        case "date":
-            return CmdType.DATE;
-        case "workload":
-            return CmdType.WORKLOAD;
-        case "completed":
-            return CmdType.COMPLETION_TAG;
-        case "done":
-            return CmdType.COMPLETION_TAG;
-        case "view":
-            return CmdType.VIEW;
-        case "find":
-            return CmdType.FIND;
-        case "search":
-            return CmdType.FIND;
-        case "arch":
-            return CmdType.ARCHIVE;
-        case "history":
-            return CmdType.ARCHIVE;
-        case "undo":
-            return CmdType.UNDO;
-        case "next":
-            return CmdType.GOTO;
-        case "back":
-            return CmdType.GOTO;
-        case "goto":
-            return CmdType.GOTO;
-        default:
+        CmdType commandType = ParserLibrary.getCommandMap().get(command);
+        if(commandType == null){
             return CmdType.INVALID;
+        }
+        else {
+            return commandType;
         }
     }
     
@@ -141,14 +106,46 @@ public class Parser {
         }
     }
     
-    /**
-     * 
+    /** 
      * Method to retrieve parameters for ADD command specifically
      * 
      * @param commandString
      * @return String[] parameters for ADD command
      */
-    private static String[] getParam_ADD(String commandString) {
+    private static String[] getParam_ADD(String commandString){
+        int name_index = 0;
+        int description_index = 1;
+        int date_index = 2;
+        int workload_index = 3;
+        
+        String paramString = removeFirstWord(commandString);
+        String[] paramArray = paramString.split(",");
+        String[] paramADD = new String[MAX_ADD_PARAMETERS];
+        int numOfParams = paramArray.length;
+        switch(numOfParams){
+        case 1:
+            paramADD = getParam_ADD1(paramString);
+        case 2:
+            paramADD = getParam_ADD2(paramString);
+        case 3:
+            paramADD = getParam_ADD3(paramString);
+        }
+        return paramADD;
+    }
+    
+    private static String[] getParam_ADD1(String paramString){
+        "add lala: blabla, 09/10/2014: 1700-1800, 3"
+    }
+    
+    private static String[] getParam_ADD2(String paramString){
+        
+    }
+ 
+    private static String[] getParam_ADD3(String paramString){
+     
+    }
+ 
+   /* private static String[] getParam_ADD(String commandString) {
         int name_index = 0;
         int description_index = 1;
 
@@ -166,8 +163,14 @@ public class Parser {
             paramADD[description_index] = paramString.substring(descriptionTagIndex + TAG_LENGTH);
         }
         return paramADD;
-    }
+    }*/
     
+    /**
+     * Method to retrieve parameters for the DELETE command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for the DELETE command
+     */
     private static String[] getParam_DELETE(String commandString){
         int taskID_index = 0;
         String[] paramDELETE = new String[DELETE_PARAMETERS];
@@ -180,8 +183,7 @@ public class Parser {
         }
         return paramDELETE;
     }
-    /**
-     * 
+    /** 
      * Method to retrieve TaskID from the user's command
      * 
      * @param commandString
@@ -193,7 +195,6 @@ public class Parser {
     }
     
     /**
-     * 
      * Method to remove the command type and task id from the user's command
      * effectively getting the parameters for the command
      * 
@@ -205,7 +206,6 @@ public class Parser {
     }
 
     /**
-     * 
      * Method to retrieve parameters for EDIT command specifically
      * 
      * @param commandString
@@ -246,63 +246,40 @@ public class Parser {
         return paramEDIT;
     }
 
-    /**
-     * 
+    /** 
      * Method to retrieve parameters for DATE command specifically
      * 
      * @param commandString
      * @return String[] parameters for DATE command
      */
-    /*private static String[] getParam_DATE(String commandString) throws Exception {
-        int taskID_index = 0;
-        String date = removeCMD_N_TaskID(commandString);
-        String[] paramDATE = new String[MAX_DATE_PARAMETERS];
-        paramDATE[taskID_index] = getTaskID(commandString);
-        
-        String[] dateArray = date.split("/");
-        if (dateArray.length != MAX_DATE_PARAMETERS-1) {
-            throw new Exception("Invalid Format");
-        } else {
-            for (int i = 0; i < dateArray.length; i++) {
-                try {
-                    int num = Integer.parseInt(dateArray[i]);
-                    paramDATE[i+1] = String.valueOf(num);
-                } catch (NumberFormatException e) {
-                    throw new Exception("Invalid Number");
-                }
-            }
-        }
-        return paramDATE;
-    }*/
     private static String[] getParam_DATE(String commandString) throws Exception{
         int taskID_index = 0;
         int date_index = 1;
         String[] paramArray = removeFirstWord(commandString).split("\\s+");
         String date = removeCMD_N_TaskID(commandString);
         String[] paramDATE = new String[DATE_PARAMETERS];
-        if(paramArray.length == 1 || (paramArray.length == 3)){
-            paramDATE[taskID_index] = currentTaskID;
-            date = removeFirstWord(commandString);
-        }
-        else if(paramArray.length == 2){
-            if(paramArray[1].matches("^.*[^a-zA-Z0-9 ].*$")){
-                paramDATE[taskID_index] = getTaskID(commandString);
-            }
-            else {
+        if(paramArray.length == 1){
+            if(currentTaskID != null){
                 paramDATE[taskID_index] = currentTaskID;
                 date = removeFirstWord(commandString);
             }
+            else {
+                throw new Exception("Invalid task ID");
+            }
         }
-        else if(paramArray.length == 4){
+        else if(paramArray.length == 2){
             paramDATE[taskID_index] = getTaskID(commandString);
         }
         else {
             throw new Exception("Invalid date syntax");
         }
-        String dateInFormat = parseDate(date);
+        String dateInFormat = ParseAttribute.parseDate(date);
         paramDATE[date_index] = dateInFormat;
         return paramDATE;
     }
+    
+    
+    
 
     /**
      * 
@@ -332,7 +309,7 @@ public class Parser {
         paramArray[workload_index] = paramWL;
         return paramArray;
     }
-
+    
     /**
      * 
      * Method to retrieve parameters for VIEW command specifically
@@ -363,8 +340,9 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for FIND command
+     * @throws Exception if date or workload parameter is invalid
      */
-    private static String[] getParam_FIND(String commandString) {
+    private static String[] getParam_FIND(String commandString) throws Exception{
         int tag_index = 0;
         int toSearch_index = 1;
 
@@ -375,7 +353,8 @@ public class Parser {
 
         if (tagType.equalsIgnoreCase("-t")) {
             paramArray[tag_index] = "DATE";
-            paramArray[toSearch_index] = removeFirstWord(paramString);
+            String date = ParseAttribute.parseDate(removeFirstWord(paramString));
+            paramArray[toSearch_index] = date;
         } 
         else if (tagType.equalsIgnoreCase("-w")) {
             paramArray[tag_index] = "WORKLOAD";
@@ -389,18 +368,31 @@ public class Parser {
         return paramArray;
     }
     
-    private static String[] getParam_ARCH(String commandString){
+    /**
+     * Method to retrieve the parameters for the ARCHIVE command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for ARCHIVE command
+     * @throws Exception if date parameter is invalid
+     */
+    private static String[] getParam_ARCH(String commandString) throws Exception{
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[ARCHIVE_PARAMETERS];
         if(paramString.equals("")){
             paramArray[0] = null;
         }
         else {
-            paramArray[0] = paramString;  
+            paramArray[0] = ParseAttribute.parseDate(paramString);  
         }
         return paramArray;
     }
     
+    /**
+     * Method to retrieve parameters for the GOTO command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for the GOTO command specifically
+     */
     private static String[] getParam_GOTO(String commandString){
         String[] paramArray = new String[GOTO_PARAMETERS];
         String command = getFirstWord(commandString).toLowerCase();
@@ -437,46 +429,6 @@ public class Parser {
     private static String getFirstWord(String commandString) {
         String firstWord = commandString.trim().split("\\s+")[0];
         return firstWord;
-    }
-    
-    /**
-     * Method to check whether the date is in correct syntax, 
-     * and translates it into the default date syntax 
-     * 
-     * @param paramDate
-     * @return
-     */
-    private static String parseDate(String paramDate) throws Exception{
-        Calendar cal = Calendar.getInstance();
-        int currentMonth = cal.get(Calendar.MONTH) + OFFSET_OF_MONTH;
-        int currentYear = cal.get(Calendar.YEAR);
-        SimpleDateFormat sdf;
-        Date date = null;
-        int numOfParams = 0;
-        for(int i = 0; i < availableDateFormats.size(); i++){
-            try{
-                sdf = new SimpleDateFormat(availableDateFormats.get(i)[FORMAT_INDEX]);
-                date = sdf.parse(paramDate);
-                numOfParams = Integer.parseInt(availableDateFormats.get(i)[NUM_OF_PARAMS_INDEX]);
-                break;
-            }
-            catch(Exception e){
-                ;
-            }
-        }
-        if(numOfParams == 0){
-            throw new Exception("Invalid date syntax");
-        }
-        cal.setTime(date);
-        if(numOfParams == 1){
-            cal.set(Calendar.MONTH, currentMonth);
-            cal.set(Calendar.YEAR, currentYear);
-        }
-        else if(numOfParams == 2){
-            cal.set(Calendar.YEAR, currentYear);
-        }
-        String dateString = calendarToString.parseDate(cal);
-        return dateString;
     }
     
 }

@@ -9,7 +9,8 @@ import taskaler.archive.PastHistory;
 import taskaler.archive.Undo;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
-import taskaler.controller.common.CmdType;
+import static taskaler.controller.common.*;
+import taskaler.controller.parser.Parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Controller{
      */
     public void executeCMD(String commandString) {
         try {
-            //change this line
+            //HashMap<String, String> StateVariables = ui.getCurrentState();
             String currentTaskID = null;
             Parser values = new Parser();
             values.parseCMD(commandString, currentTaskID);

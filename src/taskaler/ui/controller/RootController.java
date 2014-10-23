@@ -6,14 +6,19 @@ package taskaler.ui.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import javafx.animation.FadeTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
@@ -25,6 +30,7 @@ import taskaler.ui.model.TextPaneModel;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
 import taskaler.controller.Controller;
+import taskaler.controller.parser.ParserLibrary;
 import taskaler.ui.controller.common;
 
 /**
@@ -34,8 +40,15 @@ import taskaler.ui.controller.common;
  *
  */
 public class RootController extends BorderPane implements IController {
+
     // Current model associated with this controller
     private RootModel currentModel = null;
+
+    // Class variables
+    private String[] commands = null;
+    private static final String SUGGESTION_BOX_LABEL = "Suggestion(s):";
+    private static final String CHAR_ENTER = "\r";
+    private static final String CHAR_BACKSPACE = "\b";
 
     // FXML Element Bindings
     @FXML
@@ -43,6 +56,9 @@ public class RootController extends BorderPane implements IController {
 
     @FXML
     private TextField txtCmdInput;
+
+    @FXML
+    private ListView<String> listCmd;
 
     @FXML
     private Label lblToast;
@@ -67,6 +83,8 @@ public class RootController extends BorderPane implements IController {
         if (!currentModel.notification.isEmpty()) {
             showToast(currentModel.notification);
         }
+
+        commands = ParserLibrary.getCommands();
     }
 
     @Override
@@ -105,7 +123,70 @@ public class RootController extends BorderPane implements IController {
             String cmd = txtCmdInput.getText();
             txtCmdInput.clear();
             Controller.getInstance().executeCMD(cmd);
+            listCmd.setVisible(false);
+        } else if (e.getCode() == KeyCode.UP) {
+            // TODO Implement Arrow Up
+        } else if (e.getCode() == KeyCode.DOWN) {
+            // TODO Implement Arrow Down
         }
+
+    }
+
+    /**
+     * Method which is binded to the KeyTyped event of txtCmdInput element This
+     * method creates the suggestion view
+     * 
+     * @param e
+     *            Key typed event
+     */
+    @FXML
+    private void txtcmdInputKetTyped(KeyEvent e) {
+        if (!isEnterKey(e)
+                && !(txtCmdInput.getText().isEmpty() && isBackSpace(e))) {
+            String input = txtCmdInput.getText();
+            if (!isBackSpace(e)) {
+                input = input + e.getCharacter();
+            }
+            ObservableList<String> suggestions = FXCollections
+                    .observableArrayList(SUGGESTION_BOX_LABEL);
+            for (int i = 0; i < commands.length; i++) {
+                if (commands[i].startsWith(input)) {
+                    suggestions.add(commands[i]);
+                }
+            }
+
+            if (suggestions.size() > 1) {
+                listCmd.setItems(suggestions);
+                listCmd.setPrefHeight(24 * suggestions.size() + 2);
+                AnchorPane.setBottomAnchor(listCmd, 0.0);
+                listCmd.setVisible(true);
+                return;
+            }
+        }
+        listCmd.setVisible(false);
+
+    }
+
+    /**
+     * Method to check if the key is a backspace key
+     * 
+     * @param e
+     *            Key event to check
+     * @return True if key is backspace key; False otherwise
+     */
+    private boolean isEnterKey(KeyEvent e) {
+        return e.getCharacter().compareToIgnoreCase(CHAR_ENTER) == 0;
+    }
+
+    /**
+     * Method to check if the key is a enter key
+     * 
+     * @param e
+     *            Key event to check
+     * @return True if key is enter key; False otherwise
+     */
+    private boolean isBackSpace(KeyEvent e) {
+        return e.getCharacter().compareToIgnoreCase(CHAR_BACKSPACE) == 0;
     }
 
     /**
@@ -194,21 +275,21 @@ public class RootController extends BorderPane implements IController {
 
     /**
      * Method to convert the string representation of the workload attribute to
-     * RECTANGLE_COLOR representation
+     * integer representation
      * 
      * @param taskWorkLoad
      *            Value to be parsed
-     * @return RECTANGLE_COLOR representation of value
+     * @return Integer representation of value
      */
-    private common.RectangleColor parseWorkload(String taskWorkLoad) {
+    private int parseWorkload(String taskWorkLoad) {
         if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_LOW) == 0) {
-            return common.RectangleColor.GREEN;
+            return common.RECTANGLE_COLOR_GREEN;
         } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
-            return common.RectangleColor.ORANGE;
+            return common.RECTANGLE_COLOR_ORANGE;
         } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0) {
-            return common.RectangleColor.RED;
+            return common.RECTANGLE_COLOR_RED;
         } else {
-            return common.RectangleColor.GREY;
+            return common.RECTANGLE_COLOR_GREY;
         }
     }
 
@@ -218,6 +299,12 @@ public class RootController extends BorderPane implements IController {
      */
     public void giveFocus() {
         txtCmdInput.requestFocus();
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return ((IController) anchorPaneDisplay.getChildren().get(
+                common.ZERO_INDEX)).getState();
     }
 
 }

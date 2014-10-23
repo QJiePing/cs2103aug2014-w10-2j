@@ -4,6 +4,7 @@
 package taskaler.ui.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import taskaler.ui.model.TextPaneModel;
 import javafx.fxml.FXML;
@@ -76,6 +77,11 @@ public class TextPaneController extends TitledPane implements IController {
      */
     private void setTitle(String title) {
         titledPane.setText(title);
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
     }
 
 }

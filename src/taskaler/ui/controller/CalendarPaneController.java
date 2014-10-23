@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import taskaler.common.data.Task;
 import taskaler.ui.model.CalendarPaneModel;
@@ -51,14 +52,14 @@ public class CalendarPaneController extends BorderPane implements IController {
      */
     public CalendarPaneController(CalendarPaneModel model) throws IOException {
         currentModel = model;
-        if(currentModel.currentTaskList == null){
-            currentModel.currentTaskList = new ArrayList<Task>(); 
+        if (currentModel.currentTaskList == null) {
+            currentModel.currentTaskList = new ArrayList<Task>();
         }
-        
-        if(currentModel.currentCalendar == null){
-            currentModel.currentCalendar = Calendar.getInstance(); 
+
+        if (currentModel.currentCalendar == null) {
+            currentModel.currentCalendar = Calendar.getInstance();
         }
-        
+
         initialize(common.FXML_CALENDAR);
         update();
     }
@@ -100,7 +101,7 @@ public class CalendarPaneController extends BorderPane implements IController {
         String currentMonthAndYear = formatter.format(cal.getTime());
         setTitle(currentMonthAndYear);
 
-        int[] numberOfTasksByDay = countTasks(cal.get(Calendar.MONTH));
+        int[][] tasksByDay = computeMonth(cal.get(Calendar.MONTH));
 
         int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK)
                 - common.OFFSET_BY_ONE;
@@ -111,11 +112,12 @@ public class CalendarPaneController extends BorderPane implements IController {
 
             CellDateModel model = new CellDateModel();
             model.currentDate = i;
-            model.currentNumberOfEvents = numberOfTasksByDay[i];
+            model.currentNumberOfEvents = tasksByDay[i][common.ZERO_INDEX];
+            model.currentWorkloadFilters = tasksByDay[i][common.OFFSET_BY_ONE];
             CellDateController day = new CellDateController(model);
-            
+
             gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
-            
+
             dayOfTheWeekIterator++;
             if (isThisDaySunday(dayOfTheWeekIterator)) {
                 weekOfTheMonthIterator++;
@@ -129,24 +131,44 @@ public class CalendarPaneController extends BorderPane implements IController {
     }
 
     /**
-     * Method to count the number of tasks for each day of the month
+     * Method to count the number of tasks and obtain the collective workload
+     * for each day of the month
      * 
      * @param month
-     *            The month to count
+     *            The month to compute
      * @return returns an array of int with each index representing the the day
-     *         and the value representing the total tasks
+     *         and the values representing the total tasks and collective
+     *         workload
      */
-    private int[] countTasks(int month) {
-        int[] result = new int[MAX_NUMBER_OF_DAYS + common.OFFSET_BY_ONE];
+    private int[][] computeMonth(int month) {
+        int[][] result = new int[MAX_NUMBER_OF_DAYS + common.OFFSET_BY_ONE][2];
 
         for (int i = common.ZERO_INDEX; i < currentModel.currentTaskList.size(); i++) {
             Task currentTask = currentModel.currentTaskList.get(i);
             if (currentTask.getTaskDeadLine().get(Calendar.MONTH) == month) {
-                result[currentTask.getTaskDeadLine().get(Calendar.DATE)]++;
+                result[currentTask.getTaskDeadLine().get(Calendar.DATE)][common.ZERO_INDEX]++;
+
+                result[currentTask.getTaskDeadLine().get(Calendar.DATE)][common.OFFSET_BY_ONE] = result[currentTask
+                        .getTaskDeadLine().get(Calendar.DATE)][common.OFFSET_BY_ONE]
+                        | mapStringToWorkload(currentTask.getTaskWorkLoad());
             }
         }
 
         return result;
+    }
+
+    private int mapStringToWorkload(String workload) {
+        if (workload.compareToIgnoreCase(Task.WORKLOAD_NONE) == 0) {
+            return common.RECTANGLE_COLOR_GREY;
+        } else if (workload.compareToIgnoreCase(Task.WORKLOAD_LOW) == 0) {
+            return common.RECTANGLE_COLOR_GREEN;
+        } else if (workload.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
+            return common.RECTANGLE_COLOR_ORANGE;
+        } else if (workload.compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0) {
+            return common.RECTANGLE_COLOR_RED;
+        }
+        
+        return 0;
     }
 
     /**
@@ -197,6 +219,11 @@ public class CalendarPaneController extends BorderPane implements IController {
                 gridView.getChildren().remove(node);
             }
         }
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
     }
 
 }

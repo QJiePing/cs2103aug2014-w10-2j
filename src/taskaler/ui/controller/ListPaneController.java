@@ -5,6 +5,7 @@ package taskaler.ui.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
@@ -97,6 +98,11 @@ public class ListPaneController extends TitledPane implements IController {
             text.wrappingWidthProperty().setValue(MAX_TEXT_WIDTH);
             listBody.getItems().add(text);
         }
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
     }
 
 }
