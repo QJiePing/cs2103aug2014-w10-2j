@@ -81,6 +81,7 @@ Logic
 =====
 addTask(String name, String description) : Task     //any fields not entered by the user will be null
 deleteTask(String taskID) : Task
+deleteAllTask(): void
 editTask(String taskID, String name, String description) : Task //any fields not entered will be null
 viewList() : void
 viewCal() : void

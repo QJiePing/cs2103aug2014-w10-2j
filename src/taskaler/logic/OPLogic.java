@@ -1,5 +1,6 @@
 package taskaler.logic;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Observable;
@@ -179,6 +180,15 @@ public class OPLogic extends Observable {
 
         return taskToBeRemoved;
 
+    }
+    
+    
+    
+    public void deleteAllTask() {
+		TaskList.getInstance().clear();
+		
+		// not notification to observer
+		// notifyObserver("CLEAR",...)
     }
 
     /**
