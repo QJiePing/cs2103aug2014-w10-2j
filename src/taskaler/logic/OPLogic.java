@@ -99,7 +99,7 @@ public class OPLogic extends Observable {
      *         otherwise.
      * 
      */
-    public Task addTask(String name_ADD, String description_ADD) {
+    public Task addTask(String name_ADD, String description_ADD, String date_ADD, String workload_ADD) {
 
         // assume task name cannot be null
         if (name_ADD == null) {
@@ -111,13 +111,19 @@ public class OPLogic extends Observable {
                 // change to default value
                 description_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
             }
-
+            Calendar cal = Calendar.getInstance();
+            if (date_ADD != null){
+                 cal = setNewCalendarDate(date_ADD);
+            }
+            if(workload_ADD == null){
+                workload_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
+            }
             // generate a new task ID
             int newTaskID = generateTaskID();
 
             Task newTask = new Task(name_ADD, Integer.toString(newTaskID),
-                    common.TASK_INITIAL_STATUS, Calendar.getInstance(),
-                    common.TASK_PARAMETER_DEFAULT_VALUE, description_ADD);
+                    common.TASK_INITIAL_STATUS, cal,
+                    workload_ADD, description_ADD);
             TaskList.getInstance().add(newTask);
 
             notifyObservers("ADD", newTask);
@@ -250,7 +256,7 @@ public class OPLogic extends Observable {
      * @return return null if given task ID not exist, edited task otherwise
      */
     public Task editDate(String taskID, String date) {
-        Calendar newDeadLine = setNewCalenderDate(date);
+        Calendar newDeadLine = setNewCalendarDate(date);
 
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
 
@@ -276,8 +282,8 @@ public class OPLogic extends Observable {
      * @param year
      * @return return new calendar date
      */
-    private static Calendar setNewCalenderDate(String date) {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy: HHmm");
+    private static Calendar setNewCalendarDate(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
         Calendar newDeadLine = Calendar.getInstance();
         try{
             newDeadLine.setTime(format.parse(date));

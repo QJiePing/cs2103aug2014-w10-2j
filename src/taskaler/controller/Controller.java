@@ -59,9 +59,11 @@ public class Controller{
             Task result = null;
             switch (commandType) {
             case ADD:
-                String name_ADD = params[0];
-                String description_ADD = params[1];
-                result = crudLogic.addTask(name_ADD, description_ADD);
+                String nameADD = params[0];
+                String descriptionADD = params[1];
+                String dateADD = params[2];
+                String workloadADD = params[3];
+                result = crudLogic.addTask(nameADD, descriptionADD, dateADD, workloadADD);
                 ui.display(result);
                 break;
             case DELETE:

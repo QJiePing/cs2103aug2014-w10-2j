@@ -61,7 +61,7 @@ public class Parser {
      * @return CmdType command type
      */
     private CmdType determineCMD_TYPE(String command) {
-        CmdType commandType = ParserLibrary.getCommandMap().get(command);
+        CmdType commandType = ParserLibrary.commandList.get(command);
         if(commandType == null){
             return CmdType.INVALID;
         }
@@ -91,8 +91,7 @@ public class Parser {
         case WORKLOAD:
             return getParam_WL(commandString);
         case COMPLETION_TAG:
-            String TaskID_CT = getTaskID(commandString);
-            return new String[]{TaskID_CT};
+            return getParamCT(commandString);
         case VIEW:
             return getParam_VIEW(commandString);
         case FIND:
@@ -112,11 +111,10 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for ADD command
      */
-    private static String[] getParam_ADD(String commandString){
-        int name_index = 0;
-        int description_index = 1;
-        int date_index = 2;
-        int workload_index = 3;
+    private static String[] getParam_ADD(String commandString) throws Exception{
+        int nameAndDescriptionIndex = 0;
+        int dateAndTimeIndex = 1;
+        int workloadIndex = 2;
         
         String paramString = removeFirstWord(commandString);
         String[] paramArray = paramString.split(",");
@@ -124,47 +122,85 @@ public class Parser {
         int numOfParams = paramArray.length;
         switch(numOfParams){
         case 1:
-            paramADD = getParam_ADD1(paramString);
+            paramADD = appendNameAndDescription(paramArray[nameAndDescriptionIndex].trim(), paramADD);
+            break;
         case 2:
-            paramADD = getParam_ADD2(paramString);
+            paramADD = appendNameAndDescription(paramArray[nameAndDescriptionIndex].trim(), paramADD);
+            paramADD = appendDateAndTime(paramArray[dateAndTimeIndex].trim(), paramADD);
+            break;
         case 3:
-            paramADD = getParam_ADD3(paramString);
+            paramADD = appendNameAndDescription(paramArray[nameAndDescriptionIndex].trim(), paramADD);
+            paramADD = appendDateAndTime(paramArray[dateAndTimeIndex].trim(), paramADD);
+            paramADD = appendWorkload(paramArray[workloadIndex].trim(), paramADD);
+            break;
+        default:
+            throw new Exception("Invalid parameters");
         }
         return paramADD;
     }
     
-    private static String[] getParam_ADD1(String paramString){
-        "add lala: blabla, 09/10/2014: 1700-1800, 3"
-    }
-    
-    private static String[] getParam_ADD2(String paramString){
+    /**
+     * Method to append the name and description parameters
+     * 
+     * @param paramString
+     * @param paramArray
+     * @return
+     */
+    private static String[] appendNameAndDescription(String paramString, String[] paramArray){
+        int nameIndex = 0;
+        int descriptionIndex = 1;
         
-    }
- 
-    private static String[] getParam_ADD3(String paramString){
-     
-    }
- 
-   /* private static String[] getParam_ADD(String commandString) {
-        int name_index = 0;
-        int description_index = 1;
-
-        String paramString = removeFirstWord(commandString);
-        String[] paramADD = new String[MAX_ADD_PARAMETERS];
-        if (paramString.isEmpty()) {
-            return paramADD;
+        int splitIndex = paramString.indexOf(":");
+        if(splitIndex == INVALID_VALUE) {
+            paramArray[nameIndex] = paramString;
         }
-        int descriptionTagIndex = paramString.toLowerCase().indexOf(" -d ");
-
-        if (descriptionTagIndex == INVALID_VALUE) {
-            paramADD[name_index] = paramString;
-        } else {
-            paramADD[name_index] = paramString.substring(0, descriptionTagIndex);
-            paramADD[description_index] = paramString.substring(descriptionTagIndex + TAG_LENGTH);
+        else {
+            String name = paramString.substring(0, splitIndex).trim();
+            String description = paramString.substring(splitIndex + 1).trim();
+            paramArray[nameIndex] = name;
+            paramArray[descriptionIndex] = description;
         }
-        return paramADD;
-    }*/
+        return paramArray;
+    }
     
+    /**
+     * Method to append the date and time parameters
+     * 
+     * @param paramString
+     * @param paramArray
+     * @return
+     * @throws Exception
+     */
+    private static String[] appendDateAndTime(String paramString, String[] paramArray) throws Exception {
+        int dateAndTimeIndex = 2;
+
+        int splitIndex = paramString.indexOf(":");
+        if(splitIndex == INVALID_VALUE) {
+            paramArray[dateAndTimeIndex] = ParseAttribute.parseDate(paramString);
+        }
+        else {
+            String date = ParseAttribute.parseDate(paramString.substring(0, splitIndex).trim());
+            String time = ParseAttribute.parseTime(paramString.substring(splitIndex + 1).trim());
+            paramArray[dateAndTimeIndex] = date + ": " + time;
+        }
+        return paramArray;
+    }
+ 
+    /**
+     * Method to append the workload attribute parameters
+     * 
+     * @param paramString
+     * @param paramArray
+     * @return
+     * @throws Exception
+     */
+    private static String[] appendWorkload(String paramString, String[] paramArray) throws Exception{
+        int workloadIndex = 3;
+        String workload = ParseAttribute.parseWL(paramString);
+        paramArray[workloadIndex] = workload;
+        return paramArray;
+    }
+ 
     /**
      * Method to retrieve parameters for the DELETE command specifically
      * 
@@ -201,7 +237,7 @@ public class Parser {
      * @param commandString
      * @return String paramString
      */
-    private static String removeCMD_N_TaskID(String commandString){
+    private static String removeCommandAndTaskID(String commandString){
         return removeFirstWord(removeFirstWord(commandString));
     }
 
@@ -256,7 +292,7 @@ public class Parser {
         int taskID_index = 0;
         int date_index = 1;
         String[] paramArray = removeFirstWord(commandString).split("\\s+");
-        String date = removeCMD_N_TaskID(commandString);
+        String date = removeCommandAndTaskID(commandString);
         String[] paramDATE = new String[DATE_PARAMETERS];
         if(paramArray.length == 1){
             if(currentTaskID != null){
@@ -291,7 +327,7 @@ public class Parser {
     private static String[] getParam_WL(String commandString) throws Exception{
         int taskID_index = 0;
         int workload_index = 1;
-        String paramString = removeCMD_N_TaskID(commandString);
+        String paramString = removeCommandAndTaskID(commandString);
         String[] paramArray = new String[WORKLOAD_PARAMETERS];
         paramArray[taskID_index] = getTaskID(commandString);
         String paramWL = "0";
@@ -308,6 +344,24 @@ public class Parser {
         }
         paramArray[workload_index] = paramWL;
         return paramArray;
+    }
+    
+    private static String[] getParamCT(String commandString) throws Exception{
+        int taskIDIndex = 0;
+        String[] paramWL = new String[COMPLETION_TAG_PARAMETERS];
+        String paramString = removeFirstWord(commandString);
+        if(paramString.isEmpty()){
+            if(currentTaskID != null){
+                paramWL[taskIDIndex] = currentTaskID;
+            }
+            else {
+                throw new Exception("Invalid task ID");
+            }
+        }
+        else {
+            paramWL[taskIDIndex] = getTaskID(commandString);
+        }
+        return paramWL;
     }
     
     /**
