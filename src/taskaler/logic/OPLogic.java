@@ -265,7 +265,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("EDIT_DATE", TaskList.getInstance().get(taskIDIndex));
 
         TaskList.getInstance().get(taskIDIndex).changeDeadLine(newDeadLine);
 
@@ -313,7 +313,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("EDIT_WORKLOAD", TaskList.getInstance().get(taskIDIndex));
 
         // assume workloadAtt is within the range of 1-3
         TaskList.getInstance().get(taskIDIndex)
@@ -338,7 +338,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("EDIT_STATUS", TaskList.getInstance().get(taskIDIndex));
 
         TaskList.getInstance().get(taskIDIndex).changeTaskStatus("Done");
         return TaskList.getInstance().get(taskIDIndex);

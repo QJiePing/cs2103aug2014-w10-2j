@@ -2,16 +2,16 @@
   {
     "_taskName": "CS2103T homework",
     "_taskID": "3",
-    "_taskStatus": "Not Done",
+    "_taskStatus": "Done",
     "_taskDeadLine": {
-      "year": 2014,
-      "month": 9,
-      "dayOfMonth": 7,
-      "hourOfDay": 21,
-      "minute": 57,
-      "second": 5
+      "year": 2015,
+      "month": 0,
+      "dayOfMonth": 1,
+      "hourOfDay": 0,
+      "minute": 17,
+      "second": 52
     },
-    "_taskWorkLoad": "NONE",
+    "_taskWorkLoad": "HIGH",
     "_taskDescription": "testing"
   },
   {
@@ -28,21 +28,6 @@
     },
     "_taskWorkLoad": "NONE",
     "_taskDescription": "sleep for whole day"
-  },
-  {
-    "_taskName": "hello",
-    "_taskID": "5",
-    "_taskStatus": "Not Done",
-    "_taskDeadLine": {
-      "year": 2014,
-      "month": 0,
-      "dayOfMonth": 1,
-      "hourOfDay": 23,
-      "minute": 54,
-      "second": 25
-    },
-    "_taskWorkLoad": "NONE",
-    "_taskDescription": ""
   },
   {
     "_taskName": "hello",
@@ -105,21 +90,6 @@
     "_taskDescription": ""
   },
   {
-    "_taskName": "-d lala",
-    "_taskID": "17",
-    "_taskStatus": "Not Done",
-    "_taskDeadLine": {
-      "year": 2014,
-      "month": 9,
-      "dayOfMonth": 25,
-      "hourOfDay": 23,
-      "minute": 43,
-      "second": 36
-    },
-    "_taskWorkLoad": "HIGH",
-    "_taskDescription": ""
-  },
-  {
     "_taskName": "ihi",
     "_taskID": "18",
     "_taskStatus": "Not Done",
@@ -141,12 +111,12 @@
     "_taskDeadLine": {
       "year": 2014,
       "month": 9,
-      "dayOfMonth": 25,
-      "hourOfDay": 23,
-      "minute": 49,
-      "second": 27
+      "dayOfMonth": 22,
+      "hourOfDay": 0,
+      "minute": 13,
+      "second": 30
     },
-    "_taskWorkLoad": "NONE",
+    "_taskWorkLoad": "MEDIUM",
     "_taskDescription": ""
   },
   {

@@ -78,6 +78,24 @@ public class PastHistory implements Observer {
                                 .getTask().getTaskID());
                 break;
                 
+            case "EDIT_DATE":
+                message = message + String.format("Modified deadline of Task %s (ID: %s)\n",
+                        currentRecord.getTask().getTaskName(), currentRecord
+                                .getTask().getTaskID());
+                break;
+                
+            case "EDIT_WORKLOAD":
+                message = message + String.format("Modified workload of Task %s (ID: %s)\n",
+                        currentRecord.getTask().getTaskName(), currentRecord
+                                .getTask().getTaskID());
+                break;
+                
+            case "EDIT_STATUS":
+                message = message + String.format("Modified status of Task %s (ID: %s)\n",
+                        currentRecord.getTask().getTaskName(), currentRecord
+                                .getTask().getTaskID());
+                break;
+                
             case "UNDO":
                 message = message + String.format("Reverted Task %s (ID: %s)\n",
                         currentRecord.getTask().getTaskName(), currentRecord
