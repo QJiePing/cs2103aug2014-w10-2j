@@ -184,11 +184,13 @@ public class OPLogic extends Observable {
     
     
     
-    public void deleteAllTask() {
+    public ArrayList<Task> deleteAllTask() {
 		TaskList.getInstance().clear();
 		
 		// not notification to observer
 		// notifyObserver("CLEAR",...)
+		
+		return null;
     }
 
     /**
