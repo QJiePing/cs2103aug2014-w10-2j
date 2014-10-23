@@ -19,28 +19,27 @@ public class OPLogicTest {
 		Task task;
 		
 		/* This is a boundary case for add nothing */
-		task = OPLogic.getInstance().addTask(null, null);
+		task = OPLogic.getInstance().addTask(null, null, null, null);
 		assertEquals(null, task);
 		assertEquals(0, TaskList.getInstance().size());
 		
 		/* This is a boundary case for add a task with empty task name */
-		task = OPLogic.getInstance().addTask(null, "my_description");
+		task = OPLogic.getInstance().addTask(null, "my_description", null, null);
 		assertEquals(null, task);
 		assertEquals(0, TaskList.getInstance().size());
 		
 		/* This is a case for adding a task with one parameter - task name*/
-		task = OPLogic.getInstance().addTask("my_test", null);
+		task = OPLogic.getInstance().addTask("my_test", null, null, null);
 		assertEquals("my_test", task.getTaskName());
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(1, TaskList.getInstance().size());
 		
 		/* This is a case for adding a task with two parameters - task name, task description*/
-		task = OPLogic.getInstance().addTask("my_test", "my_description");
+		task = OPLogic.getInstance().addTask("my_test", "my_description", null, null);
 		assertEquals("my_test", task.getTaskName());
 		assertEquals("my_description", task.getTaskDescription());
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(2, TaskList.getInstance().size());
-		
 		
 		//*********************test deleteTask********************//
 		String taskID;

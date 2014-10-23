@@ -65,7 +65,7 @@ public class ParseAttribute {
     }
     
     public static String parseTime(String time) throws Exception{
-        ;
+        return "";
     }
     
     public static String parseWL(String workload) throws Exception{
