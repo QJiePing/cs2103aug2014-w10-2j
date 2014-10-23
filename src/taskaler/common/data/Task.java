@@ -3,9 +3,10 @@
  */
 package taskaler.common.data;
 
-import java.util.Calendar;
-
-public class Task {
+/*
+ * @author Quek Jie Ping, Weng Yuan
+ */
+public abstract class Task {
 
     // Possible workload values
     public static final String WORKLOAD_NONE = "0";
@@ -20,7 +21,6 @@ public class Task {
     private String _taskName;
     private String _taskID;
     private String _taskStatus;
-    private Calendar _taskDeadLine;
     private WorkloadProperty _taskWorkLoad;
     private String _taskDescription;
 
@@ -36,20 +36,17 @@ public class Task {
      *            ID of the task
      * @param taskStatus
      *            Status of the task
-     * @param taskDeadLine
-     *            Deadline of the task
      * @param taskWorkLoad
      *            Workload of the task
      * @param taskDescription
      *            Description of the task
      */
-    public Task(String taskName, String taskID, String taskStatus,
-            Calendar taskDeadLine, String taskWorkLoad, String taskDescription) {
+    public Task(String taskName, String taskID, String taskStatus, 
+    		String taskWorkLoad, String taskDescription) {
 
         _taskName = taskName;
         _taskID = taskID;
         _taskStatus = taskStatus;
-        _taskDeadLine = taskDeadLine;
         _taskWorkLoad = workloadFromString(taskWorkLoad);
         _taskDescription = taskDescription;
 
@@ -66,10 +63,6 @@ public class Task {
 
     public String getTaskStatus() {
         return _taskStatus;
-    }
-
-    public Calendar getTaskDeadLine() {
-        return _taskDeadLine;
     }
 
     public String getTaskWorkLoad() {
@@ -95,10 +88,6 @@ public class Task {
         _taskStatus = newTaskStatus;
     }
 
-    public void changeDeadLine(Calendar newTaskDeadLine) {
-        _taskDeadLine = newTaskDeadLine;
-    }
-
     public void changeTaskWorkLoad(String newTaskWordLoad) {
         _taskWorkLoad = workloadFromString(newTaskWordLoad);
     }
@@ -109,15 +98,10 @@ public class Task {
 
     /**************** Class Methods ************************/
     /**
-     * Method to create a new Task object with the same value
-     * 
-     * @return New task with same values
+     *Abstract method to create a new task object with the same values
+     *To be implemented by the subclass
      */
-    public Task clone() {
-        Task newTask = new Task(_taskName, _taskID, _taskStatus, _taskDeadLine,
-                workloadToString(_taskWorkLoad), _taskDescription);
-        return newTask;
-    }
+    public abstract Task clone();
 
     /**
      * Method to map a string to workload property
@@ -126,7 +110,7 @@ public class Task {
      *            String to be mapped
      * @return WorkloadProperty mapped to string
      */
-    private static WorkloadProperty workloadFromString(String input) {
+    protected static WorkloadProperty workloadFromString(String input) {
         if (input.compareToIgnoreCase(WORKLOAD_HIGH) == 0) {
             return WorkloadProperty.HIGH;
         } else if (input.compareToIgnoreCase(WORKLOAD_MEDIUM) == 0) {
@@ -145,7 +129,7 @@ public class Task {
      *            Property to be converted
      * @return String representation of workload
      */
-    private static String workloadToString(WorkloadProperty workload) {
+    protected static String workloadToString(WorkloadProperty workload) {
         if(workload == null){
             return WORKLOAD_NONE;
         }
