@@ -4,12 +4,10 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import taskaler.common.data.Task;
 /*
  * @author Quek Jie Ping A0111798X
  */
