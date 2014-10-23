@@ -241,14 +241,12 @@ public class OPLogic extends Observable {
 
     /**
      * 
-     * Task editDate(String taskID, String day, String month, String year) is to
+     * Task editDate(String taskID, String date) is to
      * edit a existing task with same given ID in taskList:ArrayList<Task> by
      * given name and/or description
      * 
      * @param taskID
-     * @param day
-     * @param month
-     * @param year
+     * @param date
      * @return return null if given task ID not exist, edited task otherwise
      */
     public Task editDate(String taskID, String date) {
@@ -270,7 +268,7 @@ public class OPLogic extends Observable {
 
     /**
      * 
-     * setNewCalenderDate(int day, int month, int year) is to create a new
+     * setNewCalenderDate(String date) is to create a new
      * calendar date will given day, month and year
      * 
      * @param day
@@ -279,7 +277,7 @@ public class OPLogic extends Observable {
      * @return return new calendar date
      */
     private static Calendar setNewCalenderDate(String date) {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy: HHmm");
         Calendar newDeadLine = Calendar.getInstance();
         try{
             newDeadLine.setTime(format.parse(date));

@@ -107,5 +107,10 @@ ArchiveFunction
 Task
 ====
 
+floatingTask
+
+repeatedTask
+
+deadlineTask
 
 
