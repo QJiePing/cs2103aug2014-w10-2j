@@ -1,10 +1,10 @@
-package taskaler.controller;
+package taskaler.controller.parser;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import taskaler.controller.common.CmdType;
+import taskaler.controller.common.*;
 
 public class ParserTest {
     private static Parser newParser;
