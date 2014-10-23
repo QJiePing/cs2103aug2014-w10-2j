@@ -23,7 +23,7 @@ public class ParserTest {
             //This is the testing of valid syntax
             //Adding task with name but no description
             reset();
-            newParser.parseCMD("add hello", null);
+            newParser.parseCMD("add hello", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
@@ -34,7 +34,7 @@ public class ParserTest {
             //This is the testing of valid syntax
             //Adding task with name and description
             reset();
-            newParser.parseCMD("add hello -d world!", null);
+            newParser.parseCMD("add hello -d world!", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
@@ -45,7 +45,7 @@ public class ParserTest {
             //This is the testing for invalid syntax
             //Incomplete Add
             reset();
-            newParser.parseCMD("add ", null);
+            newParser.parseCMD("add ", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
@@ -66,7 +66,7 @@ public class ParserTest {
             
             //This is the test for valid syntax
             reset();
-            newParser.parseCMD("delete 1", null);
+            newParser.parseCMD("delete 1", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.DELETE);
@@ -75,7 +75,7 @@ public class ParserTest {
             
             //This is the test case for invalid syntax
             reset();
-            newParser.parseCMD("delete ", null);
+            newParser.parseCMD("delete ", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.DELETE);
@@ -95,7 +95,7 @@ public class ParserTest {
             
             //This is the test for valid syntax
             reset();
-            newParser.parseCMD("edit 1 -n bye -d ha", null);
+            newParser.parseCMD("edit 1 -n bye -d ha", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -106,7 +106,7 @@ public class ParserTest {
             
             //This is the test case for valid syntax
             reset();
-            newParser.parseCMD("edit 2 -d haha", null);
+            newParser.parseCMD("edit 2 -d haha", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -117,7 +117,7 @@ public class ParserTest {
             
             //This is the test case for valid syntax
             reset();
-            newParser.parseCMD("edit 3 -d hahaha -n byebye", null);
+            newParser.parseCMD("edit 3 -d hahaha -n byebye", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -128,7 +128,7 @@ public class ParserTest {
             
           //This is the test case for invalid syntax
             reset();
-            newParser.parseCMD("edit -d ahah", null);
+            newParser.parseCMD("edit -d ahah", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -149,7 +149,7 @@ public class ParserTest {
         String[] currentParams;
         try{
             reset();
-            newParser.parseCMD("asdf", null);
+            newParser.parseCMD("asdf", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.INVALID);

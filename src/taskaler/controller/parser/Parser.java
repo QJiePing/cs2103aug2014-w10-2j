@@ -1,11 +1,6 @@
 package taskaler.controller.parser;
 
 import static taskaler.controller.common.*;
-import taskaler.common.util.parser.calendarToString;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 
 public class Parser {
     // Local Variables
@@ -46,15 +41,15 @@ public class Parser {
      * 
      * @param commandString
      */
-    public void parseCMD(String commandString, String taskID) throws Exception{
+    public void parseCMD(String commandString, String state, String taskID) throws Exception{
         String CMD = getFirstWord(commandString);
         command = determineCMD_TYPE(CMD);
-        parameters = getParams(command, commandString);
+        currentState = state;
         currentTaskID = taskID;
+        parameters = getParams(command, commandString);
     }
     
-    /**
-     * 
+    /** 
      * Method to differentiate between CMD_TYPE(s) when given the user command 
      * 
      * @param command
@@ -71,7 +66,6 @@ public class Parser {
     }
     
     /**
-     * 
      * Method to get the parameters for each command, differentiated by CMD_TYPE
      * 
      * @param commandType
@@ -207,12 +201,17 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for the DELETE command
      */
-    private static String[] getParam_DELETE(String commandString){
+    private static String[] getParam_DELETE(String commandString) throws Exception{
         int taskID_index = 0;
         String[] paramDELETE = new String[DELETE_PARAMETERS];
         String taskID = getTaskID(commandString);
         if(taskID.isEmpty()){
-            paramDELETE[taskID_index] = currentTaskID;
+            if(currentTaskID != null){
+                paramDELETE[taskID_index] = currentTaskID;
+            }
+            else {
+                throw new Exception("Invalid task ID");
+            }
         }
         else {
             paramDELETE[taskID_index] = taskID;

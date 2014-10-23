@@ -269,7 +269,6 @@ public class OPLogic extends Observable {
      */
     public Task editDate(String taskID, String date) {
         Calendar newDeadLine = setNewCalendarDate(date);
-
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
@@ -295,7 +294,7 @@ public class OPLogic extends Observable {
      * @return return new calendar date
      */
     private static Calendar setNewCalendarDate(String date) {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Calendar newDeadLine = Calendar.getInstance();
         try{
             newDeadLine.setTime(format.parse(date));
