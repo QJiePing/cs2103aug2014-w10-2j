@@ -14,6 +14,7 @@ public class common {
     public static String EDIT_NO_CONTENT = "NO content, cannot be edited";
     public static String TASKID_NOT_EXIST = "Task ID no exist";
     public static String TASK_INITIAL_STATUS = "Not Done";
+    public static String TASK_COMPLETED_STATUS = "Done";
     public static String TASK_PARAMETER_DEFAULT_VALUE = "";
 
     public static int TAG_TYPE_DATE = 0;

@@ -340,10 +340,23 @@ public class OPLogic extends Observable {
 
         notifyObservers("EDIT_STATUS", TaskList.getInstance().get(taskIDIndex));
 
-        TaskList.getInstance().get(taskIDIndex).changeTaskStatus("Done");
+        toggleStatus(taskIDIndex);
+        
         return TaskList.getInstance().get(taskIDIndex);
     }
 
+    
+	private void toggleStatus(int taskIDIndex) {
+		
+		if(TaskList.getInstance().get(taskIDIndex).getTaskStatus().equals(common.TASK_COMPLETED_STATUS)) {
+        	TaskList.getInstance().get(taskIDIndex).changeTaskStatus(common.TASK_INITIAL_STATUS);
+        } else {
+        	TaskList.getInstance().get(taskIDIndex).changeTaskStatus(common.TASK_COMPLETED_STATUS);
+        }
+		
+	}
+
+	
     private void notifyObservers(String type, Task task) {
         setChanged();
         OperationRecord<Task, String> record = new OperationRecord<Task, String>(
