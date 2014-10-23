@@ -4,14 +4,17 @@
 package taskaler.ui.controller;
 
 /**
- * @author Kiwi
+ * Class to hold common variables used by the UI controllers
+ * 
+ * @author Cheah Kit Weng
  *
  */
 public final class common {
-
-    public enum RectangleColor {
-        GREY, GREEN, ORANGE, RED
-    }
+    
+    public static final int RECTANGLE_COLOR_GREY    = 1;
+    public static final int RECTANGLE_COLOR_GREEN   = 2;
+    public static final int RECTANGLE_COLOR_ORANGE  = 4;
+    public static final int RECTANGLE_COLOR_RED     = 8;
     
     public static final String FXML_ROOT        = "/taskaler/ui/view/RootView.fxml";
     public static final String FXML_CALENDAR    = "/taskaler/ui/view/CalendarPaneView.fxml";

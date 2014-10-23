@@ -6,6 +6,7 @@ package taskaler.ui.controller;
 import taskaler.ui.model.TaskPaneModel;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -103,21 +104,27 @@ public class TaskPaneController extends BorderPane implements IController {
         txtTaskDescription.setText(model.taskDescription);
         
         switch (model.taskWorkload) {
-        case GREEN:
+        case common.RECTANGLE_COLOR_GREEN:
             lblLow.setVisible(true);
             lblDefault.setVisible(false);
             break;
-        case ORANGE:
+        case common.RECTANGLE_COLOR_ORANGE:
             lblMedium.setVisible(true);
             lblDefault.setVisible(false);
             break;
-        case RED:
+        case common.RECTANGLE_COLOR_RED:
             lblHigh.setVisible(true);
             lblDefault.setVisible(false);
             break;
-        case GREY:
+        case common.RECTANGLE_COLOR_GREY:
             lblDefault.setVisible(true);
             break;
         }
+    }
+
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
     }
 }

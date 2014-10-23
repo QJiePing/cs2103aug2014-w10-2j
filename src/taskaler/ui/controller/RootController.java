@@ -6,6 +6,7 @@ package taskaler.ui.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
@@ -194,21 +195,21 @@ public class RootController extends BorderPane implements IController {
 
     /**
      * Method to convert the string representation of the workload attribute to
-     * RECTANGLE_COLOR representation
+     * integer representation
      * 
      * @param taskWorkLoad
      *            Value to be parsed
-     * @return RECTANGLE_COLOR representation of value
+     * @return Integer representation of value
      */
-    private common.RectangleColor parseWorkload(String taskWorkLoad) {
+    private int parseWorkload(String taskWorkLoad) {
         if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_LOW) == 0) {
-            return common.RectangleColor.GREEN;
+            return common.RECTANGLE_COLOR_GREEN;
         } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
-            return common.RectangleColor.ORANGE;
+            return common.RECTANGLE_COLOR_ORANGE;
         } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0) {
-            return common.RectangleColor.RED;
+            return common.RECTANGLE_COLOR_RED;
         } else {
-            return common.RectangleColor.GREY;
+            return common.RECTANGLE_COLOR_GREY;
         }
     }
 
@@ -218,6 +219,11 @@ public class RootController extends BorderPane implements IController {
      */
     public void giveFocus() {
         txtCmdInput.requestFocus();
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return ((IController) anchorPaneDisplay.getChildren().get(common.ZERO_INDEX)).getState();
     }
 
 }

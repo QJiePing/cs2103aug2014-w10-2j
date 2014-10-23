@@ -4,6 +4,7 @@
 package taskaler.ui.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Interface to be implemented by all controllers
@@ -29,4 +30,11 @@ public interface IController {
      *             Thrown if an IO error is encountered while updating a view
      */
     public abstract void update() throws IOException;
+
+    /**
+     * Method to get the current state of the view
+     * 
+     * @return HashMap representation of the current view
+     */
+    public abstract HashMap<String, String> getState();
 }

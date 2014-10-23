@@ -6,12 +6,15 @@ package taskaler.ui.controller;
 import taskaler.ui.model.CellDateModel;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -52,6 +55,18 @@ public class CellDateController extends AnchorPane implements IController {
     @FXML
     private Rectangle rectangleRed;
 
+    @FXML
+    private Rectangle rectangleGreyDisable;
+
+    @FXML
+    private Rectangle rectangleGreenDisable;
+
+    @FXML
+    private Rectangle rectangleOrangeDisable;
+
+    @FXML
+    private Rectangle rectangleRedDisable;
+    
     /**
      * Overloaded constructor
      * 
@@ -84,10 +99,30 @@ public class CellDateController extends AnchorPane implements IController {
     public void update() {
         setTitle(currentModel.currentDate + common.EMPTY_STRING);
         int totalNumberOfTasks = currentModel.currentNumberOfEvents;
-        if(totalNumberOfTasks > 0){
+        int workloadFilter = currentModel.currentWorkloadFilters;
+        if (totalNumberOfTasks > 0) {
+            boolean isGreyVisible = false;
+            boolean isGreenVisible = false;
+            boolean isOrangeVisible = false;
+            boolean isRedVisible = false;
+            if ((workloadFilter & common.RECTANGLE_COLOR_GREY) > 0) {
+                isGreyVisible = true;
+            }
+            if ((workloadFilter & common.RECTANGLE_COLOR_GREEN) > 0) {
+                isGreenVisible = true;
+            }
+            if ((workloadFilter & common.RECTANGLE_COLOR_ORANGE) > 0) {
+                isOrangeVisible = true;
+            }
+            if ((workloadFilter & common.RECTANGLE_COLOR_RED) > 0) {
+                isRedVisible = true;
+            }
+
             setNumberOfTasks(totalNumberOfTasks);
+            setCircleVisible(isGreyVisible, isGreenVisible, isOrangeVisible,
+                    isRedVisible);
             setBodyVisible(true);
-        }else{
+        } else {
             setBodyVisible(false);
         }
     }
@@ -114,7 +149,8 @@ public class CellDateController extends AnchorPane implements IController {
             return;
         }
         if (totalNumberOfTasks > MAX_NUMBER_OF_TASKS_FOR_DISPLAY) {
-            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY + common.PLUS_STRING);
+            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY
+                    + common.PLUS_STRING);
         } else {
             lblNumber.setText(totalNumberOfTasks + common.EMPTY_STRING);
         }
@@ -129,6 +165,12 @@ public class CellDateController extends AnchorPane implements IController {
         rectangleGreen.setVisible(false);
         rectangleOrange.setVisible(false);
         rectangleRed.setVisible(false);
+        
+        rectangleGreyDisable.setVisible(true);
+        rectangleGreenDisable.setVisible(true);
+        rectangleOrangeDisable.setVisible(true);
+        rectangleRedDisable.setVisible(true);
+        
     }
 
     /**
@@ -146,10 +188,10 @@ public class CellDateController extends AnchorPane implements IController {
     private void setCircleVisible(boolean grey, boolean green, boolean orange,
             boolean red) {
         resetCircleVisibility();
-        setCircleVisible(common.RectangleColor.GREY, grey);
-        setCircleVisible(common.RectangleColor.GREEN, green);
-        setCircleVisible(common.RectangleColor.ORANGE, orange);
-        setCircleVisible(common.RectangleColor.RED, red);
+        setCircleVisible(common.RECTANGLE_COLOR_GREY, grey);
+        setCircleVisible(common.RECTANGLE_COLOR_GREEN, green);
+        setCircleVisible(common.RECTANGLE_COLOR_ORANGE, orange);
+        setCircleVisible(common.RECTANGLE_COLOR_RED, red);
     }
 
     /**
@@ -160,17 +202,26 @@ public class CellDateController extends AnchorPane implements IController {
      * @param isVisible
      *            The boolean to determine if circle is visible
      */
-    private void setCircleVisible(common.RectangleColor color, boolean isVisible) {
+    private void setCircleVisible(int color, boolean isVisible) {
         switch (color) {
-        case GREY:
+        case common.RECTANGLE_COLOR_GREY:
             rectangleGrey.setVisible(isVisible);
-        case GREEN:
+            rectangleGreyDisable.setVisible(!isVisible);
+        case common.RECTANGLE_COLOR_GREEN:
             rectangleGreen.setVisible(isVisible);
-        case ORANGE:
+            rectangleGreenDisable.setVisible(!isVisible);
+        case common.RECTANGLE_COLOR_ORANGE:
             rectangleOrange.setVisible(isVisible);
-        case RED:
+            rectangleOrangeDisable.setVisible(!isVisible);
+        case common.RECTANGLE_COLOR_RED:
             rectangleRed.setVisible(isVisible);
+            rectangleRedDisable.setVisible(!isVisible);
         }
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
     }
 
 }
