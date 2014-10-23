@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -16,12 +17,17 @@
                </font>
             </Label>
             <Pane fx:id="anchorPaneDisplay" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" />
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0">
+               <children>
+                  <ListView fx:id="listCmd" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="400.0" visible="false" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+               </children>
+            </AnchorPane>
             <Label fx:id="lblToast" contentDisplay="TEXT_ONLY" layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="400.0" style="-fx-background-color: Yellow;" text="Label" textAlignment="CENTER" visible="false" />
          </children>
       </Pane>
    </center>
    <bottom>
-      <TextField fx:id="txtCmdInput" onKeyPressed="#txtCmdInputKeyPressed" prefHeight="40.0" prefWidth="400.0" promptText="Enter Command Here..." BorderPane.alignment="CENTER">
+      <TextField fx:id="txtCmdInput" onKeyPressed="#txtCmdInputKeyPressed" onKeyTyped="#txtcmdInputKetTyped" prefHeight="40.0" prefWidth="400.0" promptText="Enter Command Here..." BorderPane.alignment="CENTER">
          <font>
             <Font name="System Italic" size="18.0" />
          </font></TextField>
