@@ -1,5 +1,6 @@
 package taskaler.common.data;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /*
@@ -9,7 +10,7 @@ public class RepeatedTask extends Task {
 	
 	private Calendar _startTime;
 	private Calendar _endTime;
-	private Calendar _repeatedDate;
+	private ArrayList<Calendar> _repeatedDate;
 	private Calendar _endRepeatedDate;
 	private int _collectionID;
 	
@@ -40,7 +41,7 @@ public class RepeatedTask extends Task {
 	 * 		      This is ID for the repeated task
 	 */
 	public RepeatedTask(String taskName, String taskID, String taskStatus, String taskWorkLoad, 
-			String taskDescription, Calendar start, Calendar end, Calendar repeatedDate,Calendar endRepeatedDate,int ID){
+			String taskDescription, Calendar start, Calendar end, ArrayList<Calendar> repeatedDate,Calendar endRepeatedDate,int ID){
 		
 		super(taskName,taskID,taskStatus,taskWorkLoad,taskDescription);
 		this._startTime=start;
@@ -67,7 +68,7 @@ public class RepeatedTask extends Task {
 	public Calendar getEndTime(){
 		return this._endTime;
 	}
-	public Calendar getRepeatedDate(){
+	public ArrayList<Calendar> getRepeatedDate(){
 		return this._repeatedDate;
 	}
 	public Calendar getEndRepeatedDate(){
@@ -84,7 +85,7 @@ public class RepeatedTask extends Task {
 	public void setEndTime(Calendar end){
 		this._endTime=end;
 	}
-	public void setRepeatedDate(Calendar repeat){
+	public void setRepeatedDate(ArrayList<Calendar> repeat){
 		this._repeatedDate=repeat;
 	}
 	public void setEndRepeatedDate(Calendar endRepeat){
