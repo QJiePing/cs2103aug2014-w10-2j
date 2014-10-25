@@ -31,9 +31,9 @@ public class DeadLineTask extends Task{
 	 * @param end
 	 * 		      End time of the task
 	 */
-	public DeadLineTask(String taskName, String taskID, String taskStatus, String taskWorkLoad, 
+	public DeadLineTask(String taskName, String taskID, String taskStatus,Calendar creationDate, String taskWorkLoad,
 			String taskDescription, Calendar start, Calendar end){
-		super(taskName,taskID,taskStatus,taskWorkLoad,taskDescription);
+		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription);
 		this._startTime=start;
 		this._endTime=end;
 	}
@@ -43,7 +43,7 @@ public class DeadLineTask extends Task{
 	 * @return DeadLineTask
 	 */
 	public DeadLineTask clone(){
-		DeadLineTask newTask = new DeadLineTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(), this.getTaskWorkLoad(), this.getTaskDescription(),this.getStartTime(),this.getEndTime());
+		DeadLineTask newTask = new DeadLineTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(),this.getTaskCreationDate(), this.getTaskWorkLoad(), this.getTaskDescription(),this.getStartTime(),this.getEndTime());
 	    return newTask;
 	}
 	

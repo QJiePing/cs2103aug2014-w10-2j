@@ -40,10 +40,10 @@ public class RepeatedTask extends Task {
 	 * @param ID
 	 * 		      This is ID for the repeated task
 	 */
-	public RepeatedTask(String taskName, String taskID, String taskStatus, String taskWorkLoad, 
+	public RepeatedTask(String taskName, String taskID, String taskStatus,Calendar creationDate, String taskWorkLoad, 
 			String taskDescription, Calendar start, Calendar end, ArrayList<Calendar> repeatedDate,Calendar endRepeatedDate,int ID){
 		
-		super(taskName,taskID,taskStatus,taskWorkLoad,taskDescription);
+		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription);
 		this._startTime=start;
 		this._endTime=end;
 		this._repeatedDate=repeatedDate;
@@ -56,7 +56,7 @@ public class RepeatedTask extends Task {
 	 * @return RepeatedTask
 	 */
 	public RepeatedTask clone(){
-		RepeatedTask newTask = new RepeatedTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(), this.getTaskWorkLoad(), this.getTaskDescription(),
+		RepeatedTask newTask = new RepeatedTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(),this.getTaskCreationDate(), this.getTaskWorkLoad(), this.getTaskDescription(),
 				this.getStartTime(),this.getEndTime(),this.getRepeatedDate(),this.getEndRepeatedDate(),this.getCollectiveID());
 	    return newTask;
 	}

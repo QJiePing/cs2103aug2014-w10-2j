@@ -3,12 +3,17 @@
  */
 package taskaler.common.data;
 
-/*
+import java.util.Calendar;
+
+
+/**
  * @author Quek Jie Ping, Weng Yuan
  */
 public abstract class Task {
 
-    // Possible workload values
+    /**
+     *  Possible workload values
+     */
     public static final String WORKLOAD_NONE = "0";
     public static final String WORKLOAD_LOW = "1";
     public static final String WORKLOAD_MEDIUM = "2";
@@ -21,6 +26,7 @@ public abstract class Task {
     private String _taskName;
     private String _taskID;
     private String _taskStatus;
+    private Calendar _creationDate;
     private WorkloadProperty _taskWorkLoad;
     private String _taskDescription;
 
@@ -41,12 +47,13 @@ public abstract class Task {
      * @param taskDescription
      *            Description of the task
      */
-    public Task(String taskName, String taskID, String taskStatus, 
+    public Task(String taskName, String taskID, String taskStatus, Calendar creationDate, 
     		String taskWorkLoad, String taskDescription) {
 
         _taskName = taskName;
         _taskID = taskID;
         _taskStatus = taskStatus;
+        _creationDate = creationDate;
         _taskWorkLoad = workloadFromString(taskWorkLoad);
         _taskDescription = taskDescription;
 
@@ -68,6 +75,9 @@ public abstract class Task {
     public String getTaskWorkLoad() {
         return workloadToString(_taskWorkLoad);
     }
+    public Calendar getTaskCreationDate(){
+    	return _creationDate;
+    }
 
     public String getTaskDescription() {
         return _taskDescription;
@@ -78,7 +88,7 @@ public abstract class Task {
         _taskName = newTaskName;
     }
 
-    /*
+    /**
      * TaskID may be unique
      * 
      * public void changeTaskID(String newTaskID) { _taskID = newTaskID; }

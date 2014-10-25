@@ -1,5 +1,7 @@
 package taskaler.common.data;
 
+import java.util.Calendar;
+
 /*
  * @author Quek Jie Ping
  */
@@ -22,9 +24,9 @@ public class FloatTask extends Task{
      * @param taskDescription
      *            Description of the task
      */
-	public FloatTask(String taskName, String taskID, String taskStatus, String taskWorkLoad, 
+	public FloatTask(String taskName, String taskID, String taskStatus,Calendar creationDate, String taskWorkLoad,
 			String taskDescription){
-		super(taskName,taskID,taskStatus,taskWorkLoad,taskDescription);
+		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription);
 	}
 	
 	/**
@@ -32,7 +34,7 @@ public class FloatTask extends Task{
 	 * @return FloatTask
 	 */
 	public FloatTask clone(){
-		FloatTask newTask = new FloatTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(), this.getTaskWorkLoad(), this.getTaskDescription());
+		FloatTask newTask = new FloatTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(),this.getTaskCreationDate(), this.getTaskWorkLoad(), this.getTaskDescription());
 	    return newTask;
 	}
 	
