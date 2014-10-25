@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import taskaler.archive.OperationRecord;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
+import taskaler.common.util.CommonLogger;
 
 /**
  * @author Weng Yuan
@@ -184,13 +187,20 @@ public class OPLogic extends Observable {
     
     
     
-    public ArrayList<Task> deleteAllTask() {
-		TaskList.getInstance().clear();
-		
-		// not notification to observer
-		// notifyObserver("CLEAR",...)
-		
-		return null;
+    public boolean deleteAllTask() {
+    	
+    	try {
+    		TaskList.getInstance().clear();
+    		
+
+    		// not notification to observer
+    		// notifyObserver("CLEAR",...)
+    	} catch (Exception e) {
+    		CommonLogger.getInstance().exceptionLogger(e, Level.WARNING);
+    		return false;
+    	}
+    	
+    	return true;
     }
 
     /**
