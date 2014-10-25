@@ -9,8 +9,7 @@ import java.util.Date;
 
 public class ParseAttribute {
     /**
-     * Method to check whether the date is in correct syntax, 
-     * and translates it into the default date syntax 
+     * Parses the date and translates it into a consistent syntax, "dd/MM/yyyy"
      * 
      * @param paramDate
      * @return String date in correct format
@@ -64,17 +63,46 @@ public class ParseAttribute {
         return dateFormat;
     }
     
+    /** Parses the time and translates it to a consistent syntax, "HHmm-HHmm"
+     * @param time
+     * @return
+     * @throws Exception
+     */
     public static String parseTime(String time) throws Exception{
         return "";
     }
     
-    public static String parseWL(String workload) throws Exception{
+    /**
+     * Parses the workload attribute and translates it to a consistent syntax
+     * 
+     * @param workload
+     * @return String workload in correct format
+     * @throws Exception
+     */
+    public static String parseWL(String workload) throws Exception {
         String workloadInSyntax = ParserLibrary.availableWorkloadSyntax.get(workload);
         if(workloadInSyntax == null){
             throw new Exception("Invalid workload attribute syntax");
         }
         else {
             return workloadInSyntax;
+        }
+    }
+    
+    /**
+     * Parses the pattern keyword and translates it to a consistent syntax
+     * 
+     * @param pattern
+     * @return String pattern in correct format
+     * @throws Exception
+     */
+    public static String parsePattern(String pattern) throws Exception {
+        String patternInSyntax = ParserLibrary.availablePatternSyntax.get(pattern);
+        if(patternInSyntax == null){
+            throw new Exception("Invalid pattern syntax");
+        }
+        else {
+            return patternInSyntax;
         }
     }
 }

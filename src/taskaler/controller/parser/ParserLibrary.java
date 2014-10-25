@@ -17,6 +17,7 @@ public final class ParserLibrary {
                 put("date", CmdType.DATE);
                 put("deadline", CmdType.DATE);
                 put("time", CmdType.DATE);
+                put("repeat", CmdType.REPEAT);
                 put("workload", CmdType.WORKLOAD);
                 put("completed", CmdType.COMPLETION_TAG);
                 put("done", CmdType.COMPLETION_TAG);
@@ -70,5 +71,39 @@ public final class ParserLibrary {
                 put("none", "0");
             }};
     
+    public static final HashMap<String, String> availablePatternSyntax = new HashMap<String, String>()
+            {{  put("daily", "1 d");
+                put("everyday", "1 d");
+                put("weekly", "1 w");
+                put("monthly", "1 m");
+                put("yearly", "1 y");
+                put("annually", "1 y");
+                put("fortnightly", "2 w");
+                put("alternate", "2 d");
+                put("weekends", "wk");
+                put("weekend", "wk");
+                put("weekday", "wd");
+                put("weekdays", "wd");
+                put("1", "1 d");
+                put("2", "2 d");
+                put("3", "3 d");
+                put("4", "4 d");
+                put("5", "5 d");
+                put("6", "6 d");
+                put("sunday", "1 dow");
+                put("monday", "2 dow");
+                put("tuesday", "3 dow");
+                put("wednesday", "4 dow");
+                put("thursday", "5 dow");
+                put("friday", "6 dow");
+                put("saturday", "7 dow");
+                put("sun", "1 dow");
+                put("mon", "2 dow");
+                put("tue", "3 dow");
+                put("wed", "4 dow");
+                put("thu", "5 dow");
+                put("fri", "6 dow");
+                put("sat", "7 dow");
+            }};
 }
 

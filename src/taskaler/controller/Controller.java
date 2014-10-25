@@ -74,7 +74,7 @@ public class Controller{
             case DELETE:
                 String taskID_DELETE = params[0];
                 if(taskID_DELETE.equalsIgnoreCase("all")){
-                    ;
+                    crudLogic.deleteAllTask();
                     ui.display("All tasks have been deleted.", 
                             list.toArray(new ArrayList<Task>()));
                 }
@@ -99,6 +99,14 @@ public class Controller{
                 String taskID_DATE = params[0];
                 String dateToEdit = params[1];
                 result = crudLogic.editDate(taskID_DATE, dateToEdit);
+                ui.display(result);
+                break;
+            case REPEAT:
+                String taskID_REPEAT = params[0];
+                String pattern = params[1];
+                String startDate = params[2];
+                String endDate = params[3];
+                result = crudLogic.setRepeat(taskID_REPEAT, pattern, startDate, endDate);
                 ui.display(result);
                 break;
             case WORKLOAD:

@@ -282,7 +282,7 @@ public class OPLogic extends Observable {
 
         return TaskList.getInstance().get(taskIDIndex);
     }
-
+    
     /**
      * 
      * setNewCalenderDate(String date) is to create a new
@@ -294,17 +294,59 @@ public class OPLogic extends Observable {
      * @return return new calendar date
      */
     private static Calendar setNewCalendarDate(String date) {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Calendar newDeadLine = Calendar.getInstance();
         try{
-            newDeadLine.setTime(format.parse(date));
+            newDeadLine.setTime(common.DEFAULT_DATE_FORMAT.parse(date));
         }
         catch(Exception e){
             ;
         }
         return newDeadLine;
     }
-
+    
+    /* This is a stub for the setRepeat function Controller will call for the "repeat" command
+       parameters are as follows, syntax for "pattern" is in ParserLibrary.java if u need to 
+       take a look, but briefly, for pattern, i will pass you:
+        - to repeat every <num> days    : "1 d", "2 d", .... "6 d"
+        - to repeat every <num> weeks   : "1 w", "2 w" ...
+        - to repeat every <num> months  : "1 m", "2 m" ...
+        - to repeat every <num> years   : "1 y", "2 y" ...
+        - to repeat on all weekdays     : "wd"
+        - to repeat on all weekends     : "wk"
+        - to repeat on all "day-of-week": "1 dow", "2 dow", ... "7 dow" 
+          ("1 dow" represents sunday, so on so forth, to match with the Calendar implementation) 
+    */
+    public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
+        return new Task();
+    }
+    
+    // I wrote a function to get all the dates in a month (for repeat), if the pattern is 
+    // the day of the week, ie. "wednesday", "saturday"
+    /*
+    private static ArrayList<Calendar> getDatesDOW(String day, String end) throws Exception {
+        int dayOfWeek = Integer.parseInt(day);
+        Calendar cal = Calendar.getInstance();
+        ArrayList<Calendar> totalDates = new ArrayList<Calendar>();
+        int today = cal.get(Calendar.DAY_OF_WEEK);
+        if(today > dayOfWeek){
+            today -= common.DAYS_IN_A_WEEK;
+        }
+        Calendar nextDate = incrementDate(cal, dayOfWeek - today);
+        Calendar endDate = setNewCalendarDate(end);
+        while(nextDate.before(endDate)){
+            totalDates.add(nextDate);
+            nextDate = incrementDate(nextDate, common.DAYS_IN_A_WEEK);
+        }
+        return totalDates;
+    }
+    
+    private static Calendar incrementDate(Calendar date, int num){
+        Calendar newCal = (Calendar) date.clone();
+        newCal.add(Calendar.DATE, num);
+        return newCal;
+    }
+    */
+    
     /**
      * 
      * Task editWorkload(String taskID, String workloadAttribute) is to change

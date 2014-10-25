@@ -3,6 +3,8 @@
  */
 package taskaler.logic;
 
+import java.text.SimpleDateFormat;
+
 /**
  * All constants used by any logic component
  * 
@@ -10,6 +12,11 @@ package taskaler.logic;
  *
  */
 public class common {
+    public static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+    public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("HHmm-HHmm");
+    public static SimpleDateFormat DEFAULT_DATETIME_FORMAT = 
+            new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
+    
     public static String ADD_NO_CONTENT = "No content is added";
     public static String EDIT_NO_CONTENT = "NO content, cannot be edited";
     public static String TASKID_NOT_EXIST = "Task ID no exist";
@@ -21,7 +28,7 @@ public class common {
     public static int TAG_TYPE_MONTH = 1;
     public static int TAG_TYPE_YEAR = 2;
     public static int TAG_TASK_NOT_EXIST = -1;
-
+    public static int DAYS_IN_A_WEEK = 7;
     public static int OFF_SET_BY_ONE = 1;
 
     public static int DEFAULT_TASK_ID = 0;

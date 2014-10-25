@@ -75,25 +75,27 @@ public class Parser {
     private static String[] getParams(CmdType commandType, String commandString) throws Exception{
         switch(commandType){
         case ADD:
-            return getParam_ADD(commandString);
+            return getParamADD(commandString);
         case DELETE:
-            return getParam_DELETE(commandString);
+            return getParamDELETE(commandString);
         case EDIT:
-            return getParam_EDIT(commandString);
+            return getParamEDIT(commandString);
         case DATE:
-            return getParam_DATE(commandString);
+            return getParamDATE(commandString);
+        case REPEAT:
+            return getParamREPEAT(commandString);
         case WORKLOAD:
-            return getParam_WL(commandString);
+            return getParamWL(commandString);
         case COMPLETION_TAG:
             return getParamCT(commandString);
         case VIEW:
-            return getParam_VIEW(commandString);
+            return getParamVIEW(commandString);
         case FIND:
-            return getParam_FIND(commandString);
+            return getParamFIND(commandString);
         case ARCHIVE:
-            return getParam_ARCH(commandString);
+            return getParamARCH(commandString);
         case GOTO:
-            return getParam_GOTO(commandString);
+            return getParamGOTO(commandString);
         default:
             return null;
         }
@@ -105,10 +107,11 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for ADD command
      */
-    private static String[] getParam_ADD(String commandString) throws Exception{
-        int nameAndDescriptionIndex = 0;
-        int dateAndTimeIndex = 1;
-        int workloadIndex = 2;
+    private static String[] getParamADD(String commandString) throws Exception{
+        int nameIndex = 0;
+        int descriptionIndex = 1;
+        int dateAndTimeIndex = 2;
+        int workloadIndex = 3;
         
         String paramString = removeFirstWord(commandString);
         String[] paramArray = paramString.split(",");
@@ -116,16 +119,19 @@ public class Parser {
         int numOfParams = paramArray.length;
         switch(numOfParams){
         case 1:
-            paramADD = appendNameAndDescription(paramArray[nameAndDescriptionIndex].trim(), paramADD);
+            paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD, 
+                    nameIndex, descriptionIndex);
             break;
         case 2:
-            paramADD = appendNameAndDescription(paramArray[nameAndDescriptionIndex].trim(), paramADD);
-            paramADD = appendDateAndTime(paramArray[dateAndTimeIndex].trim(), paramADD);
+            paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD, 
+                    nameIndex, descriptionIndex);
+            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD, dateAndTimeIndex);
             break;
         case 3:
-            paramADD = appendNameAndDescription(paramArray[nameAndDescriptionIndex].trim(), paramADD);
-            paramADD = appendDateAndTime(paramArray[dateAndTimeIndex].trim(), paramADD);
-            paramADD = appendWorkload(paramArray[workloadIndex].trim(), paramADD);
+            paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD, 
+                    nameIndex, descriptionIndex);
+            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD, dateAndTimeIndex);
+            paramADD = appendWorkload(paramArray[2].trim(), paramADD, workloadIndex);
             break;
         default:
             throw new Exception("Invalid parameters");
@@ -140,19 +146,22 @@ public class Parser {
      * @param paramArray
      * @return
      */
-    private static String[] appendNameAndDescription(String paramString, String[] paramArray){
-        int nameIndex = 0;
-        int descriptionIndex = 1;
+    private static String[] appendNameAndDescription(String paramString, String[] paramArray, 
+            int indexN, int indexD){
+        int nameIndex = indexN;
+        int descriptionIndex = indexD;
         
         int splitIndex = paramString.indexOf(":");
         if(splitIndex == INVALID_VALUE) {
-            paramArray[nameIndex] = paramString;
+            if(!paramString.isEmpty()){
+                paramArray[nameIndex] = paramString;
+            }
         }
         else {
             String name = paramString.substring(0, splitIndex).trim();
             String description = paramString.substring(splitIndex + 1).trim();
-            paramArray[nameIndex] = name;
-            paramArray[descriptionIndex] = description;
+            paramArray[nameIndex] = convertToNullIfEmpty(name);
+            paramArray[descriptionIndex] = convertToNullIfEmpty(description);
         }
         return paramArray;
     }
@@ -165,8 +174,9 @@ public class Parser {
      * @return
      * @throws Exception
      */
-    private static String[] appendDateAndTime(String paramString, String[] paramArray) throws Exception {
-        int dateAndTimeIndex = 2;
+    private static String[] appendDateAndTime(String paramString, String[] paramArray, int indexDT) 
+            throws Exception {
+        int dateAndTimeIndex = indexDT;
 
         int splitIndex = paramString.indexOf(":");
         if(splitIndex == INVALID_VALUE) {
@@ -188,8 +198,8 @@ public class Parser {
      * @return
      * @throws Exception
      */
-    private static String[] appendWorkload(String paramString, String[] paramArray) throws Exception{
-        int workloadIndex = 3;
+    private static String[] appendWorkload(String paramString, String[] paramArray, int indexWL) throws Exception{
+        int workloadIndex = indexWL;
         String workload = ParseAttribute.parseWL(paramString);
         paramArray[workloadIndex] = workload;
         return paramArray;
@@ -201,7 +211,7 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for the DELETE command
      */
-    private static String[] getParam_DELETE(String commandString) throws Exception{
+    private static String[] getParamDELETE(String commandString) throws Exception{
         int taskID_index = 0;
         String[] paramDELETE = new String[DELETE_PARAMETERS];
         String taskID = getTaskID(commandString);
@@ -246,37 +256,27 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for EDIT command
      */
-    private static String[] getParam_EDIT(String commandString) {
-        int taskID_index = 0;
-        int name_index = 1;
-        int description_index = 2;
+    private static String[] getParamEDIT(String commandString) throws Exception {
+        int taskIDIndex = 0;
+        int nameIndex = 1;
+        int descriptionIndex = 2;
+        
         String[] paramEDIT = new String[MAX_EDIT_PARAMETERS];
-        String taskID = getTaskID(commandString);
-        if(taskID.equals("-n") || taskID.equals("-d")){
-            paramEDIT[taskID_index] = currentTaskID;
+        String paramString = removeFirstWord(commandString);
+        String[] paramArray = paramString.split("\\s+");
+        if(currentTaskID == null){
+            if(paramArray.length > 1){
+                paramEDIT[taskIDIndex] = getFirstWord(paramString);
+                paramEDIT = appendNameAndDescription(removeFirstWord(paramString), paramEDIT, 
+                        nameIndex, descriptionIndex);
+            }
+            else {
+                throw new Exception("Invalid task ID");
+            }
         }
         else {
-           paramEDIT[taskID_index] = taskID; 
-        }
-        int nameTagIndex = commandString.toLowerCase().indexOf(" -n ");
-        int descriptionTagIndex = commandString.toLowerCase().indexOf(" -d ");
-
-        if (nameTagIndex > descriptionTagIndex) {
-            paramEDIT[name_index] = 
-                    commandString.substring(nameTagIndex + TAG_LENGTH);
-            if (descriptionTagIndex != INVALID_VALUE) {
-                paramEDIT[description_index] = 
-                        commandString.substring(descriptionTagIndex + TAG_LENGTH, 
-                                nameTagIndex);
-            }
-        } else if (nameTagIndex < descriptionTagIndex) {
-            paramEDIT[description_index] = 
-                    commandString.substring(descriptionTagIndex + TAG_LENGTH);
-            if (nameTagIndex != INVALID_VALUE) {
-                paramEDIT[name_index] = 
-                        commandString.substring(nameTagIndex + TAG_LENGTH, 
-                                descriptionTagIndex);
-            }
+            paramEDIT[taskIDIndex] = currentTaskID;
+            paramEDIT = appendNameAndDescription(paramString, paramEDIT, nameIndex, descriptionIndex);
         }
         return paramEDIT;
     }
@@ -287,7 +287,7 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for DATE command
      */
-    private static String[] getParam_DATE(String commandString) throws Exception{
+    private static String[] getParamDATE(String commandString) throws Exception{
         int taskID_index = 0;
         int date_index = 1;
         String[] paramArray = removeFirstWord(commandString).split("\\s+");
@@ -313,17 +313,118 @@ public class Parser {
         return paramDATE;
     }
     
-    
-    
-
     /**
+     * Method to return the parameters for REPEAT command specifically
+     * "repeat 1 weekly, from 09/10/2014 to 21/11/2014"
+     * @param commandString
+     * @return String[] parameters for REPEAT command
+     * @throws Exception Invalid date/time/pattern syntax
+     */
+    private static String[] getParamREPEAT(String commandString) throws Exception {
+        String[] paramREPEAT = new String[MAX_REPEAT_PARAMETERS];
+        String paramString = removeFirstWord(commandString);
+        int splitIndex = paramString.indexOf(",");
+        String IDAndPatternField = "";
+        String dateField = "";
+        if(splitIndex != INVALID_VALUE){
+            IDAndPatternField = paramString.substring(0, splitIndex).trim();
+            dateField = paramString.substring(splitIndex + 1).trim();
+            if(!dateField.isEmpty()) {
+                paramREPEAT = appendStartAndEndDate(dateField, paramREPEAT); 
+            }
+        }
+        else {
+            IDAndPatternField = paramString.trim();
+        }
+        paramREPEAT = appendIDAndPattern(IDAndPatternField, paramREPEAT);
+        return paramREPEAT;
+    }
+    
+    /**
+     * Parses and appends the taskID and pattern parameters, for getParamREPEAT
      * 
+     * @param field
+     * @param paramArray
+     * @return
+     * @throws Exception
+     */
+    private static String[] appendIDAndPattern(String IDAndPatternfield, String[] paramArray) throws Exception {
+        int taskIDIndex = 0;
+        int patternIndex = 1;
+        
+        String[] fieldSplit = IDAndPatternfield.split("\\s+");
+        if(fieldSplit.length == 1){
+            if(currentTaskID != null){
+                paramArray[taskIDIndex] = currentTaskID;
+                paramArray[patternIndex] = ParseAttribute.parsePattern(IDAndPatternfield);
+            }
+            else {
+                throw new Exception("Invalid task ID");
+            }
+        }
+        else if(fieldSplit.length == 2){
+            paramArray[taskIDIndex] = getFirstWord(IDAndPatternfield);
+            paramArray[patternIndex] = ParseAttribute.parsePattern(removeFirstWord(IDAndPatternfield));
+        }
+        else {
+            throw new Exception("Invalid task ID");
+        }
+        return paramArray;
+    }
+    
+    /**
+     * Parses and appends the start and end date parameter(s) to the array, for getParamREPEAT
+     * 
+     * @param dateField
+     * @param paramArray
+     * @return String[] paramArray after appending start and end date
+     * @throws Exception Invalid start-to-endDate/date syntax
+     */
+    private static String[] appendStartAndEndDate(String dateField, String[] paramArray) throws Exception {
+        int startDateIndex = 2;
+        int endDateIndex = 3;
+        
+        int fromIndex = dateField.indexOf("from");
+        int toIndex = dateField.indexOf("to");
+        if(fromIndex == INVALID_VALUE){
+            if(toIndex == INVALID_VALUE){
+                throw new Exception("Invalid start and end date parameters,"
+                        + "try: from <start date> to <end date>");
+            }
+            else {
+                paramArray[endDateIndex] = ParseAttribute.parseDate(
+                        dateField.substring(toIndex + LENGTH_OF_TO).trim());
+            }
+        }
+        else {
+            if(toIndex == INVALID_VALUE){
+                paramArray[startDateIndex] = ParseAttribute.parseDate(
+                        dateField.substring(fromIndex + LENGTH_OF_FROM).trim());
+            }
+            else {
+                try{
+                    assert(fromIndex < toIndex);
+                }
+                catch(AssertionError ae){
+                    throw new Exception("Invalid start to end date parameters, "
+                            + "try: from <start date> to <end date>");
+                }
+                paramArray[startDateIndex] = ParseAttribute.parseDate(
+                        dateField.substring(fromIndex + LENGTH_OF_FROM).trim());
+                paramArray[endDateIndex] = ParseAttribute.parseDate(
+                        dateField.substring(toIndex + LENGTH_OF_TO).trim());
+            }
+        }
+        return paramArray;
+    }
+    
+    /**
      * Method to retrieve parameters for WORKLOAD command specifically
      * 
      * @param commandString
      * @return String[] parameters for WORKLOAD command
      */
-    private static String[] getParam_WL(String commandString) throws Exception{
+    private static String[] getParamWL(String commandString) throws Exception{
         int taskID_index = 0;
         int workload_index = 1;
         String paramString = removeCommandAndTaskID(commandString);
@@ -370,7 +471,7 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for VIEW command
      */
-    private static String[] getParam_VIEW(String commandString) {
+    private static String[] getParamVIEW(String commandString) {
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[VIEW_PARAMETERS];
         if (paramString.equalsIgnoreCase("-l") ||
@@ -395,7 +496,7 @@ public class Parser {
      * @return String[] parameters for FIND command
      * @throws Exception if date or workload parameter is invalid
      */
-    private static String[] getParam_FIND(String commandString) throws Exception{
+    private static String[] getParamFIND(String commandString) throws Exception{
         int tag_index = 0;
         int toSearch_index = 1;
 
@@ -428,7 +529,7 @@ public class Parser {
      * @return String[] parameters for ARCHIVE command
      * @throws Exception if date parameter is invalid
      */
-    private static String[] getParam_ARCH(String commandString) throws Exception{
+    private static String[] getParamARCH(String commandString) throws Exception{
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[ARCHIVE_PARAMETERS];
         if(paramString.equals("")){
@@ -446,7 +547,7 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for the GOTO command specifically
      */
-    private static String[] getParam_GOTO(String commandString){
+    private static String[] getParamGOTO(String commandString){
         String[] paramArray = new String[GOTO_PARAMETERS];
         String command = getFirstWord(commandString).toLowerCase();
         String paramString = removeFirstWord(commandString);
@@ -462,7 +563,7 @@ public class Parser {
     }
 
     /********************************** Helper Functions *************************************/
-
+    
     /**
      * Method for removing the first word(separated by a whitespace) from a string
      * 
@@ -482,6 +583,21 @@ public class Parser {
     private static String getFirstWord(String commandString) {
         String firstWord = commandString.trim().split("\\s+")[0];
         return firstWord;
+    }
+    
+    /**
+     * Returns the string itself, or null if it was an empty string
+     * 
+     * @param string
+     * @return
+     */
+    private static String convertToNullIfEmpty(String string){
+        if(string.isEmpty()){
+            return null;
+        }
+        else {
+            return string;
+        }
     }
     
 }

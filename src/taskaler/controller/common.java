@@ -11,7 +11,7 @@ public final class common {
     
     //enum for all the types of commands for Taskaler
     public enum CmdType {
-        ADD, DELETE, EDIT, DATE, WORKLOAD, COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, INVALID
+        ADD, DELETE, EDIT, DATE, REPEAT, WORKLOAD, COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, INVALID
     }
     
     // Magic Strings/Numbers
@@ -20,6 +20,7 @@ public final class common {
     public static final int DELETE_PARAMETERS = 1;
     public static final int MAX_EDIT_PARAMETERS = 3;
     public static final int DATE_PARAMETERS = 2;
+    public static final int MAX_REPEAT_PARAMETERS = 4;
     public static final int WORKLOAD_PARAMETERS = 2;
     public static final int COMPLETION_TAG_PARAMETERS = 1;
     public static final int VIEW_PARAMETERS = 2;
@@ -30,4 +31,6 @@ public final class common {
     public static final int NUM_OF_PARAMS_INDEX = 0;
     public static final int FORMAT_INDEX = 1;
     public static final int OFFSET_OF_MONTH = 1;
+    public static final int LENGTH_OF_FROM = 4;
+    public static final int LENGTH_OF_TO = 2;
 }

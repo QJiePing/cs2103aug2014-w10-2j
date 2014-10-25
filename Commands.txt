@@ -1,44 +1,64 @@
-*First line is what is typed into command line, " -" shows what is supposed to happen
+*First line is what is typed into command line, " -" shows what is supposed to happen, () represents notes
 
 ADD:
 add CS2101 homework 
  - adds a task with name, "CS2101 homework", description, null
-add CS2101 homework -d progress report
+add CS2101 homework : progress report
  - adds a task with name, "CS2101 homework", and description, "progress report"
-add -d progress report
- - adds a task with name, "-d progress report", description, null
+add CS2101 hmwk: do it!, 09/10/2014, 3
+ - adds a task with name, "CS2101 hmwk", description, "do it!", deadline, 09/10/2014, and WL = 3
+add : progress report
+ - ERROR
 add
  - ERROR
 
 DELETE:
-delete T24
- - deletes a task with taskID, T24
-delete asdf
+delete 24
+ - deletes a task with taskID, 24
+delete (on TaskPane, taskID = 24)
+ - deletes a task with taskID, 24
+delete (not on TaskPane)
  - ERROR
-delete
+delete asdf
  - ERROR
 
 EDIT:
-edit T24 -n cs2101 homework
- - edits a task with taskID, T24, new name is "cs2101 homework"
-edit T24 -d report writing
- - edits a task with taskID, T24, new description is "report writing"
-edit T24 -n cs2101 homework -d report writing
- - edits a task with taskID, T24, new name is "cs2101 homework", new description is "report writing"
-edit T24 -d report writing -n cs2101 homework
- - edits a task with taskID, T24, new name is "cs2101 homework", new description is "report writing"
-edit T24
+edit 24 cs2101 homework: dev guide
+ - edits a task with taskID, 24, new name is "cs2101 homework", new description, is "dev guide"
+edit 24 :report writing
+ - edits a task with taskID, 24, new description is "report writing"
+edit 24 cs2101 homework
+ - edits a task with taskID, 24, new name is "cs2101 homework"
+edit cs2101:dev guide (on TaskPane, taskID = 24)
+ - edits a task with taskID, 24, new name is "cs2101 homework", new description is "dev guide"
+edit cs2101 (not on TaskPane)
+ - ERROR
+edit 24
  - ERROR
 
 DATE:
 date T24 09/09/2014
  - edits a task with taskID, T24, due date is 09/09/2014
-date T24 9/9/2014
+date T24 9-9-2014
  - edits a task with taskID, T24, due date is 09/09/2014
 date T24 9/january/2014
- - (not supported yet)
+ - edits a task with taskID, T24, due date is 09/01/2014
 date T24
  - ERROR
+
+REPEAT:
+repeat 24 fortnightly, from 09-10-2014 to 09/11/2014
+ - edits a task with taskID = 24, to repeat every 2 weeks 
+   starting from 09/10/2014 to 09/11/2014
+repeat 24 sunday, to 21/10/2014
+ - edits a task with taskID = 24, to repeat every sunday til 21/10/2014
+repeat 24 every4, from 21/10/2014
+ - edits a task with taskID = 24, to repeat every 4 days starting from 21/10/2014
+repeat daily, to 21/10/2014 (on TaskPane, taskID = 24)
+ - edits a task with taskID = 24, to repeat everyday til 21/10/2014
+repeat weekly (not on TaskPane)
+ - ERROR
+  
 
 WORKLOAD:
 workload T24 1
@@ -49,7 +69,9 @@ workload T24 asdf
 COMPLETION TAG:
 completed T24
  - switches the tag for task with taskID, T24
-completed 
+completed (on TaskPane, taskID = 24)
+ - switches the tag for task with taskID, 24
+completed (not on TaskPane)
  - ERROR
 
 VIEW:
