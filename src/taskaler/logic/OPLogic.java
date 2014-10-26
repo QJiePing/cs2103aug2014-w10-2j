@@ -132,7 +132,7 @@ public class OPLogic extends Observable {
             if(date_ADD == null) {
             	 //float task
 	            newTask = new FloatTask(name_ADD, Integer.toString(newTaskID),
-	                    common.TASK_INITIAL_STATUS,
+	                    common.TASK_INITIAL_STATUS, Calendar.getInstance(),
 	                    workload_ADD, description_ADD);
             } else {
             	//deadline task
@@ -141,7 +141,7 @@ public class OPLogic extends Observable {
 				
 				newTask = new DeadLineTask(name_ADD,
 						Integer.toString(newTaskID),
-						common.TASK_INITIAL_STATUS, workload_ADD,
+						common.TASK_INITIAL_STATUS, Calendar.getInstance(), workload_ADD,
 						description_ADD, startTime, endTime);
             }
             
@@ -289,8 +289,8 @@ public class OPLogic extends Observable {
         	//remove task from float task list and add to deadline task list
         	Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
         	newTask = new DeadLineTask(deletedTask.getTaskName(),
-					deletedTask.getTaskID(),
-					common.TASK_INITIAL_STATUS, deletedTask.getTaskWorkLoad(),
+					deletedTask.getTaskID(), common.TASK_INITIAL_STATUS,
+					deletedTask.getTaskCreationDate(), deletedTask.getTaskWorkLoad(),
 					deletedTask.getTaskDescription(), Calendar.getInstance(), newDeadLine);
         	TaskList.getInstance().add(newTask);
         	
@@ -357,8 +357,10 @@ public class OPLogic extends Observable {
         Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
         
 		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
-				deletedTask.getTaskStatus(), deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
-				startTime, endTime, repeatedDate, endRepeatedTime, TaskList.getInstance().repeatedToArray().size() + 1);
+				deletedTask.getTaskStatus(), deletedTask.getTaskCreationDate(), 
+				deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
+				startTime, endTime, repeatedDate, endRepeatedTime, 
+				TaskList.getInstance().repeatedToArray().size() + 1);
 		
 		TaskList.getInstance().add(newTask);
         return newTask;
