@@ -162,7 +162,8 @@ public class OPLogicTest {
 		task = OPLogic.getInstance().editWorkload(taskID, "2");
 		assertEquals("2", search.findByID(taskID).getTaskWorkLoad());
 		
-		task = OPLogic.getInstance().setRepeat(taskID, "year", "26/10/2014", "26/10/2014", "27/12/2018");
+		Task task1 = OPLogic.getInstance().setRepeat(taskID, "weekend", "26/10/2014", "24/11/2014");
+		Task task2 = OPLogic.getInstance().setRepeat("3", "weekday", "26/10/2014", "24/11/2014");
 		for(int i = 0; i < TaskList.getInstance().size(); i++) {
 			if(TaskList.getInstance().get(i) instanceof DeadLineTask) {
 				System.out.println("deadline");
@@ -173,7 +174,12 @@ public class OPLogicTest {
 			}
 			System.out.println(TaskList.getInstance().get(i).getTaskID() + " " + TaskList.getInstance().get(i).getTaskName());
 		}
-		ArrayList<Calendar> days = ((RepeatedTask) task).getRepeatedDate();
+		ArrayList<Calendar> days = ((RepeatedTask) task1).getRepeatedDate();
+		for(int i = 0; i < days.size(); i++) {
+			System.out.println(days.get(i).getTime());
+		}
+		System.out.println("************************");
+		days = ((RepeatedTask) task2).getRepeatedDate();
 		for(int i = 0; i < days.size(); i++) {
 			System.out.println(days.get(i).getTime());
 		}

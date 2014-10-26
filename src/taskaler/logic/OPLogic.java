@@ -340,161 +340,33 @@ public class OPLogic extends Observable {
         - to repeat on all weekends     : "wk"
           ("1 dow" represents sunday, so on so forth, to match with the Calendar implementation) 
     */
-    public Task setRepeat(String taskID, String pattern, String startDate, String endDate, String endRepeatedDate){
+    public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
         Calendar startTime = setNewCalendarDate(startDate);
-        Calendar endTime = setNewCalendarDate(endDate);
-        Calendar endRepeatedTime = setNewCalendarDate(endRepeatedDate);
-    	RepeatPattern repeatPattern = getPattern(pattern);
-    	ArrayList<Calendar> repeatedDate = getRepeatDay(startTime, endRepeatedTime, repeatPattern);
+        Calendar endTime = setNewCalendarDate(startDate);
+        Calendar endRepeatedTime = setNewCalendarDate(endDate);
+        RepeatedDate repeatedDate = new RepeatedDate();
+        
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
         
-        if (taskIDIndex == common.TAG_TASK_NOT_EXIST || repeatPattern == RepeatPattern.NONE) {
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST || repeatedDate.getPattern(pattern) == RepeatPattern.NONE) {
             // fail to edit a task
             return null;
         }
         
+        ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startTime, endRepeatedTime, pattern);
         //remove task from float task list or deadline task list
         Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
         
 		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
 				deletedTask.getTaskStatus(), deletedTask.getTaskCreationDate(), 
 				deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
-				startTime, endTime, repeatedDate, endRepeatedTime, 
+				startTime, endTime, dates, endRepeatedTime, 
 				TaskList.getInstance().repeatedToArray().size() + 1);
 		
 		TaskList.getInstance().add(newTask);
         return newTask;
     }
-    
-    private ArrayList<Calendar> getRepeatDay(Calendar startTime, Calendar endRepeatedTime, RepeatPattern repeatPattern) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	switch(repeatPattern) {
-    	case DAY:
-    		repeatDays = computeDaily((Calendar) startTime.clone(), endRepeatedTime);
-    		break;
-    	case ALTER:
-    		repeatDays = computeAlter((Calendar) startTime.clone(), endRepeatedTime);
-    		break;
-    	case WEEK:
-    		repeatDays = computeWeekly((Calendar) startTime.clone(), endRepeatedTime);
-    		break;
-    	case WEEKDAY:
-    		repeatDays = computeWeekday((Calendar) startTime.clone(), endRepeatedTime);
-    		break;
-    	case WEEKEND:
-    		repeatDays = computeWeekend((Calendar) startTime.clone(), endRepeatedTime);
-    		break;
-    	case MONTH:
-    		repeatDays = computeMonthly((Calendar) startTime.clone(), endRepeatedTime);
-    		break;
-    	case YEAR:
-    		repeatDays = computeYearly((Calendar) startTime.clone(), endRepeatedTime);
-    		break;
-    	}
-		return repeatDays;
-	}
-
-    
-    private ArrayList<Calendar> computeYearly(Calendar startTime, Calendar endRepeatedTime) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		repeatDays.add(newDay);
-            startTime.add(Calendar.YEAR, common.OFF_SET_BY_ONE);
-    	}
-		return repeatDays;
-	}
-
-	private ArrayList<Calendar> computeMonthly(Calendar startTime, Calendar endRepeatedTime) {
-		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		repeatDays.add(newDay);
-            startTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
-    	}
-		return repeatDays;
-	}
-
-	private ArrayList<Calendar> computeWeekend(Calendar startTime, Calendar endRepeatedTime) {
-		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) {
-    			repeatDays.add(newDay);
-    		}
-			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    	}
-		return repeatDays;
-	}
-
-	private ArrayList<Calendar> computeWeekday(Calendar startTime, Calendar endRepeatedTime) {
-		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
-    			repeatDays.add(newDay);
-    		}
-			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    	}
-		return repeatDays;
-	}
-
-	private ArrayList<Calendar> computeWeekly(Calendar startTime, Calendar endRepeatedTime) {
-		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		repeatDays.add(newDay);
-            startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
-    	}
-		return repeatDays;
-	}
-
-	private ArrayList<Calendar> computeAlter(Calendar startTime, Calendar endRepeatedTime) {
-		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		repeatDays.add(newDay);
-            startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_OF_ALTER);
-    	}
-		return repeatDays;
-	}
-
-	private ArrayList<Calendar> computeDaily(Calendar startTime, Calendar endRepeatedTime) {
-		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		repeatDays.add(newDay);
-            startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    	}
-		return repeatDays;
-	}
-
-	
-	private RepeatPattern getPattern(String pattern) {
-    	pattern = pattern.toUpperCase();
-		RepeatPattern repeatPattern = RepeatPattern.NONE;
-    	if(pattern.equals("DAY")) {
-    		repeatPattern = RepeatPattern.DAY;
-    	} else if (pattern.equals("ALTER")) {
-    		repeatPattern = RepeatPattern.ALTER;
-    	} else if (pattern.equals("WEEK")) {
-    		repeatPattern = RepeatPattern.WEEK;
-    	} else if (pattern.equals("WEEKDAY")) {
-    		repeatPattern = RepeatPattern.WEEKDAY;
-    	} else if (pattern.equals("WEEKEND")) {
-    		repeatPattern = RepeatPattern.WEEKEND;
-    	} else if (pattern.equals("MONTH")) {
-    		repeatPattern = RepeatPattern.MONTH;
-    	} else if (pattern.equals("YEAR")) {
-    		repeatPattern = RepeatPattern.YEAR;
-    	} else {
-    		repeatPattern = RepeatPattern.NONE;
-    	}
-    	
-		return repeatPattern;
-	}
+   
 
 	/**
      * 

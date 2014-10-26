@@ -29,6 +29,7 @@ public class common {
     public static int TAG_TYPE_YEAR = 2;
     public static int TAG_TASK_NOT_EXIST = -1;
     public static int DAYS_IN_A_WEEK = 7;
+    public static int DAYS_IN_TWO_WEEK = 14;
     public static int OFF_SET_BY_ONE = 1;
     public static int DAYS_OF_ALTER = 2;
 
@@ -38,8 +39,18 @@ public class common {
     public static int FLOAT_TASK_TYPE = -2;
     public static int REPEATED_TASK_TYPE = -3;
     
+
+    public static final int SUNDAY = 1;
+    public static final int MONDAY = 2;
+    public static final int TUESDAY = 3;
+    public static final int WEDNESDAY = 4;
+    public static final int THURSDAY = 5;
+    public static final int FRIDAY = 6;
+    public static final int SATURDAY = 7;
+    
     
     public enum RepeatPattern {
-        DAY, ALTER, WEEK, WEEKDAY, WEEKEND, MONTH, YEAR, NONE
+        DAY, ALTER, WEEK, WEEKDAY, WEEKEND, MONTH, YEAR, 
+        SUN, MON, TUES, WED, THURS, FRI, SAT, TWO_WEEK, NONE
     }
 }
