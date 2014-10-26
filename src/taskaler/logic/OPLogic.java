@@ -8,9 +8,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import taskaler.archive.OperationRecord;
+import taskaler.common.data.DeadLineTask;
+import taskaler.common.data.FloatTask;
+import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.CommonLogger;
+import taskaler.logic.common.RepeatPattern;
 
 /**
  * @author Weng Yuan
@@ -60,7 +64,7 @@ public class OPLogic extends Observable {
      * @return Task that has been deleted
      */
     public Task deleteTask(Task t){
-        int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
+    	int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
             // fail to delete a task
@@ -68,6 +72,7 @@ public class OPLogic extends Observable {
         }
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
+        
         notifyObservers("UNDO", taskToBeRemoved);
         return t;
     }
@@ -79,14 +84,15 @@ public class OPLogic extends Observable {
      * @return Task that has been overridden
      */
     public Task editTask(Task t){
-        int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
+    	int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
             // fail to delete a task
             return null;
         }
-
-        Task oldTask = TaskList.getInstance().set(taskIDIndex, t);
+        
+        Task oldTask = TaskList.getInstance().remove(taskIDIndex);
+        
         notifyObservers("UNDO", oldTask);
         return oldTask;
     }
@@ -115,21 +121,31 @@ public class OPLogic extends Observable {
                 // change to default value
                 description_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
             }
-            Calendar cal = Calendar.getInstance();
-            if (date_ADD != null){
-                 cal = setNewCalendarDate(date_ADD);
-            }
+            
             if(workload_ADD == null){
                 workload_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
             }
             // generate a new task ID
             int newTaskID = generateTaskID();
 
-            Task newTask = new Task(name_ADD, Integer.toString(newTaskID),
-                    common.TASK_INITIAL_STATUS, cal,
-                    workload_ADD, description_ADD);
+            Task newTask;
+            if(date_ADD == null) {
+            	 //float task
+	            newTask = new FloatTask(name_ADD, Integer.toString(newTaskID),
+	                    common.TASK_INITIAL_STATUS,
+	                    workload_ADD, description_ADD);
+            } else {
+            	//deadline task
+				Calendar startTime = Calendar.getInstance();
+				Calendar endTime = setNewCalendarDate(date_ADD);
+				
+				newTask = new DeadLineTask(name_ADD,
+						Integer.toString(newTaskID),
+						common.TASK_INITIAL_STATUS, workload_ADD,
+						description_ADD, startTime, endTime);
+            }
+            
             TaskList.getInstance().add(newTask);
-
             notifyObservers("ADD", newTask);
 
             return newTask;
@@ -145,18 +161,9 @@ public class OPLogic extends Observable {
      * @return return new taskID
      */
     private int generateTaskID() {
-        int taskID = common.DEFAULT_TASK_ID;
+        int taskID = TaskList.getInstance().maxTaskID();
 
-        if (TaskList.getInstance().isEmpty()) {
-            taskID = 1;
-        } else {
-            int numOfTask = TaskList.getInstance().size();
-            String lastTaskID = TaskList.getInstance().get(numOfTask - 1)
-                    .getTaskID();
-            taskID = Integer.parseInt(lastTaskID) + 1;
-        }
-
-        return taskID;
+        return taskID + common.OFF_SET_BY_ONE;
     }
 
     /**
@@ -170,8 +177,8 @@ public class OPLogic extends Observable {
      * 
      */
     public Task deleteTask(String taskID_DELETE) {
-
-        int taskIDIndex = SearchLogic.findTaskByID(taskID_DELETE);
+    	
+    	int taskIDIndex = SearchLogic.findTaskByID(taskID_DELETE);
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
             // fail to delete a task
@@ -179,8 +186,8 @@ public class OPLogic extends Observable {
         }
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
-        notifyObservers("DELETE", taskToBeRemoved);
 
+        notifyObservers("DELETE", taskToBeRemoved);
         return taskToBeRemoved;
 
     }
@@ -188,17 +195,7 @@ public class OPLogic extends Observable {
     
     
     public boolean deleteAllTask() {
-    	
-    	try {
-    		TaskList.getInstance().clear();
-    		
-
-    		// not notification to observer
-    		// notifyObserver("CLEAR",...)
-    	} catch (Exception e) {
-    		CommonLogger.getInstance().exceptionLogger(e, Level.WARNING);
-    		return false;
-    	}
+    	TaskList.getInstance().clear();
     	
     	return true;
     }
@@ -285,12 +282,30 @@ public class OPLogic extends Observable {
             // fail to edit a task
             return null;
         }
+        
+        Task newTask = TaskList.getInstance().get(taskIDIndex);
+        if (taskIDIndex < TaskList.getInstance().floatToArray().size()) {
+        	//float task has no date attribute
+        	//remove task from float task list and add to deadline task list
+        	Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
+        	newTask = new DeadLineTask(deletedTask.getTaskName(),
+					deletedTask.getTaskID(),
+					common.TASK_INITIAL_STATUS, deletedTask.getTaskWorkLoad(),
+					deletedTask.getTaskDescription(), Calendar.getInstance(), newDeadLine);
+        	TaskList.getInstance().add(newTask);
+        	
+        } else if (taskIDIndex < TaskList.getInstance().floatToArray().size() + TaskList.getInstance().deadlineToArray().size()) {
+        	((DeadLineTask) newTask).setEndTime(newDeadLine);
+       
+        } else {
+        	((RepeatedTask) newTask).setEndTime(newDeadLine);
+        }
 
-        notifyObservers("EDIT_DATE", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("EDIT", newTask);
 
-        TaskList.getInstance().get(taskIDIndex).changeDeadLine(newDeadLine);
+        
 
-        return TaskList.getInstance().get(taskIDIndex);
+        return newTask;
     }
     
     /**
@@ -317,47 +332,169 @@ public class OPLogic extends Observable {
     /* This is a stub for the setRepeat function Controller will call for the "repeat" command
        parameters are as follows, syntax for "pattern" is in ParserLibrary.java if u need to 
        take a look, but briefly, for pattern, i will pass you:
-        - to repeat every <num> days    : "1 d", "2 d", .... "6 d"
-        - to repeat every <num> weeks   : "1 w", "2 w" ...
-        - to repeat every <num> months  : "1 m", "2 m" ...
-        - to repeat every <num> years   : "1 y", "2 y" ...
+        - to repeat every <num> days    : "d", "alter"
+        - to repeat every <num> weeks   : "w"
+        - to repeat every <num> months  : "m"
+        - to repeat every <num> years   : "y"
         - to repeat on all weekdays     : "wd"
         - to repeat on all weekends     : "wk"
-        - to repeat on all "day-of-week": "1 dow", "2 dow", ... "7 dow" 
           ("1 dow" represents sunday, so on so forth, to match with the Calendar implementation) 
     */
-    public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
-        return new Task();
-    }
-    
-    // I wrote a function to get all the dates in a month (for repeat), if the pattern is 
-    // the day of the week, ie. "wednesday", "saturday"
-    /*
-    private static ArrayList<Calendar> getDatesDOW(String day, String end) throws Exception {
-        int dayOfWeek = Integer.parseInt(day);
-        Calendar cal = Calendar.getInstance();
-        ArrayList<Calendar> totalDates = new ArrayList<Calendar>();
-        int today = cal.get(Calendar.DAY_OF_WEEK);
-        if(today > dayOfWeek){
-            today -= common.DAYS_IN_A_WEEK;
+    public Task setRepeat(String taskID, String pattern, String startDate, String endDate, String endRepeatedDate){
+        Calendar startTime = setNewCalendarDate(startDate);
+        Calendar endTime = setNewCalendarDate(endDate);
+        Calendar endRepeatedTime = setNewCalendarDate(endRepeatedDate);
+    	RepeatPattern repeatPattern = getPattern(pattern);
+    	ArrayList<Calendar> repeatedDate = getRepeatDay(startTime, endRepeatedTime, repeatPattern);
+        int taskIDIndex = SearchLogic.findTaskByID(taskID);
+        
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST || repeatPattern == RepeatPattern.NONE) {
+            // fail to edit a task
+            return null;
         }
-        Calendar nextDate = incrementDate(cal, dayOfWeek - today);
-        Calendar endDate = setNewCalendarDate(end);
-        while(nextDate.before(endDate)){
-            totalDates.add(nextDate);
-            nextDate = incrementDate(nextDate, common.DAYS_IN_A_WEEK);
-        }
-        return totalDates;
+        
+        //remove task from float task list or deadline task list
+        Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
+        
+		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
+				deletedTask.getTaskStatus(), deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
+				startTime, endTime, repeatedDate, endRepeatedTime, TaskList.getInstance().repeatedToArray().size() + 1);
+		
+		TaskList.getInstance().add(newTask);
+        return newTask;
     }
     
-    private static Calendar incrementDate(Calendar date, int num){
-        Calendar newCal = (Calendar) date.clone();
-        newCal.add(Calendar.DATE, num);
-        return newCal;
-    }
-    */
+    private ArrayList<Calendar> getRepeatDay(Calendar startTime, Calendar endRepeatedTime, RepeatPattern repeatPattern) {
+    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	switch(repeatPattern) {
+    	case DAY:
+    		repeatDays = computeDaily((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case ALTER:
+    		repeatDays = computeAlter((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case WEEK:
+    		repeatDays = computeWeekly((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case WEEKDAY:
+    		repeatDays = computeWeekday((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case WEEKEND:
+    		repeatDays = computeWeekend((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case MONTH:
+    		repeatDays = computeMonthly((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case YEAR:
+    		repeatDays = computeYearly((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	}
+		return repeatDays;
+	}
+
     
-    /**
+    private ArrayList<Calendar> computeYearly(Calendar startTime, Calendar endRepeatedTime) {
+    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.YEAR, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	private ArrayList<Calendar> computeMonthly(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	private ArrayList<Calendar> computeWeekend(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		int day = newDay.get(Calendar.DAY_OF_WEEK);
+    		if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) {
+    			repeatDays.add(newDay);
+    		}
+			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	private ArrayList<Calendar> computeWeekday(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		int day = newDay.get(Calendar.DAY_OF_WEEK);
+    		if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
+    			repeatDays.add(newDay);
+    		}
+			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	private ArrayList<Calendar> computeWeekly(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
+    	}
+		return repeatDays;
+	}
+
+	private ArrayList<Calendar> computeAlter(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_OF_ALTER);
+    	}
+		return repeatDays;
+	}
+
+	private ArrayList<Calendar> computeDaily(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	
+	private RepeatPattern getPattern(String pattern) {
+    	pattern = pattern.toUpperCase();
+		RepeatPattern repeatPattern = RepeatPattern.NONE;
+    	if(pattern.equals("DAY")) {
+    		repeatPattern = RepeatPattern.DAY;
+    	} else if (pattern.equals("ALTER")) {
+    		repeatPattern = RepeatPattern.ALTER;
+    	} else if (pattern.equals("WEEK")) {
+    		repeatPattern = RepeatPattern.WEEK;
+    	} else if (pattern.equals("WEEKDAY")) {
+    		repeatPattern = RepeatPattern.WEEKDAY;
+    	} else if (pattern.equals("WEEKEND")) {
+    		repeatPattern = RepeatPattern.WEEKEND;
+    	} else if (pattern.equals("MONTH")) {
+    		repeatPattern = RepeatPattern.MONTH;
+    	} else if (pattern.equals("YEAR")) {
+    		repeatPattern = RepeatPattern.YEAR;
+    	} else {
+    		repeatPattern = RepeatPattern.NONE;
+    	}
+    	
+		return repeatPattern;
+	}
+
+	/**
      * 
      * Task editWorkload(String taskID, String workloadAttribute) is to change
      * the workload attribute of a task with same given task ID in
@@ -376,7 +513,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT_WORKLOAD", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
 
         // assume workloadAtt is within the range of 1-3
         TaskList.getInstance().get(taskIDIndex)
@@ -401,7 +538,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT_STATUS", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
 
         toggleStatus(taskIDIndex);
         

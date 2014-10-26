@@ -30,6 +30,16 @@ public class common {
     public static int TAG_TASK_NOT_EXIST = -1;
     public static int DAYS_IN_A_WEEK = 7;
     public static int OFF_SET_BY_ONE = 1;
+    public static int DAYS_OF_ALTER = 2;
 
     public static int DEFAULT_TASK_ID = 0;
+    public static int DEFAULT_TASK_TYPE = 0;
+    public static int DEADLINE_TASK_TYPE = -1;
+    public static int FLOAT_TASK_TYPE = -2;
+    public static int REPEATED_TASK_TYPE = -3;
+    
+    
+    public enum RepeatPattern {
+        DAY, ALTER, WEEK, WEEKDAY, WEEKEND, MONTH, YEAR, NONE
+    }
 }

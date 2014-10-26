@@ -5,6 +5,8 @@ package taskaler.logic;
 
 import java.util.ArrayList;
 
+import taskaler.common.data.DeadLineTask;
+import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.parser.calendarToString;
@@ -46,13 +48,11 @@ public class SearchLogic {
     private ArrayList<Task> findByWorkload(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
 
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-            if (TaskList.getInstance().get(i).getTaskWorkLoad() != null) {
-                if (TaskList.getInstance().get(i).getTaskWorkLoad()
-                        .equals(paramFIND)) {
-                    searchResultList.add(TaskList.getInstance().get(i));
-                }
-            }
+        for(int i = 0; i< TaskList.getInstance().size(); i++) {
+        	if (TaskList.getInstance().get(i).getTaskWorkLoad()
+                    .equals(paramFIND)) {
+                searchResultList.add(TaskList.getInstance().get(i));
+            }   	
         }
 
         return searchResultList;
@@ -70,14 +70,16 @@ public class SearchLogic {
 
         ArrayList<Task> searchResultList = new ArrayList<Task>();
         String[] filter = paramFIND.split("/");
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-            if (TaskList.getInstance().get(i).getTaskDeadLine() != null) {
-                String[] deadLine = calendarToString.toArray(TaskList
-                        .getInstance().get(i).getTaskDeadLine());
-                if (compareDeadline(filter, deadLine)) {
-                    searchResultList.add(TaskList.getInstance().get(i));
-                }
-            }
+        
+        for(int i = 0; i< TaskList.getInstance().deadlineToArray().size(); i++) {
+        	//only DeadLineTask has deadline attribute
+			String[] deadLine = calendarToString
+					.toArray(((DeadLineTask) TaskList.getInstance().deadlineToArray().get(i))
+							.getEndTime());
+			if (compareDeadline(filter, deadLine)) {
+				searchResultList.add(TaskList.getInstance().get(i));
+			}
+        	
         }
 
         return searchResultList;
@@ -118,14 +120,13 @@ public class SearchLogic {
      */
     private ArrayList<Task> findByKeyword(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
-
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-            // assume task name will never be null
-            if (TaskList.getInstance().get(i).getTaskName().contains(paramFIND)) {
+        
+        for(int i = 0; i< TaskList.getInstance().size(); i++) {
+        	if (TaskList.getInstance().get(i).getTaskName().contains(paramFIND)) {
                 searchResultList.add(TaskList.getInstance().get(i));
-            }
+            }   	
         }
-
+        
         return searchResultList;
     }
 
@@ -142,15 +143,16 @@ public class SearchLogic {
             String yearFind) {
 
         ArrayList<Task> searchResultList = new ArrayList<Task>();
-
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-            if (TaskList.getInstance().get(i).getTaskDeadLine() != null) {
-                String[] date = calendarToString.toArray(TaskList.getInstance()
-                        .get(i).getTaskDeadLine());
-                if (date[1].equals(monthFind) && date[2].equals(yearFind)) {
-                    searchResultList.add(TaskList.getInstance().get(i));
-                }
+        
+        for(int i = 0; i< TaskList.getInstance().deadlineToArray().size(); i++) {
+        	//only DeadLineTask has deadline attribute
+			String[] date = calendarToString
+					.toArray(((DeadLineTask) TaskList.getInstance().deadlineToArray().get(i))
+							.getEndTime());
+			if (date[1].equals(monthFind) && date[2].equals(yearFind)) {
+                searchResultList.add(TaskList.getInstance().deadlineToArray().get(i));
             }
+        	
         }
 
         return searchResultList;
@@ -165,13 +167,13 @@ public class SearchLogic {
      * @return return a task with Task data type
      */
     public Task findByID(String taskID) {
-        int taskIDIndex = findTaskIndex(taskID);
+    	int taskIDIndex = findTaskByID(taskID);
+    	
+    	if (taskIDIndex == common.TAG_TASK_NOT_EXIST) { 
+    		return null; 
+    	} 
 
-        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
-            return null;
-        } else {
-            return TaskList.getInstance().get(taskIDIndex);
-        }
+    	return TaskList.getInstance().get(taskIDIndex);
     }
 
     /**
@@ -198,13 +200,11 @@ public class SearchLogic {
      */
     private static int findTaskIndex(String taskID) {
         int taskIDIndex = common.TAG_TASK_NOT_EXIST;
-
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-            if (TaskList.getInstance().get(i).getTaskID().equals(taskID)) {
-                taskIDIndex = i;
-            }
+        for(int i =0; i < TaskList.getInstance().size(); i++) {
+        	if(TaskList.getInstance().get(i).getTaskID().equals(taskID)) {
+        		taskIDIndex = i;
+        	}
         }
-
         return taskIDIndex;
     }
 }
