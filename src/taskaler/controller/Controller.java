@@ -95,10 +95,10 @@ public class Controller{
                         description_EDIT);
                 ui.display(result);
                 break;
-            case DATE:
-                String taskID_DATE = params[0];
-                String dateToEdit = params[1];
-                result = crudLogic.editDate(taskID_DATE, dateToEdit);
+            case DEADLINE:
+                String taskIDDeadline = params[0];
+                String newDeadline = params[1];
+                result = crudLogic.editDate(taskIDDeadline, newDeadline);
                 ui.display(result);
                 break;
             case REPEAT:

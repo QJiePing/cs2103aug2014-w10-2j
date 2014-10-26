@@ -80,8 +80,8 @@ public class Parser {
             return getParamDELETE(commandString);
         case EDIT:
             return getParamEDIT(commandString);
-        case DATE:
-            return getParamDATE(commandString);
+        case DEADLINE:
+            return getParamDEADLINE(commandString);
         case REPEAT:
             return getParamREPEAT(commandString);
         case WORKLOAD:
@@ -287,15 +287,15 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for DATE command
      */
-    private static String[] getParamDATE(String commandString) throws Exception{
+    private static String[] getParamDEADLINE(String commandString) throws Exception{
         int taskID_index = 0;
         int date_index = 1;
         String[] paramArray = removeFirstWord(commandString).split("\\s+");
         String date = removeCommandAndTaskID(commandString);
-        String[] paramDATE = new String[DATE_PARAMETERS];
+        String[] paramDEADLINE = new String[DEADLINE_PARAMETERS];
         if(paramArray.length == 1){
             if(currentTaskID != null){
-                paramDATE[taskID_index] = currentTaskID;
+                paramDEADLINE[taskID_index] = currentTaskID;
                 date = removeFirstWord(commandString);
             }
             else {
@@ -303,14 +303,14 @@ public class Parser {
             }
         }
         else if(paramArray.length == 2){
-            paramDATE[taskID_index] = getTaskID(commandString);
+            paramDEADLINE[taskID_index] = getTaskID(commandString);
         }
         else {
             throw new Exception("Invalid date syntax");
         }
         String dateInFormat = ParseAttribute.parseDate(date);
-        paramDATE[date_index] = dateInFormat;
-        return paramDATE;
+        paramDEADLINE[date_index] = dateInFormat;
+        return paramDEADLINE;
     }
     
     /**

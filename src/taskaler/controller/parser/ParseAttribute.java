@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class ParseAttribute {
+    
     /**
      * Parses the date and translates it into a consistent syntax, "dd/MM/yyyy"
      * 
@@ -41,7 +42,7 @@ public class ParseAttribute {
     }
     
     /**
-     * Method to try all date formats in taskaler.common.java
+     * Method to try all date formats in availableDateSyntax
      * 
      * @param paramDate
      * @return String[] correct format for the date
@@ -49,9 +50,9 @@ public class ParseAttribute {
     private static String[] tryDateFormats(String paramDate){
         Date date = null;
         String[] dateFormat = null;
-        for(int i = 0; i < ParserLibrary.availableDateFormats.size(); i++){
+        for(int i = 0; i < ParserLibrary.availableDateSyntax.size(); i++){
             try{
-                dateFormat = ParserLibrary.availableDateFormats.get(i);
+                dateFormat = ParserLibrary.availableDateSyntax.get(i);
                 SimpleDateFormat sdf = new SimpleDateFormat(dateFormat[FORMAT_INDEX]);
                 date = sdf.parse(paramDate);
                 break;
@@ -63,13 +64,34 @@ public class ParseAttribute {
         return dateFormat;
     }
     
-    /** Parses the time and translates it to a consistent syntax, "HHmm-HHmm"
+    /** 
+     * Parses the time and translates it to a consistent syntax, "HHmm"
+     * 
      * @param time
      * @return
      * @throws Exception
      */
     public static String parseTime(String time) throws Exception{
-        return "";
+        SimpleDateFormat defaultSyntax = new SimpleDateFormat("HHmm");
+        SimpleDateFormat sdf = null;
+        String timeInSyntax = null;
+        Date correctTime = null;
+        
+        for(int i = 0; i < ParserLibrary.availableTimeSyntax.size(); i++){
+            try{
+                sdf = new SimpleDateFormat(ParserLibrary.availableTimeSyntax.get(i));
+                correctTime = sdf.parse(time);
+                timeInSyntax = defaultSyntax.format(correctTime);
+                break;
+            }
+            catch(Exception e){
+                ;
+            }
+        }
+        if(timeInSyntax == null){
+            throw new Exception("Invalid time syntax");
+        }
+        return timeInSyntax;
     }
     
     /**

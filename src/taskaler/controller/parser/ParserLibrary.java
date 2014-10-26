@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.Set;
 
 public final class ParserLibrary {
+    
+    /**
+     * Contains the mappings of the command word to the command type
+     */
     public static final HashMap<String, CmdType> commandList = new HashMap<String, CmdType>()
             {{  put("add", CmdType.ADD);
                 put("put", CmdType.ADD);
@@ -14,10 +18,12 @@ public final class ParserLibrary {
                 put("remove", CmdType.DELETE);
                 put("clear", CmdType.DELETE);
                 put("edit", CmdType.EDIT);
-                put("date", CmdType.DATE);
-                put("deadline", CmdType.DATE);
-                put("time", CmdType.DATE);
+                put("date", CmdType.DEADLINE);
+                put("deadline", CmdType.DEADLINE);
+                put("time", CmdType.TIME);
+                put("setTime", CmdType.TIME);
                 put("repeat", CmdType.REPEAT);
+                put("setRepeat", CmdType.REPEAT);
                 put("workload", CmdType.WORKLOAD);
                 put("completed", CmdType.COMPLETION_TAG);
                 put("done", CmdType.COMPLETION_TAG);
@@ -33,13 +39,21 @@ public final class ParserLibrary {
                 put("goto", CmdType.GOTO);
             }};
             
+    /**
+     * Returns the list of available command words (keys of the commandList)
+     * 
+     * @return String[] command words
+     */
     public static String[] getCommands(){
         Set<String> commandSet = commandList.keySet();
         String[] array = new String[commandSet.size()];
         return commandSet.toArray(array);
     }
     
-    public static final ArrayList<String[]> availableDateFormats = new ArrayList<String[]>()
+    /**
+     * Contains the available variations of date formats for user input, and its number of arguments 
+     */
+    public static final ArrayList<String[]> availableDateSyntax = new ArrayList<String[]>()
             {{  add(new String[]{"3","d/M/y"});
                 add(new String[]{"3","d/MMM/y"});
                 add(new String[]{"3","d.M.y"});
@@ -55,6 +69,27 @@ public final class ParserLibrary {
                 add(new String[]{"1","d"});
             }};
             
+    /**
+     * Contains the available variations of time formats for user input
+     */
+    public static final ArrayList<String> availableTimeSyntax = new ArrayList<String>()
+            {{  add("HHmm");
+                add("HH");
+                add("HH:mm");
+                add("HH.mm");
+                add("hhaa");
+                add("hhmmaa");
+                add("hh:mmaa");
+                add("hh.mmaa");
+                add("hh aa");
+                add("hhmm aa");
+                add("hh:mm aa");
+                add("hh.mm aa");
+            }};
+    
+    /**
+     * Contains the available variations of time formats for user input
+     */            
     public static final HashMap<String, String> availableWorkloadSyntax = new HashMap<String, String>()
             {{  put("high", "3");
                 put("low", "1");
@@ -71,6 +106,9 @@ public final class ParserLibrary {
                 put("none", "0");
             }};
     
+    /**
+     * Contains the available variations of "repeat pattern" formats for user input
+     */
     public static final HashMap<String, String> availablePatternSyntax = new HashMap<String, String>()
             {{  put("daily", "1 d");
                 put("everyday", "1 d");
@@ -84,12 +122,6 @@ public final class ParserLibrary {
                 put("weekend", "wk");
                 put("weekday", "wd");
                 put("weekdays", "wd");
-                put("1", "1 d");
-                put("2", "2 d");
-                put("3", "3 d");
-                put("4", "4 d");
-                put("5", "5 d");
-                put("6", "6 d");
                 put("sunday", "1 dow");
                 put("monday", "2 dow");
                 put("tuesday", "3 dow");

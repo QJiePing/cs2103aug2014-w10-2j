@@ -93,7 +93,7 @@ public class ParserTest {
                 assertEquals(currentParams[0], "");
             }
             catch(Exception e){
-                assertEquals(e.toString(), "java.lang.Exception: Invalid task ID");
+                assertEquals(e.getMessage(), "Invalid task ID");
             }
         }
         catch(Exception e){
@@ -162,7 +162,7 @@ public class ParserTest {
                 assertEquals(currentParams[2], null);
             }
             catch(Exception e){
-                assertEquals(e.toString(), "java.lang.Exception: Invalid task ID");
+                assertEquals(e.getMessage(), "Invalid task ID");
             }
         }
         catch(Exception e){
