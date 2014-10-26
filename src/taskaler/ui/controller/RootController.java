@@ -245,7 +245,7 @@ public class RootController extends BorderPane implements IController {
         model.taskName = t.getTaskName();
         model.taskID = t.getTaskID();
         model.taskStatus = t.getTaskStatus();
-        model.taskDueDate = calendarToString.parseDate(t.getTaskDeadLine());
+        model.taskDueDate = calendarToString.parseDate(t.getTaskCreationDate());
         model.taskWorkload = parseWorkload(t.getTaskWorkLoad());
         model.taskDescription = t.getTaskDescription();
         TaskPaneController pane = new TaskPaneController(model);

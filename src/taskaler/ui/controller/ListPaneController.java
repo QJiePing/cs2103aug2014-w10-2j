@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import taskaler.common.data.DeadLineTask;
+import taskaler.common.data.FloatTask;
+import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
 import taskaler.ui.model.ListPaneModel;
@@ -30,7 +33,7 @@ public class ListPaneController extends TitledPane implements IController {
 
     // Special Constants
     private static final String MSG_NOTHING_TO_DISPLAY = "Nothing to display";
-    private static final String REG_TASK_DISPLAY = "[%s]ID=%s: %s";
+    private static final String REG_TASK_DISPLAY = "[%s][%s]ID=%s: %s";
     private static final int MAX_TEXT_WIDTH = 350;
 
     // Binded FXML Elements
@@ -91,8 +94,20 @@ public class ListPaneController extends TitledPane implements IController {
             return;
         }
         for (Task t : list) {
-            String deadline = calendarToString.parseDate(t.getTaskDeadLine());
-            String temp = String.format(REG_TASK_DISPLAY, deadline,
+            String deadline = "";
+            String type = "";
+            if(t instanceof FloatTask){
+                deadline = calendarToString.parseDate(t.getTaskCreationDate());
+                type = "Floating Task";
+            }else if(t instanceof RepeatedTask){
+                deadline = calendarToString.parseDate(((RepeatedTask)t).getEndRepeatedDate());
+                type = "Repeated Task";
+            }else if(t instanceof DeadLineTask){
+                deadline = calendarToString.parseDate(((DeadLineTask) t).getEndTime());
+                type = "Deadline Task";
+            }
+            
+            String temp = String.format(REG_TASK_DISPLAY, type, deadline,
                     t.getTaskID(), t.getTaskName());
             Text text = new Text(temp);
             text.wrappingWidthProperty().setValue(MAX_TEXT_WIDTH);
