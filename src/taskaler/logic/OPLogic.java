@@ -372,15 +372,28 @@ public class OPLogic extends Observable {
         //remove task from float task list or deadline task list
         Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
         
+        int collectionID = generateCollectionID();
+        
 		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
 				deletedTask.getTaskStatus(), deletedTask.getTaskCreationDate(), 
 				deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
 				startTime, endTime, dates, endRepeatedTime, 
-				TaskList.getInstance().repeatedToArray().size() + 1);
+				collectionID);
 		
 		TaskList.getInstance().add(newTask);
         return newTask;
     }
+
+	private int generateCollectionID() {
+		
+		int sizeOfRepeatedTask = TaskList.getInstance().repeatedToArray().size();
+        int collectionID = common.DEFAULT_COLLECTION_ID;
+        if(sizeOfRepeatedTask != 0) {
+        	collectionID = TaskList.getInstance().repeatedToArray().get(sizeOfRepeatedTask-1).getCollectiveID()+1;
+        }
+        
+		return collectionID;
+	}
    
 
 	/**
