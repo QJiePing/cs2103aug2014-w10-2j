@@ -83,6 +83,7 @@ addTask(String name, String description) : Task     //any fields not entered by 
 deleteTask(String taskID) : Task
 deleteAllTask(): void
 editTask(String taskID, String name, String description) : Task //any fields not entered will be null
+editTime(String taskID, String startTime, String endTime): Task
 viewList() : void
 viewCal() : void
 undo() : void

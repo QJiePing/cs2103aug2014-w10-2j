@@ -2,10 +2,7 @@ package taskaler.logic;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.text.SimpleDateFormat;
 import java.util.Observable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import taskaler.archive.OperationRecord;
 import taskaler.common.data.DeadLineTask;
@@ -13,7 +10,6 @@ import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
-import taskaler.common.util.CommonLogger;
 import taskaler.logic.common.RepeatPattern;
 
 /**
@@ -153,6 +149,7 @@ public class OPLogic extends Observable {
             }
             
             TaskList.getInstance().add(newTask);
+            TaskList.getInstance().incrementNumOfIncomplete();
             notifyObservers("ADD", newTask);
 
             return newTask;
@@ -193,7 +190,7 @@ public class OPLogic extends Observable {
         }
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
-
+        TaskList.getInstance().decrementNumOfIncomplete();
         notifyObservers("DELETE", taskToBeRemoved);
         return taskToBeRemoved;
 
@@ -341,8 +338,42 @@ public class OPLogic extends Observable {
      * startTime and endTime is in the syntax "HHmm", where HH is on the scale of a 24h clock (0 ~ 23)
      */
     public Task editTime(String taskID, String startTime, String endTime){
+    	int taskIDIndex = SearchLogic.findTaskByID(taskID);
+        
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to edit a task
+            return null;
+        }
+        
+        int startTimeHour, startTimeMins, endTimeHour, endTimeMins;
+        
+        
+        
+        if(startTime != null) {
+        	startTimeHour = Integer.parseInt(startTime.substring(0, 2));
+        	startTimeMins = Integer.parseInt(startTime.substring(2, 4));
+        	
+            Calendar newStartTime = TaskList.getInstance().get(taskIDIndex).getStartTime();
+        	newStartTime.set(Calendar.HOUR_OF_DAY, startTimeHour);
+        	newStartTime.set(Calendar.MINUTE, startTimeMins);
+        	TaskList.getInstance().get(taskIDIndex).changeStartTime(newStartTime);
+        }
+        
+        if(endTime != null) {
+        	endTimeHour = Integer.parseInt(endTime.substring(0, 2));
+        	endTimeMins = Integer.parseInt(endTime.substring(2, 4));
+
+            Calendar newEndTime = TaskList.getInstance().get(taskIDIndex).getEndTime();
+        	newEndTime.set(Calendar.HOUR_OF_DAY, endTimeHour);
+        	newEndTime.set(Calendar.MINUTE, endTimeMins);
+        	TaskList.getInstance().get(taskIDIndex).changeEndTime(newEndTime);
+        }
+        
+        return TaskList.getInstance().get(taskIDIndex);
         
     }
+    
+    
     
     /* This is a stub for the setRepeat function Controller will call for the "repeat" command
        parameters are as follows, syntax for "pattern" is in ParserLibrary.java if u need to 
@@ -359,6 +390,10 @@ public class OPLogic extends Observable {
         Calendar startTime = setNewCalendarDate(startDate);
         Calendar endTime = setNewCalendarDate(startDate);
         Calendar endRepeatedTime = setNewCalendarDate(endDate);
+        if(endDate == null) {
+        	//if user doesn't specify the end time, default end repeted time is 1 month.
+        	endRepeatedTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
+        }
         RepeatedDate repeatedDate = new RepeatedDate();
         
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
@@ -452,8 +487,12 @@ public class OPLogic extends Observable {
 		
 		if(TaskList.getInstance().get(taskIDIndex).getTaskStatus().equals(common.TASK_COMPLETED_STATUS)) {
         	TaskList.getInstance().get(taskIDIndex).changeTaskStatus(common.TASK_INITIAL_STATUS);
+        	//increment number of incomplete tasks
+        	TaskList.getInstance().incrementNumOfIncomplete();
         } else {
         	TaskList.getInstance().get(taskIDIndex).changeTaskStatus(common.TASK_COMPLETED_STATUS);
+        	//decrement number of incomplete tasks
+        	TaskList.getInstance().decrementNumOfIncomplete();
         }
 		
 	}
