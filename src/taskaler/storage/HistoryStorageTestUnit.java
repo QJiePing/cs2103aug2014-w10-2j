@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-/*
+/**
  * @author Quek Jie Ping A0111798X
  */
 public class HistoryStorageTestUnit {
@@ -19,7 +19,7 @@ public class HistoryStorageTestUnit {
 		f.delete();
 	}
 	
-	/*
+	/**
 	 * This is a equivalence partitioning case for 'null' value partition.
 	 * Test the history writer method supplied with a null filename
 	 */
@@ -30,7 +30,7 @@ public class HistoryStorageTestUnit {
 		assertFalse(result);
 	}
 
-	/*
+	/**
 	 * This is a equivalence partitioning case for 'null' value partition.
 	 *Test the history writer method supplied with a null message
 	 */
@@ -41,7 +41,7 @@ public class HistoryStorageTestUnit {
 		assertFalse(result);
 	}
 	
-	/*
+	/**
 	 * This is a equivalence partitioning case for 'null' value partition.
 	 *Test the history reader method supplied with a null filename
 	 */
@@ -52,7 +52,7 @@ public class HistoryStorageTestUnit {
 		assertEquals(null,result);
 	}
 	
-	/*
+	/**
 	 * Test if the history writer and reader can read and writer the correct number of 
 	 * line of file content
 	 */
