@@ -73,18 +73,19 @@ public final class ParserLibrary {
      * Contains the available variations of time formats for user input
      */
     public static final ArrayList<String> availableTimeSyntax = new ArrayList<String>()
-            {{  add("HHmm");
-                add("HH");
-                add("HH:mm");
-                add("HH.mm");
-                add("hhaa");
-                add("hhmmaa");
+            {{  add("hhmmaa");
                 add("hh:mmaa");
                 add("hh.mmaa");
-                add("hh aa");
                 add("hhmm aa");
                 add("hh:mm aa");
                 add("hh.mm aa");
+                add("HHmm");
+                add("HH:mm");
+                add("HH.mm");
+                add("hhaa");
+                add("hhaa");
+                add("hh aa");
+                add("HH");
             }};
     
     /**

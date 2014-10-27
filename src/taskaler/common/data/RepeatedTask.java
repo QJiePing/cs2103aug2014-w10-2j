@@ -8,8 +8,6 @@ import java.util.Calendar;
  */
 public class RepeatedTask extends Task {
 	
-	private Calendar _startTime;
-	private Calendar _endTime;
 	private ArrayList<Calendar> _repeatedDate;
 	private Calendar _endRepeatedDate;
 	private int _collectionID;
@@ -43,9 +41,7 @@ public class RepeatedTask extends Task {
 	public RepeatedTask(String taskName, String taskID, String taskStatus,Calendar creationDate, String taskWorkLoad, 
 			String taskDescription, Calendar start, Calendar end, ArrayList<Calendar> repeatedDate,Calendar endRepeatedDate,int ID){
 		
-		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription);
-		this._startTime=start;
-		this._endTime=end;
+		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription,start,end);
 		this._repeatedDate=repeatedDate;
 		this._endRepeatedDate=endRepeatedDate;
 		this._collectionID=ID;
@@ -62,12 +58,7 @@ public class RepeatedTask extends Task {
 	}
 	
 	/**************** Accessor ***********************/
-	public Calendar getStartTime(){
-		return this._startTime;
-	}
-	public Calendar getEndTime(){
-		return this._endTime;
-	}
+	
 	public ArrayList<Calendar> getRepeatedDate(){
 		return this._repeatedDate;
 	}
@@ -79,12 +70,7 @@ public class RepeatedTask extends Task {
 	}
 	
 	/**************** Mutators ************************/
-	public void setStartTime(Calendar start){
-		this._startTime=start;
-	}
-	public void setEndTime(Calendar end){
-		this._endTime=end;
-	}
+
 	public void setRepeatedDate(ArrayList<Calendar> repeat){
 		this._repeatedDate=repeat;
 	}

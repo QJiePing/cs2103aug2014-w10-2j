@@ -82,6 +82,8 @@ public class Parser {
             return getParamEDIT(commandString);
         case DEADLINE:
             return getParamDEADLINE(commandString);
+        case TIME:
+            return getParamTIME(commandString);
         case REPEAT:
             return getParamREPEAT(commandString);
         case WORKLOAD:
@@ -110,8 +112,8 @@ public class Parser {
     private static String[] getParamADD(String commandString) throws Exception{
         int nameIndex = 0;
         int descriptionIndex = 1;
-        int dateAndTimeIndex = 2;
-        int workloadIndex = 3;
+        int dateIndex = 2;
+        int workloadIndex = 5;
         
         String paramString = removeFirstWord(commandString);
         String[] paramArray = paramString.split(",");
@@ -125,12 +127,12 @@ public class Parser {
         case 2:
             paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD, 
                     nameIndex, descriptionIndex);
-            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD, dateAndTimeIndex);
+            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD, dateIndex);
             break;
         case 3:
             paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD, 
                     nameIndex, descriptionIndex);
-            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD, dateAndTimeIndex);
+            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD, dateIndex);
             paramADD = appendWorkload(paramArray[2].trim(), paramADD, workloadIndex);
             break;
         default:
@@ -176,16 +178,21 @@ public class Parser {
      */
     private static String[] appendDateAndTime(String paramString, String[] paramArray, int indexDT) 
             throws Exception {
-        int dateAndTimeIndex = indexDT;
+        int dateIndex = indexDT;
+        int startTimeIndex = dateIndex + 1;
+        int endTimeIndex = dateIndex + 2;
 
         int splitIndex = paramString.indexOf(":");
         if(splitIndex == INVALID_VALUE) {
-            paramArray[dateAndTimeIndex] = ParseAttribute.parseDate(paramString);
+            paramArray[dateIndex] = ParseAttribute.parseDate(paramString);
         }
         else {
             String date = ParseAttribute.parseDate(paramString.substring(0, splitIndex).trim());
-            String time = ParseAttribute.parseTime(paramString.substring(splitIndex + 1).trim());
-            paramArray[dateAndTimeIndex] = date + ": " + time;
+            String[] timeRange = 
+                    ParseAttribute.parseTimeRange(paramString.substring(splitIndex + LENGTH_OF_COLON).trim());
+            paramArray[dateIndex] = date;
+            paramArray[startTimeIndex] = timeRange[0];
+            paramArray[endTimeIndex] = timeRange[1];
         }
         return paramArray;
     }
@@ -410,12 +417,42 @@ public class Parser {
                             + "try: from <start date> to <end date>");
                 }
                 paramArray[startDateIndex] = ParseAttribute.parseDate(
-                        dateField.substring(fromIndex + LENGTH_OF_FROM).trim());
+                        dateField.substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
                 paramArray[endDateIndex] = ParseAttribute.parseDate(
                         dateField.substring(toIndex + LENGTH_OF_TO).trim());
             }
         }
         return paramArray;
+    }
+    
+    /**
+     * Method to retrieve parameters for TIME command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for the TIME command
+     * @throws Exception
+     */
+    private static String[] getParamTIME(String commandString) throws Exception {
+        int taskIDIndex = 0;
+        int startTimeIndex = 1;
+        int endTimeIndex = 2;
+        
+        String[] paramTIME = new String[TIME_PARAMETERS];
+        String[] time = null;
+        String paramString = removeFirstWord(commandString);
+        if(currentTaskID != null){
+            time = ParseAttribute.parseTimeRange(paramString);
+            paramTIME[taskIDIndex] = currentTaskID;
+            paramTIME[startTimeIndex] = time[0];
+            paramTIME[endTimeIndex] = time[1];
+        }
+        else {
+            time = ParseAttribute.parseTimeRange(removeFirstWord(paramString));
+            paramTIME[taskIDIndex] = getFirstWord(paramString);
+            paramTIME[startTimeIndex] = time[0];
+            paramTIME[endTimeIndex] = time[1];
+        }
+        return paramTIME;
     }
     
     /**

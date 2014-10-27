@@ -64,6 +64,43 @@ public class ParseAttribute {
         return dateFormat;
     }
     
+    public static String[] parseTimeRange(String time) throws Exception{
+        int startTimeIndex = 0;
+        int endTimeIndex = 1;
+        
+        String[] startAndEndTime = new String[2];
+        int dashIndex = time.indexOf("-");
+        int fromIndex = time.indexOf("from"); 
+        int toIndex = time.indexOf("to");
+        if(dashIndex != INVALID_VALUE){
+            startAndEndTime[startTimeIndex] = parseTime(time.substring(0,dashIndex).trim());
+            startAndEndTime[endTimeIndex] = parseTime(time.substring(dashIndex + LENGTH_OF_DASH).trim());
+        }
+        else if(fromIndex != INVALID_VALUE){
+            if(toIndex != INVALID_VALUE){
+                startAndEndTime[startTimeIndex] = 
+                        parseTime(time.substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
+                startAndEndTime[endTimeIndex] = parseTime(time.substring(toIndex + LENGTH_OF_TO).trim());
+            }
+            else {
+                startAndEndTime[startTimeIndex] = 
+                        parseTime(time.substring(fromIndex + LENGTH_OF_FROM).trim());
+            }
+        }
+        else if(toIndex != INVALID_VALUE){
+            startAndEndTime[endTimeIndex] = parseTime(time.substring(toIndex + LENGTH_OF_TO).trim());
+        }
+        else {
+            try{
+                startAndEndTime[startTimeIndex] = parseTime(time);
+            }
+            catch(Exception e){
+                throw new Exception("Invalid time range syntax, try: <start time> - <end time>");
+            }
+        }
+        return startAndEndTime;
+    }
+    
     /** 
      * Parses the time and translates it to a consistent syntax, "HHmm"
      * 

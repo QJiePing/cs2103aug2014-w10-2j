@@ -67,8 +67,11 @@ public class Controller{
                 String nameADD = params[0];
                 String descriptionADD = params[1];
                 String dateADD = params[2];
-                String workloadADD = params[3];
-                result = crudLogic.addTask(nameADD, descriptionADD, dateADD, workloadADD);
+                String startTimeADD = params[3];
+                String endTimeADD = params[4];
+                String workloadADD = params[5];
+                result = crudLogic.addTask(nameADD, descriptionADD, dateADD, 
+                        startTimeADD, endTimeADD, workloadADD);
                 ui.display(result);
                 break;
             case DELETE:
@@ -96,11 +99,17 @@ public class Controller{
                 ui.display(result);
                 break;
             case DEADLINE:
-                String taskIDDeadline = params[0];
+                String taskIDDEADLINE = params[0];
                 String newDeadline = params[1];
-                result = crudLogic.editDate(taskIDDeadline, newDeadline);
+                result = crudLogic.editDate(taskIDDEADLINE, newDeadline);
                 ui.display(result);
                 break;
+            case TIME:
+                String taskIDTIME = params[0];
+                String startTime = params[1];
+                String endTime = params[2];
+                result = crudLogic.editTime(taskIDTIME, startTime, endTime);
+                ui.display(result);
             case REPEAT:
                 String taskID_REPEAT = params[0];
                 String pattern = params[1];

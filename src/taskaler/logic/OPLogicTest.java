@@ -25,32 +25,32 @@ public class OPLogicTest {
 		Task task;
 		
 		/* This is a boundary case for add nothing */
-		task = OPLogic.getInstance().addTask(null, null, null, null);
+		task = OPLogic.getInstance().addTask(null, null, null, null, null, null);
 		assertEquals(null, task);
 		assertEquals(0, TaskList.getInstance().size());
 		
 		/* This is a boundary case for add a task with empty task name */
-		task = OPLogic.getInstance().addTask(null, "my_description", null, null);
+		task = OPLogic.getInstance().addTask(null, "my_description", null, null, null, null);
 		assertEquals(null, task);
 		assertEquals(0, TaskList.getInstance().size());
 		
 		/* This is a case for adding a task with one parameter - task name*/
-		task = OPLogic.getInstance().addTask("my_test1", null, null, null);
+		task = OPLogic.getInstance().addTask("my_test1", null, null, null, null, null);
 		assertEquals("my_test1", task.getTaskName());
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(1, TaskList.getInstance().size());
 		
 		/* This is a case for adding a task with two parameters - task name, task description*/
-		task = OPLogic.getInstance().addTask("my_test2", "my_description", null, null);
+		task = OPLogic.getInstance().addTask("my_test2", "my_description", null, null, null, null);
 		assertEquals("my_test2", task.getTaskName());
 		assertEquals("my_description", task.getTaskDescription());
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(2, TaskList.getInstance().size());
 		
-		task = OPLogic.getInstance().addTask("my_test3", "my_description", "11/11/2011", null);
+		task = OPLogic.getInstance().addTask("my_test3", "my_description", "11/11/2011", null, null, null);
 		assertEquals("my_test3", task.getTaskName());
 		assertEquals("my_description", task.getTaskDescription());
-		assertEquals("11/11/2011", calendarToString.parseDate(((DeadLineTask) task).getEndTime()));
+		assertEquals("11/11/2011", calendarToString.parseDate(((DeadLineTask) task).getDeadline()));
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(3, TaskList.getInstance().size());
 		
@@ -136,7 +136,7 @@ public class OPLogicTest {
 		/* This is a case for changing deadline successfully*/
 		taskID = "2";
 		task = OPLogic.getInstance().editDate(taskID, "22/10/2014");
-		assertEquals("22/10/2014", calendarToString.parseDate(((DeadLineTask) search.findByID(taskID)).getEndTime()));
+		assertEquals("22/10/2014", calendarToString.parseDate(((DeadLineTask) search.findByID(taskID)).getDeadline()));
 		task = ((DeadLineTask) search.findByID(taskID));
 		
 		for(int i = 0; i < TaskList.getInstance().size(); i++) {
