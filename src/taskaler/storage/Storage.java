@@ -10,19 +10,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-/*
+/**
  * @author Quek Jie Ping A0111798X
+
  */
 
-/*
+/**
  * This is the main storage class which performs storage function of Taskaler.
- * To use this class, no instantiation of storage class is needed.
  */
 public class Storage{
 
 	private static CommonLogger log= CommonLogger.getInstance();
 	private static Storage instance= null;
 
+	/**
+	 * Constructors
+	 */
 	private Storage(){
 
 	}
@@ -34,54 +37,58 @@ public class Storage{
 	}
 
 
-	/*
+	/**
 	 * Method to read in task data from the text file
 	 * @param file
 	 * 			The directory of the text file
 	 * 
 	 * @return return an arraylist of saved tasks from the text file
 	 */
-	public TaskList readFromFile(String file){
+	public ArrayList<Task> readFromFile(String file){
 
-		//temporary holder to store an arraylist of saved tasks from the text file
-		TaskList resultTaskList = null;
+		/**
+		 * temporary holder variables
+		 */
+		ArrayList<Task> result = new ArrayList<Task>();
+		CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask> holder=new CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>();
 
 		try{
 			FileReader reader= new FileReader(file);
 			Gson gson = createGsonObj();
-			TypeToken<TaskList> typeToken= new TypeToken<TaskList>(){};
-			resultTaskList=gson.fromJson(reader, typeToken.getType());
+			TypeToken<CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>> typeToken= 
+					new TypeToken<CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>>(){};
+			holder=gson.fromJson(reader, typeToken.getType());
+			result.addAll(holder.getFloatArr());
+			result.addAll(holder.getDeadLineArr());
+			result.addAll(holder.getRepeatedArr());
 			reader.close();
 		}catch(Exception e){
 			log.exceptionLogger(e, Level.SEVERE);
 			return null;
 		}
-		return resultTaskList;
+		return result;
 	}
 
-	/*
+	/**
 	 * Method to write all saved tasks information to the text file
 	 * @param file
 	 * 			The directory of the text file
-	 * @param arrayList
-	 * 			The arraylist of tasks to be written to the text file
+	 * @param TaskList
+	 * 			TaskList that contains all the task information
 	 * 
 	 * @return return a boolean indicating whether the write operation
 	 * is a success or fail
 	 */
-	public boolean writeToFile(String file, TaskList taskList){
+	public boolean writeToFile(String file,TaskList taskList){
 
 		try{
 			FileWriter fw= new FileWriter(file);
 			Gson gson = createGsonObj();
-			String output= gson.toJson(taskList);
-
-			if(taskList==null || taskList.isEmpty()){
-				fw.write("");
-			}
-			else{
-				fw.write(output);
-			}
+			CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> helper = prepareTaskList(taskList);
+			TypeToken<CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>> typeToken=
+					new TypeToken<CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>>(){};
+			String output= gson.toJson(helper,typeToken.getType());
+			fw.write(output);
 			fw.close();
 		}catch(Exception e){
 			log.exceptionLogger(e, Level.SEVERE);
@@ -89,8 +96,22 @@ public class Storage{
 		}
 		return true;
 	}
+	/**
+	 * Prepare the TaskList for gson to process
+	 * @param taskList
+	 * 			TaskList object that contains all the tasks information
+	 * @return CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>
+	 */
+	private CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> prepareTaskList(
+			TaskList taskList) {
+		CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask> helper=new CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>();
+		helper.setFloatArr(taskList.floatToArray());
+		helper.setDeadLineArr(taskList.deadlineToArray());
+		helper.setRepeatedArr(taskList.repeatedToArray());
+		return helper;
+	}
 
-	/*
+	/**
 	 * Method to instantiate a gson object for the reading json object from json formatted
 	 * file and output all saved task information in json format to the text file.
 	 * 

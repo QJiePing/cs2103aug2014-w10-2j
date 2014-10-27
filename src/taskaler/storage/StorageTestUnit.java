@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import taskaler.common.data.*;
 
-/*
+/**
  * @author Quek Jie Ping A0111798X
  */
 public class StorageTestUnit {
@@ -22,55 +22,54 @@ public class StorageTestUnit {
 		f.delete();
 	}
 
-	/*
+	/**
 	 * This is a equivalence partitioning case for 'null' value partition.
 	 */
 
-	//test for null task list object 
-	@Test
-	public void test() {
-		Storage storeObj= Storage.getInstance();
-		boolean result=storeObj.writeToFile("testing.txt", null);
-		assertTrue(result);
-	}
 
-	//test for null filename
+	/**
+	 * Test for null filename
+	 */
 	@Test
-	public void test2() {
+	public void test1() {
 		TaskList taskList= TaskList.getInstance();
-		taskList.add(new Task());
+		taskList.add(new FloatTask());
 		Storage storeObj= Storage.getInstance();
-		boolean result=storeObj.writeToFile(null, taskList);
+		boolean result=storeObj.writeToFile(null,taskList);
 		assertFalse(result);
 	}
 
-	/*
-	 * testing json writing in and reading out methods
+	/**
+	 * Testing json writing in and reading out methods
 	 */
 
 	//testing the case of an empty task list
 	@Test
-	public void test3(){
+	public void test2(){
 		TaskList taskList= TaskList.getInstance();
 		taskList.clear();
 		Storage storeObj= Storage.getInstance();
-		storeObj.writeToFile("testing.txt", taskList);
+		storeObj.writeToFile("testing.txt",taskList);
 
-		TaskList temp= storeObj.readFromFile("testing.txt");
-		assertEquals(null,temp);
+		ArrayList<Task> temp= storeObj.readFromFile("testing.txt");
+		assertTrue(temp.isEmpty());
 	}
-	//testing the case where there is 2 task
+
+	/**
+	 * Testing the case where there is 2 float task in TaskList
+	 */
 	@Test
-	public void test4(){
+	public void test3(){
 		boolean result=false;
 		TaskList taskList= TaskList.getInstance();
 		taskList.clear();
-		taskList.add(new Task("Task1","1","not done",Calendar.getInstance(),"5","description1"));
-		taskList.add(new Task("Task2","2","done",Calendar.getInstance(),"1","description2"));
+		taskList.add(new FloatTask("Task1","1","not done",Calendar.getInstance(),"5","description1"));
+		taskList.add(new FloatTask("Task2","2","done",Calendar.getInstance(),"1","description2"));
+		
 		Storage storeObj= Storage.getInstance();
-		storeObj.writeToFile("testing.txt", taskList);
-
-		TaskList temp= storeObj.readFromFile("testing.txt");
+		storeObj.writeToFile("testing.txt",taskList);
+		
+		ArrayList<Task> temp= storeObj.readFromFile("testing.txt");
 		for(int i=0;i<taskList.size();i++){
 			if(taskList.get(i).getTaskID().equals(temp.get(i).getTaskID())){
 				result=true;
@@ -82,5 +81,36 @@ public class StorageTestUnit {
 		}
 		assertTrue(result);
 	}
-	
+	/**
+	 * Testing the case where there is a mixture of 3 different type of tasks
+	 */
+	@Test
+	public void test4(){
+		boolean result=false;
+		TaskList taskList= TaskList.getInstance();
+		taskList.clear();
+		ArrayList<Calendar> arrCal=new ArrayList<Calendar>();
+		Calendar temp= Calendar.getInstance();
+		temp.set(Calendar.YEAR, Calendar.DECEMBER, Calendar.MONDAY);
+		arrCal.add(temp);
+		taskList.add(new FloatTask("Task1","1","not done",Calendar.getInstance(),"5","description1"));
+		taskList.add(new DeadLineTask("Task2","2","done",Calendar.getInstance(),"1","description2",Calendar.getInstance(),Calendar.getInstance()));
+		taskList.add(new RepeatedTask("Task3","3","not done",Calendar.getInstance(),"2","description2",Calendar.getInstance(),Calendar.getInstance(),arrCal,Calendar.getInstance(),5));
+		taskList.add(new FloatTask("Task4","4","not done",Calendar.getInstance(),"1","description4"));
+		
+		Storage storeObj= Storage.getInstance();
+		storeObj.writeToFile("testing.txt",taskList);
+		
+		ArrayList<Task> tempArr= storeObj.readFromFile("testing.txt");
+		for(int i=0;i<taskList.size();i++){
+			if(taskList.get(i).getTaskID().equals(tempArr.get(i).getTaskID())){
+				result=true;
+			}
+			else{
+				result=false;
+				break;
+			}
+		}
+		assertTrue(result);
+	}
 }
