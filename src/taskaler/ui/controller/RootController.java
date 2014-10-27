@@ -63,6 +63,12 @@ public class RootController extends BorderPane implements IController {
     @FXML
     private Label lblToast;
 
+    @FXML
+    private Label lblNotDone;
+
+    @FXML
+    private Label lblFloating;
+
     /**
      * Default constructor
      * 
@@ -85,6 +91,23 @@ public class RootController extends BorderPane implements IController {
         }
 
         commands = ParserLibrary.getCommands();
+        update(currentModel.totalNotDone, currentModel.totalFloating);
+    }
+
+    /**
+     * Method to update only the score board
+     * 
+     * @param totalNotDone
+     *            Total number of tasks that are not done
+     * @param totalFloating
+     *            Total number of tasks that are not confirmed
+     */
+    public void update(int totalNotDone, int totalFloating) {
+        currentModel.totalNotDone = totalNotDone;
+        currentModel.totalFloating = totalFloating;
+        lblNotDone.setText(totalNotDone + common.EMPTY_STRING);
+        lblFloating.setText(totalFloating + common.EMPTY_STRING);
+
     }
 
     @Override
@@ -102,6 +125,7 @@ public class RootController extends BorderPane implements IController {
      *            Text to be shown on the toast
      */
     public void showToast(String text) {
+        currentModel.notification = text;
         lblToast.setText(text);
         lblToast.setVisible(true);
         FadeTransition ft = new FadeTransition(Duration.millis(5000), lblToast);

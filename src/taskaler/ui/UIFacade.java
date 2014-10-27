@@ -25,7 +25,9 @@ import javafx.stage.WindowEvent;
 
 import javax.swing.JOptionPane;
 
+import taskaler.archive.OperationRecord;
 import taskaler.common.data.Task;
+import taskaler.common.data.TaskList;
 import taskaler.common.util.CommonLogger;
 import taskaler.storage.Storage;
 import taskaler.ui.controller.RootController;
@@ -79,9 +81,11 @@ public class UIFacade extends Application implements Observer {
             stage.setResizable(false);
 
             RootModel model = new RootModel();
+            model.totalFloating = TaskList.getInstance().floatToArray().size();
+            
             rootController = new RootController(model);
             Parent pane = rootController;
-            Scene scene = new Scene(pane, 400, 475);
+            Scene scene = new Scene(pane, 400, 499);
 
             stage.setScene(scene);
             stage.sizeToScene();
@@ -109,6 +113,7 @@ public class UIFacade extends Application implements Observer {
      * 
      */
     private void createCleanUp() {
+        //TODO Implementation required
         Thread shutDownHook = new Thread() {
             public void run() {
                 if (libraryLoaded != null) {
@@ -303,6 +308,8 @@ public class UIFacade extends Application implements Observer {
             } else {
                 System.out.println("No Idea who called this event");
             }
+        }else if(arg1 instanceof OperationRecord){
+            rootController.update(100, TaskList.getInstance().floatToArray().size());
         }
     }
 }

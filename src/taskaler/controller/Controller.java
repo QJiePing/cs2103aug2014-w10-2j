@@ -209,11 +209,13 @@ public class Controller{
         findLogic = new SearchLogic();
         history = new PastHistory();
         undo = new Undo();
-        crudLogic.addObserver(history);
-        crudLogic.addObserver(undo);
         Storage store= Storage.getInstance();
         list.addAll(store.readFromFile(TASK_LIST_FILE));
         ui = new UIFacade();
+        
+        crudLogic.addObserver(history);
+        crudLogic.addObserver(undo);
+        crudLogic.addObserver(ui);
     }
 
     /**
