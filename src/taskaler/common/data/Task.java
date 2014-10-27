@@ -26,6 +26,8 @@ public abstract class Task {
     private String _taskName;
     private String _taskID;
     private String _taskStatus;
+    private Calendar _taskStartTime;
+    private Calendar _taskEndTime;
     private Calendar _creationDate;
     private WorkloadProperty _taskWorkLoad;
     private String _taskDescription;
@@ -48,11 +50,13 @@ public abstract class Task {
      *            Description of the task
      */
     public Task(String taskName, String taskID, String taskStatus, Calendar creationDate, 
-    		String taskWorkLoad, String taskDescription) {
+    		String taskWorkLoad, String taskDescription, Calendar startTime, Calendar endTime) {
 
         _taskName = taskName;
         _taskID = taskID;
         _taskStatus = taskStatus;
+        _taskStartTime = startTime;
+        _taskEndTime = endTime;
         _creationDate = creationDate;
         _taskWorkLoad = workloadFromString(taskWorkLoad);
         _taskDescription = taskDescription;
@@ -70,6 +74,12 @@ public abstract class Task {
 
     public String getTaskStatus() {
         return _taskStatus;
+    }
+    public Calendar getStartTime(){
+        return _taskStartTime;
+    }
+    public Calendar getEndTime(){
+        return _taskEndTime;
     }
 
     public String getTaskWorkLoad() {
@@ -97,7 +107,12 @@ public abstract class Task {
     public void changeTaskStatus(String newTaskStatus) {
         _taskStatus = newTaskStatus;
     }
-
+    public void changeStartTime(Calendar newTime){
+        _taskStartTime = newTime;
+    }
+    public void changeEndTime(Calendar newTime){
+        _taskEndTime = newTime;
+    }
     public void changeTaskWorkLoad(String newTaskWordLoad) {
         _taskWorkLoad = workloadFromString(newTaskWordLoad);
     }

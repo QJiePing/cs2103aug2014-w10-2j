@@ -27,7 +27,7 @@ public class ParserTest {
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
-            assertEquals(currentParams.length, 4);
+            assertEquals(currentParams.length, 6);
             assertEquals(currentParams[0], "hello");
             assertEquals(currentParams[1], null);
             
@@ -38,18 +38,31 @@ public class ParserTest {
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
-            assertEquals(currentParams.length, 4);
+            assertEquals(currentParams.length, 6);
             assertEquals(currentParams[0], "hello");
             assertEquals(currentParams[1], "world!");
             
             //This is the testing for invalid syntax
             //Incomplete Add
             reset();
+            newParser.parseCMD("add hello:world!!, 20/november:1430-1530, 2", null, null);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.ADD);
+            assertEquals(currentParams.length, 6);
+            assertEquals(currentParams[0], "hello");
+            assertEquals(currentParams[1], "world!!");
+            assertEquals(currentParams[2], "20/11/2014");
+            assertEquals(currentParams[3], "1430");
+            assertEquals(currentParams[4], "1530");
+            assertEquals(currentParams[5], "2");
+            
+            reset();
             newParser.parseCMD("add ", null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
-            assertEquals(currentParams.length, 4);
+            assertEquals(currentParams.length, 6);
             assertEquals(currentParams[0], null);
             assertEquals(currentParams[1], null);
         }
@@ -183,7 +196,7 @@ public class ParserTest {
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.REPEAT);
             assertEquals(currentParams[0], "11");
-            assertEquals(currentParams[1], "2 d");
+            assertEquals(currentParams[1], "2 DAY");
             assertEquals(currentParams[2], null);
             assertEquals(currentParams[3], null);
             
@@ -194,7 +207,7 @@ public class ParserTest {
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.REPEAT);
             assertEquals(currentParams[0], "12");
-            assertEquals(currentParams[1], "1 w");
+            assertEquals(currentParams[1], "1 WEEK");
             assertEquals(currentParams[2], "19/10/2014");
             assertEquals(currentParams[3], null);
             
@@ -205,7 +218,7 @@ public class ParserTest {
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.REPEAT);
             assertEquals(currentParams[0], "13");
-            assertEquals(currentParams[1], "wd");
+            assertEquals(currentParams[1], "WEEKDAY");
             assertEquals(currentParams[2], "19/10/2014");
             assertEquals(currentParams[3], "21/10/2014");
             

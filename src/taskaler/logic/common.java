@@ -34,6 +34,7 @@ public class common {
     public static int DAYS_OF_ALTER = 2;
 
     public static int DEFAULT_TASK_ID = 0;
+    public static int DEFAULT_COLLECTION_ID = 1;
     public static int DEFAULT_TASK_TYPE = 0;
     public static int DEADLINE_TASK_TYPE = -1;
     public static int FLOAT_TASK_TYPE = -2;

@@ -109,7 +109,8 @@ public class OPLogic extends Observable {
      *         otherwise.
      * 
      */
-    public Task addTask(String name_ADD, String description_ADD, String date_ADD, String workload_ADD) {
+    public Task addTask(String name_ADD, String description_ADD, String date_ADD, 
+            String startTime, String endTime, String workload_ADD) {
 
         // assume task name cannot be null
         if (name_ADD == null) {
@@ -125,24 +126,30 @@ public class OPLogic extends Observable {
             if(workload_ADD == null){
                 workload_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
             }
+            Calendar start = null;
+            Calendar end = null;
+            if(startTime != null){
+                start = setNewCalendarDate(startTime);
+            }
+            if(endTime != null){
+                end = setNewCalendarDate(endTime);
+            }
             // generate a new task ID
             int newTaskID = generateTaskID();
 
             Task newTask;
             if(date_ADD == null) {
-            	 //float task
+            	//float task
 	            newTask = new FloatTask(name_ADD, Integer.toString(newTaskID),
 	                    common.TASK_INITIAL_STATUS, Calendar.getInstance(),
-	                    workload_ADD, description_ADD);
+	                    workload_ADD, description_ADD, start, end);
             } else {
             	//deadline task
-				Calendar startTime = Calendar.getInstance();
-				Calendar endTime = setNewCalendarDate(date_ADD);
-				
+                Calendar date = setNewCalendarDate(date_ADD);
 				newTask = new DeadLineTask(name_ADD,
 						Integer.toString(newTaskID),
 						common.TASK_INITIAL_STATUS, Calendar.getInstance(), workload_ADD,
-						description_ADD, startTime, endTime);
+						description_ADD, date, start, end);
             }
             
             TaskList.getInstance().add(newTask);
@@ -291,14 +298,14 @@ public class OPLogic extends Observable {
         	newTask = new DeadLineTask(deletedTask.getTaskName(),
 					deletedTask.getTaskID(), common.TASK_INITIAL_STATUS,
 					deletedTask.getTaskCreationDate(), deletedTask.getTaskWorkLoad(),
-					deletedTask.getTaskDescription(), Calendar.getInstance(), newDeadLine);
+					deletedTask.getTaskDescription(), newDeadLine, null, null);
         	TaskList.getInstance().add(newTask);
         	
         } else if (taskIDIndex < TaskList.getInstance().floatToArray().size() + TaskList.getInstance().deadlineToArray().size()) {
-        	((DeadLineTask) newTask).setEndTime(newDeadLine);
+        	((DeadLineTask) newTask).setDeadline(newDeadLine);
        
         } else {
-        	((RepeatedTask) newTask).setEndTime(newDeadLine);
+        	((RepeatedTask) newTask).setEndRepeatedDate(newDeadLine);
         }
 
         notifyObservers("EDIT", newTask);
@@ -329,6 +336,14 @@ public class OPLogic extends Observable {
         return newDeadLine;
     }
     
+    /*
+     * This is a stub for the editTime function that Controller will call for the TIME command
+     * startTime and endTime is in the syntax "HHmm", where HH is on the scale of a 24h clock (0 ~ 23)
+     */
+    public Task editTime(String taskID, String startTime, String endTime){
+        
+    }
+    
     /* This is a stub for the setRepeat function Controller will call for the "repeat" command
        parameters are as follows, syntax for "pattern" is in ParserLibrary.java if u need to 
        take a look, but briefly, for pattern, i will pass you:
@@ -357,15 +372,28 @@ public class OPLogic extends Observable {
         //remove task from float task list or deadline task list
         Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
         
+        int collectionID = generateCollectionID();
+        
 		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
 				deletedTask.getTaskStatus(), deletedTask.getTaskCreationDate(), 
 				deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
 				startTime, endTime, dates, endRepeatedTime, 
-				TaskList.getInstance().repeatedToArray().size() + 1);
+				collectionID);
 		
 		TaskList.getInstance().add(newTask);
         return newTask;
     }
+
+	private int generateCollectionID() {
+		
+		int sizeOfRepeatedTask = TaskList.getInstance().repeatedToArray().size();
+        int collectionID = common.DEFAULT_COLLECTION_ID;
+        if(sizeOfRepeatedTask != 0) {
+        	collectionID = TaskList.getInstance().repeatedToArray().get(sizeOfRepeatedTask-1).getCollectiveID()+1;
+        }
+        
+		return collectionID;
+	}
    
 
 	/**

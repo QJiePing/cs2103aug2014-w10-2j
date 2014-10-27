@@ -6,9 +6,8 @@ import java.util.Calendar;
  * @author Quek Jie Ping
  */
 public class DeadLineTask extends Task{
-
-	private Calendar _startTime;
-	private Calendar _endTime;
+    
+    private Calendar _deadLine;
 
 	public DeadLineTask(){
 		super();
@@ -32,10 +31,9 @@ public class DeadLineTask extends Task{
 	 * 		      End time of the task
 	 */
 	public DeadLineTask(String taskName, String taskID, String taskStatus,Calendar creationDate, String taskWorkLoad,
-			String taskDescription, Calendar start, Calendar end){
-		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription);
-		this._startTime=start;
-		this._endTime=end;
+			String taskDescription, Calendar deadline, Calendar start, Calendar end){
+		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription,start,end);
+		this._deadLine=deadline;
 	}
 	
 	/**
@@ -43,23 +41,19 @@ public class DeadLineTask extends Task{
 	 * @return DeadLineTask
 	 */
 	public DeadLineTask clone(){
-		DeadLineTask newTask = new DeadLineTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(),this.getTaskCreationDate(), this.getTaskWorkLoad(), this.getTaskDescription(),this.getStartTime(),this.getEndTime());
+		DeadLineTask newTask = new DeadLineTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(),this.getTaskCreationDate(), 
+		        this.getTaskWorkLoad(), this.getTaskDescription(),this.getDeadline(), this.getStartTime(), this.getEndTime());
 	    return newTask;
 	}
 	
 	
 	/**************** Accessor ***********************/
-	public Calendar getStartTime(){
-		return this._startTime;
+	public Calendar getDeadline(){
+	    return this._deadLine;
 	}
-	public Calendar getEndTime(){
-		return this._endTime;
-	}
+
 	/**************** Mutators ************************/
-	public void setStartTime(Calendar start){
-		this._startTime=start;
-	}
-	public void setEndTime(Calendar end){
-		this._endTime=end;
+	public void setDeadline(Calendar date){
+	    this._deadLine = date;
 	}
 }

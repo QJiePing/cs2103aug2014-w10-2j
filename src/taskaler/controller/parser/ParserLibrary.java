@@ -73,18 +73,19 @@ public final class ParserLibrary {
      * Contains the available variations of time formats for user input
      */
     public static final ArrayList<String> availableTimeSyntax = new ArrayList<String>()
-            {{  add("HHmm");
-                add("HH");
-                add("HH:mm");
-                add("HH.mm");
-                add("hhaa");
-                add("hhmmaa");
+            {{  add("hhmmaa");
                 add("hh:mmaa");
                 add("hh.mmaa");
-                add("hh aa");
                 add("hhmm aa");
                 add("hh:mm aa");
                 add("hh.mm aa");
+                add("HHmm");
+                add("HH:mm");
+                add("HH.mm");
+                add("hhaa");
+                add("hhaa");
+                add("hh aa");
+                add("HH");
             }};
     
     /**
@@ -110,32 +111,32 @@ public final class ParserLibrary {
      * Contains the available variations of "repeat pattern" formats for user input
      */
     public static final HashMap<String, String> availablePatternSyntax = new HashMap<String, String>()
-            {{  put("daily", "1 d");
-                put("everyday", "1 d");
-                put("weekly", "1 w");
-                put("monthly", "1 m");
-                put("yearly", "1 y");
-                put("annually", "1 y");
-                put("fortnightly", "2 w");
-                put("alternate", "2 d");
-                put("weekends", "wk");
-                put("weekend", "wk");
-                put("weekday", "wd");
-                put("weekdays", "wd");
-                put("sunday", "1 dow");
-                put("monday", "2 dow");
-                put("tuesday", "3 dow");
-                put("wednesday", "4 dow");
-                put("thursday", "5 dow");
-                put("friday", "6 dow");
-                put("saturday", "7 dow");
-                put("sun", "1 dow");
-                put("mon", "2 dow");
-                put("tue", "3 dow");
-                put("wed", "4 dow");
-                put("thu", "5 dow");
-                put("fri", "6 dow");
-                put("sat", "7 dow");
+            {{  put("daily", "1 DAY");
+                put("everyday", "1 DAY");
+                put("weekly", "1 WEEK");
+                put("monthly", "1 MONTH");
+                put("yearly", "1 YEAR");
+                put("annually", "1 YEAR");
+                put("fortnightly", "2 WEEK");
+                put("alternate", "2 DAY");
+                put("weekends", "WEEKEND");
+                put("weekend", "WEEKEND");
+                put("weekday", "WEEKDAY");
+                put("weekdays", "WEEKDAY");
+                put("sunday", "1 DAYOFWEEK");
+                put("monday", "2 DAYOFWEEK");
+                put("tuesday", "3 DAYOFWEEK");
+                put("wednesday", "4 DAYOFWEEK");
+                put("thursday", "5 DAYOFWEEK");
+                put("friday", "6 DAYOFWEEK");
+                put("saturday", "7 DAYOFWEEK");
+                put("sun", "1 DAYOFWEEK");
+                put("mon", "2 DAYOFWEEK");
+                put("tue", "3 DAYOFWEEK");
+                put("wed", "4 DAYOFWEEK");
+                put("thu", "5 DAYOFWEEK");
+                put("fri", "6 DAYOFWEEK");
+                put("sat", "7 DAYOFWEEK");
             }};
 }
 

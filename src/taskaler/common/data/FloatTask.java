@@ -25,8 +25,8 @@ public class FloatTask extends Task{
      *            Description of the task
      */
 	public FloatTask(String taskName, String taskID, String taskStatus,Calendar creationDate, String taskWorkLoad,
-			String taskDescription){
-		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription);
+			String taskDescription, Calendar start, Calendar end){
+		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription,start,end);
 	}
 	
 	/**
@@ -34,7 +34,8 @@ public class FloatTask extends Task{
 	 * @return FloatTask
 	 */
 	public FloatTask clone(){
-		FloatTask newTask = new FloatTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(),this.getTaskCreationDate(), this.getTaskWorkLoad(), this.getTaskDescription());
+		FloatTask newTask = new FloatTask(this.getTaskName(), this.getTaskID(), this.getTaskStatus(),this.getTaskCreationDate(),
+		        this.getTaskWorkLoad(), this.getTaskDescription(), this.getStartTime(), this.getEndTime());
 	    return newTask;
 	}
 	
