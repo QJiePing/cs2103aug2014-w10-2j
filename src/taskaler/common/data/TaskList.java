@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import taskaler.common.util.parser.calendarToString;
 import taskaler.common.data.TaskComparator;
+import taskaler.logic.common;
 
 /**
  * Singleton Class to hold the global task list
@@ -30,6 +31,8 @@ public class TaskList implements Collection<Task> {
     private static ArrayList<DeadLineTask> deadlineTaskList = null;
     private static ArrayList<FloatTask> floatTaskList = null;
     private static ArrayList<RepeatedTask> repeatedTaskList = null;
+    
+    private static int numOfIncompleteTasks = common.DEFAULT_NUM_OF_INCOMPLETE;
 
     /**
      * Private constructor
@@ -307,6 +310,33 @@ public class TaskList implements Collection<Task> {
     	return maxID;
     	
     }
+    
+    public int getNumOfIncomplete() {
+    	if(numOfIncompleteTasks == 0) {
+    		if(this != null && instance.size() != 0) {
+				for (int i = 0; i < instance.size(); i++) {
+					if (this.get(i).getTaskStatus()
+							.equals(common.TASK_INITIAL_STATUS)) {
+						numOfIncompleteTasks++;
+					}
+				}
+    		}
+    	}
+    	
+    	return numOfIncompleteTasks;
+    }
+    
+    public void incrementNumOfIncomplete() {
+    	numOfIncompleteTasks++;
+    }
+    
+    public void decrementNumOfIncomplete() {
+    	if(numOfIncompleteTasks > 0) {
+    		numOfIncompleteTasks--;
+    	}
+    }
+    
+    
 
 
 }

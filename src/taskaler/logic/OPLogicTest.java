@@ -28,17 +28,20 @@ public class OPLogicTest {
 		task = OPLogic.getInstance().addTask(null, null, null, null, null, null);
 		assertEquals(null, task);
 		assertEquals(0, TaskList.getInstance().size());
+		System.out.println("1 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		/* This is a boundary case for add a task with empty task name */
 		task = OPLogic.getInstance().addTask(null, "my_description", null, null, null, null);
 		assertEquals(null, task);
 		assertEquals(0, TaskList.getInstance().size());
+		System.out.println("2 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		/* This is a case for adding a task with one parameter - task name*/
 		task = OPLogic.getInstance().addTask("my_test1", null, null, null, null, null);
 		assertEquals("my_test1", task.getTaskName());
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(1, TaskList.getInstance().size());
+		System.out.println("3 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		/* This is a case for adding a task with two parameters - task name, task description*/
 		task = OPLogic.getInstance().addTask("my_test2", "my_description", null, null, null, null);
@@ -46,6 +49,7 @@ public class OPLogicTest {
 		assertEquals("my_description", task.getTaskDescription());
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(2, TaskList.getInstance().size());
+		System.out.println("4 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		task = OPLogic.getInstance().addTask("my_test3", "my_description", "11/11/2011", null, null, null);
 		assertEquals("my_test3", task.getTaskName());
@@ -53,7 +57,7 @@ public class OPLogicTest {
 		assertEquals("11/11/2011", calendarToString.parseDate(((DeadLineTask) task).getDeadline()));
 		assertEquals(task, search.findByID(task.getTaskID()));
 		assertEquals(3, TaskList.getInstance().size());
-		
+		System.out.println("5 " + TaskList.getInstance().getNumOfIncomplete());
 		//*********************test deleteTask********************//
 		for(int i = 0; i < TaskList.getInstance().size(); i++) {
 			if(TaskList.getInstance().get(i) instanceof DeadLineTask) {
@@ -72,12 +76,14 @@ public class OPLogicTest {
 		taskID = "0";
 		task = OPLogic.getInstance().deleteTask(taskID);
 		assertEquals(null, task);
+		System.out.println("6 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		System.out.println("*********delete2************");
 		/* This is a boundary case for deleting not existed task */
 		taskID = "4";
 		task = OPLogic.getInstance().deleteTask(taskID);
 		assertEquals(null, task);
+		System.out.println("7 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		System.out.println("*********delete3************");
 		/* This is a case for deleting successfully*/
@@ -85,7 +91,7 @@ public class OPLogicTest {
 		task = OPLogic.getInstance().deleteTask(taskID);
 		assertEquals(null, search.findByID(taskID));
 		assertEquals(2, TaskList.getInstance().size());
-		
+		System.out.println("8 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		//*********************test editTask********************//
 		System.out.println("*********1************");
@@ -95,6 +101,7 @@ public class OPLogicTest {
 		assertEquals(null, task);
 		assertEquals(null, search.findByID(taskID));
 		assertEquals(2, TaskList.getInstance().size());
+		System.out.println("9 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		System.out.println("*********2************");
 		/* This is a boundary case for changing both task name and description to null*/
@@ -102,6 +109,7 @@ public class OPLogicTest {
 		task = OPLogic.getInstance().editTask(taskID, null, null);
 		assertEquals(null, task);
 		assertEquals(2, TaskList.getInstance().size());
+		System.out.println("10 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		System.out.println("*********3************");
 		/* This is a case for changing task name successfully*/
@@ -109,6 +117,7 @@ public class OPLogicTest {
 		task = OPLogic.getInstance().editTask(taskID, "test", null);
 		assertEquals(task.getTaskName(), "test");
 		assertEquals(2, TaskList.getInstance().size());
+		System.out.println("11 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		System.out.println("*********4************");
 		/* This is a case for changing task description successfully*/
@@ -116,6 +125,7 @@ public class OPLogicTest {
 		task = OPLogic.getInstance().editTask(taskID, null, "description");
 		assertEquals(task.getTaskDescription(), "description");
 		assertEquals(2, TaskList.getInstance().size());
+		System.out.println("12 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		System.out.println("*********5************");
 		/* This is a case for changing both task name and description successfully*/
@@ -124,6 +134,7 @@ public class OPLogicTest {
 		assertEquals(task.getTaskName(), "t");
 		assertEquals(task.getTaskDescription(), "d");
 		assertEquals(2, TaskList.getInstance().size());
+		System.out.println("13 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		
 		//*********************test editDate********************//
@@ -183,18 +194,34 @@ public class OPLogicTest {
 		for(int i = 0; i < days.size(); i++) {
 			System.out.println(days.get(i).getTime());
 		}
-		//*********************test editWorkload********************//
+		//*********************test editStatus********************//
 		
 		/* This is a boundary case for changing work status of not existed task */
 		taskID = "1";
 		task = OPLogic.getInstance().switchTag(taskID);
 		assertEquals(null, task);
+		System.out.println("14 " + TaskList.getInstance().getNumOfIncomplete());
 
 		/* This is a case for changing work status successfully */
 		taskID = "2";
 		assertEquals("Not Done", search.findByID(taskID).getTaskStatus());
 		task = OPLogic.getInstance().switchTag(taskID);
 		assertEquals("Done", search.findByID(taskID).getTaskStatus());
+		System.out.println("15 " + TaskList.getInstance().getNumOfIncomplete());
+		
+		taskID = "2";
+		assertEquals("Done", search.findByID(taskID).getTaskStatus());
+		task = OPLogic.getInstance().switchTag(taskID);
+		assertEquals("Not Done", search.findByID(taskID).getTaskStatus());
+		System.out.println("16 " + TaskList.getInstance().getNumOfIncomplete());
+		
+		
+		OPLogic.getInstance().setRepeat("2", "1 DAY", "28/10/2014", null);
+		System.out.println(((RepeatedTask) search.findByID(taskID)).getStartTime().getTime());
+		System.out.println(((RepeatedTask) search.findByID(taskID)).getEndTime().getTime());
+		OPLogic.getInstance().editTime("2", "1230", "2230");
+		System.out.println(((RepeatedTask) search.findByID(taskID)).getStartTime().getTime());
+		System.out.println(((RepeatedTask) search.findByID(taskID)).getEndTime().getTime());
 		
 	}
 

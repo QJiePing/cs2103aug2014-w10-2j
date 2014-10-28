@@ -39,7 +39,7 @@ public class common {
     public static int DEADLINE_TASK_TYPE = -1;
     public static int FLOAT_TASK_TYPE = -2;
     public static int REPEATED_TASK_TYPE = -3;
-    
+    public static int DEFAULT_NUM_OF_INCOMPLETE = 0;
 
     public static final int SUNDAY = 1;
     public static final int MONDAY = 2;
