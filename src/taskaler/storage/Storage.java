@@ -44,12 +44,12 @@ public class Storage{
 	 * 
 	 * @return return an arraylist of saved tasks from the text file
 	 */
-	public ArrayList<Task> readFromFile(String file){
+	public ArrayList<Object> readFromFile(String file){
 
 		/**
 		 * temporary holder variables
 		 */
-		ArrayList<Task> result = new ArrayList<Task>();
+		ArrayList<Object> result = new ArrayList<Object>();
 		CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask> holder=new CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>();
 
 		try{
@@ -58,9 +58,9 @@ public class Storage{
 			TypeToken<CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>> typeToken= 
 					new TypeToken<CollectionOfTask<FloatTask,DeadLineTask,RepeatedTask>>(){};
 			holder=gson.fromJson(reader, typeToken.getType());
-			result.addAll(holder.getFloatArr());
-			result.addAll(holder.getDeadLineArr());
-			result.addAll(holder.getRepeatedArr());
+			result.add(holder.getFloatArr());
+			result.add(holder.getDeadLineArr());
+			result.add(holder.getRepeatedArr());
 			reader.close();
 		}catch(Exception e){
 			log.exceptionLogger(e, Level.SEVERE);

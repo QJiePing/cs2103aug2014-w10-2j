@@ -43,7 +43,9 @@ public class StorageTestUnit {
 	 * Testing json writing in and reading out methods
 	 */
 
-	//testing the case of an empty task list
+	/**
+	 * testing the case of an empty task list
+	 */
 	@Test
 	public void test2(){
 		TaskList taskList= TaskList.getInstance();
@@ -51,8 +53,12 @@ public class StorageTestUnit {
 		Storage storeObj= Storage.getInstance();
 		storeObj.writeToFile("testing.txt",taskList);
 
-		ArrayList<Task> temp= storeObj.readFromFile("testing.txt");
-		assertTrue(temp.isEmpty());
+		ArrayList<Object> tempArr= storeObj.readFromFile("testing.txt");
+		ArrayList<FloatTask> floatArr=(ArrayList<FloatTask>)tempArr.get(0);
+		ArrayList<DeadLineTask> deadlineArr=(ArrayList<DeadLineTask>)tempArr.get(1);
+		ArrayList<RepeatedTask> repeatArr=(ArrayList<RepeatedTask>)tempArr.get(2);
+		
+		assertTrue(floatArr.isEmpty() && deadlineArr.isEmpty() && repeatArr.isEmpty());
 	}
 
 	/**
@@ -69,9 +75,10 @@ public class StorageTestUnit {
 		Storage storeObj= Storage.getInstance();
 		storeObj.writeToFile("testing.txt",taskList);
 		
-		ArrayList<Task> temp= storeObj.readFromFile("testing.txt");
+		ArrayList<Object> temp= storeObj.readFromFile("testing.txt");
+		ArrayList<FloatTask> floatArr=(ArrayList<FloatTask>)temp.get(0);
 		for(int i=0;i<taskList.size();i++){
-			if(taskList.get(i).getTaskID().equals(temp.get(i).getTaskID())){
+			if(taskList.get(i).getTaskID().equals(floatArr.get(i).getTaskID())){
 				result=true;
 			}
 			else{
@@ -86,7 +93,18 @@ public class StorageTestUnit {
 	 */
 	@Test
 	public void test4(){
-		boolean result=false;
+		/**
+		 * boolean switch for each items in the TaskList
+		 */
+		boolean switch1=false;
+		boolean switch2=false;
+		boolean switch3=false;
+		boolean switch4=false;
+		
+		/**
+		 * Prepare the task object for the testing
+		 */
+		
 		TaskList taskList= TaskList.getInstance();
 		taskList.clear();
 		ArrayList<Calendar> arrCal=new ArrayList<Calendar>();
@@ -98,19 +116,34 @@ public class StorageTestUnit {
 		taskList.add(new RepeatedTask("Task3","3","not done",Calendar.getInstance(),"2","description2",Calendar.getInstance(),Calendar.getInstance(),arrCal,Calendar.getInstance(),5));
 		taskList.add(new FloatTask("Task4","4","not done",Calendar.getInstance(),"1","description4",Calendar.getInstance(),Calendar.getInstance()));
 		
+		/**
+		 * Execute the writeToFile and readFromFile method
+		 */
 		Storage storeObj= Storage.getInstance();
 		storeObj.writeToFile("testing.txt",taskList);
 		
-		ArrayList<Task> tempArr= storeObj.readFromFile("testing.txt");
-		for(int i=0;i<taskList.size();i++){
-			if(taskList.get(i).getTaskID().equals(tempArr.get(i).getTaskID())){
-				result=true;
-			}
-			else{
-				result=false;
-				break;
-			}
-		}
-		assertTrue(result);
+		ArrayList<Object> tempArr= storeObj.readFromFile("testing.txt");
+		ArrayList<FloatTask> floatArr=(ArrayList<FloatTask>)tempArr.get(0);
+		ArrayList<DeadLineTask> deadlineArr=(ArrayList<DeadLineTask>)tempArr.get(1);
+		ArrayList<RepeatedTask> repeatArr=(ArrayList<RepeatedTask>)tempArr.get(2);
+		
+		/**
+		 * Test if the boolean switch values to detect if there are any problems in
+		 * both read and write methods.
+		 * 
+		 * TaskList will arrange the tasks such that FloatTask is in the first part of
+		 * the array list, DeadLineTaask is in the second part of array list and
+		 * repeatedTask is at the last part of the array list.
+		 */
+		if(taskList.get(0).getTaskID().equals(floatArr.get(0).getTaskID()))
+			switch1=true;
+		if(taskList.get(2).getTaskID().equals(deadlineArr.get(0).getTaskID()))
+			switch2=true;
+		if(taskList.get(3).getTaskID().equals(repeatArr.get(0).getTaskID()))
+			switch3=true;
+		if(taskList.get(1).getTaskID().equals(floatArr.get(1).getTaskID()))
+			switch4=true;
+		assertTrue(switch1 && switch2 && switch3 && switch4);
+		
 	}
 }
