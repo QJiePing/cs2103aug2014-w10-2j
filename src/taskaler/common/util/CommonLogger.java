@@ -18,6 +18,20 @@ public class CommonLogger {
 
     private static final String FORMAT_DAY_MONTH_YEAR = "dd_MM_yyyy";
     private static final String EXCEPTION_FILE_NAME = "Exception_%s.log";
+
+    /**
+     * Method to log an exception to the log file. If this method fails, an
+     * error message will be thrown
+     * 
+     * @param error
+     *            The exception to be logged
+     * @param logLevel
+     *            The level of exception to be logged; Accepted log levels are
+     *            ALL, CONFIG, INFO, WARNING, SEVERE
+     */
+    public void exceptionLogger(Exception error, Level logLevel) {
+        logger.log(logLevel, error.getMessage(), error);
+    }
     
     /**
      * Method to log an error to the log file. If this method fails, an
