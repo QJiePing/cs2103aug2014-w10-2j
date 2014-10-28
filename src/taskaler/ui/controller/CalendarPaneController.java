@@ -149,7 +149,7 @@ public class CalendarPaneController extends BorderPane implements IController {
             Task currentTask = currentModel.currentTaskList.get(i);
             Calendar currentTime = Calendar.getInstance();
             if(currentTask instanceof DeadLineTask){
-                currentTime = ((DeadLineTask) currentTask).getEndTime();
+                currentTime = ((DeadLineTask) currentTask).getDeadline();
                 if (currentTime.get(Calendar.MONTH) == month) {
                     result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
