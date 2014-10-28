@@ -112,8 +112,16 @@ public class Undo implements Observer {
 	 */
 	private ArrayList<OperationRecord<Task, String>> reverseOrder(
 			ListIterator<OperationRecord<Task, String>> itr) {
+		/**
+		 * Holder variables to make the last item in the stack to be the first index
+		 * of the ArrayList.
+		 */
 		ArrayList<OperationRecord<Task,String>> undoView= new ArrayList<OperationRecord<Task,String>>();
 		Stack<OperationRecord<Task,String>>temp=new Stack<OperationRecord<Task,String>>();
+		/**
+		 * Transferring items using the holder variables to make the last item in the
+		 * iterator to be the first item
+		 */
 		while(itr.hasNext()){
 			temp.push(itr.next());
 		}

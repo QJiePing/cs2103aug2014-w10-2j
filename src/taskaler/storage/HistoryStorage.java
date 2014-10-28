@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 import taskaler.common.util.CommonLogger;
 
-/*
+/**
  * @author Quek Jie Ping A0111798X
  */
 public class HistoryStorage {
@@ -26,7 +26,7 @@ public class HistoryStorage {
 		return instance;
 	}
 	
-	/*
+	/**
 	 * Method to write history to the text file
 	 * @param fileName
 	 * 			The directory of the text file
@@ -51,7 +51,7 @@ public class HistoryStorage {
 		}
 	}
 	
-	/*
+	/**
 	 * Method to read in history record from the text file
 	 * @param fileName
 	 * 			The directory of the text file
