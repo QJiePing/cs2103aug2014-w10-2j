@@ -14,22 +14,28 @@ public class DeadLineTask extends Task{
 	}
 	/**
 	 * Overloaded constructor to create a new DeadLineTask object
+	 *
 	 * 
 	 * @param taskName
-	 *            Name of the task
+	 * 				Name of Task
 	 * @param taskID
-	 *            ID of the task
+	 * 				ID of the task
 	 * @param taskStatus
-	 *            Status of the task
+	 * 				Status of the task
+	 * @param creationDate
+	 * 				Creation date of the task
 	 * @param taskWorkLoad
-	 *            Workload of the task
+	 * 				Workload of the task
 	 * @param taskDescription
-	 *            Description of the task
+	 * 				Description of the task
+	 * @param deadline
+	 * 				Deadline of the task
 	 * @param start
-	 * 		      Start time of the task
+	 * 				Start time of the task
 	 * @param end
-	 * 		      End time of the task
+	 * 				end time of the task
 	 */
+	
 	public DeadLineTask(String taskName, String taskID, String taskStatus,Calendar creationDate, String taskWorkLoad,
 			String taskDescription, Calendar deadline, Calendar start, Calendar end){
 		super(taskName,taskID,taskStatus,creationDate,taskWorkLoad,taskDescription,start,end);
