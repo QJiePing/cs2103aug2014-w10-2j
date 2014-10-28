@@ -217,3 +217,4 @@ pip-log.txt
 .mr.developer.cfg
 task_list
 *.class
+*.lck
