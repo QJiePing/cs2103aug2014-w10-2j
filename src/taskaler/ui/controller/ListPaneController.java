@@ -103,7 +103,7 @@ public class ListPaneController extends TitledPane implements IController {
                 deadline = calendarToString.parseDate(((RepeatedTask)t).getEndRepeatedDate());
                 type = "Repeated Task";
             }else if(t instanceof DeadLineTask){
-                deadline = calendarToString.parseDate(((DeadLineTask) t).getEndTime());
+                deadline = calendarToString.parseDate(((DeadLineTask) t).getDeadline());
                 type = "Deadline Task";
             }
             
