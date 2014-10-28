@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
  */
 public class common {
     public static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-    public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("HHmm-HHmm");
+    public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("HHmm");
     public static SimpleDateFormat DEFAULT_DATETIME_FORMAT = 
             new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
     
