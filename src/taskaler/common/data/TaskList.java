@@ -105,6 +105,27 @@ public class TaskList implements Collection<Task> {
         return result;
     }
     
+    public boolean addAll(ArrayList<Object> array){
+        boolean result = true;
+        if(array == null){
+            result = false;
+            return result;
+        }
+        ArrayList<FloatTask> floatArr=(ArrayList<FloatTask>)array.get(0);
+        ArrayList<DeadLineTask> deadlineArr=(ArrayList<DeadLineTask>)array.get(1);
+        ArrayList<RepeatedTask> repeatArr=(ArrayList<RepeatedTask>)array.get(2);
+        if(floatArr != null){
+            result = floatTaskList.addAll(floatArr);
+        }
+        if(deadlineArr != null){
+            result = deadlineTaskList.addAll(deadlineArr);
+        }
+        if(repeatArr != null){
+            result = repeatedTaskList.addAll(repeatArr);
+        }
+        return result;
+    }
+    
     @Override
 	public void clear() {
 		deadlineTaskList.clear();
