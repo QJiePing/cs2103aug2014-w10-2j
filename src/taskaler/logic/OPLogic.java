@@ -125,10 +125,10 @@ public class OPLogic extends Observable {
             Calendar start = null;
             Calendar end = null;
             if(startTime != null){
-                start = setNewCalendarDate(startTime);
+                start = setNewCalendarDate(startTime, "time");
             }
             if(endTime != null){
-                end = setNewCalendarDate(endTime);
+                end = setNewCalendarDate(endTime, "time");
             }
             // generate a new task ID
             int newTaskID = generateTaskID();
@@ -141,7 +141,7 @@ public class OPLogic extends Observable {
 	                    workload_ADD, description_ADD, start, end);
             } else {
             	//deadline task
-                Calendar date = setNewCalendarDate(date_ADD);
+                Calendar date = setNewCalendarDate(date_ADD, "date");
 				newTask = new DeadLineTask(name_ADD,
 						Integer.toString(newTaskID),
 						common.TASK_INITIAL_STATUS, Calendar.getInstance(), workload_ADD,
@@ -279,7 +279,7 @@ public class OPLogic extends Observable {
      * @return return null if given task ID not exist, edited task otherwise
      */
     public Task editDate(String taskID, String date) {
-        Calendar newDeadLine = setNewCalendarDate(date);
+        Calendar newDeadLine = setNewCalendarDate(date, "date");
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
@@ -322,10 +322,15 @@ public class OPLogic extends Observable {
      * @param year
      * @return return new calendar date
      */
-    private static Calendar setNewCalendarDate(String date) {
+    private static Calendar setNewCalendarDate(String date, String type) {
         Calendar newDeadLine = Calendar.getInstance();
         try{
-            newDeadLine.setTime(common.DEFAULT_DATE_FORMAT.parse(date));
+            if(type.equals("date")){
+                newDeadLine.setTime(common.DEFAULT_DATE_FORMAT.parse(date));
+            }
+            else if(type.equals("time")){
+                newDeadLine.setTime(common.DEFAULT_TIME_FORMAT.parse(date));
+            }
         }
         catch(Exception e){
             ;
@@ -347,8 +352,16 @@ public class OPLogic extends Observable {
         
         int startTimeHour, startTimeMins, endTimeHour, endTimeMins;
         
-        
-        
+        /*The code below can be simplified to:
+        if(startTime != null){
+            Calendar start = setNewCalendarDate(startTime, "time");
+            TaskList.getInstance().get(taskIDIndex).changeStartTime(start);
+        if(endTime != null){
+            Calendar end = setNewCalendarDate(endTime, "time");
+            TaskList.getInstance().get(taskIDIndex).changeStartTime(end);
+        }
+        return TaskList.getInstance().get(taskIDIndex);
+        */
         if(startTime != null) {
         	startTimeHour = Integer.parseInt(startTime.substring(0, 2));
         	startTimeMins = Integer.parseInt(startTime.substring(2, 4));
@@ -387,9 +400,9 @@ public class OPLogic extends Observable {
           ("1 dow" represents sunday, so on so forth, to match with the Calendar implementation) 
     */
     public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
-        Calendar startTime = setNewCalendarDate(startDate);
-        Calendar endTime = setNewCalendarDate(startDate);
-        Calendar endRepeatedTime = setNewCalendarDate(endDate);
+        Calendar startTime = setNewCalendarDate(startDate, "date");
+        Calendar endTime = setNewCalendarDate(startDate, "date");
+        Calendar endRepeatedTime = setNewCalendarDate(endDate, "date");
         if(endDate == null) {
         	//if user doesn't specify the end time, default end repeted time is 1 month.
         	endRepeatedTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
