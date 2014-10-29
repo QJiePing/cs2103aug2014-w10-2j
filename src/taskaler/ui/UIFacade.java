@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
+import java.text.SimpleDateFormat;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -246,14 +247,17 @@ public class UIFacade extends Application implements Observer {
      * @param list
      *            List of tasks
      */
-    public void displayMonth(String month, ArrayList<Task> list) {
+    public void displayMonth(String date, ArrayList<Task> list) {
         Calendar cal = Calendar.getInstance();
-        int monthNum = Integer.parseInt(month);
-        cal.set(Calendar.MONTH, monthNum);
+        SimpleDateFormat format = new SimpleDateFormat("MM/yyyy");
         try {
+            cal.setTime(format.parse(date));
             rootController.displayCalendar(list, cal);
         } catch (IOException e) {
             rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        } catch (Exception e){
+            rootController.showToast("Parse Exception encountered!");
             CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
         }
     }

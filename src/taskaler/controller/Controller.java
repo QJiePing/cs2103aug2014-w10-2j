@@ -55,11 +55,8 @@ public class Controller{
     public void executeCMD(String commandString) {
         try {
             HashMap<String, String> stateVariables = ui.getCurrentState();
-            String currentState = stateVariables.get(IModel.VIEW_ATTRIBUTE);
-            String currentTaskID = stateVariables.get(TaskPaneModel.TASK_ID_ATTRIBUTE);
-            String currentMonth = stateVariables.get(CalendarPaneModel.CURRENT_MONTH_ATTRIBUTE);
             Parser values = new Parser();
-            values.parseCMD(commandString, currentState, currentTaskID, currentMonth);
+            values.parseCMD(commandString, stateVariables);
             CmdType commandType = values.getCommand();
             String[] params = values.getParameters();
             Task result = null;
@@ -160,8 +157,8 @@ public class Controller{
                 ui.display("Undone last operation");
                 break;
             case GOTO:
-                String month = params[0];
-                ui.displayMonth(month, list.toArray(new ArrayList<Task>()));
+                String date_GOTO = params[0];
+                ui.displayMonth(date_GOTO, list.toArray(new ArrayList<Task>()));
                 break;
             case INVALID:
                 throw new Exception("Invalid Command");

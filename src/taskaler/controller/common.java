@@ -40,4 +40,6 @@ public final class common {
     public static final int JANUARY = 0;
     public static final int DECEMBER = 11;
     public static final int MONTHS_IN_A_YEAR = 12;
+    public static final int MONTH_OVERFLOW_VALUE = 13;
+    public static final int MONTH_INVALID_VALUE = 0;
 }
