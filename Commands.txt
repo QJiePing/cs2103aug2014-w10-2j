@@ -7,6 +7,8 @@ add CS2101 homework : progress report
  - adds a task with name, "CS2101 homework", and description, "progress report"
 add CS2101 hmwk: do it!, 09/10/2014, 3
  - adds a task with name, "CS2101 hmwk", description, "do it!", deadline, 09/10/2014, and WL = 3
+add CS2101 hmwk: do it!, 09/10/2014: 9am -6pm, 3
+ - adds a task with name, "CS2101 hmwk", description, "do it!", deadline, 09/10/2014, time range, 0600-2100, and WL = 3
 add : progress report
  - ERROR
 add
@@ -63,6 +65,8 @@ repeat weekly (not on TaskPane)
 WORKLOAD:
 workload T24 1
  - edits a task with taskID, T24, with workload attribute, 1
+workload high (on TaskPane, taskID = 3)
+ - edits a task with taskID, 3, with workload attribute, 3
 workload T24 asdf
  - ERROR
 
@@ -75,30 +79,32 @@ completed (not on TaskPane)
  - ERROR
 
 VIEW:
-view -l
+view l
  - view list mode
-view -c
+view c
  - view calendar mode
 view T24
  - view specific task, T24
+view d: 21jan
+ - view all tasks on 21/01/14
 view lala
  - ERROR
 
 FIND:
 find cs2101
  - finds the tasks, with name which contains "cs2101"
-find -t 09/09/2014
- - finds the tasks, with date 09/09/2014
-find -w 2
+find w: 2
  - finds the tasks, with workload attribute, 2
-find -w asdf
+find wl: 2
+ - finds the tasks, with workload attribute, 2
+find :wl
+ - finds the task, with name which contains ":wl"
+find w: asdf
  - ERROR
-find 09/09/2014
- - finds the tasks, with name which contains "09/09/2014"
 
 UNDO:
 undo
- - undo's last action
+ - undoes last action
 
 ARCHIVE:
 arch 10/10/2014

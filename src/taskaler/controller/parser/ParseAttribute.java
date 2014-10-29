@@ -167,7 +167,7 @@ public class ParseAttribute {
     
     public static int parseMonth(String month) throws Exception {
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
-        SimpleDateFormat monthFormat2 = new SimpleDateFormat("MM");
+        SimpleDateFormat monthFormat2 = new SimpleDateFormat("M");
         Calendar temp = Calendar.getInstance();
         try{
             Date date = monthFormat.parse(month);
