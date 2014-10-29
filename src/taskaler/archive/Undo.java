@@ -24,33 +24,35 @@ public class Undo implements Observer {
 		record = new Stack<OperationRecord<Task, String>>();
 		crudLogic = OPLogic.getInstance();
 	}
-	
+
 	/**
-	 * Save all the operation execute by the user and task affected by the command
-	 * into a stack
+	 * Save all the operation execute by the user and task affected by the
+	 * command into a stack
+	 * 
 	 * @param t
-	 * 			Task that is affected
+	 *            Task that is affected
 	 * @param operation
-	 * 			Command that has been execute on the task
+	 *            Command that has been execute on the task
 	 */
 	public void saveOperation(Task t, String operation) {
 		OperationRecord<Task, String> temp = new OperationRecord<Task, String>(
 				t, operation);
 		record.push(temp);
 	}
-	
+
 	/**
 	 * Performs undo operation for taskaler
+	 * 
 	 * @return Task
 	 */
 
 	public Task undo() {
 		/**
-		 *  get the last operation records
+		 * get the last operation records
 		 */
 		OperationRecord<Task, String> opRecord = record.pop();
 		/**
-		 *  determine the inverse function
+		 * determine the inverse function
 		 */
 		String operation = inverseFunction(opRecord.getOp());
 
@@ -69,11 +71,13 @@ public class Undo implements Observer {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Method to help determine the opposite commands or inverse the supplied commands
+	 * Method to help determine the opposite commands or inverse the supplied
+	 * commands
+	 * 
 	 * @param op
-	 * 			commands to be inversed.
+	 *            commands to be inversed.
 	 * @return String
 	 */
 
@@ -92,55 +96,56 @@ public class Undo implements Observer {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Method to display the view of all the item in the undo stack.
-	 * Listing the 
+	 * Method to display the view of all the item in the undo stack. Listing the
+	 * 
 	 * @return ArrayList<Operation<Task,String>>
 	 */
-	public ArrayList<OperationRecord<Task,String>> viewUndo(){
-		ListIterator<OperationRecord<Task,String>> itr=record.listIterator();
+	public ArrayList<OperationRecord<Task, String>> viewUndo() {
+		ListIterator<OperationRecord<Task, String>> itr = record.listIterator();
 		return reverseOrder(itr);
 	}
-	
+
 	/**
-	 * This is to reverse the order of the stack for viewing purposes.
-	 * Showing the latest pushed object at the first index of the array list.
+	 * This is to reverse the order of the stack for viewing purposes. Showing
+	 * the latest pushed object at the first index of the array list.
+	 * 
 	 * @param itr
-	 * 			Iterator of the undo stack
+	 *            Iterator of the undo stack
 	 * @return ArrayList<OperationRecord<Task,String>>
 	 */
 	private ArrayList<OperationRecord<Task, String>> reverseOrder(
 			ListIterator<OperationRecord<Task, String>> itr) {
 		/**
-		 * Holder variables to make the last item in the stack to be the first index
-		 * of the ArrayList.
+		 * Holder variables to make the last item in the stack to be the first
+		 * index of the ArrayList.
 		 */
-		ArrayList<OperationRecord<Task,String>> undoView= new ArrayList<OperationRecord<Task,String>>();
-		Stack<OperationRecord<Task,String>>temp=new Stack<OperationRecord<Task,String>>();
+		ArrayList<OperationRecord<Task, String>> undoView = new ArrayList<OperationRecord<Task, String>>();
+		Stack<OperationRecord<Task, String>> temp = new Stack<OperationRecord<Task, String>>();
 		/**
-		 * Transferring items using the holder variables to make the last item in the
-		 * iterator to be the first item
+		 * Transferring items using the holder variables to make the last item
+		 * in the iterator to be the first item
 		 */
-		while(itr.hasNext()){
+		while (itr.hasNext()) {
 			temp.push(itr.next());
 		}
-		while(!temp.isEmpty()){
+		while (!temp.isEmpty()) {
 			undoView.add(temp.pop());
 		}
 		return undoView;
 	}
-	
+
 	/**
-	 * Override the update method of observer object to listen for any commands executed
-	 * by the user.
-	 * Only ADD, DELETE and EDIT operation task will be saved by undo function
+	 * Override the update method of observer object to listen for any commands
+	 * executed by the user. Only ADD, DELETE and EDIT operation task will be
+	 * saved by undo function
 	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		if(arg1 instanceof OperationRecord<?, ?>){
+		if (arg1 instanceof OperationRecord<?, ?>) {
 			OperationRecord<Task, String> currentRecord = (OperationRecord<Task, String>) arg1;
-			if(currentRecord.getOp().compareToIgnoreCase("UNDO") != 0){
+			if (currentRecord.getOp().compareToIgnoreCase("UNDO") != 0) {
 				record.push(currentRecord);
 			}
 		}
