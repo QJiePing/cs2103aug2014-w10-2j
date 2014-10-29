@@ -5,6 +5,7 @@ package taskaler.ui.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import taskaler.common.data.DeadLineTask;
@@ -33,8 +34,11 @@ public class ListPaneController extends TitledPane implements IController {
 
     // Special Constants
     private static final String MSG_NOTHING_TO_DISPLAY = "Nothing to display";
-    private static final String REG_TASK_DISPLAY = "[%s][%s]ID=%s: %s";
+    private static final String REG_TASK_DISPLAY = "[%s] ID %s: %s";
     private static final int MAX_TEXT_WIDTH = 350;
+    private static int floatingBreak = 0;
+    private static int repeatedBreak = 1;
+    private static int deadlineBreak = 2;
 
     // Binded FXML Elements
     @FXML
@@ -89,30 +93,48 @@ public class ListPaneController extends TitledPane implements IController {
      *            The list to display on the view
      */
     private void populateList(ArrayList<Task> list) {
-        if (list == null || list.size() < 1){
+        if (list == null || list.size() < 1) {
             listBody.getItems().add(new Text(MSG_NOTHING_TO_DISPLAY));
             return;
         }
+
+        ArrayList<Text> resultFloating = new ArrayList<Text>();
+        ArrayList<Text> resultRepeated = new ArrayList<Text>();
+        ArrayList<Text> resultDeadline = new ArrayList<Text>();
+        
+        resultFloating.add(new Text("FLOATING TASKS"));
+        resultRepeated.add(new Text("REPEATED TASKS"));
+        resultDeadline.add(new Text("DEADLINE TASKS"));
+
         for (Task t : list) {
             String deadline = "";
-            String type = "";
-            if(t instanceof FloatTask){
+            if (t instanceof FloatTask) {
                 deadline = calendarToString.parseDate(t.getTaskCreationDate());
-                type = "Floating Task";
-            }else if(t instanceof RepeatedTask){
-                deadline = calendarToString.parseDate(((RepeatedTask)t).getEndRepeatedDate());
-                type = "Repeated Task";
-            }else if(t instanceof DeadLineTask){
-                deadline = calendarToString.parseDate(((DeadLineTask) t).getDeadline());
-                type = "Deadline Task";
+            } else if (t instanceof RepeatedTask) {
+                deadline = calendarToString.parseDate(((RepeatedTask) t)
+                        .getEndRepeatedDate());
+            } else if (t instanceof DeadLineTask) {
+                deadline = calendarToString.parseDate(((DeadLineTask) t)
+                        .getDeadline());
             }
-            
-            String temp = String.format(REG_TASK_DISPLAY, type, deadline,
+
+            String temp = String.format(REG_TASK_DISPLAY, deadline,
                     t.getTaskID(), t.getTaskName());
             Text text = new Text(temp);
             text.wrappingWidthProperty().setValue(MAX_TEXT_WIDTH);
-            listBody.getItems().add(text);
+            
+            if (t instanceof FloatTask) {
+                resultFloating.add(text);
+            } else if (t instanceof RepeatedTask) {
+                resultRepeated.add(text);
+            } else if (t instanceof DeadLineTask) {
+                resultDeadline.add(text);
+            }
+            
         }
+        resultFloating.addAll(resultRepeated);
+        resultFloating.addAll(resultDeadline);
+        listBody.getItems().addAll(resultFloating);
     }
 
     @Override

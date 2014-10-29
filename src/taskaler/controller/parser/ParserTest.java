@@ -23,7 +23,7 @@ public class ParserTest {
             //This is the testing of valid syntax
             //Adding task with name but no description
             reset();
-            newParser.parseCMD("add hello", null, null);
+            newParser.parseCMD("add hello", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
@@ -34,7 +34,7 @@ public class ParserTest {
             //This is the testing of valid syntax
             //Adding task with name and description
             reset();
-            newParser.parseCMD("add hello:world!", null, null);
+            newParser.parseCMD("add hello:world!", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
@@ -45,7 +45,7 @@ public class ParserTest {
             //This is the testing for invalid syntax
             //Incomplete Add
             reset();
-            newParser.parseCMD("add hello:world!!, 20/november:1430-1530, 2", null, null);
+            newParser.parseCMD("add hello:world!!, 20/november:1430-1530, 2", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
@@ -58,7 +58,7 @@ public class ParserTest {
             assertEquals(currentParams[5], "2");
             
             reset();
-            newParser.parseCMD("add ", null, null);
+            newParser.parseCMD("add ", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
@@ -79,7 +79,7 @@ public class ParserTest {
             
             //This is the test for valid syntax
             reset();
-            newParser.parseCMD("delete 1", null, null);
+            newParser.parseCMD("delete 1", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.DELETE);
@@ -88,7 +88,7 @@ public class ParserTest {
             
             //Test for no task ID, but is in TaskPane
             reset();
-            newParser.parseCMD("delete ", "TaskPane", "21");
+            newParser.parseCMD("delete ", "TaskPane", "21", null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.DELETE);
@@ -98,7 +98,7 @@ public class ParserTest {
             //Test for no task ID, and not in TaskPane
             reset();
             try{
-                newParser.parseCMD("delete ", "CalendarPane", null);
+                newParser.parseCMD("delete ", "CalendarPane", null, null);
                 currentCMD = newParser.getCommand();
                 currentParams = newParser.getParameters();
                 assertEquals(currentCMD, CmdType.DELETE);
@@ -122,7 +122,7 @@ public class ParserTest {
             
             //This is the test for valid syntax
             reset();
-            newParser.parseCMD("edit 1 bye: ha", null, null);
+            newParser.parseCMD("edit 1 bye: ha", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -133,7 +133,7 @@ public class ParserTest {
             
             //This is the test case for valid syntax
             reset();
-            newParser.parseCMD("edit 2 :haha", null, null);
+            newParser.parseCMD("edit 2 :haha", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -144,7 +144,7 @@ public class ParserTest {
             
             //This is the test case for valid syntax
             reset();
-            newParser.parseCMD("edit hahaha : byebye", "TaskPane", "3");
+            newParser.parseCMD("edit hahaha : byebye", "TaskPane", "3", null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -154,7 +154,7 @@ public class ParserTest {
             assertEquals(currentParams[2], "byebye");
             
             reset();
-            newParser.parseCMD("edit ahah", "TaskPane", "4");
+            newParser.parseCMD("edit ahah", "TaskPane", "4", null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.EDIT);
@@ -165,7 +165,7 @@ public class ParserTest {
             
             reset();
             try{
-                newParser.parseCMD("edit ahah", null, null);
+                newParser.parseCMD("edit ahah", null, null, null);
                 currentCMD = newParser.getCommand();
                 currentParams = newParser.getParameters();
                 assertEquals(currentCMD, CmdType.EDIT);
@@ -191,7 +191,7 @@ public class ParserTest {
         try{
             //Test for no start and end date provided
             reset();
-            newParser.parseCMD("repeat 11 alternate", null, null);
+            newParser.parseCMD("repeat 11 alternate", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.REPEAT);
@@ -202,7 +202,7 @@ public class ParserTest {
             
             //Test for no TaskID provided, but currently in TaskPane
             reset();
-            newParser.parseCMD("repeat weekly, from 19/10/2014", "TaskPane", "12");
+            newParser.parseCMD("repeat weekly, from 19/10/2014", "TaskPane", "12", null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.REPEAT);
@@ -213,7 +213,7 @@ public class ParserTest {
             
             //Test for the full set of parameters
             reset();
-            newParser.parseCMD("repeat 13 weekdays, from 19/Oct/2014 to 21/10/14", null, null);
+            newParser.parseCMD("repeat 13 weekdays, from 19/Oct/2014 to 21/10/14", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.REPEAT);
@@ -235,7 +235,7 @@ public class ParserTest {
         String[] currentParams;
         try{
             reset();
-            newParser.parseCMD("asdf", null, null);
+            newParser.parseCMD("asdf", null, null, null);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.INVALID);

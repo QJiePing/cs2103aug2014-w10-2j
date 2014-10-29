@@ -79,7 +79,7 @@
       </AnchorPane>
    </bottom>
    <top>
-      <MenuBar maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+      <MenuBar maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" prefWidth="400.0" BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>

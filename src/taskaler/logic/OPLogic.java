@@ -200,6 +200,7 @@ public class OPLogic extends Observable {
     
     public boolean deleteAllTask() {
     	TaskList.getInstance().clear();
+    	TaskList.getInstance().defaultNumOfIncomplete();
     	
     	return true;
     }

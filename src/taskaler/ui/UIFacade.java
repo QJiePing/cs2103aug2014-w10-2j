@@ -82,7 +82,8 @@ public class UIFacade extends Application implements Observer {
 
             RootModel model = new RootModel();
             model.totalFloating = TaskList.getInstance().floatToArray().size();
-            
+            model.totalNotDone = TaskList.getInstance().getNumOfIncomplete();
+
             rootController = new RootController(model);
             Parent pane = rootController;
             Scene scene = new Scene(pane, 400, 499);
@@ -113,7 +114,7 @@ public class UIFacade extends Application implements Observer {
      * 
      */
     private void createCleanUp() {
-        //TODO Implementation required
+        // TODO Implementation required
         Thread shutDownHook = new Thread() {
             public void run() {
                 if (libraryLoaded != null) {
@@ -190,7 +191,7 @@ public class UIFacade extends Application implements Observer {
         if (temp.exists()) {
             temp.delete();
         }
-        System.out.println("Creating temp dll: " + temp.getAbsolutePath());
+        // System.out.println("Creating temp dll: " + temp.getAbsolutePath());
         FileOutputStream fos = new FileOutputStream(temp);
 
         while ((read = in.read(buffer)) != -1) {
@@ -214,6 +215,10 @@ public class UIFacade extends Application implements Observer {
     /**
      * Method to render a view, either in list or calendar.
      * 
+     * @param args
+     *            Arguments to determine the view properties
+     * @param list
+     *            The list of tasks to be displayed
      */
     public void display(String args, ArrayList<Task> list) {
         if (list == null) {
@@ -227,6 +232,26 @@ public class UIFacade extends Application implements Observer {
             } else {
                 rootController.displayList(args, list);
             }
+        } catch (IOException e) {
+            rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        }
+    }
+
+    /**
+     * Method to display the calendar for a specified month
+     * 
+     * @param month
+     *            Month to be displayed
+     * @param list
+     *            List of tasks
+     */
+    public void displayMonth(String month, ArrayList<Task> list) {
+        Calendar cal = Calendar.getInstance();
+        int monthNum = Integer.parseInt(month);
+        cal.set(Calendar.MONTH, monthNum);
+        try {
+            rootController.displayCalendar(list, cal);
         } catch (IOException e) {
             rootController.showToast("IO error encountered!");
             CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
@@ -278,13 +303,13 @@ public class UIFacade extends Application implements Observer {
             CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
         }
     }
-    
+
     /**
      * Method to obtain the current state of the view being displayed
      * 
      * @return Hashmap representation of the state of view
      */
-    public HashMap<String, String> getCurrentState(){
+    public HashMap<String, String> getCurrentState() {
         return rootController.getState();
     }
 
@@ -296,11 +321,11 @@ public class UIFacade extends Application implements Observer {
 
                     @Override
                     public void run() {
-                        if(primaryStage.isIconified()){
+                        if (primaryStage.isIconified()) {
                             rootController.giveFocus();
                             primaryStage.setIconified(false);
                             primaryStage.toFront();
-                        }else{
+                        } else {
                             primaryStage.setIconified(true);
                         }
                     }
@@ -308,8 +333,9 @@ public class UIFacade extends Application implements Observer {
             } else {
                 System.out.println("No Idea who called this event");
             }
-        }else if(arg1 instanceof OperationRecord){
-            rootController.update(100, TaskList.getInstance().floatToArray().size());
+        } else if (arg1 instanceof OperationRecord) {
+            rootController.update(TaskList.getInstance().getNumOfIncomplete(),
+                    TaskList.getInstance().floatToArray().size());
         }
     }
 }

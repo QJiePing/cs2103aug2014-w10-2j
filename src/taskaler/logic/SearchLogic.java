@@ -4,8 +4,10 @@
 package taskaler.logic;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import taskaler.common.data.DeadLineTask;
+import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
@@ -48,11 +50,11 @@ public class SearchLogic {
     private ArrayList<Task> findByWorkload(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
 
-        for(int i = 0; i< TaskList.getInstance().size(); i++) {
-        	if (TaskList.getInstance().get(i).getTaskWorkLoad()
+        for (int i = 0; i < TaskList.getInstance().size(); i++) {
+            if (TaskList.getInstance().get(i).getTaskWorkLoad()
                     .equals(paramFIND)) {
                 searchResultList.add(TaskList.getInstance().get(i));
-            }   	
+            }
         }
 
         return searchResultList;
@@ -70,16 +72,35 @@ public class SearchLogic {
 
         ArrayList<Task> searchResultList = new ArrayList<Task>();
         String[] filter = paramFIND.split("/");
-        
-        for(int i = 0; i< TaskList.getInstance().deadlineToArray().size(); i++) {
-        	//only DeadLineTask has deadline attribute
-			String[] deadLine = calendarToString
-					.toArray(((DeadLineTask) TaskList.getInstance().deadlineToArray().get(i))
-							.getEndTime());
-			if (compareDeadline(filter, deadLine)) {
-				searchResultList.add(TaskList.getInstance().get(i));
-			}
-        	
+
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+        for (int i = 0; i < listOfTask.length; i++) {
+            String[] date = null;
+            
+            if(listOfTask[i] instanceof FloatTask){
+                // floating task is found via its creation date
+                date = calendarToString.toArray(((FloatTask) listOfTask[i]).getTaskCreationDate());
+                if (date[0].compareToIgnoreCase(filter[0]) == 0 && date[1].compareToIgnoreCase(filter[1]) == 0 && date[2].compareToIgnoreCase(filter[2]) == 0) {
+                    searchResultList.add(listOfTask[i]);
+                }
+            } else if (listOfTask[i] instanceof DeadLineTask) {
+                // only DeadLineTask has deadline attribute
+                date = calendarToString.toArray(((DeadLineTask) listOfTask[i]).getDeadline());
+                if (date[0].compareToIgnoreCase(filter[0]) == 0 && date[1].compareToIgnoreCase(filter[1]) == 0 && date[2].compareToIgnoreCase(filter[2]) == 0) {
+                    searchResultList.add(listOfTask[i]);
+                }
+            } else if (listOfTask[i] instanceof RepeatedTask) {
+                // only RepeatedTask have repeated date attribute
+                RepeatedTask currentRepeat = (RepeatedTask) listOfTask[i];
+                for (Calendar repeatDate : currentRepeat.getRepeatedDate()) {
+                    date = calendarToString.toArray(repeatDate);
+                    if (date[0].compareToIgnoreCase(filter[0]) == 0 && date[1].compareToIgnoreCase(filter[1]) == 0 && date[2].compareToIgnoreCase(filter[2]) == 0) {
+                        searchResultList.add(listOfTask[i]);
+                    }
+                }
+            }
+
         }
 
         return searchResultList;
@@ -96,15 +117,15 @@ public class SearchLogic {
      *            Second deadline
      * @return return true if both are the same deadline; False otherwise
      */
-    private boolean compareDeadline(String[] deadline1,
-            String[] deadline2) {
-        try{
-            for(int i = 0; i < deadline1.length; i++){
-                if(Integer.parseInt(deadline1[i]) != Integer.parseInt(deadline2[i])){
+    private boolean compareDeadline(String[] deadline1, String[] deadline2) {
+        try {
+            for (int i = 0; i < deadline1.length; i++) {
+                if (Integer.parseInt(deadline1[i]) != Integer
+                        .parseInt(deadline2[i])) {
                     return false;
                 }
             }
-        }catch(NumberFormatException err){
+        } catch (NumberFormatException err) {
             return false;
         }
         return true;
@@ -120,13 +141,13 @@ public class SearchLogic {
      */
     private ArrayList<Task> findByKeyword(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
-        
-        for(int i = 0; i< TaskList.getInstance().size(); i++) {
-        	if (TaskList.getInstance().get(i).getTaskName().contains(paramFIND)) {
+
+        for (int i = 0; i < TaskList.getInstance().size(); i++) {
+            if (TaskList.getInstance().get(i).getTaskName().contains(paramFIND)) {
                 searchResultList.add(TaskList.getInstance().get(i));
-            }   	
+            }
         }
-        
+
         return searchResultList;
     }
 
@@ -139,20 +160,37 @@ public class SearchLogic {
      * @param YearFind
      * @return return list of Tasks (can be empty if nothing is found)
      */
-    public ArrayList<Task> findByMonthAndYear(String monthFind,
-            String yearFind) {
+    public ArrayList<Task> findByMonthAndYear(String monthFind, String yearFind) {
 
         ArrayList<Task> searchResultList = new ArrayList<Task>();
-        
-        for(int i = 0; i< TaskList.getInstance().deadlineToArray().size(); i++) {
-        	//only DeadLineTask has deadline attribute
-			String[] date = calendarToString
-					.toArray(((DeadLineTask) TaskList.getInstance().deadlineToArray().get(i))
-							.getEndTime());
-			if (date[1].equals(monthFind) && date[2].equals(yearFind)) {
-                searchResultList.add(TaskList.getInstance().deadlineToArray().get(i));
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+        for (int i = 0; i < listOfTask.length; i++) {
+            String[] date = null;
+            
+            if(listOfTask[i] instanceof FloatTask){
+                // floating task is found via its creation date
+                date = calendarToString.toArray(((FloatTask) listOfTask[i]).getTaskCreationDate());
+                if (date[1].compareToIgnoreCase(monthFind) == 0 && date[2].compareToIgnoreCase(yearFind) == 0) {
+                    searchResultList.add(listOfTask[i]);
+                }
+            } else if (listOfTask[i] instanceof DeadLineTask) {
+                // only DeadLineTask has deadline attribute
+                date = calendarToString.toArray(((DeadLineTask) listOfTask[i]).getDeadline());
+                if (date[1].compareToIgnoreCase(monthFind) == 0 && date[2].compareToIgnoreCase(yearFind) == 0) {
+                    searchResultList.add(listOfTask[i]);
+                }
+            } else if (listOfTask[i] instanceof RepeatedTask) {
+                // only RepeatedTask have repeated date attribute
+                RepeatedTask currentRepeat = (RepeatedTask) listOfTask[i];
+                for (Calendar repeatDate : currentRepeat.getRepeatedDate()) {
+                    date = calendarToString.toArray(repeatDate);
+                    if (date[1].compareToIgnoreCase(monthFind) == 0 && date[2].compareToIgnoreCase(yearFind) == 0) {
+                        searchResultList.add(listOfTask[i]);
+                    }
+                }
             }
-        	
+
         }
 
         return searchResultList;
@@ -167,13 +205,13 @@ public class SearchLogic {
      * @return return a task with Task data type
      */
     public Task findByID(String taskID) {
-    	int taskIDIndex = findTaskByID(taskID);
-    	
-    	if (taskIDIndex == common.TAG_TASK_NOT_EXIST) { 
-    		return null; 
-    	} 
+        int taskIDIndex = findTaskByID(taskID);
 
-    	return TaskList.getInstance().get(taskIDIndex);
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            return null;
+        }
+
+        return TaskList.getInstance().get(taskIDIndex);
     }
 
     /**
@@ -200,10 +238,10 @@ public class SearchLogic {
      */
     private static int findTaskIndex(String taskID) {
         int taskIDIndex = common.TAG_TASK_NOT_EXIST;
-        for(int i =0; i < TaskList.getInstance().size(); i++) {
-        	if(TaskList.getInstance().get(i).getTaskID().equals(taskID)) {
-        		taskIDIndex = i;
-        	}
+        for (int i = 0; i < TaskList.getInstance().size(); i++) {
+            if (TaskList.getInstance().get(i).getTaskID().equals(taskID)) {
+                taskIDIndex = i;
+            }
         }
         return taskIDIndex;
     }

@@ -6,6 +6,7 @@ public class Parser {
     // Local Variables
     private static String currentTaskID;
     private static String currentState;
+    private static String currentMonth;
     private CmdType command;
     private String[] parameters;
     
@@ -41,11 +42,12 @@ public class Parser {
      * 
      * @param commandString
      */
-    public void parseCMD(String commandString, String state, String taskID) throws Exception{
+    public void parseCMD(String commandString, String state, String taskID, String month) throws Exception{
         String CMD = getFirstWord(commandString);
         command = determineCMD_TYPE(CMD);
         currentState = state;
         currentTaskID = taskID;
+        currentMonth = month;
         parameters = getParams(command, commandString);
     }
     
@@ -584,19 +586,37 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for the GOTO command specifically
      */
-    private static String[] getParamGOTO(String commandString){
-        String[] paramArray = new String[GOTO_PARAMETERS];
+    private static String[] getParamGOTO(String commandString) throws Exception {
+        int monthIndex = 0;
+        
+        String[] paramGOTO = new String[GOTO_PARAMETERS];
         String command = getFirstWord(commandString).toLowerCase();
-        String paramString = removeFirstWord(commandString);
-        switch(command){
-        case "next":
-            ;
-        case "back":
-            ;
-        case "goto":
-            ;
+        String paramString = removeFirstWord(commandString).toLowerCase();
+        if(command.equals("next")){
+            if(currentMonth != null){
+                int theMonth = Integer.parseInt(currentMonth) - OFFSET_OF_MONTH;
+                int nextMonth = theMonth + 1;
+                paramGOTO[monthIndex] = ""+nextMonth;
+            }
+            else {
+                throw new Exception("This command can only be accessed in the Calendar view.");
+            }  
         }
-        return paramArray;
+        else if(command.equals("back")){
+            if(currentMonth != null){
+                int theMonth = Integer.parseInt(currentMonth) - OFFSET_OF_MONTH;
+                int prevMonth = theMonth - 1;
+                paramGOTO[monthIndex] = ""+prevMonth;
+            }
+            else {
+                throw new Exception("This command can only be accessed in the Calendar view.");
+            }  
+        }
+        else if(command.equals("goto")){
+            int theMonthToGo = ParseAttribute.parseMonth(paramString);
+            paramGOTO[monthIndex] = ""+theMonthToGo;
+        }
+        return paramGOTO;
     }
 
     /********************************** Helper Functions *************************************/

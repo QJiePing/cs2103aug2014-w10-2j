@@ -21,6 +21,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
+import taskaler.common.data.DeadLineTask;
+import taskaler.common.data.FloatTask;
+import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.ui.controller.CalendarPaneController;
 import taskaler.ui.controller.RootController;
@@ -42,7 +45,6 @@ import taskaler.ui.model.RootModel;
  */
 public class CalendarPaneTest {
 
-    
     private static CalendarPaneController controller = null;
 
     @Rule
@@ -55,12 +57,34 @@ public class CalendarPaneTest {
      */
     public ArrayList<Task> generateList() {
         ArrayList<Task> result = new ArrayList<Task>();
-        result.add(new Task("Test", "1", "Not Done", Calendar.getInstance(),
-                "3", "Hello"));
-        result.add(new Task("Hello", "2", "Done", Calendar.getInstance(), "2",
-                ""));
-        result.add(new Task("Ping Pong", "3", "Not Done", Calendar
-                .getInstance(), "2", "Ping Pong"));
+        Calendar deadline = Calendar.getInstance();
+        deadline.add(Calendar.MONTH, 2);
+
+        FloatTask task1 = new FloatTask("Test on floating", "1", "Not Done",
+                Calendar.getInstance(), "low", "This is a test floating task",
+                Calendar.getInstance(), Calendar.getInstance());
+
+        
+        ArrayList<Calendar> listOfTestDays = new ArrayList<Calendar>();
+        Calendar eachDate = Calendar.getInstance();
+        eachDate.add(Calendar.DATE, 1);
+        listOfTestDays.add(eachDate);
+        eachDate.add(Calendar.DATE, 1);
+        listOfTestDays.add(eachDate);
+        eachDate.add(Calendar.DATE, 1);
+        listOfTestDays.add(eachDate);
+        
+        RepeatedTask task2 = new RepeatedTask("Test on repeated task", "2",
+                "Not Done", Calendar.getInstance(), "High",
+                "This is a test repeated task", Calendar.getInstance(),
+                deadline, listOfTestDays, deadline, 1);
+
+        DeadLineTask task3 = new DeadLineTask("Test on Deadline", "3",
+                "Not Done", Calendar.getInstance(), "medium",
+                "This is a test Deadline task", deadline, deadline, deadline);
+
+        result.add(task1);
+        result.add(task2);
 
         return result;
     }

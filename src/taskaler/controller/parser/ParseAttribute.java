@@ -164,4 +164,25 @@ public class ParseAttribute {
             return patternInSyntax;
         }
     }
+    
+    public static int parseMonth(String month) throws Exception {
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
+        SimpleDateFormat monthFormat2 = new SimpleDateFormat("MM");
+        Calendar temp = Calendar.getInstance();
+        try{
+            Date date = monthFormat.parse(month);
+            temp.setTime(date);
+            return temp.get(Calendar.MONTH);
+        }
+        catch(Exception e){
+            try{
+                Date date = monthFormat2.parse(month);
+                temp.setTime(date);
+                return temp.get(Calendar.MONTH);
+            }
+            catch(Exception f){
+                throw new Exception("Invalid month parameter");
+            }
+        }
+    }
 }

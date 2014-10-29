@@ -232,8 +232,8 @@ public class TaskList implements Collection<Task> {
     }
     
     @Override
-    public Object[] toArray() {
-        Object[] array = new Object[this.size()];
+    public Task[] toArray() {
+        Task[] array = new Task[this.size()];
         for (int i = 0; i < array.length; i++) {
         	if(i < floatTaskList.size()) {
         		array[i] = floatTaskList.get(i);
@@ -333,11 +333,11 @@ public class TaskList implements Collection<Task> {
     }
     
     public int getNumOfIncomplete() {
-    	if(numOfIncompleteTasks == 0) {
-    		if(this != null && instance.size() != 0) {
-				for (int i = 0; i < instance.size(); i++) {
+    	if(numOfIncompleteTasks == common.DEFAULT_NUM_OF_INCOMPLETE) {
+    		if(this != null && this.size() != 0) {
+				for (int i = 0; i < this.size(); i++) {
 					if (this.get(i).getTaskStatus()
-							.equals(common.TASK_INITIAL_STATUS)) {
+							.compareToIgnoreCase(common.TASK_INITIAL_STATUS) == 0) {
 						numOfIncompleteTasks++;
 					}
 				}
@@ -355,6 +355,11 @@ public class TaskList implements Collection<Task> {
     	if(numOfIncompleteTasks > 0) {
     		numOfIncompleteTasks--;
     	}
+    }
+    
+    
+    public void defaultNumOfIncomplete() {
+    	numOfIncompleteTasks = 0;
     }
     
     
