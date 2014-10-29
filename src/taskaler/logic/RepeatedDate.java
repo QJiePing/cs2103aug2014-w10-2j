@@ -13,6 +13,16 @@ public class RepeatedDate {
 		
 	}
 	
+	/**
+	 * getRepeatDay(Calendar startTime, Calendar endRepeatedTime, String pattern) is to
+	 * compute all the dates for repeated task from startTime to endRepeatedTime with
+	 * the given pattern
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @param pattern
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
     public ArrayList<Calendar> getRepeatDay(Calendar startTime, Calendar endRepeatedTime, String pattern) {
     	repeatDays = new ArrayList<Calendar>();
     	RepeatPattern repeatPattern = getPattern(pattern);
@@ -21,25 +31,25 @@ public class RepeatedDate {
     		repeatDays = computeDaily((Calendar) startTime.clone(), endRepeatedTime);
     		break;
     	case SUN:
-    		repeatDays = computeSun((Calendar) startTime.clone(), endRepeatedTime);
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.SUNDAY);
     		break;
     	case MON:
-    		repeatDays = computeMon((Calendar) startTime.clone(), endRepeatedTime);
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.MONDAY);
     		break;
     	case TUES:
-    		repeatDays = computeTues((Calendar) startTime.clone(), endRepeatedTime);
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.TUESDAY);
     		break;
     	case WED:
-    		repeatDays = computeWed((Calendar) startTime.clone(), endRepeatedTime);
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.WEDNESDAY);
     		break;
     	case THURS:
-    		repeatDays = computeThurs((Calendar) startTime.clone(), endRepeatedTime);
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.THURSDAY);
     		break;
     	case FRI:
-    		repeatDays = computeFri((Calendar) startTime.clone(), endRepeatedTime);
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.FRIDAY);
     		break;
     	case SAT:
-    		repeatDays = computeSat((Calendar) startTime.clone(), endRepeatedTime);
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.SATURDAY);
     		break;
     	case ALTER:
     		repeatDays = computeAlter((Calendar) startTime.clone(), endRepeatedTime);
@@ -68,13 +78,23 @@ public class RepeatedDate {
 	}
 
     
-    private ArrayList<Calendar> computeSun(Calendar startTime,
-			Calendar endRepeatedTime) {
+    /**
+	 * computeSpecifyDay(Calendar startTime, Calendar endRepeatedTime, int pattern)
+	 * is to compute all the dates for repeated task with pattern: repeat on Mon
+	 * or Tues or Wed or Thur or Fri or Sat or Sun
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @param pattern
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+    private ArrayList<Calendar> computeSpecifyDay(Calendar startTime,
+			Calendar endRepeatedTime, int pattern) {
     	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
     		Calendar newDay = (Calendar) startTime.clone();
     		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.SUNDAY) {
+    		if (day == pattern) {
     			repeatDays.add(newDay);
     			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
     		} else {
@@ -85,108 +105,14 @@ public class RepeatedDate {
 		return repeatDays;
 	}
     
-    private ArrayList<Calendar> computeMon(Calendar startTime,
-			Calendar endRepeatedTime) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.MONDAY) {
-    			repeatDays.add(newDay);
-    			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
-    		} else {
-    			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    		}
-			
-    	}
-		return repeatDays;
-	}
-
-    private ArrayList<Calendar> computeTues(Calendar startTime,
-			Calendar endRepeatedTime) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.TUESDAY) {
-    			repeatDays.add(newDay);
-    			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
-    		} else {
-    			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    		}
-			
-    	}
-		return repeatDays;
-	}
-    
-    private ArrayList<Calendar> computeWed(Calendar startTime,
-			Calendar endRepeatedTime) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.WEDNESDAY) {
-    			repeatDays.add(newDay);
-    			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
-    		} else {
-    			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    		}
-			
-    	}
-		return repeatDays;
-	}
-
-    private ArrayList<Calendar> computeThurs(Calendar startTime,
-			Calendar endRepeatedTime) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.THURSDAY) {
-    			repeatDays.add(newDay);
-    			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
-    		} else {
-    			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    		}
-			
-    	}
-		return repeatDays;
-	}
-    
-    private ArrayList<Calendar> computeFri(Calendar startTime,
-			Calendar endRepeatedTime) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.FRIDAY) {
-    			repeatDays.add(newDay);
-    			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
-    		} else {
-    			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    		}
-			
-    	}
-		return repeatDays;
-	}
-    
-    private ArrayList<Calendar> computeSat(Calendar startTime,
-			Calendar endRepeatedTime) {
-    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
-    	while(startTime.compareTo(endRepeatedTime) <= 0) {
-    		Calendar newDay = (Calendar) startTime.clone();
-    		int day = newDay.get(Calendar.DAY_OF_WEEK);
-    		if (day == Calendar.SATURDAY) {
-    			repeatDays.add(newDay);
-    			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
-    		} else {
-    			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
-    		}
-			
-    	}
-		return repeatDays;
-	}
-    
+    /**
+     * computeTwoWeeks(Calendar startTime, Calendar endRepeatedTime) is to
+     * compute all the dates for repeated task with pattern: repeat once for two weeks
+     * 
+     * @param startTime
+     * @param endRepeatedTime
+     * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+     */
 	private ArrayList<Calendar> computeTwoWeeks(Calendar startTime, Calendar endRepeatedTime) {
     	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -198,6 +124,14 @@ public class RepeatedDate {
 	}
 
 
+	/**
+	 * computeYearly(Calendar startTime, Calendar endRepeatedTime) is to 
+     * compute all the dates for repeated task with pattern: repeat once per year
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeYearly(Calendar startTime, Calendar endRepeatedTime) {
     	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -208,6 +142,14 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	/**
+	 * computeMonthly(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat once per month
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeMonthly(Calendar startTime, Calendar endRepeatedTime) {
 		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -218,6 +160,14 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	/**
+	 * computeWeekend(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat only on weekend
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeWeekend(Calendar startTime, Calendar endRepeatedTime) {
 		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -231,6 +181,14 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	/**
+	 * computeWeekday(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat on weekday
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeWeekday(Calendar startTime, Calendar endRepeatedTime) {
 		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -244,6 +202,14 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	/**
+	 * computeWeekly(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat once per week
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeWeekly(Calendar startTime, Calendar endRepeatedTime) {
 		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -254,6 +220,15 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	
+	/**
+	 * computeAlter(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat once for two days
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeAlter(Calendar startTime, Calendar endRepeatedTime) {
 		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -264,6 +239,15 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	
+	/**
+	 * computeDaily(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat daily
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeDaily(Calendar startTime, Calendar endRepeatedTime) {
 		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
     	while(startTime.compareTo(endRepeatedTime) <= 0) {
@@ -274,7 +258,12 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
-	
+	/**
+	 * getPattern(String pattern) convert the given pattern to enum type
+	 *  
+	 * @param pattern
+	 * @return
+	 */
 	public RepeatPattern getPattern(String pattern) {
     	pattern = pattern.toUpperCase();
 		RepeatPattern repeatPattern = RepeatPattern.NONE;

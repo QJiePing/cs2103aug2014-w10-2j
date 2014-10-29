@@ -20,8 +20,6 @@ public class common {
     public static String ADD_NO_CONTENT = "No content is added";
     public static String EDIT_NO_CONTENT = "NO content, cannot be edited";
     public static String TASKID_NOT_EXIST = "Task ID no exist";
-    public static boolean TASK_INITIAL_STATUS = false;
-    public static boolean TASK_COMPLETED_STATUS = true;
     public static String TASK_PARAMETER_DEFAULT_VALUE = "";
 
     public static int TAG_TYPE_DATE = 0;
@@ -48,6 +46,10 @@ public class common {
     public static final int THURSDAY = 5;
     public static final int FRIDAY = 6;
     public static final int SATURDAY = 7;
+    
+
+    public static boolean TASK_INITIAL_STATUS = false;
+    public static boolean TASK_COMPLETED_STATUS = true;
     
     
     public enum RepeatPattern {

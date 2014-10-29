@@ -204,22 +204,22 @@ public class OPLogicTest {
 
 		/* This is a case for changing work status successfully */
 		taskID = "2";
-		assertEquals("Not Done", search.findByID(taskID).getTaskStatus());
+		assertEquals(false, search.findByID(taskID).getTaskStatus());
 		task = OPLogic.getInstance().switchTag(taskID);
-		assertEquals("Done", search.findByID(taskID).getTaskStatus());
+		assertEquals(true, search.findByID(taskID).getTaskStatus());
 		System.out.println("15 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		taskID = "2";
-		assertEquals("Done", search.findByID(taskID).getTaskStatus());
+		assertEquals(true, search.findByID(taskID).getTaskStatus());
 		task = OPLogic.getInstance().switchTag(taskID);
-		assertEquals("Not Done", search.findByID(taskID).getTaskStatus());
+		assertEquals(false, search.findByID(taskID).getTaskStatus());
 		System.out.println("16 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		
 		OPLogic.getInstance().setRepeat("2", "1 DAY", "28/10/2014", null);
 		System.out.println(((RepeatedTask) search.findByID(taskID)).getStartTime().getTime());
 		System.out.println(((RepeatedTask) search.findByID(taskID)).getEndTime().getTime());
-		OPLogic.getInstance().editTime("2", "1230", "2230");
+		OPLogic.getInstance().editTime("2", "1030", "2230");
 		System.out.println(((RepeatedTask) search.findByID(taskID)).getStartTime().getTime());
 		System.out.println(((RepeatedTask) search.findByID(taskID)).getEndTime().getTime());
 		

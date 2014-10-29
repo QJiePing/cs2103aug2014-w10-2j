@@ -88,10 +88,12 @@ public class OPLogic extends Observable {
         }
         
         Task oldTask = TaskList.getInstance().remove(taskIDIndex);
+        TaskList.getInstance().add(t);
         
         notifyObservers("UNDO", oldTask);
         return oldTask;
     }
+    
 
     /**
      * addTask(String name_ADD, String description_ADD) will add a new task with
@@ -122,6 +124,7 @@ public class OPLogic extends Observable {
             if(workload_ADD == null){
                 workload_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
             }
+            
             Calendar start = null;
             Calendar end = null;
             if(startTime != null){
@@ -130,6 +133,7 @@ public class OPLogic extends Observable {
             if(endTime != null){
                 end = setNewCalendarDate(endTime, "time");
             }
+            
             // generate a new task ID
             int newTaskID = generateTaskID();
 
@@ -197,9 +201,17 @@ public class OPLogic extends Observable {
     }
     
     
-    
+    /**
+     * 
+     * Task deleteAll() will remove all the tasks in taskList:ArrayList<Task>.
+     * 
+     * @return return true all the tasks is successfully deleted
+     * 
+     */
     public boolean deleteAllTask() {
     	TaskList.getInstance().clear();
+    	
+    	//set number of incomplete tasks to zero
     	TaskList.getInstance().defaultNumOfIncomplete();
     	
     	return true;
@@ -289,7 +301,11 @@ public class OPLogic extends Observable {
         }
         
         Task newTask = TaskList.getInstance().get(taskIDIndex);
+        
+        notifyObservers("EDIT", newTask);
+        
         if (taskIDIndex < TaskList.getInstance().floatToArray().size()) {
+        	//float task "zone"
         	//float task has no date attribute
         	//remove task from float task list and add to deadline task list
         	Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
@@ -300,9 +316,11 @@ public class OPLogic extends Observable {
         	TaskList.getInstance().add(newTask);
         	
         } else if (taskIDIndex < TaskList.getInstance().floatToArray().size() + TaskList.getInstance().deadlineToArray().size()) {
+        	//deadline task "zone"
         	((DeadLineTask) newTask).setDeadline(newDeadLine);
        
         } else {
+        	//repeated task "zone"
         	((RepeatedTask) newTask).setEndRepeatedDate(newDeadLine);
         }
 
@@ -326,10 +344,10 @@ public class OPLogic extends Observable {
     private static Calendar setNewCalendarDate(String date, String type) {
         Calendar newDeadLine = Calendar.getInstance();
         try{
-            if(type.equals("date")){
+            if(type.compareToIgnoreCase("date")== 0) {
                 newDeadLine.setTime(common.DEFAULT_DATE_FORMAT.parse(date));
             }
-            else if(type.equals("time")){
+            else if(type.compareToIgnoreCase("time") == 0){
                 newDeadLine.setTime(common.DEFAULT_TIME_FORMAT.parse(date));
             }
         }
@@ -339,10 +357,18 @@ public class OPLogic extends Observable {
         return newDeadLine;
     }
     
-    /*
-     * This is a stub for the editTime function that Controller will call for the TIME command
-     * startTime and endTime is in the syntax "HHmm", where HH is on the scale of a 24h clock (0 ~ 23)
+    /**
+     * 
+     * Task editTime(String taskID, String startTime, String endTime) is to
+     * edit a existing task with same given ID in taskList:ArrayList<Task> by
+     * given start time and end time
+     * 
+     * @param taskID
+     * @param startTime
+     * @param endTime
+     * @return return null if given task ID not exist, edited task otherwise
      */
+    
     public Task editTime(String taskID, String startTime, String endTime){
     	int taskIDIndex = SearchLogic.findTaskByID(taskID);
         
@@ -351,7 +377,8 @@ public class OPLogic extends Observable {
             return null;
         }
         
-        int startTimeHour, startTimeMins, endTimeHour, endTimeMins;
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        
         
         /*The code below can be simplified to:
         if(startTime != null){
@@ -363,6 +390,9 @@ public class OPLogic extends Observable {
         }
         return TaskList.getInstance().get(taskIDIndex);
         */
+
+        int startTimeHour, startTimeMins, endTimeHour, endTimeMins;
+        
         if(startTime != null) {
         	startTimeHour = Integer.parseInt(startTime.substring(0, 2));
         	startTimeMins = Integer.parseInt(startTime.substring(2, 4));
@@ -370,6 +400,7 @@ public class OPLogic extends Observable {
             Calendar newStartTime = TaskList.getInstance().get(taskIDIndex).getStartTime();
         	newStartTime.set(Calendar.HOUR_OF_DAY, startTimeHour);
         	newStartTime.set(Calendar.MINUTE, startTimeMins);
+        	
         	TaskList.getInstance().get(taskIDIndex).changeStartTime(newStartTime);
         }
         
@@ -389,23 +420,24 @@ public class OPLogic extends Observable {
     
     
     
-    /* This is a stub for the setRepeat function Controller will call for the "repeat" command
-       parameters are as follows, syntax for "pattern" is in ParserLibrary.java if u need to 
-       take a look, but briefly, for pattern, i will pass you:
-        - to repeat every <num> days    : "d", "alter"
-        - to repeat every <num> weeks   : "w"
-        - to repeat every <num> months  : "m"
-        - to repeat every <num> years   : "y"
-        - to repeat on all weekdays     : "wd"
-        - to repeat on all weekends     : "wk"
-          ("1 dow" represents sunday, so on so forth, to match with the Calendar implementation) 
-    */
+    /**
+     * 
+     * Task setRepeat(String taskID, String pattern, String startDate, String endDate)
+     * will change any existed task to RepeatTask object with given pattern, start date
+     * and end repeated date
+     * 
+     * @param taskID
+     * @param pattern
+     * @param startDate
+     * @param endDate
+     * @return return null if given task ID not exist, edited task otherwise
+     */
     public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
         Calendar startTime = setNewCalendarDate(startDate, "date");
         Calendar endTime = setNewCalendarDate(startDate, "date");
         Calendar endRepeatedTime = setNewCalendarDate(endDate, "date");
         if(endDate == null) {
-        	//if user doesn't specify the end time, default end repeted time is 1 month.
+        	//default end repeted time is 1 month.
         	endRepeatedTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
         }
         RepeatedDate repeatedDate = new RepeatedDate();
@@ -417,7 +449,10 @@ public class OPLogic extends Observable {
             return null;
         }
         
+        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        
         ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startTime, endRepeatedTime, pattern);
+        
         //remove task from float task list or deadline task list
         Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
         
@@ -432,7 +467,14 @@ public class OPLogic extends Observable {
 		TaskList.getInstance().add(newTask);
         return newTask;
     }
-
+    
+    /**
+     * 
+     * generateCollectionID() will generate a unique collection ID for
+     * new RepeatedTask object
+     * 
+     * @return return new collection ID
+     */
 	private int generateCollectionID() {
 		
 		int sizeOfRepeatedTask = TaskList.getInstance().repeatedToArray().size();
@@ -496,7 +538,11 @@ public class OPLogic extends Observable {
         return TaskList.getInstance().get(taskIDIndex);
     }
 
-    
+    /**
+     * toggleStatus(int taskIDIndex) will toggle the task status
+     * 
+     * @param taskIDIndex
+     */
 	private void toggleStatus(int taskIDIndex) {
 		
 		if(TaskList.getInstance().get(taskIDIndex).getTaskStatus()) {
@@ -511,7 +557,13 @@ public class OPLogic extends Observable {
 		
 	}
 
-	
+	/**
+	 * notifyObservers(String type, Task task) is to notify all the Observers for
+	 * the changes made
+	 * 
+	 * @param type
+	 * @param task
+	 */
     private void notifyObservers(String type, Task task) {
         setChanged();
         OperationRecord<Task, String> record = new OperationRecord<Task, String>(

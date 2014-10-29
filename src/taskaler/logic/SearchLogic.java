@@ -75,33 +75,41 @@ public class SearchLogic {
 
         Task[] listOfTask = TaskList.getInstance().toArray();
 
-        for (int i = 0; i < listOfTask.length; i++) {
-            String[] date = null;
-            
-            if(listOfTask[i] instanceof FloatTask){
-                // floating task is found via its creation date
-                date = calendarToString.toArray(((FloatTask) listOfTask[i]).getTaskCreationDate());
-                if (date[0].compareToIgnoreCase(filter[0]) == 0 && date[1].compareToIgnoreCase(filter[1]) == 0 && date[2].compareToIgnoreCase(filter[2]) == 0) {
-                    searchResultList.add(listOfTask[i]);
-                }
-            } else if (listOfTask[i] instanceof DeadLineTask) {
-                // only DeadLineTask has deadline attribute
-                date = calendarToString.toArray(((DeadLineTask) listOfTask[i]).getDeadline());
-                if (date[0].compareToIgnoreCase(filter[0]) == 0 && date[1].compareToIgnoreCase(filter[1]) == 0 && date[2].compareToIgnoreCase(filter[2]) == 0) {
-                    searchResultList.add(listOfTask[i]);
-                }
-            } else if (listOfTask[i] instanceof RepeatedTask) {
-                // only RepeatedTask have repeated date attribute
-                RepeatedTask currentRepeat = (RepeatedTask) listOfTask[i];
-                for (Calendar repeatDate : currentRepeat.getRepeatedDate()) {
-                    date = calendarToString.toArray(repeatDate);
-                    if (date[0].compareToIgnoreCase(filter[0]) == 0 && date[1].compareToIgnoreCase(filter[1]) == 0 && date[2].compareToIgnoreCase(filter[2]) == 0) {
-                        searchResultList.add(listOfTask[i]);
-                    }
-                }
-            }
+		for (int i = 0; i < listOfTask.length; i++) {
+			String[] date = null;
 
-        }
+			if (listOfTask[i] instanceof FloatTask) {
+				// floating task is found via its creation date
+				date = calendarToString.toArray(((FloatTask) listOfTask[i])
+						.getTaskCreationDate());
+				if (date[common.TAG_TYPE_DATE].compareToIgnoreCase(filter[common.TAG_TYPE_DATE]) == 0
+						&& date[common.TAG_TYPE_MONTH].compareToIgnoreCase(filter[common.TAG_TYPE_MONTH]) == 0
+						&& date[common.TAG_TYPE_YEAR].compareToIgnoreCase(filter[common.TAG_TYPE_YEAR]) == 0) {
+					searchResultList.add(listOfTask[i]);
+				}
+			} else if (listOfTask[i] instanceof DeadLineTask) {
+				// only DeadLineTask has deadline attribute
+				date = calendarToString.toArray(((DeadLineTask) listOfTask[i])
+						.getDeadline());
+				if (date[common.TAG_TYPE_DATE].compareToIgnoreCase(filter[common.TAG_TYPE_DATE]) == 0
+						&& date[common.TAG_TYPE_MONTH].compareToIgnoreCase(filter[common.TAG_TYPE_MONTH]) == 0
+						&& date[common.TAG_TYPE_YEAR].compareToIgnoreCase(filter[common.TAG_TYPE_YEAR]) == 0) {
+					searchResultList.add(listOfTask[i]);
+				}
+			} else if (listOfTask[i] instanceof RepeatedTask) {
+				// only RepeatedTask have repeated date attribute
+				RepeatedTask currentRepeat = (RepeatedTask) listOfTask[i];
+				for (Calendar repeatDate : currentRepeat.getRepeatedDate()) {
+					date = calendarToString.toArray(repeatDate);
+					if (date[common.TAG_TYPE_DATE].compareToIgnoreCase(filter[common.TAG_TYPE_DATE]) == 0
+							&& date[common.TAG_TYPE_MONTH].compareToIgnoreCase(filter[common.TAG_TYPE_MONTH]) == 0
+							&& date[common.TAG_TYPE_YEAR].compareToIgnoreCase(filter[common.TAG_TYPE_YEAR]) == 0) {
+						searchResultList.add(listOfTask[i]);
+					}
+				}
+			}
+
+		}
 
         return searchResultList;
     }
@@ -171,23 +179,29 @@ public class SearchLogic {
             if(listOfTask[i] instanceof FloatTask){
                 // floating task is found via its creation date
                 date = calendarToString.toArray(((FloatTask) listOfTask[i]).getTaskCreationDate());
-                if (date[1].compareToIgnoreCase(monthFind) == 0 && date[2].compareToIgnoreCase(yearFind) == 0) {
-                    searchResultList.add(listOfTask[i]);
-                }
+				if (date[common.TAG_TYPE_MONTH].compareToIgnoreCase(monthFind) == 0
+						&& date[common.TAG_TYPE_YEAR]
+								.compareToIgnoreCase(yearFind) == 0) {
+					searchResultList.add(listOfTask[i]);
+				}
             } else if (listOfTask[i] instanceof DeadLineTask) {
                 // only DeadLineTask has deadline attribute
                 date = calendarToString.toArray(((DeadLineTask) listOfTask[i]).getDeadline());
-                if (date[1].compareToIgnoreCase(monthFind) == 0 && date[2].compareToIgnoreCase(yearFind) == 0) {
-                    searchResultList.add(listOfTask[i]);
-                }
+                if (date[common.TAG_TYPE_MONTH].compareToIgnoreCase(monthFind) == 0
+						&& date[common.TAG_TYPE_YEAR]
+								.compareToIgnoreCase(yearFind) == 0) {
+					searchResultList.add(listOfTask[i]);
+				}
             } else if (listOfTask[i] instanceof RepeatedTask) {
                 // only RepeatedTask have repeated date attribute
                 RepeatedTask currentRepeat = (RepeatedTask) listOfTask[i];
                 for (Calendar repeatDate : currentRepeat.getRepeatedDate()) {
                     date = calendarToString.toArray(repeatDate);
-                    if (date[1].compareToIgnoreCase(monthFind) == 0 && date[2].compareToIgnoreCase(yearFind) == 0) {
-                        searchResultList.add(listOfTask[i]);
-                    }
+                    if (date[common.TAG_TYPE_MONTH].compareToIgnoreCase(monthFind) == 0
+    						&& date[common.TAG_TYPE_YEAR]
+    								.compareToIgnoreCase(yearFind) == 0) {
+    					searchResultList.add(listOfTask[i]);
+    				}
                 }
             }
 
