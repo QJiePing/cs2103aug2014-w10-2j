@@ -130,13 +130,17 @@ public class Controller{
                 ui.display(result);
                 break;
             case VIEW:
-                String tag_VIEW = params[0];
-                String taskID_VIEW = params[1];
-                if (taskID_VIEW != null && !taskID_VIEW.isEmpty() && tag_VIEW.equals("TASK")) {
-                    result = findLogic.findByID(params[1]);
+                String viewType = params[0];
+                String viewParam = params[1];
+                if (viewType.equals("CALENDAR") || viewType.equals("LIST")) {
+                    ui.display(viewType, list.toArray(new ArrayList<Task>()));
+                } else if(viewType.equals("TASK")){
+                    result = findLogic.findByID(viewParam);
                     ui.display(result);
-                } else {
-                    ui.display(tag_VIEW, list.toArray(new ArrayList<Task>()));
+                } else if(viewType.equals("DATE")){
+                    ArrayList<Task> viewResult = findLogic.find(viewType,
+                            viewParam);
+                    ui.display(String.format(VIEW_DATE_MSG, viewParam), viewResult);
                 }
                 break;
             case FIND:
@@ -144,7 +148,7 @@ public class Controller{
                 String toSearch = params[1];
                 ArrayList<Task> searchResult = findLogic.find(tagTypeFIND,
                         toSearch);
-                ui.display("Search Result for " + toSearch, searchResult);
+                ui.display(String.format(FIND_MSG, tagTypeFIND, toSearch), searchResult);
                 break;
             case ARCHIVE:
                 String date_ARCH = params[0];

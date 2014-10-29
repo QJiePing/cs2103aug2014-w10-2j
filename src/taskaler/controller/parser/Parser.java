@@ -476,26 +476,28 @@ public class Parser {
      * @return String[] parameters for WORKLOAD command
      */
     private static String[] getParamWL(String commandString) throws Exception {
-        int taskID_index = 0;
-        int workload_index = 1;
-        String paramString = removeCommandAndTaskID(commandString);
-        String[] paramArray = new String[WORKLOAD_PARAMETERS];
-        paramArray[taskID_index] = getTaskID(commandString);
-        String paramWL = "0";
-        try {
-            int WL = Integer.parseInt(paramString);
-            if (WL >= 1 && WL <= 3) {
-                paramWL = String.valueOf(WL);
-            } else {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e) {
-            throw new Exception("Invalid Workload Attribute");
-        }
-        paramArray[workload_index] = paramWL;
-        return paramArray;
+        int taskIDIndex = 0;
+        int workloadIndex = 1;
+        
+        String paramString = removeFirstWord(commandString);
+        String[] paramWL = new String[WORKLOAD_PARAMETERS];
+        if(currentTaskID != null){
+            paramWL[taskIDIndex] = currentTaskID;
+            paramWL[workloadIndex] = ParseAttribute.parseWL(paramString);
+        } else {
+            paramWL[taskIDIndex] = getFirstWord(paramString);
+            paramWL[workloadIndex] = ParseAttribute.parseWL(removeFirstWord(paramString));
+        } 
+        return paramWL;
     }
 
+    /**
+     * Method to retrieve parameters for COMPLETION_TAG commmand
+     * 
+     * @param commandString
+     * @return String[] parameters for COMPLETION_TAG command
+     * @throws Exception
+     */
     private static String[] getParamCT(String commandString) throws Exception {
         int taskIDIndex = 0;
         String[] paramWL = new String[COMPLETION_TAG_PARAMETERS];
@@ -519,19 +521,36 @@ public class Parser {
      * @param commandString
      * @return String[] parameters for VIEW command
      */
-    private static String[] getParamVIEW(String commandString) {
+    private static String[] getParamVIEW(String commandString) throws Exception {
+        int viewTypeIndex = 0;
+        int viewParamIndex = 1;
+        
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[VIEW_PARAMETERS];
-        if (paramString.equalsIgnoreCase("-l")
+        if (paramString.equalsIgnoreCase("l")
                 || paramString.equalsIgnoreCase("list")
                 || paramString.equalsIgnoreCase("all")) {
-            paramArray[0] = "LIST";
-        } else if (paramString.equalsIgnoreCase("-c")
+            paramArray[viewTypeIndex] = "LIST";
+        } else if (paramString.equalsIgnoreCase("c")
+                || paramString.equalsIgnoreCase("cal")
                 || paramString.equalsIgnoreCase("calendar")) {
-            paramArray[0] = "CALENDAR";
+            paramArray[viewTypeIndex] = "CALENDAR"; 
         } else {
-            paramArray[0] = "TASK";
-            paramArray[1] = paramString;
+            int splitIndex = paramString.indexOf(":");
+            if(splitIndex != INVALID_VALUE){
+                String viewType = paramString.substring(0, splitIndex).trim();
+                String viewParam = paramString.substring(splitIndex + 1);
+                if(viewType.equalsIgnoreCase("d") 
+                        || viewType.equalsIgnoreCase("date")){
+                    paramArray[viewTypeIndex] = "DATE";
+                    paramArray[viewParamIndex] = ParseAttribute.parseDate(viewParam);
+                } else {
+                    throw new Exception("Invalid task ID");
+                }
+            } else {
+                paramArray[viewTypeIndex] = "TASK";
+                paramArray[viewParamIndex] = paramString;
+            }
         }
         return paramArray;
     }
@@ -546,27 +565,28 @@ public class Parser {
      *             if date or workload parameter is invalid
      */
     private static String[] getParamFIND(String commandString) throws Exception {
-        int tag_index = 0;
-        int toSearch_index = 1;
+        int tagIndex = 0;
+        int toSearchIndex = 1;
 
         String[] paramArray = new String[FIND_PARAMETERS];
         String paramString = removeFirstWord(commandString);
-
-        String tagType = getFirstWord(paramString);
-
-        if (tagType.equalsIgnoreCase("-t")) {
-            paramArray[tag_index] = "DATE";
-            String date = ParseAttribute
-                    .parseDate(removeFirstWord(paramString));
-            paramArray[toSearch_index] = date;
-        } else if (tagType.equalsIgnoreCase("-w")) {
-            paramArray[tag_index] = "WORKLOAD";
-            paramArray[toSearch_index] = removeFirstWord(paramString);
+        int splitIndex = paramString.indexOf(":");
+        if (splitIndex != INVALID_VALUE) {
+            String findType = paramString.substring(0, splitIndex).trim();
+            if(findType.equalsIgnoreCase("w") 
+                    || findType.equalsIgnoreCase("wl")
+                    || findType.equalsIgnoreCase("workload")){
+                paramArray[tagIndex] = "workload";
+                paramArray[toSearchIndex] = ParseAttribute.parseWL(
+                        paramString.substring(splitIndex + 1).trim());
+            } else {
+                paramArray[tagIndex] = "keyword";
+                paramArray[toSearchIndex] = paramString;
+            }
         } else {
-            paramArray[tag_index] = "KEYWORD";
-            paramArray[toSearch_index] = paramString;
+            paramArray[tagIndex] = "keyword";
+            paramArray[toSearchIndex] = paramString;
         }
-
         return paramArray;
     }
 

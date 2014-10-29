@@ -25,7 +25,7 @@ public class ParseAttribute {
         Date date = (new SimpleDateFormat(dateFormat[FORMAT_INDEX])).parse(paramDate);
         
         if(numOfParams == 0){
-            throw new Exception("Invalid date syntax");
+            throw new Exception("Invalid date syntax, try: <dd>/<mm>/<yyyy>");
         }
         else {
             cal.setTime(date);
@@ -126,7 +126,7 @@ public class ParseAttribute {
             }
         }
         if(timeInSyntax == null){
-            throw new Exception("Invalid time syntax");
+            throw new Exception("Invalid time syntax, try: HHmm");
         }
         return timeInSyntax;
     }
@@ -141,7 +141,7 @@ public class ParseAttribute {
     public static String parseWL(String workload) throws Exception {
         String workloadInSyntax = ParserLibrary.availableWorkloadSyntax.get(workload);
         if(workloadInSyntax == null){
-            throw new Exception("Invalid workload attribute syntax");
+            throw new Exception("Invalid workload attribute syntax, try: <1 or 2 or 3>");
         }
         else {
             return workloadInSyntax;
@@ -158,7 +158,7 @@ public class ParseAttribute {
     public static String parsePattern(String pattern) throws Exception {
         String patternInSyntax = ParserLibrary.availablePatternSyntax.get(pattern);
         if(patternInSyntax == null){
-            throw new Exception("Invalid pattern syntax");
+            throw new Exception("Invalid pattern syntax, try: wednesday");
         }
         else {
             return patternInSyntax;
@@ -181,7 +181,7 @@ public class ParseAttribute {
                 return temp.get(Calendar.MONTH);
             }
             catch(Exception f){
-                throw new Exception("Invalid month parameter");
+                throw new Exception("Invalid month parameter, try: jan");
             }
         }
     }

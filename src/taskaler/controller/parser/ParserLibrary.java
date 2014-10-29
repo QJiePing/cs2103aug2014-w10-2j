@@ -130,6 +130,13 @@ public final class ParserLibrary {
                 put("thursday", "5 DAYOFWEEK");
                 put("friday", "6 DAYOFWEEK");
                 put("saturday", "7 DAYOFWEEK");
+                put("sundays", "1 DAYOFWEEK");
+                put("mondays", "2 DAYOFWEEK");
+                put("tuesdays", "3 DAYOFWEEK");
+                put("wednesdays", "4 DAYOFWEEK");
+                put("thursdays", "5 DAYOFWEEK");
+                put("fridays", "6 DAYOFWEEK");
+                put("saturdays", "7 DAYOFWEEK");
                 put("sun", "1 DAYOFWEEK");
                 put("mon", "2 DAYOFWEEK");
                 put("tue", "3 DAYOFWEEK");

@@ -192,6 +192,47 @@ public class ParserTest {
     }
     
     @Test
+    public void test_WORKLOAD(){
+        CmdType currentCMD;
+        String[] currentParams;
+        
+        try{
+            reset();
+            newParser.parseCMD("workload 5 high", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.WORKLOAD);
+            assertEquals(currentParams[0], "5");
+            assertEquals(currentParams[1], "3");
+            
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "6");
+            newParser.parseCMD("workload 1", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.WORKLOAD);
+            assertEquals(currentParams[0], "6");
+            assertEquals(currentParams[1], "1");
+            
+            try{
+                reset();
+                newParser.parseCMD("workload", stateVariables);
+                currentCMD = newParser.getCommand();
+                currentParams = newParser.getParameters();
+                assertEquals(currentCMD, CmdType.WORKLOAD);
+                assertEquals(currentParams[0], null);
+                assertEquals(currentParams[1], null);
+            } catch(Exception e){
+                assertEquals(e.getMessage(), "Invalid workload attribute syntax");
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    @Test
     public void test_REPEAT(){
         CmdType currentCMD;
         String[] currentParams;

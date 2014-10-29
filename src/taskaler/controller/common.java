@@ -14,8 +14,11 @@ public final class common {
         ADD, DELETE, EDIT, DEADLINE, TIME, REPEAT, WORKLOAD, 
         COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, INVALID
     }
+    // Messages
+    public static final String VIEW_DATE_MSG = "All tasks on \"%s\"";
+    public static final String FIND_MSG = "Search result for %s, %s";
     
-    // Magic Strings/Numbers
+    // Magic Numbers
     public static final int INVALID_VALUE = -1;
     public static final int MAX_ADD_PARAMETERS = 6;
     public static final int DELETE_PARAMETERS = 1;
