@@ -71,10 +71,10 @@ public class StorageTestUnit {
 		boolean result = false;
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
-		taskList.add(new FloatTask("Task1", "1", "not done", Calendar
+		taskList.add(new FloatTask("Task1", "1", true, Calendar
 				.getInstance(), "5", "description1", Calendar.getInstance(),
 				Calendar.getInstance()));
-		taskList.add(new FloatTask("Task2", "2", "done",
+		taskList.add(new FloatTask("Task2", "2", false,
 				Calendar.getInstance(), "1", "description2", Calendar
 						.getInstance(), Calendar.getInstance()));
 
@@ -117,16 +117,16 @@ public class StorageTestUnit {
 		Calendar temp = Calendar.getInstance();
 		temp.set(Calendar.YEAR, Calendar.DECEMBER, Calendar.MONDAY);
 		arrCal.add(temp);
-		taskList.add(new FloatTask("Task1", "1", "not done", Calendar
+		taskList.add(new FloatTask("Task1", "1", true, Calendar
 				.getInstance(), "5", "description1", Calendar.getInstance(),
 				Calendar.getInstance()));
-		taskList.add(new DeadLineTask("Task2", "2", "done", Calendar
+		taskList.add(new DeadLineTask("Task2", "2", false, Calendar
 				.getInstance(), "1", "description2", Calendar.getInstance(),
 				Calendar.getInstance(), Calendar.getInstance()));
-		taskList.add(new RepeatedTask("Task3", "3", "not done", Calendar
+		taskList.add(new RepeatedTask("Task3", "3", true, Calendar
 				.getInstance(), "2", "description2", Calendar.getInstance(),
 				Calendar.getInstance(), arrCal, Calendar.getInstance(), 5));
-		taskList.add(new FloatTask("Task4", "4", "not done", Calendar
+		taskList.add(new FloatTask("Task4", "4", true, Calendar
 				.getInstance(), "1", "description4", Calendar.getInstance(),
 				Calendar.getInstance()));
 

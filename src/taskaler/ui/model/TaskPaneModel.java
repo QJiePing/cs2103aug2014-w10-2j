@@ -25,7 +25,7 @@ public class TaskPaneModel implements IModel {
 
     public String taskName;
     public String taskID;
-    public String taskStatus;
+    public boolean taskStatus;
     public String taskDueDate;
     public int taskWorkload;
     public String taskDescription;
@@ -37,7 +37,7 @@ public class TaskPaneModel implements IModel {
     public TaskPaneModel() {
         taskName = "";
         taskID = "";
-        taskStatus = "";
+        taskStatus = true;
         taskDueDate = "";
         taskWorkload = common.RECTANGLE_COLOR_GREY;
         taskDescription = "None";

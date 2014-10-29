@@ -24,7 +24,7 @@ public abstract class Task {
 
 	private String _taskName;
 	private String _taskID;
-	private String _taskStatus;
+	private boolean _taskStatus;
 	private Calendar _taskStartTime;
 	private Calendar _taskEndTime;
 	private Calendar _creationDate;
@@ -48,7 +48,7 @@ public abstract class Task {
 	 * @param taskDescription
 	 *            Description of the task
 	 */
-	public Task(String taskName, String taskID, String taskStatus,
+	public Task(String taskName, String taskID, boolean taskStatus,
 			Calendar creationDate, String taskWorkLoad, String taskDescription,
 			Calendar startTime, Calendar endTime) {
 
@@ -72,7 +72,7 @@ public abstract class Task {
 		return _taskID;
 	}
 
-	public String getTaskStatus() {
+	public boolean getTaskStatus() {
 		return _taskStatus;
 	}
 
@@ -107,7 +107,7 @@ public abstract class Task {
 	 * public void changeTaskID(String newTaskID) { _taskID = newTaskID; }
 	 */
 
-	public void changeTaskStatus(String newTaskStatus) {
+	public void changeTaskStatus(boolean newTaskStatus) {
 		_taskStatus = newTaskStatus;
 	}
 

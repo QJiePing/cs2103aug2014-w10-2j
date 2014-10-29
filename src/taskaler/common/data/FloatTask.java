@@ -31,7 +31,7 @@ public class FloatTask extends Task {
 	 * @param end
 	 *            End time of the task
 	 */
-	public FloatTask(String taskName, String taskID, String taskStatus,
+	public FloatTask(String taskName, String taskID, boolean taskStatus,
 			Calendar creationDate, String taskWorkLoad, String taskDescription,
 			Calendar start, Calendar end) {
 		super(taskName, taskID, taskStatus, creationDate, taskWorkLoad,

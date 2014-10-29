@@ -45,14 +45,14 @@ public class UndoTestUnit {
 		temp.set(Calendar.YEAR, Calendar.DECEMBER, Calendar.MONDAY);
 		ArrayList<Calendar> arrCal = new ArrayList<Calendar>();
 		arrCal.add(temp);
-		FloatTask floatTask = new FloatTask("Task1", "1", "not done",
+		FloatTask floatTask = new FloatTask("Task1", "1", true,
 				Calendar.getInstance(), "5", "description1",
 				Calendar.getInstance(), Calendar.getInstance());
-		RepeatedTask repeatTask = new RepeatedTask("Task3", "3", "not done",
+		RepeatedTask repeatTask = new RepeatedTask("Task3", "3", true,
 				Calendar.getInstance(), "2", "description2",
 				Calendar.getInstance(), Calendar.getInstance(), arrCal,
 				Calendar.getInstance(), 5);
-		DeadLineTask deadlineTask = new DeadLineTask("Task2", "2", "done",
+		DeadLineTask deadlineTask = new DeadLineTask("Task2", "2", false,
 				Calendar.getInstance(), "1", "description2",
 				Calendar.getInstance(), Calendar.getInstance(),
 				Calendar.getInstance());

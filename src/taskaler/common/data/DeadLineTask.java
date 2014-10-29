@@ -37,7 +37,7 @@ public class DeadLineTask extends Task {
 	 *            end time of the task
 	 */
 
-	public DeadLineTask(String taskName, String taskID, String taskStatus,
+	public DeadLineTask(String taskName, String taskID, boolean taskStatus,
 			Calendar creationDate, String taskWorkLoad, String taskDescription,
 			Calendar deadline, Calendar start, Calendar end) {
 		super(taskName, taskID, taskStatus, creationDate, taskWorkLoad,

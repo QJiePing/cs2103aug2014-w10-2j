@@ -499,7 +499,7 @@ public class OPLogic extends Observable {
     
 	private void toggleStatus(int taskIDIndex) {
 		
-		if(TaskList.getInstance().get(taskIDIndex).getTaskStatus().equals(common.TASK_COMPLETED_STATUS)) {
+		if(TaskList.getInstance().get(taskIDIndex).getTaskStatus()) {
         	TaskList.getInstance().get(taskIDIndex).changeTaskStatus(common.TASK_INITIAL_STATUS);
         	//increment number of incomplete tasks
         	TaskList.getInstance().incrementNumOfIncomplete();

@@ -60,7 +60,7 @@ public class CalendarPaneTest {
         Calendar deadline = Calendar.getInstance();
         deadline.add(Calendar.MONTH, 2);
 
-        FloatTask task1 = new FloatTask("Test on floating", "1", "Not Done",
+        FloatTask task1 = new FloatTask("Test on floating", "1", true,
                 Calendar.getInstance(), "low", "This is a test floating task",
                 Calendar.getInstance(), Calendar.getInstance());
 
@@ -75,12 +75,12 @@ public class CalendarPaneTest {
         listOfTestDays.add(eachDate);
         
         RepeatedTask task2 = new RepeatedTask("Test on repeated task", "2",
-                "Not Done", Calendar.getInstance(), "High",
+                true, Calendar.getInstance(), "High",
                 "This is a test repeated task", Calendar.getInstance(),
                 deadline, listOfTestDays, deadline, 1);
 
         DeadLineTask task3 = new DeadLineTask("Test on Deadline", "3",
-                "Not Done", Calendar.getInstance(), "medium",
+                true, Calendar.getInstance(), "medium",
                 "This is a test Deadline task", deadline, deadline, deadline);
 
         result.add(task1);

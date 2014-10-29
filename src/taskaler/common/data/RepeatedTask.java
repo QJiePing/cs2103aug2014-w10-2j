@@ -41,7 +41,7 @@ public class RepeatedTask extends Task {
 	 * @param ID
 	 *            This is ID for the repeated task
 	 */
-	public RepeatedTask(String taskName, String taskID, String taskStatus,
+	public RepeatedTask(String taskName, String taskID, boolean taskStatus,
 			Calendar creationDate, String taskWorkLoad, String taskDescription,
 			Calendar start, Calendar end, ArrayList<Calendar> repeatedDate,
 			Calendar endRepeatedDate, int ID) {
