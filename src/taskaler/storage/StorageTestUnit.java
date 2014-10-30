@@ -125,7 +125,7 @@ public class StorageTestUnit {
 				Calendar.getInstance(), Calendar.getInstance()));
 		taskList.add(new RepeatedTask("Task3", "3", true, Calendar
 				.getInstance(), "2", "description2", Calendar.getInstance(),
-				Calendar.getInstance(), arrCal, Calendar.getInstance(), 5));
+				Calendar.getInstance(),"weekly", arrCal, Calendar.getInstance(), 5));
 		taskList.add(new FloatTask("Task4", "4", true, Calendar
 				.getInstance(), "1", "description4", Calendar.getInstance(),
 				Calendar.getInstance()));

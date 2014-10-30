@@ -7,7 +7,8 @@ import java.util.Calendar;
  * @author Quek Jie Ping
  */
 public class RepeatedTask extends Task {
-
+    
+    private String _pattern;
 	private ArrayList<Calendar> _repeatedDate;
 	private Calendar _endRepeatedDate;
 	private int _collectionID;
@@ -43,11 +44,12 @@ public class RepeatedTask extends Task {
 	 */
 	public RepeatedTask(String taskName, String taskID, boolean taskStatus,
 			Calendar creationDate, String taskWorkLoad, String taskDescription,
-			Calendar start, Calendar end, ArrayList<Calendar> repeatedDate,
+			Calendar start, Calendar end, String pattern, ArrayList<Calendar> repeatedDate,
 			Calendar endRepeatedDate, int ID) {
 
 		super(taskName, taskID, taskStatus, creationDate, taskWorkLoad,
 				taskDescription, start, end);
+		this._pattern = patternToEnglish(pattern);
 		this._repeatedDate = repeatedDate;
 		this._endRepeatedDate = endRepeatedDate;
 		this._collectionID = ID;
@@ -64,13 +66,17 @@ public class RepeatedTask extends Task {
 				this.getTaskID(), this.getTaskStatus(),
 				this.getTaskCreationDate(), this.getTaskWorkLoad(),
 				this.getTaskDescription(), this.getStartTime(),
-				this.getEndTime(), this.getRepeatedDate(),
+				this.getEndTime(), this.getPattern(), this.getRepeatedDate(),
 				this.getEndRepeatedDate(), this.getCollectiveID());
 		return newTask;
 	}
 
 	/**************** Accessor ***********************/
-
+	
+	public String getPattern() {
+	    return this._pattern;
+	}
+	
 	public ArrayList<Calendar> getRepeatedDate() {
 		return this._repeatedDate;
 	}
@@ -84,7 +90,11 @@ public class RepeatedTask extends Task {
 	}
 
 	/**************** Mutators ************************/
-
+	
+	public void setPattern(String pattern){
+	    this._pattern = pattern;
+	}
+	
 	public void setRepeatedDate(ArrayList<Calendar> repeat) {
 		this._repeatedDate = repeat;
 	}
@@ -95,5 +105,71 @@ public class RepeatedTask extends Task {
 
 	public void setCollectiveID(int ID) {
 		this._collectionID = ID;
+	}
+	/******************* Special ***********************/
+	
+	public static String patternToEnglish(String pattern){
+	    String[] patternSplit = pattern.split("\\s+");
+	    if(patternSplit.length == 1){
+	        switch(pattern){
+	        case "WEEKEND":
+	            return "Weekends";
+	        case "WEEKDAY":
+	            return "Weekdays"; 
+	        }
+	    } else if(patternSplit.length == 2){
+	        String every = "Every ";
+	        String type = patternSplit[1];
+	        int variable = 0;
+	        try{
+	            variable = Integer.parseInt(patternSplit[0]);
+	        } catch(Exception e){
+	            e.printStackTrace();
+	        }
+	        switch(type){
+	        case "DAYOFWEEK":
+	            switch(variable){
+	            case 1:
+	                return every + "SUN";
+	            case 2:
+	                return every + "MON";
+	            case 3:
+	                return every + "TUE";
+	            case 4:
+	                return every + "WED";
+	            case 5:
+	                return every + "THU";
+	            case 6:
+	                return every + "FRI";
+	            case 7:
+	                return every + "SAT";
+	            }
+	        case "DAY":
+	            switch(variable){
+	            case 1:
+	                return "Daily";
+	            case 2:
+	                return every + "2 days";
+	            }
+	        case "WEEK":
+	            switch(variable){
+	            case 1:
+	                return "Weekly";
+	            case 2:
+	                return every + "2 weeks";
+	            }
+	        case "MONTH":
+	            switch(variable){
+	            case 1:
+	                return "Monthly";
+	            }
+	        case "YEAR":
+	            switch(variable){
+	            case 1:
+	                return "Yearly";
+	            }
+	        }
+	    }
+        return pattern;
 	}
 }

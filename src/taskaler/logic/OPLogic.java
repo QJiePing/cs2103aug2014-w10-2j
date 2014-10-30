@@ -461,7 +461,7 @@ public class OPLogic extends Observable {
 		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
 				deletedTask.getTaskStatus(), deletedTask.getTaskCreationDate(), 
 				deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
-				startTime, endTime, dates, endRepeatedTime, 
+				startTime, endTime, pattern, dates, endRepeatedTime, 
 				collectionID);
 		
 		TaskList.getInstance().add(newTask);

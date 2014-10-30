@@ -50,7 +50,7 @@ public class UndoTestUnit {
 				Calendar.getInstance(), Calendar.getInstance());
 		RepeatedTask repeatTask = new RepeatedTask("Task3", "3", true,
 				Calendar.getInstance(), "2", "description2",
-				Calendar.getInstance(), Calendar.getInstance(), arrCal,
+				Calendar.getInstance(), Calendar.getInstance(), "weekly", arrCal,
 				Calendar.getInstance(), 5);
 		DeadLineTask deadlineTask = new DeadLineTask("Task2", "2", false,
 				Calendar.getInstance(), "1", "description2",
