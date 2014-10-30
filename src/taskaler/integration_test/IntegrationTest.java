@@ -7,21 +7,38 @@ import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.TaskList;
 import taskaler.controller.*;
 import taskaler.storage.Storage;
+import taskaler.ui.test.JavaFXThreadingRule;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import javafx.application.Platform;
+
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class IntegrationTest {
+    @Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 
 /*	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		File f= new File("task_list");
 		f.delete();
 	}*/
+	@Before
+	public void run(){
+	    
+	}
 	
+	@After
+	public void exit(){
+	    
+	}
 	/**
 	 * Integration test 
 	 * 
@@ -37,6 +54,7 @@ public class IntegrationTest {
 	 */
 	@Test
 	public void test1() {
+	    SpringBoard.main(null);
 		boolean switch1=false;
 		boolean switch2=false;
 		String cmd1="add task1 :It is a float task";
@@ -47,6 +65,7 @@ public class IntegrationTest {
 		String cmd6="undo";
 		
 		Controller controller=Controller.getInstance();
+		
 		controller.executeCMD(cmd1);
 		controller.executeCMD(cmd2);
 		controller.executeCMD(cmd3);
@@ -72,7 +91,6 @@ public class IntegrationTest {
 		}
 		
 		assertTrue(switch1 && switch2);
-		
 	}
 
 }

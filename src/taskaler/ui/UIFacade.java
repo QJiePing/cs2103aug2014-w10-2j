@@ -72,10 +72,12 @@ public class UIFacade extends Application implements Observer {
     @Override
     public void start(Stage stage) {
         try {
-            userDefaultView = (String) JOptionPane.showInputDialog(null,
+            /*userDefaultView = (String) JOptionPane.showInputDialog(null,
                     "Choose a default view", "Default View Option",
                     JOptionPane.INFORMATION_MESSAGE, null,
                     DEFAULT_VIEW_OPTIONS, DEFAULT_VIEW_OPTIONS[0]);
+                    */
+            
             stage.getIcons().add(
                     new Image(getClass().getResourceAsStream(ICON_PNG)));
             stage.setTitle(TITLE);
