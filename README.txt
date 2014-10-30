@@ -87,7 +87,32 @@ editTime(String taskID, String startTime, String endTime): Task
 viewList() : void
 viewCal() : void
 undo() : void
-simpleSearch(String key) : ArrayList<Task>
+
+=====
+SearchLogic
+=====
+find(String tagTypeFIND, String paramFIND): ArrayList<Task> 
+
+findByWorkload(String paramFIND): ArrayList<Task>				//return all the tasks match the same workload as paramFIND
+incompleteWorkLoadSearch(String paramFIND): ArrayList<Task>		//return all the incomplete tasks match the same workload as paramFIND
+completedWorkLoadSearch(String paramFIND): ArrayList<Task>		//return all the completed tasks match the same workload as paramFIND
+
+findByDeadLine(String paramFIND): ArrayList<Task>
+incompleteDeadLineSearch(String paramFIND): ArrayList<Task>
+completedDeadLineSearch(String paramFIND): ArrayList<Task>
+
+findByKeyword(String paramFIND): ArrayList<Task>
+incompleteKeywordSearch(String paramFIND): ArrayList<Task>
+completedKeywordSearch(String paramFIND): ArrayList<Task>
+
+findByMonthAndYear(String monthFind, String yearFind): ArrayList<Task>
+IncompleteMonthAndYearSearch(String monthFind, String yearFind): ArrayList<Task>
+completedMonthAndYearSearch(String monthFind, String yearFind) ArrayList<Task>
+
+findByID(String taskID): Task
+findTaskByID(String taskID): int
+
+
 
 =======
 Storage
