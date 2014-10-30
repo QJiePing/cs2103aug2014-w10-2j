@@ -336,7 +336,7 @@ public class TaskList implements Collection<Task> {
     	if(numOfIncompleteTasks == common.DEFAULT_NUM_OF_INCOMPLETE) {
     		if(this != null && this.size() != 0) {
 				for (int i = 0; i < this.size(); i++) {
-					if (this.get(i).getTaskStatus()) {
+					if (!this.get(i).getTaskStatus()) {
 						numOfIncompleteTasks++;
 					}
 				}

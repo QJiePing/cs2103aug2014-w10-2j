@@ -1,93 +1,33 @@
 {
   "floatArr": [
     {
-      "_taskName": "add",
+      "_taskName": "sad",
       "_taskID": "1",
       "_taskStatus": false,
       "_creationDate": {
         "year": 2014,
         "month": 9,
         "dayOfMonth": 30,
-        "hourOfDay": 22,
-        "minute": 20,
-        "second": 52
+        "hourOfDay": 23,
+        "minute": 51,
+        "second": 45
       },
-      "_taskWorkLoad": "HIGH",
+      "_taskWorkLoad": "NONE",
       "_taskDescription": ""
     },
     {
       "_taskName": "sad",
       "_taskID": "2",
-      "_taskStatus": true,
-      "_creationDate": {
-        "year": 2014,
-        "month": 9,
-        "dayOfMonth": 30,
-        "hourOfDay": 22,
-        "minute": 21,
-        "second": 4
-      },
-      "_taskWorkLoad": "MEDIUM",
-      "_taskDescription": ""
-    },
-    {
-      "_taskName": "a",
-      "_taskID": "3",
       "_taskStatus": false,
       "_creationDate": {
         "year": 2014,
         "month": 9,
         "dayOfMonth": 30,
-        "hourOfDay": 22,
-        "minute": 21,
-        "second": 13
+        "hourOfDay": 23,
+        "minute": 51,
+        "second": 47
       },
-      "_taskWorkLoad": "LOW",
-      "_taskDescription": ""
-    },
-    {
-      "_taskName": "sa",
-      "_taskID": "4",
-      "_taskStatus": false,
-      "_creationDate": {
-        "year": 2014,
-        "month": 9,
-        "dayOfMonth": 30,
-        "hourOfDay": 22,
-        "minute": 21,
-        "second": 20
-      },
-      "_taskWorkLoad": "HIGH",
-      "_taskDescription": ""
-    },
-    {
-      "_taskName": "sadjoasjdi",
-      "_taskID": "5",
-      "_taskStatus": true,
-      "_creationDate": {
-        "year": 2014,
-        "month": 9,
-        "dayOfMonth": 30,
-        "hourOfDay": 22,
-        "minute": 21,
-        "second": 26
-      },
-      "_taskWorkLoad": "MEDIUM",
-      "_taskDescription": ""
-    },
-    {
-      "_taskName": "sadjasjdoajda",
-      "_taskID": "6",
-      "_taskStatus": false,
-      "_creationDate": {
-        "year": 2014,
-        "month": 9,
-        "dayOfMonth": 30,
-        "hourOfDay": 22,
-        "minute": 21,
-        "second": 32
-      },
-      "_taskWorkLoad": "LOW",
+      "_taskWorkLoad": "NONE",
       "_taskDescription": ""
     }
   ],
