@@ -99,7 +99,11 @@ public class TaskPaneController extends BorderPane implements IController {
      */
     public void populateDetails(TaskPaneModel model) {
         lblTaskID.setText(model.taskID);
-        lblStatus.setText(model.taskStatus);
+        if(model.taskStatus){
+            lblStatus.setText(TaskPaneModel.DONE_VALUE);
+        }else{
+            lblStatus.setText(TaskPaneModel.NOT_DONE_VALUE);
+        }
         lblDueBy.setText(model.taskDueDate);
         txtTaskDescription.setText(model.taskDescription);
         

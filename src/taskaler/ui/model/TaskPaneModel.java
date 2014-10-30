@@ -22,6 +22,8 @@ public class TaskPaneModel implements IModel {
     public static final String TASK_STATUS_ATTRIBUTE = "TASKSTATUS";
     public static final String TASK_ID_ATTRIBUTE = "TASKID";
     public static final String TASK_NAME_ATTRIBUTE = "TASKNAME";
+    public static final String NOT_DONE_VALUE = "NOT DONE";
+    public static final String DONE_VALUE = "DONE";
 
     public String taskName;
     public String taskID;
@@ -49,7 +51,11 @@ public class TaskPaneModel implements IModel {
         result.put(VIEW_ATTRIBUTE, VIEW_TASK_PANE);
         result.put(TASK_NAME_ATTRIBUTE, taskName);
         result.put(TASK_ID_ATTRIBUTE, taskID);
-        result.put(TASK_STATUS_ATTRIBUTE, taskStatus);
+        if(taskStatus){
+            result.put(TASK_STATUS_ATTRIBUTE, DONE_VALUE);
+        }else{
+            result.put(TASK_STATUS_ATTRIBUTE, NOT_DONE_VALUE);
+        }
         result.put(TASK_DUE_DATE_ATTRIBUTE, taskDueDate);
         result.put(TASK_WORKLOAD_ATTRIBUTE, taskWorkload + common.EMPTY_STRING);
         result.put(TASK_DESCRIPTION_ATTRIBUTE, taskDescription);

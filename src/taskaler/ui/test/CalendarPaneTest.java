@@ -77,7 +77,7 @@ public class CalendarPaneTest {
         RepeatedTask task2 = new RepeatedTask("Test on repeated task", "2",
                 true, Calendar.getInstance(), "High",
                 "This is a test repeated task", Calendar.getInstance(),
-                deadline, listOfTestDays, deadline, 1);
+                deadline, null, listOfTestDays, deadline, 1);
 
         DeadLineTask task3 = new DeadLineTask("Test on Deadline", "3",
                 true, Calendar.getInstance(), "medium",
