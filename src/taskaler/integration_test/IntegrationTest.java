@@ -10,9 +10,11 @@ import taskaler.storage.Storage;
 import taskaler.ui.test.JavaFXThreadingRule;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.application.Platform;
+import javafx.stage.Stage;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,7 +34,7 @@ public class IntegrationTest {
 	}*/
 	@Before
 	public void run(){
-	    
+	    //SpringBoard.main(null);
 	}
 	
 	@After
@@ -54,18 +56,22 @@ public class IntegrationTest {
 	 */
 	@Test
 	public void test1() {
-	    SpringBoard.main(null);
+	    
 		boolean switch1=false;
 		boolean switch2=false;
 		String cmd1="add task1 :It is a float task";
 		String cmd2="add task2 :It is a float task2";
 		String cmd3="add task3 :It is a deadline task, 29/10/2014, 2";
-		String cmd4="edit 3 changedTask3";
+		String cmd4="edit changedTask3";
 		String cmd5="delete 1";
 		String cmd6="undo";
 		
 		Controller controller=Controller.getInstance();
-		
+		try {
+            controller.start(new Stage());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
 		controller.executeCMD(cmd1);
 		controller.executeCMD(cmd2);
 		controller.executeCMD(cmd3);
@@ -90,7 +96,7 @@ public class IntegrationTest {
 			}
 		}
 		
-		assertTrue(switch1 && switch2);
+		assertTrue((switch1 && switch2));
 	}
 
 }
