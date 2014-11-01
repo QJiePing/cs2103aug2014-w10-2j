@@ -82,6 +82,12 @@ public class PastHistory implements Observer {
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
+			case "DATE":
+				message = message
+						+ String.format("Modified date for Task %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
 
 			case "UNDO":
 				message = message
