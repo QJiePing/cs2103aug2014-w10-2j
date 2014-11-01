@@ -91,6 +91,11 @@ public class Undo implements Observer {
             result = "ADD";
             break;
         case "EDIT":
+        case "DATE":
+        case "COMPLETE":
+        case "WORKLOAD":
+        case "REPEAT":
+        case "TIME":
             result = "EDIT";
             break;
         }
