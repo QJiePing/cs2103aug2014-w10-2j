@@ -49,12 +49,12 @@ public class OPLogic extends Observable {
      */
     public Task addTask(Task t){
         TaskList.getInstance().add(t);
-        notifyObservers("UNDO", t);
         
         if(!t.getTaskStatus()) {
         	TaskList.getInstance().incrementNumOfIncomplete();
         }
-        
+
+        notifyObservers("UNDO", t);
         return t;
     }
     
@@ -74,10 +74,10 @@ public class OPLogic extends Observable {
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
         
-        notifyObservers("UNDO", taskToBeRemoved);
         if(!taskToBeRemoved.getTaskStatus()) {
         	TaskList.getInstance().decrementNumOfIncomplete();
         }
+        notifyObservers("UNDO", taskToBeRemoved);
         return t;
     }
     
@@ -98,7 +98,6 @@ public class OPLogic extends Observable {
         Task oldTask = TaskList.getInstance().remove(taskIDIndex);
         TaskList.getInstance().add(t);
         
-        notifyObservers("UNDO", oldTask);
         
         if(t.getTaskStatus() != oldTask.getTaskStatus()) {
         	if(!oldTask.getTaskStatus()) {
@@ -107,6 +106,7 @@ public class OPLogic extends Observable {
                 TaskList.getInstance().incrementNumOfIncomplete();
             }
         }
+        notifyObservers("UNDO", oldTask);
         return oldTask;
     }
     
@@ -169,8 +169,8 @@ public class OPLogic extends Observable {
             }
             
             TaskList.getInstance().add(newTask);
-            notifyObservers("ADD", newTask);
             TaskList.getInstance().incrementNumOfIncomplete();
+            notifyObservers("ADD", newTask);
 
             return newTask;
         }
@@ -210,10 +210,10 @@ public class OPLogic extends Observable {
         }
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
-        notifyObservers("DELETE", taskToBeRemoved);
         if(!taskToBeRemoved.getTaskStatus()) {
         	TaskList.getInstance().decrementNumOfIncomplete();
         }
+        notifyObservers("DELETE", taskToBeRemoved);
         return taskToBeRemoved;
 
     }
@@ -341,10 +341,6 @@ public class OPLogic extends Observable {
         	//repeated task "zone"
         	((RepeatedTask) newTask).setEndRepeatedDate(newDeadLine);
         }
-
-        notifyObservers("EDIT", newTask);
-
-        
 
         return newTask;
     }
@@ -549,9 +545,10 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
-
+        Task oldTask = TaskList.getInstance().get(taskIDIndex).clone();
+        
         toggleStatus(taskIDIndex);
+        notifyObservers("EDIT", oldTask);
         
         return TaskList.getInstance().get(taskIDIndex);
     }

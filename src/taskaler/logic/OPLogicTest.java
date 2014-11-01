@@ -216,6 +216,7 @@ public class OPLogicTest {
 		System.out.println("16 " + TaskList.getInstance().getNumOfIncomplete());
 		
 		
+		
 		OPLogic.getInstance().setRepeat("2", "1 DAY", "28/10/2014", null);
 		System.out.println(((RepeatedTask) search.findByID(taskID)).getStartTime().getTime());
 		System.out.println(((RepeatedTask) search.findByID(taskID)).getEndTime().getTime());
