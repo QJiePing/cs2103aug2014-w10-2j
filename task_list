@@ -2,8 +2,48 @@
   "floatArr": [
     {
       "_taskName": "sad",
-      "_taskID": "1",
+      "_taskID": "3",
+      "_taskStatus": true,
+      "_creationDate": {
+        "year": 2014,
+        "month": 10,
+        "dayOfMonth": 1,
+        "hourOfDay": 17,
+        "minute": 48,
+        "second": 41
+      },
+      "_taskWorkLoad": "NONE",
+      "_taskDescription": ""
+    },
+    {
+      "_taskName": "sad",
+      "_taskID": "5",
       "_taskStatus": false,
+      "_creationDate": {
+        "year": 2014,
+        "month": 10,
+        "dayOfMonth": 1,
+        "hourOfDay": 18,
+        "minute": 44,
+        "second": 50
+      },
+      "_taskWorkLoad": "NONE",
+      "_taskDescription": ""
+    }
+  ],
+  "DeadLineArr": [
+    {
+      "_deadLine": {
+        "year": 2014,
+        "month": 10,
+        "dayOfMonth": 22,
+        "hourOfDay": 0,
+        "minute": 0,
+        "second": 0
+      },
+      "_taskName": "sad",
+      "_taskID": "1",
+      "_taskStatus": true,
       "_creationDate": {
         "year": 2014,
         "month": 9,
@@ -14,23 +54,299 @@
       },
       "_taskWorkLoad": "NONE",
       "_taskDescription": ""
-    },
+    }
+  ],
+  "RepeatedArr": [
     {
-      "_taskName": "sad",
-      "_taskID": "2",
+      "_pattern": "Daily",
+      "_repeatedDate": [
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 1,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 2,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 3,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 4,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 5,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 6,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 7,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 8,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 9,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 10,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 11,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 12,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 13,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 14,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 15,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 16,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 17,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 18,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 19,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 20,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 21,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 22,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 23,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 24,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 25,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 26,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 27,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 28,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 29,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 10,
+          "dayOfMonth": 30,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        },
+        {
+          "year": 2014,
+          "month": 11,
+          "dayOfMonth": 1,
+          "hourOfDay": 18,
+          "minute": 3,
+          "second": 51
+        }
+      ],
+      "_endRepeatedDate": {
+        "year": 2014,
+        "month": 11,
+        "dayOfMonth": 1,
+        "hourOfDay": 18,
+        "minute": 3,
+        "second": 51
+      },
+      "_collectionID": 1,
+      "_taskName": "go home early",
+      "_taskID": "4",
       "_taskStatus": false,
+      "_taskStartTime": {
+        "year": 2014,
+        "month": 10,
+        "dayOfMonth": 1,
+        "hourOfDay": 18,
+        "minute": 3,
+        "second": 51
+      },
+      "_taskEndTime": {
+        "year": 2014,
+        "month": 10,
+        "dayOfMonth": 1,
+        "hourOfDay": 18,
+        "minute": 3,
+        "second": 51
+      },
       "_creationDate": {
         "year": 2014,
-        "month": 9,
-        "dayOfMonth": 30,
-        "hourOfDay": 23,
-        "minute": 51,
-        "second": 47
+        "month": 10,
+        "dayOfMonth": 1,
+        "hourOfDay": 17,
+        "minute": 48,
+        "second": 57
       },
       "_taskWorkLoad": "NONE",
       "_taskDescription": ""
     }
-  ],
-  "DeadLineArr": [],
-  "RepeatedArr": []
+  ]
 }

@@ -50,6 +50,11 @@ public class OPLogic extends Observable {
     public Task addTask(Task t){
         TaskList.getInstance().add(t);
         notifyObservers("UNDO", t);
+        
+        if(!t.getTaskStatus()) {
+        	TaskList.getInstance().incrementNumOfIncomplete();
+        }
+        
         return t;
     }
     
@@ -70,6 +75,9 @@ public class OPLogic extends Observable {
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
         
         notifyObservers("UNDO", taskToBeRemoved);
+        if(!taskToBeRemoved.getTaskStatus()) {
+        	TaskList.getInstance().decrementNumOfIncomplete();
+        }
         return t;
     }
     
@@ -91,6 +99,14 @@ public class OPLogic extends Observable {
         TaskList.getInstance().add(t);
         
         notifyObservers("UNDO", oldTask);
+        
+        if(t.getTaskStatus() != oldTask.getTaskStatus()) {
+        	if(!oldTask.getTaskStatus()) {
+            	TaskList.getInstance().decrementNumOfIncomplete();
+            } else {
+                TaskList.getInstance().incrementNumOfIncomplete();
+            }
+        }
         return oldTask;
     }
     
@@ -153,8 +169,8 @@ public class OPLogic extends Observable {
             }
             
             TaskList.getInstance().add(newTask);
-            TaskList.getInstance().incrementNumOfIncomplete();
             notifyObservers("ADD", newTask);
+            TaskList.getInstance().incrementNumOfIncomplete();
 
             return newTask;
         }
@@ -194,8 +210,10 @@ public class OPLogic extends Observable {
         }
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
-        TaskList.getInstance().decrementNumOfIncomplete();
         notifyObservers("DELETE", taskToBeRemoved);
+        if(!taskToBeRemoved.getTaskStatus()) {
+        	TaskList.getInstance().decrementNumOfIncomplete();
+        }
         return taskToBeRemoved;
 
     }
