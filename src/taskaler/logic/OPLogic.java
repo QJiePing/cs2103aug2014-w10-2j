@@ -320,7 +320,7 @@ public class OPLogic extends Observable {
         
         Task newTask = TaskList.getInstance().get(taskIDIndex);
         
-        notifyObservers("EDIT", newTask);
+        notifyObservers("DATE", newTask);
         
         if (taskIDIndex < TaskList.getInstance().floatToArray().size()) {
         	//float task "zone"
@@ -391,7 +391,7 @@ public class OPLogic extends Observable {
             return null;
         }
         
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("TIME", TaskList.getInstance().get(taskIDIndex));
         
         
         /*The code below can be simplified to:
@@ -463,7 +463,7 @@ public class OPLogic extends Observable {
             return null;
         }
         
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("REPEAT", TaskList.getInstance().get(taskIDIndex));
         
         ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startTime, endRepeatedTime, pattern);
         
@@ -520,7 +520,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("WORKLOAD", TaskList.getInstance().get(taskIDIndex));
 
         // assume workloadAtt is within the range of 1-3
         TaskList.getInstance().get(taskIDIndex)
@@ -548,7 +548,7 @@ public class OPLogic extends Observable {
         Task oldTask = TaskList.getInstance().get(taskIDIndex).clone();
         
         toggleStatus(taskIDIndex);
-        notifyObservers("EDIT", oldTask);
+        notifyObservers("COMPLETE", oldTask);
         
         return TaskList.getInstance().get(taskIDIndex);
     }
