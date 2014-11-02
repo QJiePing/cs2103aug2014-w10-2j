@@ -8,16 +8,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -26,10 +16,7 @@ import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.ui.controller.CalendarPaneController;
-import taskaler.ui.controller.RootController;
-import taskaler.ui.hook.DLLConnector;
 import taskaler.ui.model.CalendarPaneModel;
-import taskaler.ui.model.RootModel;
 
 /**
  * Unit Test Class to check the behaviour of Calendar Controller when given

@@ -9,7 +9,6 @@ import java.util.HashMap;
 import taskaler.ui.model.TextPaneModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 

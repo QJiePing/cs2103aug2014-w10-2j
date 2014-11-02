@@ -1,7 +1,5 @@
 package taskaler.controller;
 
-import java.util.ArrayList;
-
 /**
  * @author Brendan
  *

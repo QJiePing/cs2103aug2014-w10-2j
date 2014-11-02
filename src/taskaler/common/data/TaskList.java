@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import taskaler.common.util.parser.calendarToString;
 import taskaler.common.data.TaskComparator;
 import taskaler.logic.common;
 
@@ -57,7 +56,8 @@ public class TaskList implements Collection<Task> {
         return instance;
     }
 
-    public boolean add(Task task) {
+    @Override
+	public boolean add(Task task) {
         if(task == null){
             return false;
         }
@@ -82,7 +82,8 @@ public class TaskList implements Collection<Task> {
         return result;
     }
 
-    public boolean addAll(Collection<? extends Task> collection) {
+    @Override
+	public boolean addAll(Collection<? extends Task> collection) {
         if(collection == null){
             return false;
         }

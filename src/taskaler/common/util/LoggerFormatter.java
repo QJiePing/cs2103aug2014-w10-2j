@@ -13,7 +13,8 @@ public class LoggerFormatter extends Formatter {
     //
     private static final DateFormat dateFormat = new SimpleDateFormat("[dd/MM/yyyy] [hh:mm:ss]");
     
-    public String format(LogRecord record) {
+    @Override
+	public String format(LogRecord record) {
     	StringBuilder builder = new StringBuilder(1000);
         builder.append(dateFormat.format(new Date(record.getMillis()))).append(" - ");
         builder.append(formatMessage(record));
@@ -22,11 +23,13 @@ public class LoggerFormatter extends Formatter {
     }
 
  
-    public String getHead(Handler h) {
+    @Override
+	public String getHead(Handler h) {
         return super.getHead(h);
     }
  
-    public String getTail(Handler h) {
+    @Override
+	public String getTail(Handler h) {
         return super.getTail(h);
     }
 }

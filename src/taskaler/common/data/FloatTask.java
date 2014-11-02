@@ -44,6 +44,7 @@ public class FloatTask extends Task {
 	 * 
 	 * @return FloatTask
 	 */
+	@Override
 	public FloatTask clone() {
 		FloatTask newTask = new FloatTask(this.getTaskName(), this.getTaskID(),
 				this.getTaskStatus(), this.getTaskCreationDate(),
