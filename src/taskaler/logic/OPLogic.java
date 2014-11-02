@@ -330,7 +330,8 @@ public class OPLogic extends Observable {
         	newTask = new DeadLineTask(deletedTask.getTaskName(),
 					deletedTask.getTaskID(), common.TASK_INITIAL_STATUS,
 					deletedTask.getTaskCreationDate(), deletedTask.getTaskWorkLoad(),
-					deletedTask.getTaskDescription(), newDeadLine, null, null);
+					deletedTask.getTaskDescription(), newDeadLine, 
+					deletedTask.getStartTime(), deletedTask.getEndTime());
         	TaskList.getInstance().add(newTask);
         	
         } else if (taskIDIndex < TaskList.getInstance().floatToArray().size() + TaskList.getInstance().deadlineToArray().size()) {
@@ -394,17 +395,17 @@ public class OPLogic extends Observable {
         notifyObservers("TIME", TaskList.getInstance().get(taskIDIndex));
         
         
-        /*The code below can be simplified to:
+        //The code below can be simplified to:
         if(startTime != null){
             Calendar start = setNewCalendarDate(startTime, "time");
             TaskList.getInstance().get(taskIDIndex).changeStartTime(start);
+        }
         if(endTime != null){
             Calendar end = setNewCalendarDate(endTime, "time");
-            TaskList.getInstance().get(taskIDIndex).changeStartTime(end);
+            TaskList.getInstance().get(taskIDIndex).changeEndTime(end);
         }
         return TaskList.getInstance().get(taskIDIndex);
-        */
-
+        /*
         int startTimeHour, startTimeMins, endTimeHour, endTimeMins;
         
         if(startTime != null) {
@@ -429,7 +430,7 @@ public class OPLogic extends Observable {
         }
         
         return TaskList.getInstance().get(taskIDIndex);
-        
+        */
     }
     
     
@@ -447,12 +448,11 @@ public class OPLogic extends Observable {
      * @return return null if given task ID not exist, edited task otherwise
      */
     public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
-        Calendar startTime = setNewCalendarDate(startDate, "date");
-        Calendar endTime = setNewCalendarDate(startDate, "date");
-        Calendar endRepeatedTime = setNewCalendarDate(endDate, "date");
+        Calendar startRepeatedDate = setNewCalendarDate(startDate, "date");
+        Calendar endRepeatedDate = setNewCalendarDate(endDate, "date");
         if(endDate == null) {
         	//default end repeted time is 1 month.
-        	endRepeatedTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
+        	endRepeatedDate.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
         }
         RepeatedDate repeatedDate = new RepeatedDate();
         
@@ -465,7 +465,7 @@ public class OPLogic extends Observable {
         
         notifyObservers("REPEAT", TaskList.getInstance().get(taskIDIndex));
         
-        ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startTime, endRepeatedTime, pattern);
+        ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startRepeatedDate, endRepeatedDate, pattern);
         
         //remove task from float task list or deadline task list
         Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
@@ -475,7 +475,7 @@ public class OPLogic extends Observable {
 		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
 				deletedTask.getTaskStatus(), deletedTask.getTaskCreationDate(), 
 				deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
-				startTime, endTime, pattern, dates, endRepeatedTime, 
+				deletedTask.getStartTime(), deletedTask.getEndTime(), RepeatedTask.patternToEnglish(pattern), dates, endRepeatedDate, 
 				collectionID);
 		
 		TaskList.getInstance().add(newTask);

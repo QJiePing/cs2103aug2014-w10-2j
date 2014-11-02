@@ -105,6 +105,7 @@ public class Controller{
                 String endTime = params[2];
                 result = crudLogic.editTime(taskIDTIME, startTime, endTime);
                 ui.display(result);
+                break;
             case REPEAT:
                 String taskID_REPEAT = params[0];
                 String pattern = params[1];
@@ -172,7 +173,6 @@ public class Controller{
             Storage store=Storage.getInstance();
             store.writeToFile(TASK_LIST_FILE, list);
         } catch (Exception e) {
-            e.printStackTrace();
             handleError(e);
         } catch (Error e){
             handleError(e);

@@ -49,7 +49,7 @@ public class RepeatedTask extends Task {
 
 		super(taskName, taskID, taskStatus, creationDate, taskWorkLoad,
 				taskDescription, start, end);
-		this._pattern = patternToEnglish(pattern);
+		this._pattern = pattern;
 		this._repeatedDate = repeatedDate;
 		this._endRepeatedDate = endRepeatedDate;
 		this._collectionID = ID;
@@ -125,7 +125,7 @@ public class RepeatedTask extends Task {
 	        try{
 	            variable = Integer.parseInt(patternSplit[0]);
 	        } catch(Exception e){
-	            e.printStackTrace();
+	            return pattern;
 	        }
 	        switch(type){
 	        case "DAYOFWEEK":
