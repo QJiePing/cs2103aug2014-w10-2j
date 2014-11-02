@@ -172,6 +172,7 @@ public class Controller{
             Storage store=Storage.getInstance();
             store.writeToFile(TASK_LIST_FILE, list);
         } catch (Exception e) {
+            e.printStackTrace();
             handleError(e);
         } catch (Error e){
             handleError(e);

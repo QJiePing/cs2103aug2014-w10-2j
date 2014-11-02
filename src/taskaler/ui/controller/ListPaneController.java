@@ -5,6 +5,7 @@ package taskaler.ui.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -16,9 +17,15 @@ import taskaler.common.util.parser.calendarToString;
 import taskaler.ui.model.ListPaneModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  * Class that acts as the controller for ListPaneView FXML. This class renders a
@@ -28,6 +35,10 @@ import javafx.scene.text.Text;
  *
  */
 public class ListPaneController extends TitledPane implements IController {
+
+    private static final String ROW_COLOR = "#FFFFFF";
+
+    private static final String ALT_ROW_COLOR = "#66CCFF";
 
     // Current model associated with this controller
     private ListPaneModel currentModel;
@@ -45,7 +56,7 @@ public class ListPaneController extends TitledPane implements IController {
     private TitledPane paneListView;
 
     @FXML
-    private ListView<Text> listBody;
+    private GridPane gridList;
 
     /**
      * Default constructor
@@ -94,47 +105,92 @@ public class ListPaneController extends TitledPane implements IController {
      */
     private void populateList(ArrayList<Task> list) {
         if (list == null || list.size() < 1) {
-            listBody.getItems().add(new Text(MSG_NOTHING_TO_DISPLAY));
+            Label statusLabel = new Label(MSG_NOTHING_TO_DISPLAY);
+            statusLabel.setPrefWidth(400.0);
+            statusLabel.setMinWidth(400.0);
+            statusLabel.setAlignment(Pos.CENTER);
+            statusLabel.setStyle("-fx-background-color: white;");
+            gridList.add(statusLabel, 0, 1, 4, 1);
             return;
         }
 
-        ArrayList<Text> resultFloating = new ArrayList<Text>();
-        ArrayList<Text> resultRepeated = new ArrayList<Text>();
-        ArrayList<Text> resultDeadline = new ArrayList<Text>();
-        
-        resultFloating.add(new Text("FLOATING TASKS"));
-        resultRepeated.add(new Text("REPEATED TASKS"));
-        resultDeadline.add(new Text("DEADLINE TASKS"));
+        ArrayList<FloatTask> resultFloating = new ArrayList<FloatTask>();
+        ArrayList<RepeatedTask> resultRepeated = new ArrayList<RepeatedTask>();
+        ArrayList<DeadLineTask> resultDeadline = new ArrayList<DeadLineTask>();
 
         for (Task t : list) {
-            String deadline = "";
             if (t instanceof FloatTask) {
-                deadline = calendarToString.parseDate(t.getTaskCreationDate());
+                resultFloating.add((FloatTask) t);
             } else if (t instanceof RepeatedTask) {
-                deadline = calendarToString.parseDate(((RepeatedTask) t)
-                        .getEndRepeatedDate());
+                resultRepeated.add((RepeatedTask) t);
             } else if (t instanceof DeadLineTask) {
-                deadline = calendarToString.parseDate(((DeadLineTask) t)
-                        .getDeadline());
+                resultDeadline.add((DeadLineTask) t);
             }
 
-            String temp = String.format(REG_TASK_DISPLAY, deadline,
-                    t.getTaskID(), t.getTaskName());
-            Text text = new Text(temp);
-            text.wrappingWidthProperty().setValue(MAX_TEXT_WIDTH);
-            
-            if (t instanceof FloatTask) {
-                resultFloating.add(text);
-            } else if (t instanceof RepeatedTask) {
-                resultRepeated.add(text);
-            } else if (t instanceof DeadLineTask) {
-                resultDeadline.add(text);
-            }
-            
         }
-        resultFloating.addAll(resultRepeated);
-        resultFloating.addAll(resultDeadline);
-        listBody.getItems().addAll(resultFloating);
+        insertRows(resultFloating, resultRepeated, resultDeadline);
+    }
+
+    private void insertRows(ArrayList<FloatTask> floatingTaskList,
+            ArrayList<RepeatedTask> repeatedTaskList,
+            ArrayList<DeadLineTask> deadlineTaskList) {
+        int result = insertRows("Floating Tasks", 1, floatingTaskList, ALT_ROW_COLOR);
+        result = insertRows("Deadline Tasks", result, deadlineTaskList, ROW_COLOR);
+        insertRows("Repeated Tasks", result, repeatedTaskList, ALT_ROW_COLOR);
+
+    }
+
+    private <T> int insertRows(String category, int startIndex,
+            ArrayList<T> taskList, String color) {
+        if(taskList.size() < 1){
+            return startIndex;
+        }
+        Label categoryLabel = new Label(category.substring(0, 1));
+        categoryLabel.setFont(new Font("Cambria", 14));
+        categoryLabel.setStyle("-fx-background-color: "+ color + ";");
+        //categoryLabel.setRotate(-90.0);
+        //categoryLabel.setTranslateY(-50);
+        categoryLabel.setAlignment(Pos.CENTER);
+        int span = taskList.size();
+        categoryLabel.setPrefWidth(30);
+        categoryLabel.setPrefHeight(17* span);
+        GridPane.setRowSpan(categoryLabel, span);
+        gridList.add(categoryLabel, 0, startIndex, 1, span);
+        
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = (Task) taskList.get(i);
+            Label id = new Label(currentTask.getTaskID());
+            id.setPrefWidth(40);
+            id.setAlignment(Pos.CENTER);
+            Label name = new Label(currentTask.getTaskName());
+            name.setPrefWidth(247);
+            name.setAlignment(Pos.CENTER);
+            
+            Label date = new Label("-");
+            date.setPrefWidth(83);
+            date.setAlignment(Pos.CENTER);
+            if(currentTask instanceof RepeatedTask){
+                RepeatedTask taskHolder = (RepeatedTask) currentTask;
+                String repeatPattern = taskHolder.getPattern();
+                date.setText(repeatPattern);
+            }else if(currentTask instanceof DeadLineTask){
+                DeadLineTask taskHolder = (DeadLineTask) currentTask;
+                Calendar deadline = taskHolder.getDeadline();
+                date.setText(calendarToString.parseDate(deadline));
+            }
+            if( (startIndex + i) % 2 == 0){
+                color = ALT_ROW_COLOR;
+            }else{
+                color = ROW_COLOR;
+            }
+            date.setStyle("-fx-background-color: "+ color + ";");
+            name.setStyle("-fx-background-color: "+ color + ";");
+            id.setStyle("-fx-background-color: "+ color + ";");
+            gridList.add(id, 1, startIndex + i);
+            gridList.add(date, 2, startIndex + i);
+            gridList.add(name, 3, startIndex + i);
+        }
+        return startIndex + span;
     }
 
     @Override

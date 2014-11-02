@@ -27,6 +27,9 @@ import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
 import taskaler.ui.model.TaskPaneModel;
 import taskaler.ui.model.TextPaneModel;
+import taskaler.common.data.DeadLineTask;
+import taskaler.common.data.FloatTask;
+import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
 import taskaler.controller.Controller;
@@ -266,12 +269,34 @@ public class RootController extends BorderPane implements IController {
     public void displayTask(Task t) throws IOException {
         anchorPaneDisplay.getChildren().clear();
         TaskPaneModel model = new TaskPaneModel();
+        model.task = t;
         model.taskName = t.getTaskName();
         model.taskID = t.getTaskID();
         model.taskStatus = t.getTaskStatus();
-        model.taskDueDate = calendarToString.parseDate(t.getTaskCreationDate());
         model.taskWorkload = parseWorkload(t.getTaskWorkLoad());
         model.taskDescription = t.getTaskDescription();
+
+        if (t.getStartTime() != null) {
+            model.taskStartTime = calendarToString.parseDate(t.getStartTime(),
+                    "HH:mm");
+        }
+
+        if (t.getEndTime() != null) {
+            model.taskEndTime = calendarToString.parseDate(t.getEndTime(),
+                    "HH:mm");
+        }
+        if (t instanceof FloatTask) {
+            model.taskDate = calendarToString
+                    .parseDate(t.getTaskCreationDate());
+        } else if (t instanceof DeadLineTask) {
+            model.taskDate = calendarToString.parseDate(((DeadLineTask) t)
+                    .getDeadline());
+        } else if (t instanceof RepeatedTask) {
+            model.taskDate = calendarToString.parseDate(((RepeatedTask) t)
+                    .getEndRepeatedDate());
+            model.taskPattern = RepeatedTask
+                    .patternToEnglish(((RepeatedTask) t).getPattern());
+        }
         TaskPaneController pane = new TaskPaneController(model);
         anchorPaneDisplay.getChildren().add(pane);
 

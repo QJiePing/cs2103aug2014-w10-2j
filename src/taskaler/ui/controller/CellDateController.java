@@ -55,18 +55,6 @@ public class CellDateController extends AnchorPane implements IController {
     @FXML
     private Rectangle rectangleRed;
 
-    @FXML
-    private Rectangle rectangleGreyDisable;
-
-    @FXML
-    private Rectangle rectangleGreenDisable;
-
-    @FXML
-    private Rectangle rectangleOrangeDisable;
-
-    @FXML
-    private Rectangle rectangleRedDisable;
-    
     /**
      * Overloaded constructor
      * 
@@ -105,17 +93,14 @@ public class CellDateController extends AnchorPane implements IController {
             boolean isGreenVisible = false;
             boolean isOrangeVisible = false;
             boolean isRedVisible = false;
-            if ((workloadFilter & common.RECTANGLE_COLOR_GREY) > 0) {
-                isGreyVisible = true;
-            }
-            if ((workloadFilter & common.RECTANGLE_COLOR_GREEN) > 0) {
-                isGreenVisible = true;
-            }
-            if ((workloadFilter & common.RECTANGLE_COLOR_ORANGE) > 0) {
-                isOrangeVisible = true;
-            }
-            if ((workloadFilter & common.RECTANGLE_COLOR_RED) > 0) {
+            if (workloadFilter > common.RECTANGLE_COLOR_RED) {
                 isRedVisible = true;
+            } else if (workloadFilter > common.RECTANGLE_COLOR_ORANGE) {
+                isOrangeVisible = true;
+            } else if (workloadFilter > common.RECTANGLE_COLOR_GREEN) {
+                isGreenVisible = true;
+            } else {
+                isGreyVisible = true;
             }
 
             setNumberOfTasks(totalNumberOfTasks);
@@ -165,12 +150,7 @@ public class CellDateController extends AnchorPane implements IController {
         rectangleGreen.setVisible(false);
         rectangleOrange.setVisible(false);
         rectangleRed.setVisible(false);
-        
-        rectangleGreyDisable.setVisible(true);
-        rectangleGreenDisable.setVisible(true);
-        rectangleOrangeDisable.setVisible(true);
-        rectangleRedDisable.setVisible(true);
-        
+
     }
 
     /**
@@ -206,16 +186,13 @@ public class CellDateController extends AnchorPane implements IController {
         switch (color) {
         case common.RECTANGLE_COLOR_GREY:
             rectangleGrey.setVisible(isVisible);
-            rectangleGreyDisable.setVisible(!isVisible);
         case common.RECTANGLE_COLOR_GREEN:
             rectangleGreen.setVisible(isVisible);
-            rectangleGreenDisable.setVisible(!isVisible);
         case common.RECTANGLE_COLOR_ORANGE:
             rectangleOrange.setVisible(isVisible);
-            rectangleOrangeDisable.setVisible(!isVisible);
         case common.RECTANGLE_COLOR_RED:
             rectangleRed.setVisible(isVisible);
-            rectangleRedDisable.setVisible(!isVisible);
+
         }
     }
 

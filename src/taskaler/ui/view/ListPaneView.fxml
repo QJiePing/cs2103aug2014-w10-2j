@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -9,7 +10,22 @@
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
          <children>
-            <ListView fx:id="listBody" layoutX="83.0" layoutY="64.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="400.0" AnchorPane.bottomAnchor="-15.0" AnchorPane.leftAnchor="-15.0" AnchorPane.rightAnchor="-15.0" AnchorPane.topAnchor="-15.0" />
+            <GridPane fx:id="gridList" gridLinesVisible="true" layoutX="-1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="400.0">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="10.0" prefWidth="30.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="83.0" minWidth="-Infinity" prefWidth="83.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="247.0" minWidth="-Infinity" prefWidth="247.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="40.0" text="ID#" GridPane.columnIndex="1" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="82.0" text="Date" GridPane.columnIndex="2" />
+                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="247.0" text="Name" GridPane.columnIndex="3" />
+               </children>
+            </GridPane>
          </children></AnchorPane>
   </content>
    <font>

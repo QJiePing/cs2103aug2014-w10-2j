@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.chart.*?>
@@ -10,68 +11,124 @@
 
 <fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="150.0" prefWidth="150.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="100.0" prefWidth="125.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="125.0" prefWidth="125.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="ALWAYS" />
           <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="30.0" vgrow="ALWAYS" />
           <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="ALWAYS" />
             <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="ALWAYS" />
             <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="ALWAYS" />
             <RowConstraints maxHeight="26.0" minHeight="26.0" prefHeight="26.0" vgrow="ALWAYS" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="26.0" prefHeight="26.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="26.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="400.0">
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0">
                <children>
-                  <Label layoutX="16.0" prefHeight="26.0" text="Task Name:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0">
+                  <Label layoutX="16.0" prefHeight="26.0" text="Name:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblTaskName" layoutX="113.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="26.0" prefWidth="400.0" GridPane.rowIndex="1">
                <children>
-                  <Label text="Task Unique ID:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lblTaskID" layoutX="147.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label fx:id="lblTaskName" layoutX="56.0" layoutY="1.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="30.0" prefWidth="400.0" GridPane.rowIndex="2">
+            <StackPane layoutY="-61.0" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="6">
                <children>
-                  <Label text="Status:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lblStatus" layoutX="72.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="lblFloatingHeader" text="Created on:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblDeadlineHeader" layoutX="10.0" layoutY="10.0" text="Due by:" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblRepeatHeader" layoutX="22.0" layoutY="9.0" text="Repeat until:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </StackPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="7">
+               <children>
+                  <Label fx:id="lblDate" layoutX="79.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
                <children>
-                  <Label text="Creation on:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0">
+                  <Label text="Workload:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblDueBy" layoutX="79.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="163.0" prefWidth="400.0" GridPane.rowIndex="9">
+               <children>
+                  <TitledPane animated="false" collapsible="false" layoutX="59.0" layoutY="12.0" prefWidth="400.0" text="Task Description" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <content>
+                      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0">
+                           <children>
+                              <TextArea fx:id="txtTaskDescription" editable="false" layoutX="14.0" layoutY="2.0" wrapText="true" AnchorPane.bottomAnchor="-15.0" AnchorPane.leftAnchor="-15.0" AnchorPane.rightAnchor="-15.0" AnchorPane.topAnchor="-15.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </TitledPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <children>
+                  <Label layoutX="-5.0" layoutY="-4.0" text="ID:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Label fx:id="lblTaskID" layoutX="14.0" layoutY="4.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="78.0" prefWidth="125.0" GridPane.columnIndex="2" GridPane.rowSpan="3">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="68.0" layoutX="-50.0" layoutY="-61.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="10.0" width="68.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="10.0" />
+                  <ImageView fx:id="imgCheck" fitHeight="78.0" fitWidth="100.0" layoutX="-73.0" layoutY="-42.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0">
+                     <image>
+                        <Image url="@/res/check.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <children>
+                  <Label fx:id="lblStatus" layoutX="21.0" prefWidth="80.0" text="Label" AnchorPane.leftAnchor="30.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
                <children>
-                  <Label text="Workload:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-                  <StackPane alignment="CENTER_LEFT" layoutX="3.0" layoutY="-69.0" prefHeight="26.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="106.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <StackPane alignment="CENTER_LEFT" layoutX="17.0" prefHeight="26.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label fx:id="lblLow" contentDisplay="RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="70.0" text="LOW" textFill="#9bbb59" visible="false">
                            <font>
@@ -137,20 +194,46 @@
                   </StackPane>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+            <AnchorPane prefHeight="30.0" prefWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <children>
-                  <TitledPane animated="false" collapsible="false" layoutX="59.0" layoutY="12.0" text="Task Description" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <TextArea fx:id="txtTaskDescription" editable="false" layoutX="14.0" layoutY="2.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                    </content>
+                  <Label layoutX="12.0" layoutY="-1.0" text="Start Time:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
-                  </TitledPane>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+               <children>
+                  <Label fx:id="lblStartTime" layoutY="5.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
+               <children>
+                  <Label text="End Time:" AnchorPane.leftAnchor="10.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="7">
+               <children>
+                  <Label fx:id="lblEndTime" layoutX="61.0" layoutY="5.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <children>
+                  <Label fx:id="lblPatternHeader" layoutX="11.0" layoutY="3.0" text="Repeat:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <children>
+                  <Label fx:id="lblPattern" layoutX="9.0" layoutY="5.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>
