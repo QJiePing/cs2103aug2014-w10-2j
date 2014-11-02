@@ -60,16 +60,12 @@ public final class ParserLibrary {
                 add(new String[]{"3","d.MMM.y"});
                 add(new String[]{"3","d-M-y"});
                 add(new String[]{"3","d-MMM-y"});
-                add(new String[]{"3","dMMMy"});
-                add(new String[]{"3","dMy"});
-                add(new String[]{"2","d/M"});
-                add(new String[]{"2","d/MMM"});
-                add(new String[]{"2","d.M"});
-                add(new String[]{"2","d.MMM"});
-                add(new String[]{"2","d-M"});
                 add(new String[]{"2","d-MMM"});
-                add(new String[]{"2","dMMM"});
-                add(new String[]{"3","dM"});
+                add(new String[]{"2","d/MMM"});
+                add(new String[]{"2","d.MMM"});
+                add(new String[]{"2","d/M"});
+                add(new String[]{"2","d.M"});
+                add(new String[]{"2","d-M"});
                 add(new String[]{"1","d"});
             }};
             
