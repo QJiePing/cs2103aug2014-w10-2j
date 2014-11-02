@@ -27,11 +27,11 @@ public class IntegrationTest {
     @Rule
     public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 
-/*	@AfterClass
+	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		File f= new File("task_list");
 		f.delete();
-	}*/
+	}
 	@Before
 	public void run(){
 	    //SpringBoard.main(null);
