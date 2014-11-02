@@ -148,23 +148,28 @@ public class CalendarPaneController extends BorderPane implements IController {
         for (int i = common.ZERO_INDEX; i < currentModel.currentTaskList.size(); i++) {
             Task currentTask = currentModel.currentTaskList.get(i);
             Calendar currentTime = Calendar.getInstance();
-            if(currentTask instanceof DeadLineTask){
+            if (currentTask instanceof DeadLineTask) {
                 currentTime = ((DeadLineTask) currentTask).getDeadline();
                 if (currentTime.get(Calendar.MONTH) == month) {
                     result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
-                    result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE]
+                    result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = result[currentTime
+                            .get(Calendar.DATE)][common.OFFSET_BY_ONE]
                             | mapStringToWorkload(currentTask.getTaskWorkLoad());
                 }
-            }else if(currentTask instanceof RepeatedTask){
+            } else if (currentTask instanceof RepeatedTask) {
                 RepeatedTask currentRepeated = (RepeatedTask) currentTask;
-                for(int j = common.ZERO_INDEX; j < currentRepeated.getRepeatedDate().size(); j++){
+                for (int j = common.ZERO_INDEX; j < currentRepeated
+                        .getRepeatedDate().size(); j++) {
                     currentTime = currentRepeated.getRepeatedDate().get(j);
                     if (currentTime.get(Calendar.MONTH) == month) {
                         result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
-                        result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE]
-                                | mapStringToWorkload(currentTask.getTaskWorkLoad());
+                        if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
+                                .getTaskWorkLoad())) {
+                            result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = mapStringToWorkload(currentTask
+                                    .getTaskWorkLoad());
+                        }
                     }
                 }
             }

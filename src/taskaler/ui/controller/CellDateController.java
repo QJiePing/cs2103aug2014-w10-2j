@@ -91,11 +91,11 @@ public class CellDateController extends AnchorPane implements IController {
             boolean isGreenVisible = false;
             boolean isOrangeVisible = false;
             boolean isRedVisible = false;
-            if (workloadFilter > common.RECTANGLE_COLOR_RED) {
+            if (workloadFilter == common.RECTANGLE_COLOR_RED) {
                 isRedVisible = true;
-            } else if (workloadFilter > common.RECTANGLE_COLOR_ORANGE) {
+            } else if (workloadFilter == common.RECTANGLE_COLOR_ORANGE) {
                 isOrangeVisible = true;
-            } else if (workloadFilter > common.RECTANGLE_COLOR_GREEN) {
+            } else if (workloadFilter == common.RECTANGLE_COLOR_GREEN) {
                 isGreenVisible = true;
             } else {
                 isGreyVisible = true;
