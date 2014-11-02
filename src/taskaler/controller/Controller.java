@@ -141,6 +141,9 @@ public class Controller{
                     ArrayList<Task> viewResult = findLogic.find(viewType,
                             viewParam);
                     ui.display(String.format(VIEW_DATE_MSG, viewParam), viewResult);
+                } else if(viewType.equals("UNDO")){
+                    String viewUndo = undo.stackToDisplay();
+                    ui.display("Actions last taken", viewUndo);
                 }
                 break;
             case FIND:
@@ -157,7 +160,7 @@ public class Controller{
                 break;
             case UNDO:
                 result = undo.undo();
-                ui.display(list.toArray(new ArrayList<Task>()));
+                ui.display("LIST", list.toArray(new ArrayList<Task>()));
                 ui.display("Undone last operation");
                 break;
             case GOTO:

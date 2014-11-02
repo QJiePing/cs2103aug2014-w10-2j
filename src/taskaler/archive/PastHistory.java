@@ -66,26 +66,56 @@ public class PastHistory implements Observer {
 			switch (currentRecord.getOp()) {
 			case "ADD":
 				message = message
-						+ String.format("Added new Task %s (ID: %s)\n",
+						+ String.format("Added new Task: %s (ID: %s)\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
 			case "DELETE":
 				message = message
-						+ String.format("Deleted Task %s (ID: %s)\n",
+						+ String.format("Deleted Task: %s (ID: %s)\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
 			case "EDIT":
 				message = message
-						+ String.format("Modified Task %s (ID: %s)\n",
+						+ String.format("Modified Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "DATE":
+				message = message
+						+ String.format("Modified date of Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "COMPLETE":
+				message = message
+						+ String.format("Complete the Task: %s (ID: %s)\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
 
+			case "WORKLOAD":
+				message = message
+						+ String.format("Change workload of Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "REPEAT":
+				message = message
+						+ String.format("set Task: %s (ID: %s) to be repeated task\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "TIME":
+				message = message
+						+ String.format("change the time of Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
 			case "UNDO":
 				message = message
-						+ String.format("Reverted Task %s (ID: %s)\n",
+						+ String.format("Reverted Task: %s (ID: %s)\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;

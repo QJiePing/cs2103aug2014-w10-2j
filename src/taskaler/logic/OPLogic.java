@@ -49,6 +49,11 @@ public class OPLogic extends Observable {
      */
     public Task addTask(Task t){
         TaskList.getInstance().add(t);
+        
+        if(!t.getTaskStatus()) {
+        	TaskList.getInstance().incrementNumOfIncomplete();
+        }
+
         notifyObservers("UNDO", t);
         return t;
     }
@@ -69,6 +74,9 @@ public class OPLogic extends Observable {
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
         
+        if(!taskToBeRemoved.getTaskStatus()) {
+        	TaskList.getInstance().decrementNumOfIncomplete();
+        }
         notifyObservers("UNDO", taskToBeRemoved);
         return t;
     }
@@ -90,6 +98,14 @@ public class OPLogic extends Observable {
         Task oldTask = TaskList.getInstance().remove(taskIDIndex);
         TaskList.getInstance().add(t);
         
+        
+        if(t.getTaskStatus() != oldTask.getTaskStatus()) {
+        	if(!oldTask.getTaskStatus()) {
+            	TaskList.getInstance().decrementNumOfIncomplete();
+            } else {
+                TaskList.getInstance().incrementNumOfIncomplete();
+            }
+        }
         notifyObservers("UNDO", oldTask);
         return oldTask;
     }
@@ -194,7 +210,9 @@ public class OPLogic extends Observable {
         }
 
         Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
-        TaskList.getInstance().decrementNumOfIncomplete();
+        if(!taskToBeRemoved.getTaskStatus()) {
+        	TaskList.getInstance().decrementNumOfIncomplete();
+        }
         notifyObservers("DELETE", taskToBeRemoved);
         return taskToBeRemoved;
 
@@ -302,7 +320,7 @@ public class OPLogic extends Observable {
         
         Task newTask = TaskList.getInstance().get(taskIDIndex);
         
-        notifyObservers("EDIT", newTask);
+        notifyObservers("DATE", newTask);
         
         if (taskIDIndex < TaskList.getInstance().floatToArray().size()) {
         	//float task "zone"
@@ -323,10 +341,6 @@ public class OPLogic extends Observable {
         	//repeated task "zone"
         	((RepeatedTask) newTask).setEndRepeatedDate(newDeadLine);
         }
-
-        notifyObservers("EDIT", newTask);
-
-        
 
         return newTask;
     }
@@ -377,7 +391,7 @@ public class OPLogic extends Observable {
             return null;
         }
         
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("TIME", TaskList.getInstance().get(taskIDIndex));
         
         
         /*The code below can be simplified to:
@@ -449,7 +463,7 @@ public class OPLogic extends Observable {
             return null;
         }
         
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("REPEAT", TaskList.getInstance().get(taskIDIndex));
         
         ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startTime, endRepeatedTime, pattern);
         
@@ -506,7 +520,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers("WORKLOAD", TaskList.getInstance().get(taskIDIndex));
 
         // assume workloadAtt is within the range of 1-3
         TaskList.getInstance().get(taskIDIndex)
@@ -531,9 +545,10 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
-
+        Task oldTask = TaskList.getInstance().get(taskIDIndex).clone();
+        
         toggleStatus(taskIDIndex);
+        notifyObservers("COMPLETE", oldTask);
         
         return TaskList.getInstance().get(taskIDIndex);
     }

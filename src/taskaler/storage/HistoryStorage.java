@@ -66,7 +66,7 @@ public class HistoryStorage {
 			Scanner reader = new Scanner(f);
 			String result = "";
 			while (reader.hasNextLine()) {
-				result += reader.nextLine() + "\n";
+				result = reader.nextLine() + "\n" + result;
 			}
 			reader.close();
 			return result.trim();
