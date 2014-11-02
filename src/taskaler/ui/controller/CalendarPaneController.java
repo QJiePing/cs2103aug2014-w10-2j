@@ -153,9 +153,11 @@ public class CalendarPaneController extends BorderPane implements IController {
                 if (currentTime.get(Calendar.MONTH) == month) {
                     result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
-                    result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = result[currentTime
-                            .get(Calendar.DATE)][common.OFFSET_BY_ONE]
-                            | mapStringToWorkload(currentTask.getTaskWorkLoad());
+                    if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
+                            .getTaskWorkLoad())) {
+                        result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = mapStringToWorkload(currentTask
+                                .getTaskWorkLoad());
+                    }
                 }
             } else if (currentTask instanceof RepeatedTask) {
                 RepeatedTask currentRepeated = (RepeatedTask) currentTask;
