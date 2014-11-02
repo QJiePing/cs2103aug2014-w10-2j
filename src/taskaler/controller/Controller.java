@@ -5,9 +5,6 @@ import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
 import taskaler.storage.Storage;
 import taskaler.ui.UIFacade;
-import taskaler.ui.model.CalendarPaneModel;
-import taskaler.ui.model.IModel;
-import taskaler.ui.model.TaskPaneModel;
 import taskaler.archive.PastHistory;
 import taskaler.archive.Undo;
 import taskaler.common.data.Task;
@@ -141,6 +138,9 @@ public class Controller{
                     ArrayList<Task> viewResult = findLogic.find(viewType,
                             viewParam);
                     ui.display(String.format(VIEW_DATE_MSG, viewParam), viewResult);
+                } else if(viewType.equals("UNDO")){
+                    String viewUndo = undo.stackToDisplay();
+                    ui.display("Actions last taken", viewUndo);
                 }
                 break;
             case FIND:
@@ -157,7 +157,7 @@ public class Controller{
                 break;
             case UNDO:
                 result = undo.undo();
-                ui.display(list.toArray(new ArrayList<Task>()));
+                ui.display("LIST", list.toArray(new ArrayList<Task>()));
                 ui.display("Undone last operation");
                 break;
             case GOTO:

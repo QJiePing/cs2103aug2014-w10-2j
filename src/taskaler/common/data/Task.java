@@ -132,6 +132,7 @@ public abstract class Task {
 	 * Abstract method to create a new task object with the same values To be
 	 * implemented by the subclass
 	 */
+	@Override
 	public abstract Task clone();
 
 	/**

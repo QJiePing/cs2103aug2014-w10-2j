@@ -148,7 +148,7 @@ public class OPLogicTest {
 		taskID = "2";
 		task = OPLogic.getInstance().editDate(taskID, "22/10/2014");
 		assertEquals("22/10/2014", calendarToString.parseDate(((DeadLineTask) search.findByID(taskID)).getDeadline()));
-		task = ((DeadLineTask) search.findByID(taskID));
+		task = (search.findByID(taskID));
 		
 		for(int i = 0; i < TaskList.getInstance().size(); i++) {
 			if(TaskList.getInstance().get(i) instanceof DeadLineTask) {
@@ -214,6 +214,7 @@ public class OPLogicTest {
 		task = OPLogic.getInstance().switchTag(taskID);
 		assertEquals(false, search.findByID(taskID).getTaskStatus());
 		System.out.println("16 " + TaskList.getInstance().getNumOfIncomplete());
+		
 		
 		
 		OPLogic.getInstance().setRepeat("2", "1 DAY", "28/10/2014", null);

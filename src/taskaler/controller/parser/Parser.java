@@ -535,6 +535,9 @@ public class Parser {
                 || paramString.equalsIgnoreCase("cal")
                 || paramString.equalsIgnoreCase("calendar")) {
             paramArray[viewTypeIndex] = "CALENDAR"; 
+        } else if(paramString.equalsIgnoreCase("undo") 
+                || paramString.equalsIgnoreCase("actions")){
+            paramArray[viewTypeIndex] = "UNDO";
         } else {
             int splitIndex = paramString.indexOf(":");
             if(splitIndex != INVALID_VALUE){

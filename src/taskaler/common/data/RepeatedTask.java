@@ -61,6 +61,7 @@ public class RepeatedTask extends Task {
 	 * 
 	 * @return RepeatedTask
 	 */
+	@Override
 	public RepeatedTask clone() {
 		RepeatedTask newTask = new RepeatedTask(this.getTaskName(),
 				this.getTaskID(), this.getTaskStatus(),

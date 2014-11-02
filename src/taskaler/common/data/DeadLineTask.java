@@ -51,6 +51,7 @@ public class DeadLineTask extends Task {
 	 * 
 	 * @return DeadLineTask
 	 */
+	@Override
 	public DeadLineTask clone() {
 		DeadLineTask newTask = new DeadLineTask(this.getTaskName(),
 				this.getTaskID(), this.getTaskStatus(),

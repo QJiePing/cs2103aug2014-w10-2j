@@ -24,8 +24,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import javax.swing.JOptionPane;
-
 import taskaler.archive.OperationRecord;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
@@ -95,7 +93,8 @@ public class UIFacade extends Application implements Observer {
             stage.sizeToScene();
 
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                public void handle(WindowEvent we) {
+                @Override
+				public void handle(WindowEvent we) {
                     DLLConnector.isStopped.set(true);
                 }
             });
@@ -119,7 +118,8 @@ public class UIFacade extends Application implements Observer {
     private void createCleanUp() {
         // TODO Implementation required
         Thread shutDownHook = new Thread() {
-            public void run() {
+            @Override
+			public void run() {
                 if (libraryLoaded != null) {
 
                 }

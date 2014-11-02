@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import taskaler.common.data.DeadLineTask;
 import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
-import taskaler.common.data.TaskList;
 import taskaler.controller.*;
 import taskaler.storage.Storage;
 import taskaler.ui.test.JavaFXThreadingRule;
@@ -13,13 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
