@@ -326,7 +326,7 @@ public class Parser {
         } else if (paramArray.length == 2) {
             paramDEADLINE[taskID_index] = getTaskID(commandString);
         } else {
-            throw new Exception("Invalid date syntax");
+            throw new Exception("Invalid date syntax, try: <dd/mm/yyyy>");
         }
         String dateInFormat = ParseAttribute.parseDate(date);
         paramDEADLINE[date_index] = dateInFormat;

@@ -47,14 +47,14 @@ public class ParserTest {
             //This is the testing for invalid syntax
             //Incomplete Add
             reset();
-            newParser.parseCMD("add hello:world!!, 20/november:1430-1530, 2", stateVariables);
+            newParser.parseCMD("add hello:world!!, :1430-1530, 2", stateVariables);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
             assertEquals(currentCMD, CmdType.ADD);
             assertEquals(currentParams.length, 6);
             assertEquals(currentParams[0], "hello");
             assertEquals(currentParams[1], "world!!");
-            assertEquals(currentParams[2], "20/11/2014");
+            assertEquals(currentParams[2], null);
             assertEquals(currentParams[3], "1430");
             assertEquals(currentParams[4], "1530");
             assertEquals(currentParams[5], "2");
@@ -224,7 +224,7 @@ public class ParserTest {
                 assertEquals(currentParams[0], null);
                 assertEquals(currentParams[1], null);
             } catch(Exception e){
-                assertEquals(e.getMessage(), "Invalid workload attribute syntax");
+                assertEquals(e.getMessage(), "Invalid workload attribute syntax, try: <1 or 2 or 3>");
             }
         }
         catch(Exception e){

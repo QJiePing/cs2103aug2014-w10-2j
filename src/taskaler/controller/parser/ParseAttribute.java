@@ -16,6 +16,9 @@ public class ParseAttribute {
      * @return String date in correct format
      */
     public static String parseDate(String paramDate) throws Exception{
+        if(paramDate.equals(null) || paramDate.equals("")){
+            return null;
+        }
         Calendar cal = Calendar.getInstance();
         int currentMonth = cal.get(Calendar.MONTH);
         int currentYear = cal.get(Calendar.YEAR);
