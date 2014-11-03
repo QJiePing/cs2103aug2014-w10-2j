@@ -117,6 +117,8 @@ public class RepeatedTask extends Task {
 	            return "Weekends";
 	        case "WEEKDAY":
 	            return "Weekdays"; 
+	        case "LAST":
+	            return "Every last day";
 	        }
 	    } else if(patternSplit.length == 2){
 	        String every = "Every ";

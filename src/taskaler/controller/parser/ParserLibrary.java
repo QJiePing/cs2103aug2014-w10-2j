@@ -25,6 +25,8 @@ public final class ParserLibrary {
                 put("repeat", CmdType.REPEAT);
                 put("setRepeat", CmdType.REPEAT);
                 put("workload", CmdType.WORKLOAD);
+                put("wl", CmdType.WORKLOAD);
+                put("priority", CmdType.WORKLOAD);
                 put("completed", CmdType.COMPLETION_TAG);
                 put("done", CmdType.COMPLETION_TAG);
                 put("view", CmdType.VIEW);
@@ -123,6 +125,8 @@ public final class ParserLibrary {
                 put("weekend", "WEEKEND");
                 put("weekday", "WEEKDAY");
                 put("weekdays", "WEEKDAY");
+                put("last", "LAST");
+                put("final", "LAST");
                 put("sunday", "1 DAYOFWEEK");
                 put("monday", "2 DAYOFWEEK");
                 put("tuesday", "3 DAYOFWEEK");

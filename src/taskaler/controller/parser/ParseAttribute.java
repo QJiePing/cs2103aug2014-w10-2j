@@ -25,12 +25,12 @@ public class ParseAttribute {
         
         String[] dateFormat = tryDateFormats(paramDate);
         int numOfParams = Integer.parseInt(dateFormat[NUM_OF_PARAMS_INDEX]);
-        Date date = (new SimpleDateFormat(dateFormat[FORMAT_INDEX])).parse(paramDate);
-        
+        Date date = null;
         if(numOfParams == 0){
-            throw new Exception("Invalid date syntax, try: <dd>/<mm>/<yyyy>");
+            throw new Exception("Invalid date syntax, try: <dd/mm/yyyy>");
         }
         else {
+            date = (new SimpleDateFormat(dateFormat[FORMAT_INDEX])).parse(paramDate);
             cal.setTime(date);
             if(numOfParams == 1){
                 cal.set(Calendar.MONTH, currentMonth);
@@ -161,7 +161,7 @@ public class ParseAttribute {
     public static String parsePattern(String pattern) throws Exception {
         String patternInSyntax = ParserLibrary.availablePatternSyntax.get(pattern);
         if(patternInSyntax == null){
-            throw new Exception("Invalid pattern syntax, try: wednesday");
+            throw new Exception("Invalid pattern syntax, try: wednesday, or weekly, or last");
         }
         else {
             return patternInSyntax;
