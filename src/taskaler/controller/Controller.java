@@ -1,6 +1,10 @@
-
+/**
+ * @author Brendan
+ *
+ */
 package taskaler.controller;
 
+import taskaler.configurations.Configuration;
 import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
 import taskaler.storage.Storage;
@@ -18,13 +22,10 @@ import java.util.HashMap;
 
 import javafx.stage.Stage;
 
-/**
- * @author Brendan
- *
- */
 public class Controller{
-
-    private static final String TASK_LIST_FILE = "task_list";
+    private static Configuration config = null;
+    
+    private static String TASK_LIST_FILE = null;
 
     private static UIFacade ui = null;
 
@@ -211,12 +212,23 @@ public class Controller{
         }
         return instance;
     }
-
+    
+    /**
+     * Accessor for the current config for Taskaler 
+     * 
+     * @return the instance of config
+     */
+    public static Configuration getConfig(){
+        return config;
+    }
+    
     /**
      * Private default constructor
      * 
      */
     private Controller() {
+        config = Configuration.getInstance();
+        TASK_LIST_FILE = config.getDefaultFileName();
         list = TaskList.getInstance();
         crudLogic = OPLogic.getInstance();
         findLogic = new SearchLogic();
@@ -246,6 +258,6 @@ public class Controller{
         // taskList = new ArrayList<Task>();
         // }
         ui.start(primaryStage);
-        ui.display(list.toArray(new ArrayList<Task>()));
+        ui.display(config.getDefaultView() ,list.toArray(new ArrayList<Task>()));
     }
 }

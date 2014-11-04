@@ -1,3 +1,8 @@
+/**
+ * @author Brendan Yong, A0108541M
+ *
+ */
+
 package taskaler.controller.parser;
 
 import static taskaler.controller.common.*;
@@ -6,10 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+
 public final class ParserLibrary {
     
     /**
