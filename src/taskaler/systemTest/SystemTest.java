@@ -35,6 +35,7 @@ public class SystemTest {
         if (f.exists()) {
             f.delete();
         }
+        controller = null;
     }
 
     @Before
