@@ -6,26 +6,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root fx:id="paneListView" animated="false" collapsible="false" contentDisplay="TEXT_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-padding: 0em;" text="Search Result" type="TitledPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="paneListView" animated="false" collapsible="false" contentDisplay="TEXT_ONLY" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-padding: 0em;" text="Search Result" type="TitledPane" wrapText="true" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="400.0">
          <children>
-            <GridPane fx:id="gridList" gridLinesVisible="true" layoutX="-1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="400.0">
-              <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="10.0" prefWidth="30.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="83.0" minWidth="-Infinity" prefWidth="83.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="247.0" minWidth="-Infinity" prefWidth="247.0" />
-              </columnConstraints>
-              <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="40.0" text="ID#" GridPane.columnIndex="1" />
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="82.0" text="Date" GridPane.columnIndex="2" />
-                  <Label alignment="CENTER" contentDisplay="TEXT_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="247.0" text="Name" GridPane.columnIndex="3" />
-               </children>
-            </GridPane>
+            <ScrollPane fx:id="scrollBody" focusTraversable="false" hbarPolicy="NEVER" layoutX="-1.5" layoutY="-0.5" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefViewportHeight="360.5" prefViewportWidth="401.0" prefWidth="400.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="-15.0" AnchorPane.leftAnchor="-15.0" AnchorPane.rightAnchor="-15.0" AnchorPane.topAnchor="-15.0">
+               <content>
+                  <GridPane fx:id="gridList" alignment="TOP_CENTER" focusTraversable="true" gridLinesVisible="true" layoutX="-1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="10.0" prefWidth="30.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="83.0" minWidth="-Infinity" prefWidth="83.0" />
+                        <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="247.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="40.0" text="ID#" GridPane.columnIndex="1" />
+                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="82.0" text="Date" GridPane.columnIndex="2" />
+                        <Label alignment="CENTER" contentDisplay="TEXT_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="247.0" text="Name" GridPane.columnIndex="3" />
+                     </children>
+                  </GridPane>
+               </content>
+            </ScrollPane>
          </children></AnchorPane>
   </content>
    <font>

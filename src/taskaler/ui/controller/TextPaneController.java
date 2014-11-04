@@ -44,6 +44,28 @@ public class TextPaneController extends TitledPane implements IController {
         update();
     }
 
+    /**
+     * Method to programmically scroll up the view
+     * 
+     */
+    public void scrollUp(){
+        if(txtBody.getHeight() < 400.0){
+            return;
+        }
+        
+    }
+    
+    /**
+     * Mehtod to programmically scroll down the view
+     * 
+     */
+    public void scrollDown(){
+        if(txtBody.getHeight() < 400.0){
+            return;
+        }
+        
+    }
+    
     @Override
     public void initialize(String FXML) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));

@@ -18,7 +18,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 
@@ -30,6 +34,8 @@ import javafx.scene.text.Font;
  *
  */
 public class ListPaneController extends TitledPane implements IController {
+
+    private static final double SCROLL_AMOUNT = 0.1;
 
     // Current model associated with this controller
     private ListPaneModel currentModel;
@@ -62,6 +68,9 @@ public class ListPaneController extends TitledPane implements IController {
 
     @FXML
     private GridPane gridList;
+    
+    @FXML
+    private ScrollPane scrollBody;
 
     /**
      * Default constructor
@@ -75,7 +84,9 @@ public class ListPaneController extends TitledPane implements IController {
         currentModel = model;
 
         initialize(common.FXML_LIST_PANE);
+        
         update();
+        
     }
 
     @Override
@@ -154,10 +165,32 @@ public class ListPaneController extends TitledPane implements IController {
                 + common.OFFSET_BY_ONE, floatingTaskList, ALT_ROW_COLOR);
         result = insertRows(DEADLINE_HEADER, result, deadlineTaskList,
                 ROW_COLOR);
-        insertRows(REPEAT_HEADER, result, repeatedTaskList, ALT_ROW_COLOR);
+        result = insertRows(REPEAT_HEADER, result, repeatedTaskList, ALT_ROW_COLOR);
 
     }
-
+    
+    /**
+     * Method to programmically scroll up the view
+     * 
+     */
+    public void scrollUp(){
+        if(scrollBody.getHeight() >= gridList.getHeight()){
+            //return;
+        }
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() - SCROLL_AMOUNT);
+    }
+    
+    /**
+     * Mehtod to programmically scroll down the view
+     * 
+     */
+    public void scrollDown(){
+        if(scrollBody.getHeight() >= gridList.getHeight()){
+            return;
+        }
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() + SCROLL_AMOUNT);
+    }
+    
     /**
      * Method to add a single list of tasks into the grid list
      * 
@@ -183,12 +216,15 @@ public class ListPaneController extends TitledPane implements IController {
         // categoryLabel.setTranslateY(-50);
         categoryLabel.setAlignment(Pos.CENTER);
         int span = taskList.size();
-
+        AnchorPane container = new AnchorPane();
         categoryLabel.setPrefWidth(CATEGORY_WIDTH);
         categoryLabel.setPrefHeight(MIN_CATEGORY_HEIGHT * span);
-
-        GridPane.setRowSpan(categoryLabel, span);
-        gridList.add(categoryLabel, common.ZERO_INDEX, startIndex, MIN_SPAN,
+        
+        AnchorPane.setTopAnchor(categoryLabel, 0.0);
+        AnchorPane.setBottomAnchor(categoryLabel, 0.0);
+        container.getChildren().add(categoryLabel);
+        GridPane.setRowSpan(container, span);
+        gridList.add(container, common.ZERO_INDEX, startIndex, MIN_SPAN,
                 span);
 
         for (int i = 0; i < taskList.size(); i++) {

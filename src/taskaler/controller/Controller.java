@@ -71,7 +71,7 @@ public class Controller{
                 break;
             case DELETE:
                 String taskID_DELETE = params[0];
-                if(taskID_DELETE.equalsIgnoreCase("all")){
+                if(taskID_DELETE.equalsIgnoreCase("all") && ui.showConfirmation()){
                     crudLogic.deleteAllTask();
                     ui.display("All tasks have been deleted.", 
                             list.toArray(new ArrayList<Task>()));

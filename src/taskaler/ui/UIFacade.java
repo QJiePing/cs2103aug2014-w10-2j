@@ -23,11 +23,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import taskaler.archive.OperationRecord;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.CommonLogger;
+import taskaler.configurations.Configuration;
 import taskaler.storage.Storage;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.hook.DLLConnector;
@@ -76,6 +76,7 @@ public class UIFacade extends Application implements Observer {
                     DEFAULT_VIEW_OPTIONS, DEFAULT_VIEW_OPTIONS[0]);
                     */
             
+            userDefaultView = Configuration.getInstance().getDefaultView();
             stage.getIcons().add(
                     new Image(getClass().getResourceAsStream(ICON_PNG)));
             stage.setTitle(TITLE);
@@ -343,5 +344,14 @@ public class UIFacade extends Application implements Observer {
             rootController.update(TaskList.getInstance().getNumOfIncomplete(),
                     TaskList.getInstance().floatToArray().size());
         }
+    }
+    
+    /**
+     * Public method to display the confirmation interface
+     * 
+     * @return True if the confirmation is received; False otherwise
+     */
+    public Boolean showConfirmation(){
+        return rootController.showConfirmation();
     }
 }
