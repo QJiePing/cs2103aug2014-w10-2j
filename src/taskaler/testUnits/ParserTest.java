@@ -1,3 +1,8 @@
+/**
+ * @author Brendan Yong, A0108541M
+ *
+ */
+
 package taskaler.testUnits;
 
 import static org.junit.Assert.*;
@@ -10,10 +15,7 @@ import taskaler.controller.parser.Parser;
 import java.util.Calendar;
 import java.util.HashMap;
 
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+
 public class ParserTest {
     private static Parser newParser;
 

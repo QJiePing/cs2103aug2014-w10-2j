@@ -6,15 +6,21 @@ package taskaler.ui.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
+
+import javax.swing.JOptionPane;
 
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -44,6 +50,12 @@ import taskaler.ui.controller.common;
  */
 public class RootController extends BorderPane implements IController {
 
+    private static final String CONFIRMATION_MESSAGE = "ARE YOU SURE? KEY IN YOUR PASSCODE IF YOU ARE SURE";
+    
+    public static final String PASSCODE = "IAMVERYSURE";
+    
+    
+    
     // Current model associated with this controller
     private RootModel currentModel = null;
 
@@ -71,6 +83,10 @@ public class RootController extends BorderPane implements IController {
 
     @FXML
     private Label lblFloating;
+    
+    @FXML
+    private Menu menuCmd;
+    
 
     /**
      * Default constructor
@@ -94,7 +110,20 @@ public class RootController extends BorderPane implements IController {
         }
 
         commands = ParserLibrary.getCommands();
+        updateMenu();
         update(currentModel.totalNotDone, currentModel.totalFloating);
+    }
+
+    /**
+     * Method to generate the command help in the menu
+     * 
+     */
+    private void updateMenu() {
+        for(String cmd : commands){
+            MenuItem item = new MenuItem(cmd);
+            menuCmd.getItems().add(item);
+        }
+        
     }
 
     /**
@@ -121,6 +150,16 @@ public class RootController extends BorderPane implements IController {
         loader.load();
     }
 
+    /**
+     * Method to ask the user for confirmation on an action
+     * 
+     */
+    public Boolean showConfirmation(){
+        String input = JOptionPane.showInputDialog(null, CONFIRMATION_MESSAGE);
+        
+        return PASSCODE.compareTo(input)==0;
+    }
+    
     /**
      * Method to show a toast notification on the interface
      * 
@@ -152,9 +191,15 @@ public class RootController extends BorderPane implements IController {
             Controller.getInstance().executeCMD(cmd);
             listCmd.setVisible(false);
         } else if (e.getCode() == KeyCode.UP) {
-            // TODO Implement Arrow Up
+            Node currentDisplay = anchorPaneDisplay.getChildren().get(common.ZERO_INDEX);
+            if(currentDisplay instanceof ListPaneController){
+                ((ListPaneController) currentDisplay).scrollUp();
+            }
         } else if (e.getCode() == KeyCode.DOWN) {
-            // TODO Implement Arrow Down
+            Node currentDisplay = anchorPaneDisplay.getChildren().get(common.ZERO_INDEX);
+            if(currentDisplay instanceof ListPaneController){
+                ((ListPaneController) currentDisplay).scrollDown();
+            }
         }
 
     }
@@ -171,6 +216,7 @@ public class RootController extends BorderPane implements IController {
         if (!isEnterKey(e)
                 && !(txtCmdInput.getText().isEmpty() && isBackSpace(e))) {
             String input = txtCmdInput.getText();
+            
             if (!isBackSpace(e)) {
                 input = input + e.getCharacter();
             }
@@ -184,7 +230,8 @@ public class RootController extends BorderPane implements IController {
 
             if (suggestions.size() > 1) {
                 listCmd.setItems(suggestions);
-                listCmd.setPrefHeight(24 * suggestions.size() + 2);
+                listCmd.setPrefHeight(30 * suggestions.size() + 2);
+                listCmd.setMinHeight(30 * suggestions.size() + 2);
                 AnchorPane.setBottomAnchor(listCmd, 0.0);
                 listCmd.setVisible(true);
                 return;

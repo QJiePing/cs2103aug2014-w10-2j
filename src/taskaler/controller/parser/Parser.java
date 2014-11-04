@@ -1,3 +1,8 @@
+/**
+ * @author Brendan Yong, A0108541M
+ *
+ */
+
 package taskaler.controller.parser;
 
 import static taskaler.controller.common.*;
@@ -9,10 +14,7 @@ import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.IModel;
 import taskaler.ui.model.TaskPaneModel;
 
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+
 public class Parser {
     // Local Variables
     private static String currentState;
@@ -611,7 +613,7 @@ public class Parser {
             theMonth = Integer.parseInt(currentMonth);
             theYear = Integer.parseInt(currentYear);
         } else {
-            theMonth = Calendar.getInstance().get(Calendar.MONTH);
+            theMonth = Calendar.getInstance().get(Calendar.MONTH) + OFFSET_OF_MONTH;
             theYear = Calendar.getInstance().get(Calendar.YEAR);
         }
         if (command.equals("next")) {

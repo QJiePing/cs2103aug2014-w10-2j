@@ -52,6 +52,9 @@ REPEAT:
 repeat 24 fortnightly, from 09-10-2014 to 09/11/2014
  - edits a task with taskID = 24, to repeat every 2 weeks 
    starting from 09/10/2014 to 09/11/2014
+repeat 24 last, 9/11 - 1/5/15
+ - edits a task with taskID = 24, to repeat every last day of the month
+   starting from 09/11/2014 to 01/05/2015
 repeat 24 sunday, to 21/10/2014
  - edits a task with taskID = 24, to repeat every sunday til 21/10/2014
 repeat 24 every4, from 21/10/2014
@@ -87,6 +90,8 @@ view T24
  - view specific task, T24
 view d: 21jan
  - view all tasks on 21/01/14
+view undo
+ - view undo stack
 view lala
  - ERROR
 
