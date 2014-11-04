@@ -36,8 +36,7 @@ public final class common {
     public static final int OFFSET_OF_MONTH = 1;
     public static final int LENGTH_OF_FROM = 4;
     public static final int LENGTH_OF_TO = 2;
-    public static final int LENGTH_OF_DASH = 1;
-    public static final int LENGTH_OF_COLON = 1;
+    public static final int LENGTH_OF_SYMBOL = 1;
     public static final int JANUARY = 0;
     public static final int DECEMBER = 11;
     public static final int MONTHS_IN_A_YEAR = 12;
