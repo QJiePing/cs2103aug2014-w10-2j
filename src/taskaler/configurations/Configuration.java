@@ -1,7 +1,12 @@
 package taskaler.configurations;
 
+import java.io.File;
+
+import taskaler.common.util.CommonLogger;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import taskaler.storage.Storage;
 
@@ -26,6 +31,8 @@ public class Configuration {
 	public static String DEFAULT_FILE_NAME = "task_list";
 	public static String DEFAULT_TIME_FORMAT = "HHmm";
 	
+	private static CommonLogger log = CommonLogger.getInstance();
+	
     public static final ArrayList<String> availableColor = new ArrayList<String>()
             {{  add("black");
                 add("red");
@@ -37,12 +44,20 @@ public class Configuration {
             }};
 	
 
-	private Configuration() {
+	private Configuration(){
+		File f= new File(Config_File);
+		try{
+		if(!f.exists()){
+			f.createNewFile();
+		}
+		}catch(Exception e){
+			log.exceptionLogger(e, Level.SEVERE);
+		}
 		loadConfiguration();
 	}
 	
 	
-	public static Configuration getInstance() {
+	public static Configuration getInstance(){
 		if(instance == null) {
 			instance = new Configuration();
 		}
@@ -55,7 +70,7 @@ public class Configuration {
 	 * loadConfiguration() will set all the configuration attributes to user default set
 	 * if configuration information is valid
 	 */
-	private void loadConfiguration() {
+	public void loadConfiguration() {
 		ArrayList<String> configInfo = Storage.getInstance().readConfigFile(Config_File);
 		configInfo = checkConfigInfo(configInfo);
 		
