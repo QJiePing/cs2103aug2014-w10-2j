@@ -19,6 +19,7 @@ public class Configuration {
 	public static final int FILENAME_POSITION = 2;
 	public static final int TIMEFORMAT_POSITION = 3;
 	public static final int NUM_OF_ATTRIBUTE = 4;
+	public static final String Config_File="config_file";
 	
 	public static String DEFAULT_VIEW = "list";
 	public static String DEFAULT_FONT_COLOR = "black";
@@ -55,7 +56,7 @@ public class Configuration {
 	 * if configuration information is valid
 	 */
 	private void loadConfiguration() {
-		ArrayList<String> configInfo = ConfigStorage.getInstance.readFromFile();
+		ArrayList<String> configInfo = Storage.getInstance().readConfigFile(Config_File);
 		configInfo = checkConfigInfo(configInfo);
 		
 		if(configInfo == null) {
@@ -114,7 +115,7 @@ public class Configuration {
 		configInfo.add(defaultFileName);
 		configInfo.add(defaultTimeFormat.toPattern());
 		
-		ConfigStorage.getInstance.writeToFile(configInfo);
+		Storage.getInstance().writeConfigFile(Config_File,configInfo);
 	}
 	
 	/**************** Accessors ***********************/
