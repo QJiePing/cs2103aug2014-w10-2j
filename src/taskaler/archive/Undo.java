@@ -9,9 +9,8 @@ import java.util.Stack;
 import taskaler.common.data.Task;
 import taskaler.logic.OPLogic;
 
-/**
- * @author Quek Jie Ping, A0111798X
- */
+//@author A0111798X
+
 public class Undo implements Observer {
 
     private Stack<OperationRecord<Task, String>> record;
