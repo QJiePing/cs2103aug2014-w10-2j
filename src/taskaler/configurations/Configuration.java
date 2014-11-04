@@ -131,8 +131,8 @@ public class Configuration {
 		return defaultFontColor;
 	}
 	
-	public SimpleDateFormat getTimeFormat() {
-		return defaultTimeFormat;
+	public String getTimeFormat() {
+		return defaultTimeFormat.toPattern();
 	}
 	
 	
