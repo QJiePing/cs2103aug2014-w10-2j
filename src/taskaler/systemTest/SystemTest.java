@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+//@author A0111798X
+
 public class SystemTest {
     private static final String TASK_LIST_FILE = "task_list";
 
@@ -40,6 +42,10 @@ public class SystemTest {
     public void setUp() {
         controller = Controller.getInstance();
     }
+    /**
+     * Equivalence Partition: Invalid Command, Empty Command, Valid Command
+     * Boundary Analysis: 0,1 or more than 1 tasks
+     */
 
     /**
      * Integration test 1
@@ -101,7 +107,7 @@ public class SystemTest {
     /**
      * Integration test 2
      * 
-     * Test case: Executes an illegal command
+     * Test case: Executes any invalid command
      * 
      * Expected result: There should not have any changes to the tasklist and
      * the components should not crash
@@ -134,4 +140,8 @@ public class SystemTest {
         }
 
     }
+    /**
+     * Integration 3
+     */
+    //@Test
 }

@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package taskaler.logic;
 
 import java.text.SimpleDateFormat;

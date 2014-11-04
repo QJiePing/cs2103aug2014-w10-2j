@@ -1,3 +1,8 @@
+/**
+ * @author Brendan Yong, A0108541M
+ *
+ */
+
 package taskaler.controller.parser;
 
 import static taskaler.controller.common.*;
@@ -7,10 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+
 public class ParseAttribute {
     
     /**

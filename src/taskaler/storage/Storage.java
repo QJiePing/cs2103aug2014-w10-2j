@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-// @author Quek Jie Ping A0111798X
+//@author A0111798X
 
 
 /**
@@ -23,6 +23,7 @@ public class Storage {
 
 	private static CommonLogger log = CommonLogger.getInstance();
 	private static Storage instance = null;
+	private static File configFile=new File("config_file");
 
 	/**
 	 * Constructors
@@ -113,11 +114,11 @@ public class Storage {
 	 * 
 	 * @return return an config object from the text file
 	 */
-	public ArrayList<String> readConfigFile(String file){
+	public ArrayList<String> readConfigFile(){
 		
 		ArrayList<String> config =new ArrayList<String>();
 		try {
-			FileReader reader = new FileReader(file);
+			FileReader reader = new FileReader(configFile);
 			Gson gson = createGsonObj();
 			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {};
 			config = gson.fromJson(reader, typeToken.getType());
@@ -140,11 +141,11 @@ public class Storage {
 	 * @return return a boolean indicating whether the write operation is a
 	 *         success or fail
 	 */
-	public boolean writeConfigFile(String file, ArrayList<String> configArr){
+	public boolean writeConfigFile(ArrayList<String> configArr){
 		try {
-			FileWriter fw = new FileWriter(file);
+			FileWriter fw = new FileWriter(configFile);
 			Gson gson = createGsonObj();
-			TypeToken<Configuration> typeToken = new TypeToken<Configuration>() {};
+			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {};
 			String output = gson.toJson(configArr, typeToken.getType());
 			fw.write(output);
 			fw.close();
