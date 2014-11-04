@@ -72,7 +72,9 @@ public class RepeatedDate {
     	case YEAR:
     		repeatDays = computeYearly((Calendar) startTime.clone(), endRepeatedTime);
     		break;
- 
+    	case LAST:
+            repeatDays = computeLast((Calendar) startTime.clone(), endRepeatedTime);
+            break;
     	}
 		return repeatDays;
 	}
@@ -258,6 +260,17 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	private ArrayList<Calendar> computeLast(Calendar startTime, Calendar endRepeatedTime) {
+	    ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+        while(startTime.before(endRepeatedTime)) {
+            int lastDate = startTime.getActualMaximum(Calendar.DATE);
+            Calendar newDay = (Calendar) startTime.clone();
+            newDay.set(Calendar.DATE, lastDate);
+            repeatDays.add(newDay);
+            startTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
+        }
+        return repeatDays;
+    }
 	/**
 	 * getPattern(String pattern) convert the given pattern to enum type
 	 *  
@@ -297,7 +310,9 @@ public class RepeatedDate {
         	repeatPattern = RepeatPattern.FRI;
     	} else if (pattern.equals("7 DAYOFWEEK")) {
         	repeatPattern = RepeatPattern.SAT;
-    	} else {
+    	} else if (pattern.equals("LAST")){
+    	    repeatPattern = RepeatPattern.LAST;
+	    } else {
     		repeatPattern = RepeatPattern.NONE;
     	}
     	

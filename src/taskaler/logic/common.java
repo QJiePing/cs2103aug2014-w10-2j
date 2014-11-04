@@ -54,6 +54,6 @@ public class common {
     
     public enum RepeatPattern {
         DAY, ALTER, WEEK, WEEKDAY, WEEKEND, MONTH, YEAR, 
-        SUN, MON, TUES, WED, THURS, FRI, SAT, TWO_WEEK, NONE
+        SUN, MON, TUES, WED, THURS, FRI, SAT, TWO_WEEK, LAST, NONE
     }
 }
