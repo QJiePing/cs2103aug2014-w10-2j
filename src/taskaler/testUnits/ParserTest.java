@@ -1,10 +1,12 @@
-package taskaler.controller.parser;
+package taskaler.testUnits;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import taskaler.controller.common.*;
+import taskaler.controller.parser.Parser;
+
 import java.util.HashMap;
 
 public class ParserTest {

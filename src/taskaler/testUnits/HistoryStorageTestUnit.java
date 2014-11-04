@@ -1,4 +1,4 @@
-package taskaler.storage;
+package taskaler.testUnits;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.Test;
+
+import taskaler.storage.HistoryStorage;
 
 /**
  * @author Quek Jie Ping A0111798X
@@ -64,8 +66,8 @@ public class HistoryStorageTestUnit {
 		store.writeToHistory("history.txt", "line2");
 
 		String result = store.readFromHistory("history.txt");
-		if (result.split("\n")[0].equals("line1")
-				&& result.split("\n")[1].equals("line2")) {
+		if (result.split("\n")[1].equals("line1")
+				&& result.split("\n")[0].equals("line2")) {
 			test = true;
 			assertTrue(test);
 		} else {

@@ -1,4 +1,4 @@
-package taskaler.logic;
+package taskaler.testUnits;
 
 import static org.junit.Assert.*;
 

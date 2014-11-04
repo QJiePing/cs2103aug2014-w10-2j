@@ -1,4 +1,4 @@
-package taskaler.storage;
+package taskaler.testUnits;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 
 import taskaler.common.data.*;
+import taskaler.storage.Storage;
 
 /**
  * @author Quek Jie Ping A0111798X

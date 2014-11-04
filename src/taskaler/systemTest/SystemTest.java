@@ -1,4 +1,4 @@
-package taskaler.integration_test;
+package taskaler.systemTest;
 
 import static org.junit.Assert.*;
 import taskaler.common.data.DeadLineTask;
@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class IntegrationTest {
+public class SystemTest {
     private static final String TASK_LIST_FILE = "task_list";
 
     @Rule
