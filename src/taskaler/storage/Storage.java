@@ -115,7 +115,6 @@ public class Storage {
 	 */
 	public ArrayList<String> readConfigFile(String file){
 		
-		Configuration configuration= Configuration.getInstance();
 		ArrayList<String> config =new ArrayList<String>();
 		try {
 			FileReader reader = new FileReader(file);

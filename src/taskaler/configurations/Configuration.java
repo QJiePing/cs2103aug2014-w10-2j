@@ -79,6 +79,7 @@ public class Configuration {
 			defaultFontColor = DEFAULT_FONT_COLOR;
 			defaultFileName = DEFAULT_FILE_NAME ;
 			defaultTimeFormat = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
+			storeConfigInfo();
 		} else {
 			defaultView = configInfo.get(VIEW_POISTION);
 			defaultFontColor = configInfo.get(COLOR_POSITION);
@@ -98,7 +99,7 @@ public class Configuration {
 	
 	private ArrayList<String> checkConfigInfo(ArrayList<String> configInfo) {
 
-		if(configInfo.size() != NUM_OF_ATTRIBUTE) {
+		if(configInfo == null || configInfo.size() != NUM_OF_ATTRIBUTE) {
 			return null;
 		} else {
 			if (configInfo.get(VIEW_POISTION).compareToIgnoreCase("list") != 0
