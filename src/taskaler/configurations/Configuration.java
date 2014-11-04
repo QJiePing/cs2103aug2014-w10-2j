@@ -53,7 +53,7 @@ public class Configuration {
 		}catch(Exception e){
 			log.exceptionLogger(e, Level.SEVERE);
 		}
-		loadConfiguration();
+		
 	}
 	
 	

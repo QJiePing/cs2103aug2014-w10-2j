@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-// @author Quek Jie Ping A0111798X
+//@author A0111798X
 
 
 /**
@@ -115,7 +115,6 @@ public class Storage {
 	 */
 	public ArrayList<String> readConfigFile(String file){
 		
-		Configuration configuration= Configuration.getInstance();
 		ArrayList<String> config =new ArrayList<String>();
 		try {
 			FileReader reader = new FileReader(file);
