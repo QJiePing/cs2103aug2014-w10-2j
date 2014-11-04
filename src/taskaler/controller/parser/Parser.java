@@ -2,12 +2,17 @@ package taskaler.controller.parser;
 
 import static taskaler.controller.common.*;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.IModel;
 import taskaler.ui.model.TaskPaneModel;
 
+/**
+ * @author Brendan Yong, A0108541M
+ *
+ */
 public class Parser {
     // Local Variables
     private static String currentState;
@@ -202,8 +207,8 @@ public class Parser {
         } else {
             String date = ParseAttribute.parseDate(paramString.substring(0,
                     splitIndex).trim());
-            String[] timeRange = ParseAttribute.parseTimeRange(paramString
-                    .substring(splitIndex + LENGTH_OF_COLON).trim());
+            String[] timeRange = ParseAttribute.parseRange(paramString
+                    .substring(splitIndex + LENGTH_OF_SYMBOL).trim(), "time");
             paramArray[dateIndex] = date;
             paramArray[startTimeIndex] = timeRange[0];
             paramArray[endTimeIndex] = timeRange[1];
@@ -408,35 +413,11 @@ public class Parser {
             String[] paramArray) throws Exception {
         int startDateIndex = 2;
         int endDateIndex = 3;
-
-        int fromIndex = dateField.indexOf("from");
-        int toIndex = dateField.indexOf("to");
-        if (fromIndex == INVALID_VALUE) {
-            if (toIndex == INVALID_VALUE) {
-                throw new Exception("Invalid start and end date parameters,"
-                        + "try: from <start date> to <end date>");
-            } else {
-                paramArray[endDateIndex] = ParseAttribute.parseDate(dateField
-                        .substring(toIndex + LENGTH_OF_TO).trim());
-            }
-        } else {
-            if (toIndex == INVALID_VALUE) {
-                paramArray[startDateIndex] = ParseAttribute.parseDate(dateField
-                        .substring(fromIndex + LENGTH_OF_FROM).trim());
-            } else {
-                try {
-                    assert (fromIndex < toIndex);
-                } catch (AssertionError ae) {
-                    throw new Exception(
-                            "Invalid start to end date parameters, "
-                                    + "try: from <start date> to <end date>");
-                }
-                paramArray[startDateIndex] = ParseAttribute.parseDate(dateField
-                        .substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
-                paramArray[endDateIndex] = ParseAttribute.parseDate(dateField
-                        .substring(toIndex + LENGTH_OF_TO).trim());
-            }
-        }
+        
+        String[] startAndEndDate = ParseAttribute.parseRange(dateField, "date");
+        paramArray[startDateIndex] = startAndEndDate[0];
+        paramArray[endDateIndex] = startAndEndDate[1];
+        
         return paramArray;
     }
 
@@ -456,12 +437,12 @@ public class Parser {
         String[] time = null;
         String paramString = removeFirstWord(commandString);
         if (currentTaskID != null) {
-            time = ParseAttribute.parseTimeRange(paramString);
+            time = ParseAttribute.parseRange(paramString, "time");
             paramTIME[taskIDIndex] = currentTaskID;
             paramTIME[startTimeIndex] = time[0];
             paramTIME[endTimeIndex] = time[1];
         } else {
-            time = ParseAttribute.parseTimeRange(removeFirstWord(paramString));
+            time = ParseAttribute.parseRange(removeFirstWord(paramString), "time");
             paramTIME[taskIDIndex] = getFirstWord(paramString);
             paramTIME[startTimeIndex] = time[0];
             paramTIME[endTimeIndex] = time[1];
@@ -624,34 +605,36 @@ public class Parser {
         String[] paramGOTO = new String[GOTO_PARAMETERS];
         String command = getFirstWord(commandString).toLowerCase();
         String paramString = removeFirstWord(commandString).toLowerCase();
+        int theMonth;
+        int theYear;
         if (currentMonth != null && currentYear != null) {
-            if (command.equals("next")) {
-                int theMonth = Integer.parseInt(currentMonth);
-                int nextMonth = theMonth + 1;
-                if (nextMonth == MONTH_OVERFLOW_VALUE) {
-                    nextMonth = nextMonth - MONTHS_IN_A_YEAR;
-                    String nextYear = ""+(Integer.parseInt(currentYear)+1);
-                    paramGOTO[monthIndex] = nextMonth + "/" + nextYear;
-                } else {
-                    paramGOTO[monthIndex] = nextMonth + "/" + currentYear;
-                }
-            } else if (command.equals("back")) {
-                int theMonth = Integer.parseInt(currentMonth);
-                int prevMonth = theMonth - 1;
-                if (prevMonth == MONTH_INVALID_VALUE) {
-                    prevMonth = prevMonth + MONTHS_IN_A_YEAR;
-                    String prevYear = ""+(Integer.parseInt(currentYear)-1);
-                    paramGOTO[monthIndex] = prevMonth + "/" + prevYear;
-                } else {
-                    paramGOTO[monthIndex] = prevMonth + "/" + currentYear;
-                }
-            } else if (command.equals("goto")) {
-                int theMonthToGo = ParseAttribute.parseMonth(paramString) + OFFSET_OF_MONTH;
-                paramGOTO[monthIndex] = theMonthToGo + "/" + currentYear;
-            }
+            theMonth = Integer.parseInt(currentMonth);
+            theYear = Integer.parseInt(currentYear);
         } else {
-            throw new Exception(
-                    "This command can only be accessed in the Calendar view.");
+            theMonth = Calendar.getInstance().get(Calendar.MONTH);
+            theYear = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        if (command.equals("next")) {
+            int nextMonth = theMonth + 1;
+            if (nextMonth == MONTH_OVERFLOW_VALUE) {
+                nextMonth = nextMonth - MONTHS_IN_A_YEAR;
+                String nextYear = ""+(theYear + 1);
+                paramGOTO[monthIndex] = nextMonth + "/" + nextYear;
+            } else {
+                paramGOTO[monthIndex] = nextMonth + "/" + theYear;
+            }
+        } else if (command.equals("back")) {
+            int prevMonth = theMonth - 1;
+            if (prevMonth == MONTH_INVALID_VALUE) {
+                prevMonth = prevMonth + MONTHS_IN_A_YEAR;
+                String prevYear = ""+(theYear - 1);
+                paramGOTO[monthIndex] = prevMonth + "/" + prevYear;
+            } else {
+                paramGOTO[monthIndex] = prevMonth + "/" + theYear;
+            }
+        } else if (command.equals("goto")) {
+            String theDateToGo = ParseAttribute.parseMonthYear(paramString, theYear);
+            paramGOTO[monthIndex] = theDateToGo;
         }
         return paramGOTO;
     }

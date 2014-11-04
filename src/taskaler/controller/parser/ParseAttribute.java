@@ -7,6 +7,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * @author Brendan Yong, A0108541M
+ *
+ */
 public class ParseAttribute {
     
     /**
@@ -67,41 +71,70 @@ public class ParseAttribute {
         return dateFormat;
     }
     
-    public static String[] parseTimeRange(String time) throws Exception{
-        int startTimeIndex = 0;
-        int endTimeIndex = 1;
+    public static String[] parseRange(String variable, String type) throws Exception{
+        int startIndex = 0;
+        int endIndex = 1;
         
-        String[] startAndEndTime = new String[2];
-        int dashIndex = time.indexOf("-");
-        int fromIndex = time.indexOf("from"); 
-        int toIndex = time.indexOf("to");
+        String[] startAndEnd = new String[2];
+        int dashIndex = variable.indexOf("-");
+        int fromIndex = variable.indexOf("from"); 
+        int toIndex = variable.indexOf("to");
         if(dashIndex != INVALID_VALUE){
-            startAndEndTime[startTimeIndex] = parseTime(time.substring(0,dashIndex).trim());
-            startAndEndTime[endTimeIndex] = parseTime(time.substring(dashIndex + LENGTH_OF_DASH).trim());
+            if(type.equalsIgnoreCase("date")){
+                startAndEnd[startIndex] = parseDate(variable.substring(0,dashIndex).trim());
+                startAndEnd[endIndex] = parseDate(variable.substring(dashIndex + LENGTH_OF_SYMBOL).trim());
+            } else if(type.equalsIgnoreCase("time")){
+                startAndEnd[startIndex] = parseTime(variable.substring(0,dashIndex).trim());
+                startAndEnd[endIndex] = parseTime(variable.substring(dashIndex + LENGTH_OF_SYMBOL).trim());
+            }
         }
         else if(fromIndex != INVALID_VALUE){
             if(toIndex != INVALID_VALUE){
-                startAndEndTime[startTimeIndex] = 
-                        parseTime(time.substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
-                startAndEndTime[endTimeIndex] = parseTime(time.substring(toIndex + LENGTH_OF_TO).trim());
+                if(type.equalsIgnoreCase("date")){
+                    startAndEnd[startIndex] = 
+                        parseDate(variable.substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
+                    startAndEnd[endIndex] = parseDate(variable.substring(toIndex + LENGTH_OF_TO).trim());
+            
+                } else if(type.equalsIgnoreCase("time")){
+                    startAndEnd[startIndex] = 
+                            parseTime(variable.substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
+                        startAndEnd[endIndex] = parseTime(variable.substring(toIndex + LENGTH_OF_TO).trim());
+                }
             }
             else {
-                startAndEndTime[startTimeIndex] = 
-                        parseTime(time.substring(fromIndex + LENGTH_OF_FROM).trim());
+                if(type.equalsIgnoreCase("date")){
+                    startAndEnd[startIndex] = 
+                            parseDate(variable.substring(fromIndex + LENGTH_OF_FROM).trim());
+                } else if(type.equalsIgnoreCase("time")){
+                    startAndEnd[startIndex] = 
+                        parseTime(variable.substring(fromIndex + LENGTH_OF_FROM).trim());
+                }
             }
         }
         else if(toIndex != INVALID_VALUE){
-            startAndEndTime[endTimeIndex] = parseTime(time.substring(toIndex + LENGTH_OF_TO).trim());
+            if(type.equalsIgnoreCase("date")){
+                startAndEnd[endIndex] = parseDate(variable.substring(toIndex + LENGTH_OF_TO).trim());
+            } else if(type.equalsIgnoreCase("time")){
+                startAndEnd[endIndex] = parseTime(variable.substring(toIndex + LENGTH_OF_TO).trim());
+            }
         }
         else {
             try{
-                startAndEndTime[startTimeIndex] = parseTime(time);
+                if(type.equalsIgnoreCase("date")){
+                    startAndEnd[startIndex] = parseDate(variable);
+                } else if(type.equalsIgnoreCase("time")){
+                    startAndEnd[startIndex] = parseTime(variable);
+                }
             }
             catch(Exception e){
-                throw new Exception("Invalid time range syntax, try: <start time> - <end time>");
+                if(type.equalsIgnoreCase("date")){
+                    throw new Exception("Invalid date range syntax, try: <start date> - <end date>");
+                } else if(type.equalsIgnoreCase("time")){
+                    throw new Exception("Invalid time range syntax, try: <start time> - <end time>");
+                }
             }
         }
-        return startAndEndTime;
+        return startAndEnd;
     }
     
     /** 
@@ -116,7 +149,9 @@ public class ParseAttribute {
         SimpleDateFormat sdf = null;
         String timeInSyntax = null;
         Date correctTime = null;
-        
+        if(time == null || time.equals("")){
+            return null;
+        }
         for(int i = 0; i < ParserLibrary.availableTimeSyntax.size(); i++){
             try{
                 sdf = new SimpleDateFormat(ParserLibrary.availableTimeSyntax.get(i));
@@ -168,24 +203,52 @@ public class ParseAttribute {
         }
     }
     
-    public static int parseMonth(String month) throws Exception {
+    public static String parseMonthYear(String monthYear, int currentYear) throws Exception {
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
         SimpleDateFormat monthFormat2 = new SimpleDateFormat("M");
-        Calendar temp = Calendar.getInstance();
+        SimpleDateFormat yearFormat = new SimpleDateFormat("y");
+        SimpleDateFormat returnFormat = new SimpleDateFormat("M/yyyy");
+        
+        int dashIndex = monthYear.indexOf("-");
+        int slashIndex = monthYear.indexOf("/");
+        int spaceIndex = monthYear.indexOf(" ");
+        String monthField = null;
+        String yearField = null;
+        int yearInt = 0;
+        Calendar cal = Calendar.getInstance();
+        if(dashIndex != INVALID_VALUE){
+            monthField = monthYear.substring(0, dashIndex).trim();
+            yearField = monthYear.substring(dashIndex + LENGTH_OF_SYMBOL).trim();
+        } else if(slashIndex != INVALID_VALUE){
+            monthField = monthYear.substring(0, slashIndex).trim();
+            yearField = monthYear.substring(slashIndex + LENGTH_OF_SYMBOL).trim();
+        } else if(spaceIndex != INVALID_VALUE){
+            monthField = monthYear.substring(0, spaceIndex).trim();
+            yearField = monthYear.substring(spaceIndex + LENGTH_OF_SYMBOL).trim();
+        } else {
+            monthField = monthYear;
+            yearField = ""+currentYear;
+        }
         try{
-            Date date = monthFormat.parse(month);
-            temp.setTime(date);
-            return temp.get(Calendar.MONTH);
+            cal.setTime(yearFormat.parse(yearField));
+            yearInt = cal.get(Calendar.YEAR);
+        } 
+        catch(Exception e){
+            throw new Exception("Invalid goto syntax, try: goto <MM/YYYY>");
+        }
+        try{
+            cal.setTime(monthFormat.parse(monthField));
+            cal.set(Calendar.YEAR, yearInt);
         }
         catch(Exception e){
             try{
-                Date date = monthFormat2.parse(month);
-                temp.setTime(date);
-                return temp.get(Calendar.MONTH);
+                cal.setTime(monthFormat2.parse(monthYear));
+                cal.set(Calendar.YEAR, yearInt);
             }
             catch(Exception f){
-                throw new Exception("Invalid month parameter, try: jan");
+                throw new Exception("Invalid goto syntax, try: goto <MM/YYYY>");
             }
         }
+        return returnFormat.format(cal.getTime());
     }
 }
