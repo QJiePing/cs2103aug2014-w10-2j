@@ -359,13 +359,11 @@ public class OPLogic extends Observable {
     private static Calendar setNewCalendarDate(String date, String type) {
         Calendar newDeadLine = Calendar.getInstance();
         try{
-            if(type.compareToIgnoreCase(common.TAG_DATE)== 0) {
-            	SimpleDateFormat defaultDateFormat = new SimpleDateFormat(Configuration.getInstance().getDateFormat());
-                newDeadLine.setTime(defaultDateFormat.parse(date));
-            }
+        	if(type.compareToIgnoreCase(common.TAG_DATE)== 0) {
+                newDeadLine.setTime(common.DEFAULT_DATE_FORMAT.parse(date));
+        	}
             else if(type.compareToIgnoreCase(common.TAG_TIME) == 0){
-            	SimpleDateFormat defaultTimeFormat = new SimpleDateFormat(Configuration.getInstance().getTimeFormat());
-                newDeadLine.setTime(defaultTimeFormat.parse(date));
+                newDeadLine.setTime(common.DEFAULT_TIME_FORMAT.parse(date));
             }
         }
         catch(Exception e){
