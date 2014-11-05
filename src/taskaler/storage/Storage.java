@@ -23,13 +23,13 @@ public class Storage {
 
 	private static CommonLogger log = CommonLogger.getInstance();
 	private static Storage instance = null;
-	private static File configFile=new File("config_file");
+	private static File configFile=null;
 
 	/**
 	 * Constructors
 	 */
 	private Storage() {
-
+	    configFile = new File("config_file");
 	}
 
 	public static Storage getInstance() {

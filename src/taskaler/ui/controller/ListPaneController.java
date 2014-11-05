@@ -13,6 +13,7 @@ import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
+import taskaler.configurations.Configuration;
 import taskaler.ui.model.ListPaneModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -56,8 +57,6 @@ public class ListPaneController extends TitledPane implements IController {
     private static final int MAX_COL_SPAN = 4;
     private static final String FX_BACKGROUND_COLOR_STYLE = "-fx-background-color: %s;";
     private static final double MAX_WIDTH_VIEW = 400.0;
-    private static final String ROW_COLOR = "#FFFFFF";
-    private static final String ALT_ROW_COLOR = "#66CCFF";
     private static final String GREEN_COLOR = "#9bbb59";
     private static final String ORANGE_COLOR = "#f79646";
     private static final String RED_COLOR = "#c0504d";
@@ -128,7 +127,7 @@ public class ListPaneController extends TitledPane implements IController {
             statusLabel.setPrefWidth(MAX_WIDTH_VIEW);
             statusLabel.setAlignment(Pos.CENTER);
             statusLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE,
-                    ROW_COLOR));
+                    Configuration.getInstance().getDefaultRowColor()));
             gridList.add(statusLabel, common.ZERO_INDEX, common.OFFSET_BY_ONE,
                     MAX_COL_SPAN, MIN_SPAN);
             return;
@@ -165,10 +164,10 @@ public class ListPaneController extends TitledPane implements IController {
             ArrayList<RepeatedTask> repeatedTaskList,
             ArrayList<DeadLineTask> deadlineTaskList) {
         int result = insertRows(FLOAT_HEADER, common.ZERO_INDEX
-                + common.OFFSET_BY_ONE, floatingTaskList, ALT_ROW_COLOR);
+                + common.OFFSET_BY_ONE, floatingTaskList, Configuration.getInstance().getDefaultAltRowColor());
         result = insertRows(DEADLINE_HEADER, result, deadlineTaskList,
-                ROW_COLOR);
-        result = insertRows(REPEAT_HEADER, result, repeatedTaskList, ALT_ROW_COLOR);
+                Configuration.getInstance().getDefaultRowColor());
+        result = insertRows(REPEAT_HEADER, result, repeatedTaskList, Configuration.getInstance().getDefaultAltRowColor());
 
     }
     
@@ -269,9 +268,9 @@ public class ListPaneController extends TitledPane implements IController {
                 date.setText(calendarToString.parseDate(deadline));
             }
             if (isEvenRow(startIndex, i)) {
-                color = ALT_ROW_COLOR;
+                color = Configuration.getInstance().getDefaultAltRowColor();
             } else {
-                color = ROW_COLOR;
+                color = Configuration.getInstance().getDefaultRowColor();
             }
             date.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
             name.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
