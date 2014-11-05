@@ -1,6 +1,6 @@
 
 /**
- * @author A0099778X
+ * user configuration
  *
  */
 package taskaler.common.configurations;

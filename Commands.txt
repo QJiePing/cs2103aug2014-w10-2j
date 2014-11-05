@@ -72,6 +72,16 @@ workload high (on TaskPane, taskID = 3)
  - edits a task with taskID, 3, with workload attribute, 3
 workload T24 asdf
  - ERROR
+ 
+TIME:
+time 24 0100-2000
+ - edits a task with taskID, 24, with start time at 01:00 and end time at 20:00
+time 0100-2000 (on TaskPane, taskID = 24)
+ - edits a task with taskID, 24, with start time at 01:00 and end time at 20:00
+time 24 0100-2000 (on TaskPane)
+ - error on edit start time
+
+ 
 
 COMPLETION TAG:
 completed T24
