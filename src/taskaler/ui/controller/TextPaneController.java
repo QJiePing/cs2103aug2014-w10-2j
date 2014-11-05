@@ -9,6 +9,7 @@ import java.util.HashMap;
 import taskaler.ui.model.TextPaneModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 
@@ -19,6 +20,10 @@ import javafx.scene.control.TitledPane;
  *
  */
 public class TextPaneController extends TitledPane implements IController {
+    
+    // Special constants
+    private static final double SCROLL_AMOUNT = 0.1;
+
     // Current model associated with this controller
     private TextPaneModel currentModel = null;
 
@@ -28,6 +33,9 @@ public class TextPaneController extends TitledPane implements IController {
 
     @FXML
     private TextArea txtBody;
+    
+    @FXML
+    private ScrollPane scrollBody;
 
     /**
      * Default constructor
@@ -49,21 +57,21 @@ public class TextPaneController extends TitledPane implements IController {
      * 
      */
     public void scrollUp(){
-        if(txtBody.getHeight() < 400.0){
+        if(scrollBody.getHeight() >= txtBody.getHeight()){
             return;
         }
-        
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() - SCROLL_AMOUNT);
     }
     
     /**
-     * Mehtod to programmically scroll down the view
+     * Method to programmically scroll down the view
      * 
      */
     public void scrollDown(){
-        if(txtBody.getHeight() < 400.0){
+        if(scrollBody.getHeight() >= txtBody.getHeight()){
             return;
         }
-        
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() + SCROLL_AMOUNT);
     }
     
     @Override

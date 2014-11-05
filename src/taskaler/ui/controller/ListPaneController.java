@@ -35,8 +35,6 @@ import javafx.scene.text.Font;
  */
 public class ListPaneController extends TitledPane implements IController {
 
-    private static final double SCROLL_AMOUNT = 0.1;
-
     // Current model associated with this controller
     private ListPaneModel currentModel;
 
@@ -47,11 +45,10 @@ public class ListPaneController extends TitledPane implements IController {
     private static final int ID_COL_INDEX = 1;
     private static final String DEFAULT_DATE_VALUE = "-";
     private static final int DATE_WIDTH = 83;
-    private static final int NAME_WIDTH = 247;
+    private static final int NAME_WIDTH = 225;
     private static final int ID_WIDTH = 40;
     private static final int MIN_CATEGORY_HEIGHT = 17;
     private static final int CATEGORY_WIDTH = 30;
-    private static final Font DEFAULT_HEADER_FONT = new Font("Cambria", 14);
     private static final String REPEAT_HEADER = "R";
     private static final String DEADLINE_HEADER = "D";
     private static final String FLOAT_HEADER = "F";
@@ -61,6 +58,12 @@ public class ListPaneController extends TitledPane implements IController {
     private static final double MAX_WIDTH_VIEW = 400.0;
     private static final String ROW_COLOR = "#FFFFFF";
     private static final String ALT_ROW_COLOR = "#66CCFF";
+    private static final String GREEN_COLOR = "#9bbb59";
+    private static final String ORANGE_COLOR = "#f79646";
+    private static final String RED_COLOR = "#c0504d";
+    private static final String GREY_COLOR = "#a6a6a6";
+    private static final int WORKLOAD_COL_INDEX = 4;
+    private static final double SCROLL_AMOUNT = 0.1;
 
     // Binded FXML Elements
     @FXML
@@ -175,7 +178,7 @@ public class ListPaneController extends TitledPane implements IController {
      */
     public void scrollUp(){
         if(scrollBody.getHeight() >= gridList.getHeight()){
-            //return;
+            return;
         }
         scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() - SCROLL_AMOUNT);
     }
@@ -210,7 +213,6 @@ public class ListPaneController extends TitledPane implements IController {
             return startIndex;
         }
         Label categoryLabel = new Label(category);
-        categoryLabel.setFont(DEFAULT_HEADER_FONT);
         categoryLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
         // categoryLabel.setRotate(-90.0);
         // categoryLabel.setTranslateY(-50);
@@ -241,6 +243,21 @@ public class ListPaneController extends TitledPane implements IController {
             date.setPrefWidth(DATE_WIDTH);
             date.setAlignment(Pos.CENTER);
 
+            
+            
+            String loadColor = GREY_COLOR;
+            
+            if(currentTask.getTaskWorkLoad().compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0){
+                loadColor = RED_COLOR;
+            }else if(currentTask.getTaskWorkLoad().compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0){
+                loadColor = ORANGE_COLOR;
+            }else if(currentTask.getTaskWorkLoad().compareToIgnoreCase(Task.WORKLOAD_LOW) == 0){
+                loadColor = GREEN_COLOR;
+            }
+            Label workload = new Label();
+            workload.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, loadColor));
+            workload.setPrefWidth(ID_WIDTH);
+            
             if (currentTask instanceof RepeatedTask) {
                 RepeatedTask taskHolder = (RepeatedTask) currentTask;
                 String repeatPattern = taskHolder.getPattern();
@@ -261,6 +278,7 @@ public class ListPaneController extends TitledPane implements IController {
             gridList.add(id, ID_COL_INDEX, startIndex + i);
             gridList.add(date, DATE_COL_INDEX, startIndex + i);
             gridList.add(name, NAME_COL_INDEX, startIndex + i);
+            gridList.add(workload, WORKLOAD_COL_INDEX, startIndex + i);
         }
         return startIndex + span;
     }
