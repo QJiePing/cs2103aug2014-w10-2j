@@ -29,8 +29,8 @@ public class Configuration {
 	public static final int ALTROW_COLOR_POSITION = 3;
 	public static final int TOAST_COLOR_POSITION = 4;
 	public static final int FILENAME_POSITION = 5;
-	public static final int TIMEFORMAT_POSITION = 6;
-	public static final int DATEFORMAT_POSITION = 7;
+	public static final int DATEFORMAT_POSITION = 6;
+	public static final int TIMEFORMAT_POSITION = 7;
 	public static final int NUM_OF_ATTRIBUTE = 8;
 	
 	public static String DEFAULT_VIEW = "list";
@@ -135,7 +135,7 @@ public class Configuration {
             }
 			
 			if (configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MMM/yyyy") != 0
-                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd/M/yyyy") != 0
+                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd/MM/yyyy") != 0
                     && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
                 return null;
             }
@@ -172,6 +172,9 @@ public class Configuration {
 		return defaultFileName;
 	}
 	
+	public String getLogLevel() {
+	    return defaultLogLevel;
+	}
 	public String getDefaultView() {
 		return defaultView;
 	}
@@ -202,7 +205,7 @@ public class Configuration {
 		defaultFileName = fileName;
 	}
 	
-	public void setDefaultlogLevel(String level){
+	public void setDefaultLogLevel(String level){
 	    defaultLogLevel = level;
 	}
 	
