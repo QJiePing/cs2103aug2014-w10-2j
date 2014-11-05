@@ -15,31 +15,44 @@ public class Configuration {
 	private static Configuration instance = null;
 
 	private String defaultView = null;
-	private String defaultFontColor = null;
+	private String defaultLogLevel = null; 
+	private String defaultRowColor = null;
+	private String defaultAltRowColor = null;
+	private String defaultToastColor = null;
 	private String defaultFileName = null;
+	private SimpleDateFormat defaultDateFormat = null;
 	private SimpleDateFormat defaultTimeFormat = null;
 	
 	public static final int VIEW_POISTION = 0;
-	public static final int COLOR_POSITION = 1;
-	public static final int FILENAME_POSITION = 2;
-	public static final int TIMEFORMAT_POSITION = 3;
-	public static final int NUM_OF_ATTRIBUTE = 4;
+	public static final int LOG_LEVEL_POSITION = 1;
+	public static final int ROW_COLOR_POSITION = 2;
+	public static final int ALTROW_COLOR_POSITION = 3;
+	public static final int TOAST_COLOR_POSITION = 4;
+	public static final int FILENAME_POSITION = 5;
+	public static final int TIMEFORMAT_POSITION = 6;
+	public static final int DATEFORMAT_POSITION = 7;
+	public static final int NUM_OF_ATTRIBUTE = 8;
 	
 	public static String DEFAULT_VIEW = "list";
-	public static String DEFAULT_FONT_COLOR = "black";
+	public static String DEFAULT_LOG_LEVEL = "all";
+	public static String DEFAULT_ROW_COLOR = "#FFFFFF";
+	public static String DEFAULT_ALTROW_COLOR = "#66CCFF";
+	public static String DEFAULT_TOAST_COLOR = "#FFFF00";
 	public static String DEFAULT_FILE_NAME = "task_list";
 	public static String DEFAULT_TIME_FORMAT = "HHmm";
+	public static String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
 	
 	private static CommonLogger log = CommonLogger.getInstance();
 	
     public static final ArrayList<String> availableColor = new ArrayList<String>()
-            {{  add("black");
-                add("red");
-                add("organe");
-                add("yellow");
-                add("green");
-                add("blue");
-                add("violet");
+            {{  add("#FFFFFF");     //white
+                add("#66CCFF");     //light blue
+                add("#FFFF00");     //yellow
+                add("#FF0000");     //red
+                add("#FF6699");     //pink
+                add("#3366FF");     //blue
+                add("#CC0099");     //violet
+                add("#993300");     //hazelnut brown
             }};
 	
 
@@ -67,14 +80,22 @@ public class Configuration {
 		
 		if(configInfo == null) {
 			defaultView = DEFAULT_VIEW;
-			defaultFontColor = DEFAULT_FONT_COLOR;
+			defaultLogLevel = DEFAULT_LOG_LEVEL;
+			defaultRowColor = DEFAULT_ROW_COLOR;
+			defaultAltRowColor = DEFAULT_ALTROW_COLOR;
+			defaultToastColor = DEFAULT_TOAST_COLOR;
 			defaultFileName = DEFAULT_FILE_NAME ;
 			defaultTimeFormat = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
+			defaultDateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
 			storeConfigInfo();
 		} else {
 			defaultView = configInfo.get(VIEW_POISTION);
-			defaultFontColor = configInfo.get(COLOR_POSITION);
+			defaultLogLevel = configInfo.get(LOG_LEVEL_POSITION);
+			defaultRowColor = configInfo.get(ROW_COLOR_POSITION);
+			defaultAltRowColor = configInfo.get(ALTROW_COLOR_POSITION);
+			defaultToastColor = configInfo.get(TOAST_COLOR_POSITION);
 			defaultFileName = configInfo.get(FILENAME_POSITION);
+			defaultDateFormat = new SimpleDateFormat(configInfo.get(DATEFORMAT_POSITION));
 			defaultTimeFormat = new SimpleDateFormat(configInfo.get(TIMEFORMAT_POSITION));
 
 		}
@@ -97,13 +118,30 @@ public class Configuration {
 					&& configInfo.get(VIEW_POISTION).compareToIgnoreCase("calendar") != 0) {
 				return null;
 			}
-			
-			if(!availableColor.contains(configInfo.get(COLOR_POSITION).toLowerCase())) {
+			if(configInfo.get(LOG_LEVEL_POSITION).compareToIgnoreCase("all") != 0
+			        && configInfo.get(LOG_LEVEL_POSITION).compareToIgnoreCase("none") != 0){
+			    return null;
+			}
+			if(!availableColor.contains(configInfo.get(ROW_COLOR_POSITION))) {
 				return null;
 			}
 			
-			if (configInfo.get(TIMEFORMAT_POSITION).compareTo("hhmm") != 0
-					&& configInfo.get(TIMEFORMAT_POSITION).compareTo("HHmm") != 0) {
+			if(!availableColor.contains(configInfo.get(ALTROW_COLOR_POSITION))) {
+                return null;
+            }
+			
+			if(!availableColor.contains(configInfo.get(TOAST_COLOR_POSITION))) {
+                return null;
+            }
+			
+			if (configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MMM/yyyy") != 0
+                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd/M/yyyy") != 0
+                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
+                return null;
+            }
+			
+			if (configInfo.get(TIMEFORMAT_POSITION).compareTo("hh:mm aa") != 0
+					&& configInfo.get(TIMEFORMAT_POSITION).compareTo("HH:mm") != 0) {
 				return null;
 			}
 		}
@@ -118,8 +156,12 @@ public class Configuration {
 	public void storeConfigInfo() {
 		ArrayList<String> configInfo = new ArrayList<String>();
 		configInfo.add(defaultView);
-		configInfo.add(defaultFontColor);
+		configInfo.add(defaultLogLevel);
+		configInfo.add(defaultRowColor);
+		configInfo.add(defaultAltRowColor);
+		configInfo.add(defaultToastColor);
 		configInfo.add(defaultFileName);
+		configInfo.add(defaultDateFormat.toPattern());
 		configInfo.add(defaultTimeFormat.toPattern());
 		
 		Storage.getInstance().writeConfigFile(configInfo);
@@ -134,9 +176,21 @@ public class Configuration {
 		return defaultView;
 	}
 	
-	public String getDefaultFontColor() {
-		return defaultFontColor;
+	public String getDefaultRowColor() {
+		return defaultRowColor;
 	}
+	
+	public String getDefaultAltRowColor() {
+        return defaultAltRowColor;
+    }
+	
+	public String getDefaultToastColor() {
+        return defaultToastColor;
+    }
+	
+	public String getDateFormat() {
+        return defaultDateFormat.toPattern();
+    }
 	
 	public String getTimeFormat() {
 		return defaultTimeFormat.toPattern();
@@ -148,12 +202,28 @@ public class Configuration {
 		defaultFileName = fileName;
 	}
 	
+	public void setDefaultlogLevel(String level){
+	    defaultLogLevel = level;
+	}
+	
 	public void setDefaultView(String view) {
 		defaultView = view;
 	}
 	
-	public void setDefaultFontColor(String color) {
-		defaultFontColor = color;
+	public void setDefaultRowColor(String color) {
+		defaultRowColor = color;
+	}
+	
+	public void setDefaultAltRowColor(String color) {
+        defaultAltRowColor = color;
+    }
+	
+	public void setDefaultToastColor(String color) {
+        defaultToastColor = color;
+    }
+	
+	public void setDateFormat(String dateFormat){
+	    defaultDateFormat = new SimpleDateFormat(dateFormat);
 	}
 	
 	public void setTimeFormat(String timeFormat) {

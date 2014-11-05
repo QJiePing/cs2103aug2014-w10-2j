@@ -210,11 +210,12 @@ public class ListPaneController extends TitledPane implements IController {
             return startIndex;
         }
         Label categoryLabel = new Label(category);
-        categoryLabel.setFont(DEFAULT_HEADER_FONT);
+        //categoryLabel.setFont(DEFAULT_HEADER_FONT);
         categoryLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
         // categoryLabel.setRotate(-90.0);
         // categoryLabel.setTranslateY(-50);
         categoryLabel.setAlignment(Pos.CENTER);
+        
         int span = taskList.size();
         AnchorPane container = new AnchorPane();
         categoryLabel.setPrefWidth(CATEGORY_WIDTH);

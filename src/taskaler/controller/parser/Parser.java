@@ -117,6 +117,8 @@ public class Parser {
             return getParamARCH(commandString);
         case GOTO:
             return getParamGOTO(commandString);
+        //case TODAY:
+           // return getParamTODAY(commandString);
         default:
             return null;
         }

@@ -14,7 +14,7 @@ public final class common {
     //enum for all the types of commands for Taskaler
     public enum CmdType {
         ADD, DELETE, EDIT, DEADLINE, TIME, REPEAT, WORKLOAD, 
-        COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, INVALID
+        COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, EXIT, INVALID
     }
     // Messages
     public static final String VIEW_DATE_MSG = "All tasks on \"%s\"";

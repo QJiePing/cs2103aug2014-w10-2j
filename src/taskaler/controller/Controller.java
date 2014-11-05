@@ -166,6 +166,8 @@ public class Controller{
                 String date_GOTO = params[0];
                 ui.displayMonth(date_GOTO, list.toArray(new ArrayList<Task>()));
                 break;
+            case EXIT:
+                System.exit(0);
             case INVALID:
                 throw new Exception("Invalid Command");
             default:
