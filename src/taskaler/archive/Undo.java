@@ -80,7 +80,7 @@ public class Undo implements Observer {
      * @return String
      */
 
-    private String inverseFunction(String op) {
+    public String inverseFunction(String op) {
         String result = "";
         switch (op) {
         case "ADD":

@@ -143,5 +143,8 @@ public class SystemTest {
     /**
      * Integration 3
      */
-    //@Test
+    @Test
+    public void test3(){
+    	
+    }
 }
