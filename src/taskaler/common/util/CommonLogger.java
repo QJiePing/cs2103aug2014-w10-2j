@@ -1,3 +1,5 @@
+//@author A0099778X
+
 package taskaler.common.util;
 
 import java.io.IOException;
@@ -6,8 +8,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import taskaler.common.configurations.Configuration;
 import taskaler.common.util.parser.calendarToString;
-import taskaler.configurations.Configuration;
 
 public class CommonLogger {
 

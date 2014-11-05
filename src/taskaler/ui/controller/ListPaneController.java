@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import taskaler.common.configurations.Configuration;
 import taskaler.common.data.DeadLineTask;
 import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
-import taskaler.configurations.Configuration;
 import taskaler.ui.model.ListPaneModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

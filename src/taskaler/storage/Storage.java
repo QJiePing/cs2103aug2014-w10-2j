@@ -1,8 +1,8 @@
 package taskaler.storage;
 
+import taskaler.common.configurations.Configuration;
 import taskaler.common.data.*;
 import taskaler.common.util.*;
-import taskaler.configurations.Configuration;
 
 import java.io.*;
 import java.util.ArrayList;

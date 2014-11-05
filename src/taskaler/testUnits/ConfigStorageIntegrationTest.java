@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import taskaler.configurations.*;
+import taskaler.common.configurations.Configuration;
 
 import org.junit.AfterClass;
 import org.junit.Test;

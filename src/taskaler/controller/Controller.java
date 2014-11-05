@@ -2,13 +2,13 @@
 
 package taskaler.controller;
 
-import taskaler.configurations.Configuration;
 import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
 import taskaler.storage.Storage;
 import taskaler.ui.UIFacade;
 import taskaler.archive.PastHistory;
 import taskaler.archive.Undo;
+import taskaler.common.configurations.Configuration;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.CommonLogger;

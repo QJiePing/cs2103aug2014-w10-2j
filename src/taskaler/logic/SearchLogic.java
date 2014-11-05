@@ -1,6 +1,6 @@
-/**
- * 
- */
+
+//@author A0099778X
+
 package taskaler.logic;
 
 import java.util.ArrayList;
@@ -13,12 +13,9 @@ import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.parser.calendarToString;
 
-/**
- * @author Weng Yuan
- *
- */
 public class SearchLogic {
-    /**
+
+	/**
      * find(String tagTypeFIND, String paramFIND) is to find all the tasks in
      * taskList:ArrayList<Task> with same information(type and parameter) given
      * 
@@ -30,22 +27,76 @@ public class SearchLogic {
 
         switch (tagTypeFIND.toUpperCase()) {
         case "KEYWORD":
-            return incompleteKeywordSearch(paramFIND);
+            return findByKeyword(paramFIND);
         case "DATE":
-            return incompleteDeadLineSearch(paramFIND);
+            return findByDeadLine(paramFIND);
         case "WORKLOAD":
-            return incompleteWorkLoadSearch(paramFIND);
+            return findByWorkload(paramFIND);
         case "CREATED":
-            //fill in here
+            return findByCreation(paramFIND);
         case "COMPLETED":
-            //fill in here
+            return findCompleted(paramFIND);
         case "TODAY":
             return todaySearch(paramFIND);
         }
         return null;
     }
 
+    
     /**
+     * findCompleted() will find all the completed/incomplete tasks in 
+     * taskList:ArrayList<Task> according to the paramFIND
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    private ArrayList<Task> findCompleted(String paramFIND) {
+    	boolean tag = false;
+    	
+    	if(paramFIND.compareToIgnoreCase(common.TAG_TRUE) == 0) {
+    		tag = true;
+    	}
+    	
+    	ArrayList<Task> searchResultList = new ArrayList<Task>();
+
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+		for (int i = 0; i < listOfTask.length; i++) {
+			if(listOfTask[i].getTaskStatus() == tag) {
+				searchResultList.add(listOfTask[i]);
+			}
+		}
+
+        return searchResultList;
+	}
+
+
+	/**
+     * findByCreation(String paramFIND) is to find all the tasks in 
+     * taskList:ArrayList<Task> with same creation date given
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    private ArrayList<Task> findByCreation(String paramFIND) {
+    	ArrayList<Task> searchResultList = new ArrayList<Task>();
+        String[] filter = paramFIND.split("/");
+
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+		for (int i = 0; i < listOfTask.length; i++) {
+
+			String[] creationDate = calendarToString.toArray(listOfTask[i].getTaskCreationDate());
+			if(compareDeadline(filter, creationDate)) {
+				searchResultList.add(listOfTask[i]);
+			}
+
+		}
+
+        return searchResultList;
+	}
+
+	/**
      * 
      * findByWorkload(String paramFIND) is to find all the tasks in
      * taskList:ArrayList<Task> with same workload given attribute
@@ -66,47 +117,7 @@ public class SearchLogic {
         return searchResultList;
     }
     
-    /**
-     * 
-     * findByWorkload(String paramFIND) is to find all the incomplete tasks in
-     * taskList:ArrayList<Task> with same workload given attribute
-     * 
-     * @param paramFIND
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    public ArrayList<Task> incompleteWorkLoadSearch(String paramFIND) {
-    	ArrayList<Task> searchResultList = new ArrayList<Task>();
 
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-        	Task targetTask = TaskList.getInstance().get(i);
-            if (!targetTask.getTaskStatus() && targetTask.getTaskWorkLoad().equals(paramFIND)) {
-                searchResultList.add(targetTask);
-            }
-        }
-
-        return searchResultList;
-    }
-    
-    /**
-     * 
-     * findByWorkload(String paramFIND) is to find all the completed tasks in
-     * taskList:ArrayList<Task> with same workload given attribute
-     * 
-     * @param paramFIND
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    public ArrayList<Task> completedWorkLoadSearch(String paramFIND) {
-    	ArrayList<Task> searchResultList = new ArrayList<Task>();
-
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-        	Task targetTask = TaskList.getInstance().get(i);
-            if (targetTask.getTaskStatus() && targetTask.getTaskWorkLoad().equals(paramFIND)) {
-                searchResultList.add(targetTask);
-            }
-        }
-
-        return searchResultList;
-    }
 
     /**
      * 
@@ -136,60 +147,6 @@ public class SearchLogic {
     }
     
     
-    /**
-     * 
-     * findByDeadLine(String paramFIND) is to find all the incomplete tasks in
-     * taskList:ArrayList<Task> with same date given
-     * 
-     * @param paramFIND
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    public ArrayList<Task> incompleteDeadLineSearch(String paramFIND) {
-
-        ArrayList<Task> searchResultList = new ArrayList<Task>();
-        String[] filter = paramFIND.split("/");
-
-        Task[] listOfTask = TaskList.getInstance().toArray();
-
-		for (int i = 0; i < listOfTask.length; i++) {
-			
-			Task targetTask = listOfTask[i];
-			if(!targetTask.getTaskStatus() && checkTargetTask(filter, targetTask)) {
-				searchResultList.add(targetTask);
-			}
-
-		}
-
-        return searchResultList;
-    }
-    
-    
-    /**
-     * 
-     * findByDeadLine(String paramFIND) is to find all the completed tasks in
-     * taskList:ArrayList<Task> with same date given
-     * 
-     * @param paramFIND
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    public ArrayList<Task> completedDeadLineSearch(String paramFIND) {
-
-        ArrayList<Task> searchResultList = new ArrayList<Task>();
-        String[] filter = paramFIND.split("/");
-
-        Task[] listOfTask = TaskList.getInstance().toArray();
-
-		for (int i = 0; i < listOfTask.length; i++) {
-			
-			Task targetTask = listOfTask[i];
-			if(targetTask.getTaskStatus() && checkTargetTask(filter, targetTask)) {
-				searchResultList.add(targetTask);
-			}
-
-		}
-
-        return searchResultList;
-    }
     
     /**
      * Generate list for "Today's tasks", includes all floatTasks, deadlineTasks 
@@ -299,53 +256,6 @@ public class SearchLogic {
 
         return searchResultList;
     }
-
-   
-    
-    /**
-     * 
-     * findByKeyword(String paramFIND) is to find all the incomplete tasks in
-     * taskList:ArrayList<Task> with same keyword given
-     * 
-     * @param paramFIND
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    
-    private ArrayList<Task> incompleteKeywordSearch(String paramFIND) {
-        ArrayList<Task> searchResultList = new ArrayList<Task>();
-
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-            Task targetTask = TaskList.getInstance().get(i);
-            if (!targetTask.getTaskStatus() && targetTask.getTaskName().contains(paramFIND)) {
-                searchResultList.add(targetTask);
-            }
-        }
-
-        return searchResultList;
-    }
-    
-    
-    /**
-     * 
-     * findByKeyword(String paramFIND) is to find all the incomplete tasks in
-     * taskList:ArrayList<Task> with same keyword given
-     * 
-     * @param paramFIND
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    
-    private ArrayList<Task> completedKeywordSearch(String paramFIND) {
-        ArrayList<Task> searchResultList = new ArrayList<Task>();
-
-        for (int i = 0; i < TaskList.getInstance().size(); i++) {
-            Task targetTask = TaskList.getInstance().get(i);
-            if (targetTask.getTaskStatus() && targetTask.getTaskName().contains(paramFIND)) {
-                searchResultList.add(targetTask);
-            }
-        }
-
-        return searchResultList;
-    }
     
     
     /**
@@ -372,56 +282,6 @@ public class SearchLogic {
 
         return searchResultList;
     }
-    
-    /**
-     * 
-     * findByMonthAndYear(String MonthFIND, String YearFind) is to find all the
-     * incomplete tasks in taskList:ArrayList<Task> with same month and year given
-     * 
-     * @param MonthFIND
-     * @param YearFind
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    public ArrayList<Task> IncompleteMonthAndYearSearch(String monthFind, String yearFind) {
-
-        ArrayList<Task> searchResultList = new ArrayList<Task>();
-        Task[] listOfTask = TaskList.getInstance().toArray();
-
-        for (int i = 0; i < listOfTask.length; i++) {
-            Task targetTask = listOfTask[i];
-            if(!targetTask.getTaskStatus() && checkTargetTaskMY(monthFind, yearFind, targetTask)) {
-            	searchResultList.add(targetTask);
-            }
-
-        }
-
-        return searchResultList;
-    }
-
-    /**
-     * 
-     * findByMonthAndYear(String MonthFIND, String YearFind) is to find all the
-     * incomplete tasks in taskList:ArrayList<Task> with same month and year given
-     * 
-     * @param MonthFIND
-     * @param YearFind
-     * @return return list of Tasks (can be empty if nothing is found)
-     */
-    public ArrayList<Task> completedMonthAndYearSearch(String monthFind, String yearFind) {
-
-        ArrayList<Task> searchResultList = new ArrayList<Task>();
-        Task[] listOfTask = TaskList.getInstance().toArray();
-
-        for (int i = 0; i < listOfTask.length; i++) {
-            Task targetTask = listOfTask[i];
-            if(targetTask.getTaskStatus() && checkTargetTaskMY(monthFind, yearFind, targetTask)) {
-            	searchResultList.add(targetTask);
-            }
-
-        }
-
-        return searchResultList;
-    }
 
     
     /**
@@ -434,16 +294,8 @@ public class SearchLogic {
      */
 	private boolean checkTargetTaskMY(String monthFind, String yearFind, Task targetTask) {
         String[] date = null;
-		if(targetTask instanceof FloatTask){
-		    // floating task is found via its creation date
-		    date = calendarToString.toArray(((FloatTask) targetTask).getTaskCreationDate());
-			if (date[common.TAG_TYPE_MONTH].compareToIgnoreCase(monthFind) == 0
-					&& date[common.TAG_TYPE_YEAR]
-							.compareToIgnoreCase(yearFind) == 0) {
-				return true;
-			}
-			
-		} else if (targetTask instanceof DeadLineTask) {
+        
+		if (targetTask instanceof DeadLineTask) {
 		    // only DeadLineTask has deadline attribute
 		    date = calendarToString.toArray(((DeadLineTask) targetTask).getDeadline());
 		    if (date[common.TAG_TYPE_MONTH].compareToIgnoreCase(monthFind) == 0

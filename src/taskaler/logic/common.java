@@ -1,3 +1,4 @@
+//@author A0099778X
 
 package taskaler.logic;
 
@@ -5,20 +6,27 @@ import java.text.SimpleDateFormat;
 
 /**
  * All constants used by any logic component
- * 
- * @author Weng Yuan
- *
+
  */
 public class common {
-    public static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-    public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("HHmm");
-    public static SimpleDateFormat DEFAULT_DATETIME_FORMAT = 
-            new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
     
     public static String ADD_NO_CONTENT = "No content is added";
     public static String EDIT_NO_CONTENT = "NO content, cannot be edited";
     public static String TASKID_NOT_EXIST = "Task ID no exist";
     public static String TASK_PARAMETER_DEFAULT_VALUE = "";
+    public static String TAG_TRUE = "true";
+    public static String TAG_TIME = "time";
+    public static String TAG_DATE = "date";
+    
+    public static String NOTIFY_TYPE_ADD = "ADD";
+    public static String NOTIFY_TYPE_EDIT = "EDIT";
+    public static String NOTIFY_TYPE_DELETE = "DELETE";
+    public static String NOTIFY_TYPE_UNDO = "UNDO";
+    public static String NOTIFY_TYPE_DATE = "DATE";
+    public static String NOTIFY_TYPE_TIME = "TIME";
+    public static String NOTIFY_TYPE_REPEAT = "REPEAT";
+    public static String NOTIFY_TYPE_WORKLOAD = "WORKLOAD";
+    public static String NOTIFY_TYPE_COMPLETE = "COMPLETE";
 
     public static int TAG_TYPE_DATE = 0;
     public static int TAG_TYPE_MONTH = 1;

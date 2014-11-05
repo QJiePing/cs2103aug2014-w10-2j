@@ -1,10 +1,14 @@
+//@author A0099778X
+
 package taskaler.logic;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Observable;
 
 import taskaler.archive.OperationRecord;
+import taskaler.common.configurations.Configuration;
 import taskaler.common.data.DeadLineTask;
 import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
@@ -12,10 +16,6 @@ import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.logic.common.RepeatPattern;
 
-/**
- * @author Weng Yuan
- *
- */
 
 public class OPLogic extends Observable {
 
@@ -54,7 +54,7 @@ public class OPLogic extends Observable {
         	TaskList.getInstance().incrementNumOfIncomplete();
         }
 
-        notifyObservers("UNDO", t);
+        notifyObservers(common.NOTIFY_TYPE_UNDO, t);
         return t;
     }
     
@@ -77,7 +77,7 @@ public class OPLogic extends Observable {
         if(!taskToBeRemoved.getTaskStatus()) {
         	TaskList.getInstance().decrementNumOfIncomplete();
         }
-        notifyObservers("UNDO", taskToBeRemoved);
+        notifyObservers(common.NOTIFY_TYPE_UNDO, taskToBeRemoved);
         return t;
     }
     
@@ -106,7 +106,7 @@ public class OPLogic extends Observable {
                 TaskList.getInstance().incrementNumOfIncomplete();
             }
         }
-        notifyObservers("UNDO", oldTask);
+        notifyObservers(common.NOTIFY_TYPE_UNDO, oldTask);
         return oldTask;
     }
     
@@ -144,10 +144,10 @@ public class OPLogic extends Observable {
             Calendar start = null;
             Calendar end = null;
             if(startTime != null){
-                start = setNewCalendarDate(startTime, "time");
+                start = setNewCalendarDate(startTime, common.TAG_TIME);
             }
             if(endTime != null){
-                end = setNewCalendarDate(endTime, "time");
+                end = setNewCalendarDate(endTime, common.TAG_TIME);
             }
             
             // generate a new task ID
@@ -161,7 +161,7 @@ public class OPLogic extends Observable {
 	                    workload_ADD, description_ADD, start, end);
             } else {
             	//deadline task
-                Calendar date = setNewCalendarDate(date_ADD, "date");
+                Calendar date = setNewCalendarDate(date_ADD, common.TAG_DATE);
 				newTask = new DeadLineTask(name_ADD,
 						Integer.toString(newTaskID),
 						common.TASK_INITIAL_STATUS, Calendar.getInstance(), workload_ADD,
@@ -170,7 +170,7 @@ public class OPLogic extends Observable {
             
             TaskList.getInstance().add(newTask);
             TaskList.getInstance().incrementNumOfIncomplete();
-            notifyObservers("ADD", newTask);
+            notifyObservers(common.NOTIFY_TYPE_ADD, newTask);
 
             return newTask;
         }
@@ -213,7 +213,7 @@ public class OPLogic extends Observable {
         if(!taskToBeRemoved.getTaskStatus()) {
         	TaskList.getInstance().decrementNumOfIncomplete();
         }
-        notifyObservers("DELETE", taskToBeRemoved);
+        notifyObservers(common.NOTIFY_TYPE_DELETE, taskToBeRemoved);
         return taskToBeRemoved;
 
     }
@@ -257,7 +257,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("EDIT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers(common.NOTIFY_TYPE_EDIT, TaskList.getInstance().get(taskIDIndex));
 
         // assume name will not change to null
         if (name_EDIT != null) {
@@ -310,7 +310,7 @@ public class OPLogic extends Observable {
      * @return return null if given task ID not exist, edited task otherwise
      */
     public Task editDate(String taskID, String date) {
-        Calendar newDeadLine = setNewCalendarDate(date, "date");
+        Calendar newDeadLine = setNewCalendarDate(date, common.TAG_DATE);
         int taskIDIndex = SearchLogic.findTaskByID(taskID);
 
         if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
@@ -320,7 +320,7 @@ public class OPLogic extends Observable {
         
         Task newTask = TaskList.getInstance().get(taskIDIndex);
         
-        notifyObservers("DATE", newTask);
+        notifyObservers(common.NOTIFY_TYPE_DATE, newTask);
         
         if (taskIDIndex < TaskList.getInstance().floatToArray().size()) {
         	//float task "zone"
@@ -359,11 +359,13 @@ public class OPLogic extends Observable {
     private static Calendar setNewCalendarDate(String date, String type) {
         Calendar newDeadLine = Calendar.getInstance();
         try{
-            if(type.compareToIgnoreCase("date")== 0) {
-                newDeadLine.setTime(common.DEFAULT_DATE_FORMAT.parse(date));
+            if(type.compareToIgnoreCase(common.TAG_DATE)== 0) {
+            	SimpleDateFormat defaultDateFormat = new SimpleDateFormat(Configuration.getInstance().getDateFormat());
+                newDeadLine.setTime(defaultDateFormat.parse(date));
             }
-            else if(type.compareToIgnoreCase("time") == 0){
-                newDeadLine.setTime(common.DEFAULT_TIME_FORMAT.parse(date));
+            else if(type.compareToIgnoreCase(common.TAG_TIME) == 0){
+            	SimpleDateFormat defaultTimeFormat = new SimpleDateFormat(Configuration.getInstance().getTimeFormat());
+                newDeadLine.setTime(defaultTimeFormat.parse(date));
             }
         }
         catch(Exception e){
@@ -392,45 +394,19 @@ public class OPLogic extends Observable {
             return null;
         }
         
-        notifyObservers("TIME", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers(common.NOTIFY_TYPE_TIME, TaskList.getInstance().get(taskIDIndex));
         
         
         //The code below can be simplified to:
         if(startTime != null){
-            Calendar start = setNewCalendarDate(startTime, "time");
+            Calendar start = setNewCalendarDate(startTime, common.TAG_TIME);
             TaskList.getInstance().get(taskIDIndex).changeStartTime(start);
         }
         if(endTime != null){
-            Calendar end = setNewCalendarDate(endTime, "time");
+            Calendar end = setNewCalendarDate(endTime, common.TAG_TIME);
             TaskList.getInstance().get(taskIDIndex).changeEndTime(end);
         }
         return TaskList.getInstance().get(taskIDIndex);
-        /*
-        int startTimeHour, startTimeMins, endTimeHour, endTimeMins;
-        
-        if(startTime != null) {
-        	startTimeHour = Integer.parseInt(startTime.substring(0, 2));
-        	startTimeMins = Integer.parseInt(startTime.substring(2, 4));
-        	
-            Calendar newStartTime = TaskList.getInstance().get(taskIDIndex).getStartTime();
-        	newStartTime.set(Calendar.HOUR_OF_DAY, startTimeHour);
-        	newStartTime.set(Calendar.MINUTE, startTimeMins);
-        	
-        	TaskList.getInstance().get(taskIDIndex).changeStartTime(newStartTime);
-        }
-        
-        if(endTime != null) {
-        	endTimeHour = Integer.parseInt(endTime.substring(0, 2));
-        	endTimeMins = Integer.parseInt(endTime.substring(2, 4));
-
-            Calendar newEndTime = TaskList.getInstance().get(taskIDIndex).getEndTime();
-        	newEndTime.set(Calendar.HOUR_OF_DAY, endTimeHour);
-        	newEndTime.set(Calendar.MINUTE, endTimeMins);
-        	TaskList.getInstance().get(taskIDIndex).changeEndTime(newEndTime);
-        }
-        
-        return TaskList.getInstance().get(taskIDIndex);
-        */
     }
     
     
@@ -448,8 +424,8 @@ public class OPLogic extends Observable {
      * @return return null if given task ID not exist, edited task otherwise
      */
     public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
-        Calendar startRepeatedDate = setNewCalendarDate(startDate, "date");
-        Calendar endRepeatedDate = setNewCalendarDate(endDate, "date");
+        Calendar startRepeatedDate = setNewCalendarDate(startDate, common.TAG_DATE);
+        Calendar endRepeatedDate = setNewCalendarDate(endDate, common.TAG_DATE);
         if(endDate == null) {
         	//default end repeted time is 1 month.
         	endRepeatedDate.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
@@ -463,7 +439,7 @@ public class OPLogic extends Observable {
             return null;
         }
         
-        notifyObservers("REPEAT", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers(common.NOTIFY_TYPE_REPEAT, TaskList.getInstance().get(taskIDIndex));
         
         ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startRepeatedDate, endRepeatedDate, pattern);
         
@@ -520,7 +496,7 @@ public class OPLogic extends Observable {
             return null;
         }
 
-        notifyObservers("WORKLOAD", TaskList.getInstance().get(taskIDIndex));
+        notifyObservers(common.NOTIFY_TYPE_WORKLOAD, TaskList.getInstance().get(taskIDIndex));
 
         // assume workloadAtt is within the range of 1-3
         TaskList.getInstance().get(taskIDIndex)
@@ -548,7 +524,7 @@ public class OPLogic extends Observable {
         Task oldTask = TaskList.getInstance().get(taskIDIndex).clone();
         
         toggleStatus(taskIDIndex);
-        notifyObservers("COMPLETE", oldTask);
+        notifyObservers(common.NOTIFY_TYPE_COMPLETE, oldTask);
         
         return TaskList.getInstance().get(taskIDIndex);
     }

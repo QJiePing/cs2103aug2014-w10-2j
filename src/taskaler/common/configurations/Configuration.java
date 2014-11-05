@@ -1,12 +1,9 @@
-package taskaler.configurations;
-
-import java.io.File;
+package taskaler.common.configurations;
 
 import taskaler.common.util.CommonLogger;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import taskaler.storage.Storage;
 

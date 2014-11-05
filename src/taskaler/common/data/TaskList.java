@@ -1,7 +1,4 @@
-/**
- * @author A0099778X
- *
- */
+//@author A0099778X
 package taskaler.common.data;
 
 import java.util.ArrayList;
