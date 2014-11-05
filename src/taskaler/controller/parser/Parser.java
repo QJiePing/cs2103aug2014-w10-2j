@@ -1,7 +1,4 @@
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+//@author A0108541M
 
 package taskaler.controller.parser;
 
@@ -13,7 +10,6 @@ import java.util.HashMap;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.IModel;
 import taskaler.ui.model.TaskPaneModel;
-
 
 public class Parser {
     // Local Variables
@@ -27,7 +23,7 @@ public class Parser {
     /**
      * @param commandString
      * 
-     *            Contructor for Parser
+     * Contructor for Parser
      */
     public Parser() throws Exception {
         ;
@@ -64,18 +60,20 @@ public class Parser {
         currentTaskID = stateVariables.get(TaskPaneModel.TASK_ID_ATTRIBUTE);
         currentMonth = stateVariables
                 .get(CalendarPaneModel.CURRENT_MONTH_ATTRIBUTE);
-        currentYear = stateVariables.get(CalendarPaneModel.CURRENT_YEAR_ATTRIBUTE);
+        currentYear = stateVariables
+                .get(CalendarPaneModel.CURRENT_YEAR_ATTRIBUTE);
         parameters = getParams(command, commandString);
     }
 
     /**
-     * Method to differentiate between CMD_TYPE(s) when given the user command
+     * Method to differentiate between CmdType(s) when given the user command
      * 
      * @param command
      * @return CmdType command type
      */
     private CmdType determineCMD_TYPE(String command) {
-        CmdType commandType = ParserLibrary.commandList.get(command.toLowerCase());
+        CmdType commandType = ParserLibrary.commandList.get(command
+                .toLowerCase());
         if (commandType == null) {
             return CmdType.INVALID;
         } else {
@@ -160,7 +158,7 @@ public class Parser {
                     workloadIndex);
             break;
         default:
-            throw new Exception("Invalid parameters");
+            throw new Exception(EXCEPTION_INVALID_ADD);
         }
         return paramADD;
     }
@@ -170,7 +168,7 @@ public class Parser {
      * 
      * @param paramString
      * @param paramArray
-     * @return
+     * @return String[] paramArray after appending name and description
      */
     private static String[] appendNameAndDescription(String paramString,
             String[] paramArray, int indexN, int indexD) {
@@ -196,7 +194,7 @@ public class Parser {
      * 
      * @param paramString
      * @param paramArray
-     * @return
+     * @return String[] paramArray after appending date and time
      * @throws Exception
      */
     private static String[] appendDateAndTime(String paramString,
@@ -225,7 +223,7 @@ public class Parser {
      * 
      * @param paramString
      * @param paramArray
-     * @return
+     * @return String[] paramArray after appending workload
      * @throws Exception
      */
     private static String[] appendWorkload(String paramString,
@@ -251,7 +249,7 @@ public class Parser {
             if (currentTaskID != null) {
                 paramDELETE[taskID_index] = currentTaskID;
             } else {
-                throw new Exception("Invalid task ID");
+                throw new Exception(EXCEPTION_INVALID_TASKID);
             }
         } else {
             paramDELETE[taskID_index] = taskID;
@@ -302,7 +300,7 @@ public class Parser {
                         removeFirstWord(paramString), paramEDIT, nameIndex,
                         descriptionIndex);
             } else {
-                throw new Exception("Invalid task ID");
+                throw new Exception(EXCEPTION_INVALID_TASKID);
             }
         } else {
             paramEDIT[taskIDIndex] = currentTaskID;
@@ -313,10 +311,10 @@ public class Parser {
     }
 
     /**
-     * Method to retrieve parameters for DATE command specifically
+     * Method to retrieve parameters for DEADLINE command specifically
      * 
      * @param commandString
-     * @return String[] parameters for DATE command
+     * @return String[] parameters for DEADLINE command
      */
     private static String[] getParamDEADLINE(String commandString)
             throws Exception {
@@ -330,12 +328,12 @@ public class Parser {
                 paramDEADLINE[taskID_index] = currentTaskID;
                 date = removeFirstWord(commandString);
             } else {
-                throw new Exception("Invalid task ID");
+                throw new Exception(EXCEPTION_INVALID_TASKID);
             }
         } else if (paramArray.length == 2) {
             paramDEADLINE[taskID_index] = getTaskID(commandString);
         } else {
-            throw new Exception("Invalid date syntax, try: <dd/mm/yyyy>");
+            throw new Exception(EXCEPTION_INVALID_DATE);
         }
         String dateInFormat = ParseAttribute.parseDate(date);
         paramDEADLINE[date_index] = dateInFormat;
@@ -344,7 +342,6 @@ public class Parser {
 
     /**
      * Method to return the parameters for REPEAT command specifically
-     * "repeat 1 weekly, from 09/10/2014 to 21/11/2014"
      * 
      * @param commandString
      * @return String[] parameters for REPEAT command
@@ -376,7 +373,7 @@ public class Parser {
      * 
      * @param field
      * @param paramArray
-     * @return
+     * @return String[] paramArray after appending ID and pattern
      * @throws Exception
      */
     private static String[] appendIDAndPattern(String IDAndPatternfield,
@@ -391,14 +388,14 @@ public class Parser {
                 paramArray[patternIndex] = ParseAttribute
                         .parsePattern(IDAndPatternfield);
             } else {
-                throw new Exception("Invalid task ID");
+                throw new Exception(EXCEPTION_INVALID_TASKID);
             }
         } else if (fieldSplit.length == 2) {
             paramArray[taskIDIndex] = getFirstWord(IDAndPatternfield);
             paramArray[patternIndex] = ParseAttribute
                     .parsePattern(removeFirstWord(IDAndPatternfield));
         } else {
-            throw new Exception("Invalid task ID");
+            throw new Exception(EXCEPTION_INVALID_TASKID);
         }
         return paramArray;
     }
@@ -417,11 +414,11 @@ public class Parser {
             String[] paramArray) throws Exception {
         int startDateIndex = 2;
         int endDateIndex = 3;
-        
+
         String[] startAndEndDate = ParseAttribute.parseRange(dateField, "date");
         paramArray[startDateIndex] = startAndEndDate[0];
         paramArray[endDateIndex] = startAndEndDate[1];
-        
+
         return paramArray;
     }
 
@@ -446,7 +443,8 @@ public class Parser {
             paramTIME[startTimeIndex] = time[0];
             paramTIME[endTimeIndex] = time[1];
         } else {
-            time = ParseAttribute.parseRange(removeFirstWord(paramString), "time");
+            time = ParseAttribute.parseRange(removeFirstWord(paramString),
+                    "time");
             paramTIME[taskIDIndex] = getFirstWord(paramString);
             paramTIME[startTimeIndex] = time[0];
             paramTIME[endTimeIndex] = time[1];
@@ -463,16 +461,17 @@ public class Parser {
     private static String[] getParamWL(String commandString) throws Exception {
         int taskIDIndex = 0;
         int workloadIndex = 1;
-        
+
         String paramString = removeFirstWord(commandString);
         String[] paramWL = new String[WORKLOAD_PARAMETERS];
-        if(currentTaskID != null){
+        if (currentTaskID != null) {
             paramWL[taskIDIndex] = currentTaskID;
             paramWL[workloadIndex] = ParseAttribute.parseWL(paramString);
         } else {
             paramWL[taskIDIndex] = getFirstWord(paramString);
-            paramWL[workloadIndex] = ParseAttribute.parseWL(removeFirstWord(paramString));
-        } 
+            paramWL[workloadIndex] = ParseAttribute
+                    .parseWL(removeFirstWord(paramString));
+        }
         return paramWL;
     }
 
@@ -491,7 +490,7 @@ public class Parser {
             if (currentTaskID != null) {
                 paramWL[taskIDIndex] = currentTaskID;
             } else {
-                throw new Exception("Invalid task ID");
+                throw new Exception(EXCEPTION_INVALID_TASKID);
             }
         } else {
             paramWL[taskIDIndex] = getTaskID(commandString);
@@ -500,7 +499,6 @@ public class Parser {
     }
 
     /**
-     * 
      * Method to retrieve parameters for VIEW command specifically
      * 
      * @param commandString
@@ -509,7 +507,7 @@ public class Parser {
     private static String[] getParamVIEW(String commandString) throws Exception {
         int viewTypeIndex = 0;
         int viewParamIndex = 1;
-        
+
         String paramString = removeFirstWord(commandString);
         String[] paramArray = new String[VIEW_PARAMETERS];
         if (paramString.equalsIgnoreCase("l")
@@ -519,21 +517,22 @@ public class Parser {
         } else if (paramString.equalsIgnoreCase("c")
                 || paramString.equalsIgnoreCase("cal")
                 || paramString.equalsIgnoreCase("calendar")) {
-            paramArray[viewTypeIndex] = "CALENDAR"; 
-        } else if(paramString.equalsIgnoreCase("undo") 
-                || paramString.equalsIgnoreCase("actions")){
+            paramArray[viewTypeIndex] = "CALENDAR";
+        } else if (paramString.equalsIgnoreCase("undo")
+                || paramString.equalsIgnoreCase("actions")) {
             paramArray[viewTypeIndex] = "UNDO";
         } else {
             int splitIndex = paramString.indexOf(":");
-            if(splitIndex != INVALID_VALUE){
+            if (splitIndex != INVALID_VALUE) {
                 String viewType = paramString.substring(0, splitIndex).trim();
                 String viewParam = paramString.substring(splitIndex + 1);
-                if(viewType.equalsIgnoreCase("d") 
-                        || viewType.equalsIgnoreCase("date")){
+                if (viewType.equalsIgnoreCase("d")
+                        || viewType.equalsIgnoreCase("date")) {
                     paramArray[viewTypeIndex] = "DATE";
-                    paramArray[viewParamIndex] = ParseAttribute.parseDate(viewParam);
+                    paramArray[viewParamIndex] = ParseAttribute
+                            .parseDate(viewParam);
                 } else {
-                    throw new Exception("Invalid task ID");
+                    throw new Exception(EXCEPTION_INVALID_TASKID);
                 }
             } else {
                 paramArray[viewTypeIndex] = "TASK";
@@ -544,8 +543,8 @@ public class Parser {
     }
 
     /**
-     * 
      * Method for retrieving parameters for FIND command specifically
+     * Available tags are w, c and x. Absence of tags means find by keyword
      * 
      * @param commandString
      * @return String[] parameters for FIND command
@@ -561,18 +560,30 @@ public class Parser {
         int splitIndex = paramString.indexOf(":");
         if (splitIndex != INVALID_VALUE) {
             String findType = paramString.substring(0, splitIndex).trim();
-            if(findType.equalsIgnoreCase("w") 
+            if (findType.equalsIgnoreCase("w")
                     || findType.equalsIgnoreCase("wl")
-                    || findType.equalsIgnoreCase("workload")){
-                paramArray[tagIndex] = "workload";
-                paramArray[toSearchIndex] = ParseAttribute.parseWL(
-                        paramString.substring(splitIndex + 1).trim());
+                    || findType.equalsIgnoreCase("workload")) {
+                paramArray[tagIndex] = "WORKLOAD";
+                paramArray[toSearchIndex] = ParseAttribute.parseWL(paramString
+                        .substring(splitIndex + 1).trim());
+            } else if (findType.equalsIgnoreCase("c")
+                    || findType.equalsIgnoreCase("created")
+                    || findType.equalsIgnoreCase("creation")) {
+                paramArray[tagIndex] = "CREATED";
+                paramArray[toSearchIndex] = ParseAttribute
+                        .parseDate(paramString.substring(splitIndex + 1).trim());
+            } else if (findType.equalsIgnoreCase("x")
+                    || findType.equalsIgnoreCase("done")
+                    || findType.equalsIgnoreCase("completed")) {
+                paramArray[tagIndex] = "COMPLETED";
+                paramArray[toSearchIndex] = ParseAttribute
+                        .parseBool(paramString.substring(splitIndex + 1).trim());    
             } else {
-                paramArray[tagIndex] = "keyword";
+                paramArray[tagIndex] = "KEYWORD";
                 paramArray[toSearchIndex] = paramString;
             }
         } else {
-            paramArray[tagIndex] = "keyword";
+            paramArray[tagIndex] = "KEYWORD";
             paramArray[toSearchIndex] = paramString;
         }
         return paramArray;
@@ -596,14 +607,21 @@ public class Parser {
         }
         return paramArray;
     }
-    
-    private static String[] getParamTODAY(String commandString){
+
+    /**
+     * Method to retrieve today's date for the TODAY command
+     * 
+     * @param commandString
+     * @return String[] parameters for TODAY command
+     */
+    private static String[] getParamTODAY(String commandString) {
         int dateIndex = 0;
-        
+
         String[] paramTODAY = new String[TODAY_PARAMETERS];
-        paramTODAY[dateIndex] =  ParseAttribute.getTodayDate();
+        paramTODAY[dateIndex] = ParseAttribute.getTodayDate();
         return paramTODAY;
     }
+
     /**
      * Method to retrieve parameters for the GOTO command specifically
      * 
@@ -622,14 +640,15 @@ public class Parser {
             theMonth = Integer.parseInt(currentMonth);
             theYear = Integer.parseInt(currentYear);
         } else {
-            theMonth = Calendar.getInstance().get(Calendar.MONTH) + OFFSET_OF_MONTH;
+            theMonth = Calendar.getInstance().get(Calendar.MONTH)
+                    + OFFSET_OF_MONTH;
             theYear = Calendar.getInstance().get(Calendar.YEAR);
         }
         if (command.equals("next")) {
             int nextMonth = theMonth + 1;
             if (nextMonth == MONTH_OVERFLOW_VALUE) {
                 nextMonth = nextMonth - MONTHS_IN_A_YEAR;
-                String nextYear = ""+(theYear + 1);
+                String nextYear = "" + (theYear + 1);
                 paramGOTO[monthIndex] = nextMonth + "/" + nextYear;
             } else {
                 paramGOTO[monthIndex] = nextMonth + "/" + theYear;
@@ -638,13 +657,14 @@ public class Parser {
             int prevMonth = theMonth - 1;
             if (prevMonth == MONTH_INVALID_VALUE) {
                 prevMonth = prevMonth + MONTHS_IN_A_YEAR;
-                String prevYear = ""+(theYear - 1);
+                String prevYear = "" + (theYear - 1);
                 paramGOTO[monthIndex] = prevMonth + "/" + prevYear;
             } else {
                 paramGOTO[monthIndex] = prevMonth + "/" + theYear;
             }
         } else if (command.equals("goto")) {
-            String theDateToGo = ParseAttribute.parseMonthYear(paramString, theYear);
+            String theDateToGo = ParseAttribute.parseMonthYear(paramString,
+                    theYear);
             paramGOTO[monthIndex] = theDateToGo;
         }
         return paramGOTO;

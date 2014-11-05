@@ -1,25 +1,47 @@
-/** 
- * @author Brendan Yong, A0108541M
- * 
- */
+//@author A0108541M
+
 package taskaler.controller;
 
 /**
  * @author Brendan
  *
- * Contains all constants used in Controller
+ *         Contains all constants used in Controller
  */
 public final class common {
-    
-    //enum for all the types of commands for Taskaler
+
+    // enum for all the types of commands for Taskaler
     public enum CmdType {
         ADD, DELETE, EDIT, DEADLINE, TIME, REPEAT, WORKLOAD, TODAY, 
         COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, EXIT, INVALID
     }
+
     // Messages
-    public static final String VIEW_DATE_MSG = "All tasks on \"%s\"";
-    public static final String FIND_MSG = "Search result for %s, %s";
-    
+    public static final String MSG_DELETED = "The task \"%s\" has been deleted";
+    public static final String MSG_DELETE_ALL = "All tasks have been deleted";
+    public static final String MSG_VIEW_DATE = "All tasks on \"%s\"";
+    public static final String MSG_VIEW_UNDO = "Actions last taken";
+    public static final String MSG_HISTORY = "History";
+    public static final String MSG_FIND = "Search result for %s, %s";
+    public static final String MSG_UNDO = "The last operation has been undone";
+    public static final String MSG_TODAY = "Tasks to do today: ";
+
+    // Exception Messages
+    public static final String EXCEPTION_INVALID_ADD = "Invalid ADD parameters";
+    public static final String EXCEPTION_INVALID_COMMAND = "Invalid command entered!";
+    public static final String EXCEPTION_INVALID_TASKID = "Invalid task ID";
+    public static final String EXCEPTION_INVALID_DATE = "Invalid date syntax, try: <dd/mm/yyyy>";
+    public static final String EXCEPTION_INVALID_TIME = "Invalid time syntax, try: HHmm";
+    public static final String EXCEPTION_INVALID_RANGE = 
+            "Invalid %s range syntax, try: <start %s> - <end %s>";
+    public static final String EXCEPTION_INVALID_WORKLOAD = 
+            "Invalid workload attribute syntax, try: <1 or 2 or 3>";
+    public static final String EXCEPTION_INVALID_PATTERN = 
+            "Invalid pattern syntax, try: wednesday, or weekly, or last";
+    public static final String EXCEPTION_INVALID_GOTO = "Invalid goto syntax, try: goto <MM/YYYY>";
+    public static final String EXCEPTION_INVALID_BOOLEAN = 
+            "Invalid boolean attribute syntax, try: true or false";
+    public static final String ERROR_UNEXPECTED = "Unknown error occurred";
+
     // Magic Numbers
     public static final int INVALID_VALUE = -1;
     public static final int MAX_ADD_PARAMETERS = 6;

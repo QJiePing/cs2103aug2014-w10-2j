@@ -1,7 +1,4 @@
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+//@author A0108541M
 
 package taskaler.testUnits;
 
@@ -446,7 +443,7 @@ public class ParserTest {
             newParser.parseCMD("next", stateVariables);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
-            String correctNextMonth = (cal.get(Calendar.MONTH) + 1) + "/"
+            String correctNextMonth = (cal.get(Calendar.MONTH) + 2) + "/"
                     + cal.get(Calendar.YEAR);
             assertEquals(currentCMD, CmdType.GOTO);
             assertEquals(currentParams[0], correctNextMonth);
@@ -467,7 +464,7 @@ public class ParserTest {
             newParser.parseCMD("back", stateVariables);
             currentCMD = newParser.getCommand();
             currentParams = newParser.getParameters();
-            String correctPrevMonth = (cal.get(Calendar.MONTH) - 1) + "/"
+            String correctPrevMonth = (cal.get(Calendar.MONTH)) + "/"
                     + cal.get(Calendar.YEAR);
             assertEquals(currentCMD, CmdType.GOTO);
             assertEquals(currentParams[0], correctPrevMonth);

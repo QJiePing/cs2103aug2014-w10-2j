@@ -35,6 +35,10 @@ public class SearchLogic {
             return incompleteDeadLineSearch(paramFIND);
         case "WORKLOAD":
             return incompleteWorkLoadSearch(paramFIND);
+        case "CREATED":
+            //fill in here
+        case "COMPLETED":
+            //fill in here
         case "TODAY":
             return todaySearch(paramFIND);
         }

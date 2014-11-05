@@ -1,7 +1,4 @@
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+//@author A0108541M
 
 package taskaler.controller.parser;
 
@@ -13,6 +10,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 
+/**
+ * @author Brendan
+ *
+ * Handles the parsing of specific shared attributes
+ */
 public class ParseAttribute {
     
     /**
@@ -33,7 +35,7 @@ public class ParseAttribute {
         int numOfParams = Integer.parseInt(dateFormat[NUM_OF_PARAMS_INDEX]);
         Date date = null;
         if(numOfParams == 0){
-            throw new Exception("Invalid date syntax, try: <dd/mm/yyyy>");
+            throw new Exception(EXCEPTION_INVALID_DATE);
         }
         else {
             date = (new SimpleDateFormat(dateFormat[FORMAT_INDEX])).parse(paramDate);
@@ -73,11 +75,24 @@ public class ParseAttribute {
         return dateFormat;
     }
     
+    /**
+     * Method to return today's date
+     * 
+     * @return today's date in String
+     */
     public static String getTodayDate() {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         return df.format(Calendar.getInstance().getTime());
     }
     
+    /**
+     * Parses a supposed range of dates, times, and the like
+     * 
+     * @param variable 
+     * @param type
+     * @return String[] of startVariable and endVariable
+     * @throws Exception
+     */
     public static String[] parseRange(String variable, String type) throws Exception{
         int startIndex = 0;
         int endIndex = 1;
@@ -134,11 +149,7 @@ public class ParseAttribute {
                 }
             }
             catch(Exception e){
-                if(type.equalsIgnoreCase("date")){
-                    throw new Exception("Invalid date range syntax, try: <start date> - <end date>");
-                } else if(type.equalsIgnoreCase("time")){
-                    throw new Exception("Invalid time range syntax, try: <start time> - <end time>");
-                }
+                    throw new Exception(String.format(EXCEPTION_INVALID_RANGE, type, type, type));
             }
         }
         return startAndEnd;
@@ -148,7 +159,7 @@ public class ParseAttribute {
      * Parses the time and translates it to a consistent syntax, "HHmm"
      * 
      * @param time
-     * @return
+     * @return String time in correct format
      * @throws Exception
      */
     public static String parseTime(String time) throws Exception{
@@ -171,7 +182,7 @@ public class ParseAttribute {
             }
         }
         if(timeInSyntax == null){
-            throw new Exception("Invalid time syntax, try: HHmm");
+            throw new Exception(EXCEPTION_INVALID_TIME);
         }
         return timeInSyntax;
     }
@@ -186,7 +197,7 @@ public class ParseAttribute {
     public static String parseWL(String workload) throws Exception {
         String workloadInSyntax = ParserLibrary.availableWorkloadSyntax.get(workload);
         if(workloadInSyntax == null){
-            throw new Exception("Invalid workload attribute syntax, try: <1 or 2 or 3>");
+            throw new Exception(EXCEPTION_INVALID_WORKLOAD);
         }
         else {
             return workloadInSyntax;
@@ -203,13 +214,21 @@ public class ParseAttribute {
     public static String parsePattern(String pattern) throws Exception {
         String patternInSyntax = ParserLibrary.availablePatternSyntax.get(pattern);
         if(patternInSyntax == null){
-            throw new Exception("Invalid pattern syntax, try: wednesday, or weekly, or last");
+            throw new Exception(EXCEPTION_INVALID_PATTERN);
         }
         else {
             return patternInSyntax;
         }
     }
     
+    /**
+     * Method to parse a date combination of month/year, specifically for goto
+     * 
+     * @param monthYear
+     * @param currentYear
+     * @return String date for goto command
+     * @throws Exception
+     */
     public static String parseMonthYear(String monthYear, int currentYear) throws Exception {
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
         SimpleDateFormat monthFormat2 = new SimpleDateFormat("M");
@@ -241,7 +260,7 @@ public class ParseAttribute {
             yearInt = cal.get(Calendar.YEAR);
         } 
         catch(Exception e){
-            throw new Exception("Invalid goto syntax, try: goto <MM/YYYY>");
+            throw new Exception(EXCEPTION_INVALID_GOTO);
         }
         try{
             cal.setTime(monthFormat.parse(monthField));
@@ -253,9 +272,26 @@ public class ParseAttribute {
                 cal.set(Calendar.YEAR, yearInt);
             }
             catch(Exception f){
-                throw new Exception("Invalid goto syntax, try: goto <MM/YYYY>");
+                throw new Exception(EXCEPTION_INVALID_GOTO);
             }
         }
         return returnFormat.format(cal.getTime());
+    }
+    
+    /**
+     * Method to parse boolean inputs
+     * 
+     * @param answer
+     * @return String in a consistent boolean syntax
+     * @throws Exception
+     */
+    public static String parseBool(String answer) throws Exception {
+        String booleanInSyntax = ParserLibrary.availableBooleanSyntax.get(answer);
+        if(booleanInSyntax == null){
+            throw new Exception(EXCEPTION_INVALID_BOOLEAN);
+        }
+        else {
+            return booleanInSyntax;
+        }
     }
 }

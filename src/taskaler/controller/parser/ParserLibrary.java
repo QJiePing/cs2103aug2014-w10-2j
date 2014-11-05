@@ -1,7 +1,5 @@
-/**
- * @author Brendan Yong, A0108541M
- *
- */
+//@author A0108541M
+
 
 package taskaler.controller.parser;
 
@@ -156,6 +154,20 @@ public final class ParserLibrary {
                 put("thu", "5 DAYOFWEEK");
                 put("fri", "6 DAYOFWEEK");
                 put("sat", "7 DAYOFWEEK");
+            }};
+            
+    /**
+     * Contains the available variations of boolean formats for user input
+     */
+    public static final HashMap<String, String> availableBooleanSyntax = new HashMap<String, String>()
+            {{  put("true", "true");
+                put("yes", "true");
+                put("y", "true");
+                put("1", "true");
+                put("false", "false");
+                put("no", "false");
+                put("n", "false");
+                put("0", "false");
             }};
 }
 
