@@ -1,6 +1,6 @@
 //@author A0099778X
 
-package taskaler.testUnits;
+package taskaler.logic;
 
 import static org.junit.Assert.*;
 
@@ -15,8 +15,6 @@ import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.parser.calendarToString;
-import taskaler.logic.OPLogic;
-import taskaler.logic.SearchLogic;
 
 public class OPLogicTest {
 
