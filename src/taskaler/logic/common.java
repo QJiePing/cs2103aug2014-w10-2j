@@ -9,6 +9,10 @@ import java.text.SimpleDateFormat;
 
  */
 public class common {
+    public static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+    public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("HHmm");
+    public static SimpleDateFormat DEFAULT_DATETIME_FORMAT = 
+            new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
     
     public static String ADD_NO_CONTENT = "No content is added";
     public static String EDIT_NO_CONTENT = "NO content, cannot be edited";
