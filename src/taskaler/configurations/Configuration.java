@@ -44,19 +44,20 @@ public class Configuration {
 	
 	private static CommonLogger log = CommonLogger.getInstance();
 	
-    public static final ArrayList<String> availableColor = new ArrayList<String>()
-            {{  add("#FFFFFF");     //white
-                add("#66CCFF");     //light blue
-                add("#FFFF00");     //yellow
-                add("#FF0000");     //red
-                add("#FF6699");     //pink
-                add("#3366FF");     //blue
-                add("#CC0099");     //violet
-                add("#993300");     //hazelnut brown
-            }};
+    public static ArrayList<String> availableColor = null;
 	
 
 	private Configuration(){
+	    availableColor = new ArrayList<String>()
+	            {{  add("#FFFFFF");     //white
+	                add("#66CCFF");     //light blue
+	                add("#FFFF00");     //yellow
+	                add("#FF0000");     //red
+	                add("#FF6699");     //pink
+	                add("#3366FF");     //blue
+	                add("#CC0099");     //violet
+	                add("#993300");     //hazelnut brown
+	            }};
 		loadConfiguration();
 	}
 	
@@ -135,8 +136,8 @@ public class Configuration {
             }
 			
 			if (configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MMM/yyyy") != 0
-                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd/MM/yyyy") != 0
-                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
+                    && configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MM/yyyy") != 0
+                    && configInfo.get(DATEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
                 return null;
             }
 			

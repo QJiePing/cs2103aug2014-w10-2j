@@ -38,6 +38,7 @@ import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.util.parser.calendarToString;
+import taskaler.configurations.Configuration;
 import taskaler.controller.Controller;
 import taskaler.controller.parser.ParserLibrary;
 import taskaler.ui.controller.common;
@@ -329,22 +330,22 @@ public class RootController extends BorderPane implements IController {
 
         if (t.getStartTime() != null) {
             model.taskStartTime = calendarToString.parseDate(t.getStartTime(),
-                    "HH:mm");
+                    Configuration.getInstance().getTimeFormat());
         }
 
         if (t.getEndTime() != null) {
             model.taskEndTime = calendarToString.parseDate(t.getEndTime(),
-                    "HH:mm");
+                    Configuration.getInstance().getTimeFormat());
         }
         if (t instanceof FloatTask) {
             model.taskDate = calendarToString
-                    .parseDate(t.getTaskCreationDate());
+                    .parseDate(t.getTaskCreationDate(), Configuration.getInstance().getDateFormat());
         } else if (t instanceof DeadLineTask) {
             model.taskDate = calendarToString.parseDate(((DeadLineTask) t)
-                    .getDeadline());
+                    .getDeadline(), Configuration.getInstance().getDateFormat());
         } else if (t instanceof RepeatedTask) {
             model.taskDate = calendarToString.parseDate(((RepeatedTask) t)
-                    .getEndRepeatedDate());
+                    .getEndRepeatedDate(), Configuration.getInstance().getDateFormat());
             model.taskPattern = RepeatedTask
                     .patternToEnglish(((RepeatedTask) t).getPattern());
         }

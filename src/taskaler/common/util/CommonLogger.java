@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import taskaler.common.util.parser.calendarToString;
+import taskaler.configurations.Configuration;
 
 public class CommonLogger {
 
@@ -74,7 +75,12 @@ public class CommonLogger {
             logger = Logger.getLogger(CommonLogger.class.getName());
             String fileName = fileNameGenerator(EXCEPTION_FILE_NAME);
             handler_formatterSetUp(fileName);
-            logger.setLevel(currentLogLevel);
+            if(Configuration.getInstance().getLogLevel().compareToIgnoreCase("all") == 0){
+                logger.setLevel(Level.ALL);
+            }else{
+                logger.setLevel(Level.OFF);
+            }
+            
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
