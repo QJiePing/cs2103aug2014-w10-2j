@@ -12,42 +12,59 @@ import org.junit.Test;
 import taskaler.common.data.*;
 import taskaler.storage.Storage;
 
-/**
- * @author Quek Jie Ping A0111798X
- */
-public class StorageTestUnit {
+//@author A0111798X
+
+public class StorageTaskTestUnit {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		File f = new File("testing.txt");
 		f.delete();
 	}
-
+	
 	/**
-	 * This is a equivalence partitioning case for 'null' value partition.
+	 * Equivalence Partition: valid file name, empty file name, null file name
+	 * Boundary Analysis: 0,1, more than 1 tasks
 	 */
+
 
 	/**
 	 * Test for null filename
+	 * 
+	 * Equivalence partitioning: Null partition.
+	 * Boundary Analysis:0
 	 */
 	@Test
 	public void test1() {
 		TaskList taskList = TaskList.getInstance();
-		taskList.add(new FloatTask());
+		taskList.clear();
 		Storage storeObj = Storage.getInstance();
-		boolean result = storeObj.writeToFile(null, taskList);
+		boolean result = storeObj.writeToFile(" ", taskList);
+		assertFalse(result);
+	}
+	/**
+	 * Test for empty filename
+	 * 
+	 * Equivalence partitioning: Empty partition.
+	 * Boundary Analysis:0
+	 */
+	@Test
+	public void test2() {
+		TaskList taskList = TaskList.getInstance();
+		taskList.clear();
+		Storage storeObj = Storage.getInstance();
+		boolean result = storeObj.writeToFile("", taskList);
 		assertFalse(result);
 	}
 
 	/**
-	 * Testing json writing in and reading out methods
-	 */
-
-	/**
-	 * testing the case of an empty task list
+	 * Testing the case of an empty task list
+	 * 
+	 * Equivalence partitioning: valid file name.
+	 * Boundary Analysis: 0
 	 */
 	@Test
-	public void test2() {
+	public void test3() {
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
 		Storage storeObj = Storage.getInstance();
@@ -66,19 +83,20 @@ public class StorageTestUnit {
 
 	/**
 	 * Testing the case where there is 2 float task in TaskList
+	 * 
+	 * Combination:
+	 * Equivalence partitioning: valid file name
+	 * Boundary analysis: 1 float task, 0 deadline task, 0 repeated
 	 */
 	@Test
-	public void test3() {
+	public void test4() {
 		boolean result = false;
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
 		taskList.add(new FloatTask("Task1", "1", true, Calendar
 				.getInstance(), "5", "description1", Calendar.getInstance(),
 				Calendar.getInstance()));
-		taskList.add(new FloatTask("Task2", "2", false,
-				Calendar.getInstance(), "1", "description2", Calendar
-						.getInstance(), Calendar.getInstance()));
-
+		
 		Storage storeObj = Storage.getInstance();
 		storeObj.writeToFile("testing.txt", taskList);
 
@@ -97,9 +115,13 @@ public class StorageTestUnit {
 
 	/**
 	 * Testing the case where there is a mixture of 3 different type of tasks
+	 * 
+	 * Combination
+	 * Equivalence partitioning: valid filename
+	 * Boundary Analysis: 2 float tasks, 1 deadline task, 1 repeated task
 	 */
 	@Test
-	public void test4() {
+	public void test5() {
 		/**
 		 * boolean switch for each items in the TaskList
 		 */

@@ -2,9 +2,9 @@ package taskaler.common.data;
 
 import java.util.Calendar;
 
-/*
- * @author Quek Jie Ping, A0111798X
- */
+
+ //@author A0111798X
+
 public class FloatTask extends Task {
 
 	public FloatTask() {

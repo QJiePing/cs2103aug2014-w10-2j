@@ -3,11 +3,11 @@
  */
 package taskaler.archive;
 
-/**
- * @author Quek Jie Ping, A0111798X
- * 
- *         This purpose of this class is to have a generic object which can
- *         store both Task object and String object as a single record.
+//@author A0111798X
+
+ /** 
+ * This purpose of this class is to have a generic object which can
+ * store both Task object and String object as a single record.
  * 
  * @param <T>
  *            A generic type which we used for Task Object

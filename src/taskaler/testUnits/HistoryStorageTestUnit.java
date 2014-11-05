@@ -10,9 +10,8 @@ import org.junit.Test;
 
 import taskaler.storage.HistoryStorage;
 
-/**
- * @author Quek Jie Ping A0111798X
- */
+//@author A0111798X
+
 public class HistoryStorageTestUnit {
 
 	@AfterClass

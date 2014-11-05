@@ -2,10 +2,8 @@ package taskaler.storage;
 
 import java.util.ArrayList;
 
-/**
- * 
- * @author Quek Jie Ping, A0111798X
- *
+//@author A0111798X
+ /**
  *         This class acts as a holder class for gson. Gson requires to know the
  *         type of the object it is converting to json format. ArrayList only
  *         allows to specify one generic type. Using this class, gson will

@@ -7,9 +7,9 @@ import java.util.logging.Level;
 
 import taskaler.common.util.CommonLogger;
 
-/**
- * @author Quek Jie Ping A0111798X
- */
+
+//@author A0111798X
+
 public class HistoryStorage {
 
 	private static HistoryStorage instance = null;
