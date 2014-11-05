@@ -230,7 +230,7 @@ public class UIFacade extends Application implements Observer {
         }
         try {
             if (args.compareToIgnoreCase(DEFAULT_VIEW_LIST) == 0) {
-                rootController.displayList("All current tasks", list);
+                rootController.displayList("All Current Tasks", list);
             } else if (args.compareToIgnoreCase(DEFAULT_VIEW_CALENDAR) == 0) {
                 rootController.displayCalendar(list, Calendar.getInstance());
             } else {

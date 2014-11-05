@@ -16,14 +16,14 @@ public final class common {
     }
 
     // Messages
-    public static final String MSG_DELETED = "The task \"%s\" has been deleted";
+    public static final String MSG_DELETED = "The Task \"%s\" has Been Deleted";
     public static final String MSG_DELETE_ALL = "All tasks have been deleted";
-    public static final String MSG_VIEW_DATE = "All tasks on \"%s\"";
-    public static final String MSG_VIEW_UNDO = "Actions last taken";
+    public static final String MSG_VIEW_DATE = "All Tasks on \"%s\"";
+    public static final String MSG_VIEW_UNDO = "Actions Last Taken";
     public static final String MSG_HISTORY = "History";
-    public static final String MSG_FIND = "Search result for %s, %s";
+    public static final String MSG_FIND = "Search Result for %s, %s";
     public static final String MSG_UNDO = "The last operation has been undone";
-    public static final String MSG_TODAY = "Tasks to do today: ";
+    public static final String MSG_TODAY = "Tasks for Today: ";
 
     // Exception Messages
     public static final String EXCEPTION_INVALID_ADD = "Invalid ADD parameters";
