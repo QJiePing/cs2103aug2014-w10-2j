@@ -360,11 +360,11 @@ public class OPLogic extends Observable {
         Calendar newDeadLine = Calendar.getInstance();
         try{
             if(type.compareToIgnoreCase(common.TAG_DATE)== 0) {
-            	SimpleDateFormat defaultDateFormat = new SimpleDateFormat(Configuration.getInstance().getDateFormat());
+            	SimpleDateFormat defaultDateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 newDeadLine.setTime(defaultDateFormat.parse(date));
             }
             else if(type.compareToIgnoreCase(common.TAG_TIME) == 0){
-            	SimpleDateFormat defaultTimeFormat = new SimpleDateFormat(Configuration.getInstance().getTimeFormat());
+            	SimpleDateFormat defaultTimeFormat = new SimpleDateFormat("HHmm");
                 newDeadLine.setTime(defaultTimeFormat.parse(date));
             }
         }
