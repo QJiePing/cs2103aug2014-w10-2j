@@ -31,17 +31,23 @@ public class ConfigStorageIntegrationTest {
 
 		Configuration config=Configuration.getInstance();
 		config.setDefaultFileName("");
-		config.setDefaultFontColor("");
+		config.setDefaultLogLevel("");
+		config.setDefaultRowColor("");
+		config.setDefaultAltRowColor("");
+		config.setDefaultToastColor("");
 		config.setDefaultView("");
+		config.setDateFormat("");
 		config.setTimeFormat("");
 		config.storeConfigInfo();
 
 		Configuration readConfig=config.getInstance();
 		readConfig.loadConfiguration();
 		if(readConfig.getDefaultFileName().equals("task_list") && 
-				readConfig.getDefaultFontColor().equals("black") && 
+		        readConfig.getLogLevel().equals("all") &&
+				readConfig.getDefaultRowColor().equals("#FFFFFF") && 
+				readConfig.getDefaultAltRowColor().equals("#66CCFF") &&
 				readConfig.getDefaultView().equals("list") &&
-				readConfig.getTimeFormat().equals("HHmm")){
+				readConfig.getTimeFormat().equals("HH:mm")){
 			switch1=true;
 		}
 		assertTrue(switch1);
@@ -69,7 +75,7 @@ public class ConfigStorageIntegrationTest {
 	/**
 	 * Combination:
 	 * Equivalence Partition: Invalid values
-	 * Boundary Analysis: Change all 4 values (empty the file content)
+	 * Boundary Analysis: Change all 8 values (empty the file content)
 	 */
 	@Test
 	public void test3(){
@@ -77,9 +83,13 @@ public class ConfigStorageIntegrationTest {
 
 		Configuration config=Configuration.getInstance();
 		config.setDefaultFileName("");
-		config.setDefaultFontColor("");
-		config.setDefaultView("");
-		config.setTimeFormat("");
+        config.setDefaultLogLevel("");
+        config.setDefaultRowColor("");
+        config.setDefaultAltRowColor("");
+        config.setDefaultToastColor("");
+        config.setDefaultView("");
+        config.setDateFormat("");
+        config.setTimeFormat("");
 		config.storeConfigInfo();
 
 		/**
@@ -97,9 +107,9 @@ public class ConfigStorageIntegrationTest {
 		Configuration readConfig=config.getInstance();
 		readConfig.loadConfiguration();
 		if(readConfig.getDefaultFileName().equals("task_list") && 
-				readConfig.getDefaultFontColor().equals("black") && 
+				readConfig.getDefaultRowColor().equals("#FFFFFF") && 
 				readConfig.getDefaultView().equals("list") &&
-				readConfig.getTimeFormat().equals("HHmm")){
+				readConfig.getTimeFormat().equals("HH:mm")){
 			switch1=true;
 		}
 		assertTrue(switch1);
@@ -114,14 +124,21 @@ public class ConfigStorageIntegrationTest {
 	public void test4(){
 		boolean switch1=false;
 		Configuration config=Configuration.getInstance();
-		config.setDefaultFontColor("red");
+		config.setDefaultFileName("");
+        config.setDefaultLogLevel("");
+        config.setDefaultRowColor("#FF0000");       //red
+        config.setDefaultAltRowColor("");
+        config.setDefaultToastColor("");
+        config.setDefaultView("");
+        config.setDateFormat("");
+        config.setTimeFormat("");
 		config.storeConfigInfo();
 
 
 		Configuration readConfig=config.getInstance();
 		readConfig.loadConfiguration();
 		if(readConfig.getDefaultFileName().equals("task_list") && 
-				readConfig.getDefaultFontColor().equals("red") && 
+				readConfig.getDefaultRowColor().equals("#FF0000") && 
 				readConfig.getDefaultView().equals("list") &&
 				readConfig.getTimeFormat().equals("HHmm")){
 			switch1=true;
