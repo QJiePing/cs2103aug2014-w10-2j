@@ -194,11 +194,15 @@ public class RootController extends BorderPane implements IController {
             Node currentDisplay = anchorPaneDisplay.getChildren().get(common.ZERO_INDEX);
             if(currentDisplay instanceof ListPaneController){
                 ((ListPaneController) currentDisplay).scrollUp();
+            }else if(currentDisplay instanceof TextPaneController){
+                ((TextPaneController) currentDisplay).scrollUp();
             }
         } else if (e.getCode() == KeyCode.DOWN) {
             Node currentDisplay = anchorPaneDisplay.getChildren().get(common.ZERO_INDEX);
             if(currentDisplay instanceof ListPaneController){
                 ((ListPaneController) currentDisplay).scrollDown();
+            }else if(currentDisplay instanceof TextPaneController){
+                ((TextPaneController) currentDisplay).scrollDown();
             }
         }
 

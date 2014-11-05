@@ -22,7 +22,7 @@
                   <ListView fx:id="listCmd" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="400.0" visible="false" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
-            <Label fx:id="lblToast" contentDisplay="TEXT_ONLY" layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="400.0" style="-fx-background-color: Yellow;" text="Label" textAlignment="CENTER" visible="false" />
+            <Label fx:id="lblToast" contentDisplay="TEXT_ONLY" layoutY="374.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="400.0" style="-fx-background-color: #ffff00;" text="Label" textAlignment="CENTER" visible="false" />
          </children>
       </Pane>
    </center>
@@ -86,11 +86,7 @@
               <MenuItem mnemonicParsing="false" text="Close" />
             </items>
           </Menu>
-          <Menu fx:id="menuCmd" mnemonicParsing="false" text="Commands">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
+          <Menu fx:id="menuCmd" mnemonicParsing="false" text="Commands" />
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />

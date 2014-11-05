@@ -103,7 +103,7 @@ public class CalendarPaneController extends BorderPane implements IController {
         String currentMonthAndYear = formatter.format(cal.getTime());
         setTitle(currentMonthAndYear);
 
-        int[][] tasksByDay = computeMonth(cal.get(Calendar.MONTH));
+        int[][] tasksByDay = computeMonth(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 
         int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK)
                 - common.OFFSET_BY_ONE;
@@ -142,7 +142,7 @@ public class CalendarPaneController extends BorderPane implements IController {
      *         and the values representing the total tasks and collective
      *         workload
      */
-    private int[][] computeMonth(int month) {
+    private int[][] computeMonth(int month, int year) {
         int[][] result = new int[MAX_NUMBER_OF_DAYS + common.OFFSET_BY_ONE][2];
 
         for (int i = common.ZERO_INDEX; i < currentModel.currentTaskList.size(); i++) {
@@ -150,7 +150,7 @@ public class CalendarPaneController extends BorderPane implements IController {
             Calendar currentTime = Calendar.getInstance();
             if (currentTask instanceof DeadLineTask) {
                 currentTime = ((DeadLineTask) currentTask).getDeadline();
-                if (currentTime.get(Calendar.MONTH) == month) {
+                if (currentTime.get(Calendar.MONTH) == month && currentTime.get(Calendar.YEAR) == year) {
                     result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
                     if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
@@ -164,7 +164,7 @@ public class CalendarPaneController extends BorderPane implements IController {
                 for (int j = common.ZERO_INDEX; j < currentRepeated
                         .getRepeatedDate().size(); j++) {
                     currentTime = currentRepeated.getRepeatedDate().get(j);
-                    if (currentTime.get(Calendar.MONTH) == month) {
+                    if (currentTime.get(Calendar.MONTH) == month && currentTime.get(Calendar.YEAR) == year) {
                         result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
                         if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
