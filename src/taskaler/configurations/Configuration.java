@@ -39,7 +39,7 @@ public class Configuration {
 	public static String DEFAULT_ALTROW_COLOR = "#66CCFF";
 	public static String DEFAULT_TOAST_COLOR = "#FFFF00";
 	public static String DEFAULT_FILE_NAME = "task_list";
-	public static String DEFAULT_TIME_FORMAT = "HHmm";
+	public static String DEFAULT_TIME_FORMAT = "HH:mm";
 	public static String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
 	
 	private static CommonLogger log = CommonLogger.getInstance();
@@ -50,6 +50,8 @@ public class Configuration {
                 add("#FFFF00");     //yellow
                 add("#FF0000");     //red
                 add("#FF6699");     //pink
+                add("#FF6666");     //light pink
+                add("#FF6600");     //orange
                 add("#3366FF");     //blue
                 add("#CC0099");     //violet
                 add("#993300");     //hazelnut brown
@@ -110,7 +112,7 @@ public class Configuration {
 	 */
 	
 	private ArrayList<String> checkConfigInfo(ArrayList<String> configInfo) {
-
+	    
 		if(configInfo == null || configInfo.size() != NUM_OF_ATTRIBUTE) {
 			return null;
 		} else {
@@ -135,8 +137,8 @@ public class Configuration {
             }
 			
 			if (configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MMM/yyyy") != 0
-                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd/MM/yyyy") != 0
-                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
+                    && configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MM/yyyy") != 0
+                    && configInfo.get(DATEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
                 return null;
             }
 			
@@ -145,7 +147,7 @@ public class Configuration {
 				return null;
 			}
 		}
-		
+
 		return configInfo;
 	}
 

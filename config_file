@@ -1,6 +1,10 @@
 [
   "list",
-  "black",
+  "all",
+  "#FFFFFF",
+  "#66CCFF",
+  "#FFFF00",
   "task_list",
-  "HHmm"
+  "dd/MM/yyyy",
+  "HH:mm"
 ]
