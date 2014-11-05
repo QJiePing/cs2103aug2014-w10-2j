@@ -35,6 +35,8 @@ public class SearchLogic {
             return incompleteDeadLineSearch(paramFIND);
         case "WORKLOAD":
             return incompleteWorkLoadSearch(paramFIND);
+        case "TODAY":
+            return todaySearch(paramFIND);
         }
         return null;
     }
@@ -184,7 +186,30 @@ public class SearchLogic {
 
         return searchResultList;
     }
+    
+    /**
+     * Generate list for "Today's tasks", includes all floatTasks, deadlineTasks 
+     * which match deadline = today, and repeatTasks which have a repeatedDate as today 
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    public ArrayList<Task> todaySearch(String paramFIND) {
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+        String[] filter = paramFIND.split("/");
+        
+        Task[] listOfTask = TaskList.getInstance().toArray();
 
+        for (int i = 0; i < listOfTask.length; i++) {
+            Task targetTask = listOfTask[i];
+            if(targetTask instanceof FloatTask) {
+                searchResultList.add(targetTask);
+            } else if(checkTargetTask(filter, targetTask)){
+                searchResultList.add(targetTask);
+            }
+        }
+        return searchResultList;
+    }
     
     /**
      * 

@@ -54,11 +54,13 @@ public class Configuration {
 	                add("#FFFF00");     //yellow
 	                add("#FF0000");     //red
 	                add("#FF6699");     //pink
-	                add("#FF6666");     //light pink
+	                add("#FF6666");     //peach
+	                add("#9966CC");     //bluish-purple
 	                add("#FF6600");     //orange
 	                add("#3366FF");     //blue
 	                add("#CC0099");     //violet
-	                add("#993300");     //hazelnut brown
+	                add("#996600");     //mud brown
+	                add("#909090");     //grey
 	            }};
 		loadConfiguration();
 	}
@@ -118,7 +120,8 @@ public class Configuration {
 			return null;
 		} else {
 			if (configInfo.get(VIEW_POISTION).compareToIgnoreCase("list") != 0
-					&& configInfo.get(VIEW_POISTION).compareToIgnoreCase("calendar") != 0) {
+					&& configInfo.get(VIEW_POISTION).compareToIgnoreCase("calendar") != 0 
+					&& configInfo.get(VIEW_POISTION).compareToIgnoreCase("today") != 0) {
 				return null;
 			}
 			if(configInfo.get(LOG_LEVEL_POSITION).compareToIgnoreCase("all") != 0

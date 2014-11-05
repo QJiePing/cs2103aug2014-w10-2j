@@ -75,7 +75,7 @@ public class Parser {
      * @return CmdType command type
      */
     private CmdType determineCMD_TYPE(String command) {
-        CmdType commandType = ParserLibrary.commandList.get(command);
+        CmdType commandType = ParserLibrary.commandList.get(command.toLowerCase());
         if (commandType == null) {
             return CmdType.INVALID;
         } else {
@@ -117,8 +117,8 @@ public class Parser {
             return getParamARCH(commandString);
         case GOTO:
             return getParamGOTO(commandString);
-        //case TODAY:
-           // return getParamTODAY(commandString);
+        case TODAY:
+            return getParamTODAY(commandString);
         default:
             return null;
         }
@@ -596,7 +596,14 @@ public class Parser {
         }
         return paramArray;
     }
-
+    
+    private static String[] getParamTODAY(String commandString){
+        int dateIndex = 0;
+        
+        String[] paramTODAY = new String[TODAY_PARAMETERS];
+        paramTODAY[dateIndex] =  ParseAttribute.getTodayDate();
+        return paramTODAY;
+    }
     /**
      * Method to retrieve parameters for the GOTO command specifically
      * 

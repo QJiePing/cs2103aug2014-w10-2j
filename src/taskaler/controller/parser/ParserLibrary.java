@@ -45,6 +45,7 @@ public final class ParserLibrary {
                 put("next", CmdType.GOTO);
                 put("back", CmdType.GOTO);
                 put("goto", CmdType.GOTO);
+                put("today", CmdType.TODAY);
                 put("exit", CmdType.EXIT);
             }};
             

@@ -164,6 +164,11 @@ public class Controller{
                 String date_GOTO = params[0];
                 ui.displayMonth(date_GOTO, list.toArray(new ArrayList<Task>()));
                 break;
+            case TODAY:
+                String date = params[0];
+                ArrayList<Task> todayResult = findLogic.find("today", date);
+                ui.display("Tasks to do today: ", todayResult);
+                break;
             case EXIT:
                 System.exit(0);
             case INVALID:
@@ -248,6 +253,11 @@ public class Controller{
         // taskList = new ArrayList<Task>();
         // }
         ui.start(primaryStage);
-        ui.display(Configuration.getInstance().getDefaultView() ,list.toArray(new ArrayList<Task>()));
+        if(Configuration.getInstance().getDefaultView().equals("today")){
+            ui.display(Configuration.getInstance().getDefaultView() ,list.toArray(new ArrayList<Task>()));
+            executeCMD("today");
+        } else {
+            ui.display(Configuration.getInstance().getDefaultView() ,list.toArray(new ArrayList<Task>()));
+        }
     }
 }

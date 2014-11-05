@@ -73,6 +73,11 @@ public class ParseAttribute {
         return dateFormat;
     }
     
+    public static String getTodayDate() {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        return df.format(Calendar.getInstance().getTime());
+    }
+    
     public static String[] parseRange(String variable, String type) throws Exception{
         int startIndex = 0;
         int endIndex = 1;

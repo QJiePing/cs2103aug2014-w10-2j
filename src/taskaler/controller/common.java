@@ -13,7 +13,7 @@ public final class common {
     
     //enum for all the types of commands for Taskaler
     public enum CmdType {
-        ADD, DELETE, EDIT, DEADLINE, TIME, REPEAT, WORKLOAD, 
+        ADD, DELETE, EDIT, DEADLINE, TIME, REPEAT, WORKLOAD, TODAY, 
         COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, EXIT, INVALID
     }
     // Messages
@@ -34,6 +34,7 @@ public final class common {
     public static final int FIND_PARAMETERS = 2;
     public static final int ARCHIVE_PARAMETERS = 1;
     public static final int GOTO_PARAMETERS = 1;
+    public static final int TODAY_PARAMETERS = 1;
     public static final int TAG_LENGTH = 4;
     public static final int NUM_OF_PARAMS_INDEX = 0;
     public static final int FORMAT_INDEX = 1;
