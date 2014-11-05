@@ -135,7 +135,7 @@ public class Configuration {
             }
 			
 			if (configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MMM/yyyy") != 0
-                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd/M/yyyy") != 0
+                    && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd/MM/yyyy") != 0
                     && configInfo.get(TIMEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
                 return null;
             }
