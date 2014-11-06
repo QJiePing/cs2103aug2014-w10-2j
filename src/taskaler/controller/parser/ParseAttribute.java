@@ -30,7 +30,17 @@ public class ParseAttribute {
         Calendar cal = Calendar.getInstance();
         int currentMonth = cal.get(Calendar.MONTH);
         int currentYear = cal.get(Calendar.YEAR);
-        
+        if(paramDate.equalsIgnoreCase("today")){
+            return calendarToString.parseDate(cal);
+        }
+        if(paramDate.equalsIgnoreCase("tomorrow")){
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            return calendarToString.parseDate(cal);
+        }
+        if(paramDate.equalsIgnoreCase("yesterday")){
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            return calendarToString.parseDate(cal);
+        }
         String[] dateFormat = tryDateFormats(paramDate);
         int numOfParams = Integer.parseInt(dateFormat[NUM_OF_PARAMS_INDEX]);
         Date date = null;
@@ -169,6 +179,10 @@ public class ParseAttribute {
         Date correctTime = null;
         if(time == null || time.equals("")){
             return null;
+        }
+        if(time.equalsIgnoreCase("now")){
+            Calendar nowTime = Calendar.getInstance();
+            return defaultSyntax.format(nowTime.getTime());
         }
         for(int i = 0; i < ParserLibrary.availableTimeSyntax.size(); i++){
             try{
