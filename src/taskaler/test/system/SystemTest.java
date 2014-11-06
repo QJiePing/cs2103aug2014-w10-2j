@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import taskaler.common.data.DeadLineTask;
 import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
+import taskaler.common.data.TaskList;
 import taskaler.controller.*;
 import taskaler.storage.Storage;
 import taskaler.ui.test.JavaFXThreadingRule;
@@ -33,7 +34,7 @@ public class SystemTest {
     public void tearDownAfterClass() throws Exception {
         File f = new File(TASK_LIST_FILE);
         if (f.exists()) {
-            f.delete();
+           f.delete();
         }
         controller = null;
     }
@@ -102,6 +103,12 @@ public class SystemTest {
         }
 
         assertTrue((switch1 && switch2));
+        /**
+         * Clear the file content for other test case
+         */
+        TaskList taskList=TaskList.getInstance();
+        taskList.clear();
+        storeObj.writeToFile(TASK_LIST_FILE, taskList);
     }
 
     /**
@@ -125,6 +132,10 @@ public class SystemTest {
         controller.executeCMD(cmd1);
 
         Storage storeObj = Storage.getInstance();
+        TaskList taskList=TaskList.getInstance();
+        taskList.clear();
+        storeObj.writeToFile(TASK_LIST_FILE, taskList);
+        
         ArrayList<Object> tempArr = storeObj.readFromFile(TASK_LIST_FILE);
         ArrayList<FloatTask> floatArr = (ArrayList<FloatTask>) tempArr.get(0);
         ArrayList<DeadLineTask> deadlineArr = (ArrayList<DeadLineTask>) tempArr
