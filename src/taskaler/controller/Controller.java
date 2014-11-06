@@ -175,7 +175,14 @@ public class Controller {
             case TODAY:
                 String date = params[0];
                 ArrayList<Task> todayResult = findLogic.find("today", date);
-                ui.display(MSG_TODAY, todayResult);
+                ArrayList<Task> overdueResult = findLogic.find("overdue", date);
+                ArrayList<String> headers = new ArrayList<String>();
+                headers.add(MSG_TODAY);
+                headers.add(MSG_OVERDUE);
+                ArrayList<ArrayList<Task>> lists = new ArrayList<ArrayList<Task>>();
+                lists.add(todayResult);
+                lists.add(overdueResult);
+                ui.display(MSG_WELCOME, headers, lists);
                 break;
             case EXIT:
                 System.exit(0);

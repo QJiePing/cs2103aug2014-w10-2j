@@ -16,6 +16,8 @@ public class Configuration {
 	private String defaultRowColor = null;
 	private String defaultAltRowColor = null;
 	private String defaultToastColor = null;
+	private String defaultDoneColor = null;
+	private String defaultHeaderColor = null;
 	private String defaultFileName = null;
 	private SimpleDateFormat defaultDateFormat = null;
 	private SimpleDateFormat defaultTimeFormat = null;
@@ -25,16 +27,20 @@ public class Configuration {
 	public static final int ROW_COLOR_POSITION = 2;
 	public static final int ALTROW_COLOR_POSITION = 3;
 	public static final int TOAST_COLOR_POSITION = 4;
-	public static final int FILENAME_POSITION = 5;
-	public static final int DATEFORMAT_POSITION = 6;
-	public static final int TIMEFORMAT_POSITION = 7;
-	public static final int NUM_OF_ATTRIBUTE = 8;
+	public static final int DONE_COLOR_POSITION = 5;
+	public static final int HEADER_COLOR_POSITION = 6;
+	public static final int FILENAME_POSITION = 7;
+	public static final int DATEFORMAT_POSITION = 8;
+	public static final int TIMEFORMAT_POSITION = 9;
+	public static final int NUM_OF_ATTRIBUTE = 10;
 	
 	public static String DEFAULT_VIEW = "list";
 	public static String DEFAULT_LOG_LEVEL = "all";
 	public static String DEFAULT_ROW_COLOR = "#FFFFFF";
 	public static String DEFAULT_ALTROW_COLOR = "#66CCFF";
 	public static String DEFAULT_TOAST_COLOR = "#FFFF00";
+	public static String DEFAULT_DONE_COLOR = "#996600";
+	public static String DEFAULT_HEADER_COLOR = "#3366FF";
 	public static String DEFAULT_FILE_NAME = "task_list";
 	public static String DEFAULT_TIME_FORMAT = "HH:mm";
 	public static String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
@@ -86,6 +92,8 @@ public class Configuration {
 			defaultRowColor = DEFAULT_ROW_COLOR;
 			defaultAltRowColor = DEFAULT_ALTROW_COLOR;
 			defaultToastColor = DEFAULT_TOAST_COLOR;
+			defaultDoneColor = DEFAULT_DONE_COLOR;
+			defaultHeaderColor = DEFAULT_HEADER_COLOR;
 			defaultFileName = DEFAULT_FILE_NAME ;
 			defaultTimeFormat = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
 			defaultDateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
@@ -96,6 +104,8 @@ public class Configuration {
 			defaultRowColor = configInfo.get(ROW_COLOR_POSITION);
 			defaultAltRowColor = configInfo.get(ALTROW_COLOR_POSITION);
 			defaultToastColor = configInfo.get(TOAST_COLOR_POSITION);
+			defaultDoneColor = configInfo.get(DONE_COLOR_POSITION);
+			defaultHeaderColor = configInfo.get(HEADER_COLOR_POSITION);
 			defaultFileName = configInfo.get(FILENAME_POSITION);
 			defaultDateFormat = new SimpleDateFormat(configInfo.get(DATEFORMAT_POSITION));
 			defaultTimeFormat = new SimpleDateFormat(configInfo.get(TIMEFORMAT_POSITION));
@@ -137,6 +147,14 @@ public class Configuration {
                 return null;
             }
 			
+			if(!availableColor.contains(configInfo.get(DONE_COLOR_POSITION))) {
+                return null;
+            }
+			
+			if(!availableColor.contains(configInfo.get(HEADER_COLOR_POSITION))) {
+                return null;
+            }
+			
 			if (configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MMM/yyyy") != 0
                     && configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MM/yyyy") != 0
                     && configInfo.get(DATEFORMAT_POSITION).compareTo("dd MMM yyyy") != 0) {
@@ -163,6 +181,8 @@ public class Configuration {
 		configInfo.add(defaultRowColor);
 		configInfo.add(defaultAltRowColor);
 		configInfo.add(defaultToastColor);
+		configInfo.add(defaultDoneColor);
+		configInfo.add(defaultHeaderColor);
 		configInfo.add(defaultFileName);
 		configInfo.add(defaultDateFormat.toPattern());
 		configInfo.add(defaultTimeFormat.toPattern());
@@ -192,6 +212,14 @@ public class Configuration {
 	
 	public String getDefaultToastColor() {
         return defaultToastColor;
+    }
+	
+	public String getDefaultDoneColor() {
+        return defaultDoneColor;
+    }
+	
+	public String getDefaultHeaderColor() {
+        return defaultHeaderColor;
     }
 	
 	public String getDateFormat() {
@@ -226,6 +254,14 @@ public class Configuration {
 	
 	public void setDefaultToastColor(String color) {
         defaultToastColor = color;
+    }
+	
+	public void setDefaultDoneColor(String color) {
+        defaultDoneColor = color;
+    }
+	
+	public void setDefaultHeaderColor(String color) {
+        defaultHeaderColor = color;
     }
 	
 	public void setDateFormat(String dateFormat){

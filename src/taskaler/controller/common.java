@@ -16,6 +16,7 @@ public final class common {
     }
 
     // Messages
+    public static final String MSG_WELCOME = "Welcome to Taskaler!";
     public static final String MSG_DELETED = "The Task \"%s\" has Been Deleted";
     public static final String MSG_DELETE_ALL = "All tasks have been deleted";
     public static final String MSG_VIEW_DATE = "All Tasks on \"%s\"";
@@ -23,7 +24,8 @@ public final class common {
     public static final String MSG_HISTORY = "History";
     public static final String MSG_FIND = "Search Result for %s, %s";
     public static final String MSG_UNDO = "The last operation has been undone";
-    public static final String MSG_TODAY = "Tasks for Today: ";
+    public static final String MSG_TODAY = "All Tasks for Today: ";
+    public static final String MSG_OVERDUE = "Tasks Which are Overdue: ";
 
     // Exception Messages
     public static final String EXCEPTION_INVALID_ADD = "Invalid ADD parameters";

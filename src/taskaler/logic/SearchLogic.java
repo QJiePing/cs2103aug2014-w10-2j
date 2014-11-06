@@ -38,10 +38,42 @@ public class SearchLogic {
             return findCompleted(paramFIND);
         case "TODAY":
             return todaySearch(paramFIND);
+        case "OVERDUE":
+            return findBeforeDate(paramFIND);
         }
         return null;
     }
 
+    /**
+     * findBeforeDate() will find all the DeadLineTask(s) with due date 
+     * before paramFIND, in a taskList:ArrayList<Task>
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    private ArrayList<Task> findBeforeDate(String paramFIND) {
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+        Calendar dateToCompare = Calendar.getInstance();
+        try{
+            dateToCompare.setTime(common.DEFAULT_DATE_FORMAT.parse(paramFIND));
+        } catch (Exception e){
+            ;
+        }
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+        for (int i = 0; i < listOfTask.length; i++) {
+            
+            Task targetTask = listOfTask[i];
+            if(targetTask instanceof DeadLineTask) {
+                Calendar date = ((DeadLineTask) targetTask).getDeadline();
+                if(date.before(dateToCompare)){
+                    searchResultList.add(targetTask);
+                }  
+            } 
+            
+        }
+        return searchResultList;
+    }
     
     /**
      * findCompleted() will find all the completed/incomplete tasks in 

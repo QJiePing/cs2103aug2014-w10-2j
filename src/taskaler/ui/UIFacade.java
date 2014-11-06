@@ -227,8 +227,8 @@ public class UIFacade extends Application implements Observer {
      * @param arrayOfTasks
      *            Arraya of array list
      */
-    public void display(String title, String[] headers,
-            ArrayList<Task>[] arrayOfTasks) {
+    public void display(String title, ArrayList<String> headers,
+            ArrayList<ArrayList<Task>> arrayOfTasks) {
 
     }
 
