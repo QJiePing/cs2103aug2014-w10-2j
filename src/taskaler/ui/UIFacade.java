@@ -70,12 +70,13 @@ public class UIFacade extends Application implements Observer {
     @Override
     public void start(Stage stage) {
         try {
-            /*userDefaultView = (String) JOptionPane.showInputDialog(null,
-                    "Choose a default view", "Default View Option",
-                    JOptionPane.INFORMATION_MESSAGE, null,
-                    DEFAULT_VIEW_OPTIONS, DEFAULT_VIEW_OPTIONS[0]);
-                    */
-            
+            /*
+             * userDefaultView = (String) JOptionPane.showInputDialog(null,
+             * "Choose a default view", "Default View Option",
+             * JOptionPane.INFORMATION_MESSAGE, null, DEFAULT_VIEW_OPTIONS,
+             * DEFAULT_VIEW_OPTIONS[0]);
+             */
+
             userDefaultView = Configuration.getInstance().getDefaultView();
             stage.getIcons().add(
                     new Image(getClass().getResourceAsStream(ICON_PNG)));
@@ -95,7 +96,7 @@ public class UIFacade extends Application implements Observer {
 
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
-				public void handle(WindowEvent we) {
+                public void handle(WindowEvent we) {
                     DLLConnector.isStopped.set(true);
                 }
             });
@@ -120,7 +121,7 @@ public class UIFacade extends Application implements Observer {
         // TODO Implementation required
         Thread shutDownHook = new Thread() {
             @Override
-			public void run() {
+            public void run() {
                 if (libraryLoaded != null) {
 
                 }
@@ -217,6 +218,21 @@ public class UIFacade extends Application implements Observer {
     }
 
     /**
+     * Method to render a dynamic list
+     * 
+     * @param title
+     *            Title of the list view
+     * @param headers
+     *            Array of sub headers
+     * @param arrayOfTasks
+     *            Arraya of array list
+     */
+    public void display(String title, String[] headers,
+            ArrayList<Task>[] arrayOfTasks) {
+
+    }
+
+    /**
      * Method to render a view, either in list or calendar.
      * 
      * @param args
@@ -259,7 +275,7 @@ public class UIFacade extends Application implements Observer {
         } catch (IOException e) {
             rootController.showToast("IO error encountered!");
             CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
-        } catch (Exception e){
+        } catch (Exception e) {
             rootController.showToast("Parse Exception encountered!");
             CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
         }
@@ -345,13 +361,13 @@ public class UIFacade extends Application implements Observer {
                     TaskList.getInstance().floatToArray().size());
         }
     }
-    
+
     /**
      * Public method to display the confirmation interface
      * 
      * @return True if the confirmation is received; False otherwise
      */
-    public Boolean showConfirmation(){
+    public Boolean showConfirmation() {
         return rootController.showConfirmation();
     }
 }
