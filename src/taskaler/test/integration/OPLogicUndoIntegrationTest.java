@@ -68,7 +68,8 @@ public class OPLogicUndoIntegrationTest {
 		Task temp1=logic.addTask("Task 3", "Test task 3", "07/11/2014", "19:00", "22:59", "3");
 		logic.editTask(temp1.getTaskID(), "Edited task name", "Edited task 1.");
 		undoObj.undo();
-		Task result=SearchLogic.findByID(temp1.getTaskID());
+		SearchLogic search=new SearchLogic();
+		Task result=search.findByID(temp1.getTaskID());
 		if(result.getTaskName().equals("Task 3")){
 			switch1=true;
 		}
