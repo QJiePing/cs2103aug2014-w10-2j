@@ -46,6 +46,10 @@ public class Undo implements Observer {
      */
 
     public Task undo() {
+    	
+    	if(record.size()<1){
+    		return null;
+    	}
         /**
          * get the last operation records
          */

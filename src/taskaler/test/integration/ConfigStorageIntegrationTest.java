@@ -1,4 +1,4 @@
-package taskaler.testUnits;
+package taskaler.test.integration;
 
 import static org.junit.Assert.*;
 
@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import taskaler.common.configurations.Configuration;
+import taskaler.common.configurations.*;
 
 import org.junit.AfterClass;
 import org.junit.Test;

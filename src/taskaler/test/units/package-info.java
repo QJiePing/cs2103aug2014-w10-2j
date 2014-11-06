@@ -5,4 +5,4 @@
  * @author jpeg
  *
  */
-package taskaler.testUnits;
+package taskaler.test.units;

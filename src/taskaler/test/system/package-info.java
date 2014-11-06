@@ -5,4 +5,4 @@
  * @author jpeg
  *
  */
-package taskaler.systemTest;
+package taskaler.test.system;

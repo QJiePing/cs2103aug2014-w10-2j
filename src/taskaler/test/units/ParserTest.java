@@ -1,6 +1,6 @@
 //@author A0108541M
 
-package taskaler.testUnits;
+package taskaler.test.units;
 
 import static org.junit.Assert.*;
 

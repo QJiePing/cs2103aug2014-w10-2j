@@ -1,4 +1,4 @@
-package taskaler.systemTest;
+package taskaler.test.system;
 
 import static org.junit.Assert.*;
 import taskaler.common.data.DeadLineTask;
