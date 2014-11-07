@@ -36,7 +36,7 @@ public class Configuration {
 	public static final int TIMEFORMAT_POSITION = 10;
 	public static final int NUM_OF_ATTRIBUTE = 11;
 	
-	public static String DEFAULT_VIEW = "list";
+	public static String DEFAULT_VIEW = "today";
 	public static String DEFAULT_WELCOME_MSG = "Welcome to Taskaler!";
 	public static String DEFAULT_LOG_LEVEL = "all";
 	public static String DEFAULT_ROW_COLOR = "#FFFFFF";

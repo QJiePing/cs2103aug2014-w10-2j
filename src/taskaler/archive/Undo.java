@@ -123,7 +123,7 @@ public class Undo implements Observer {
             String taskName = task.getTaskName();
             String taskID = task.getTaskID();
             String op = viewStack.get(i).getOp();
-            String msg = "Performed \"" + op + "\" on Task " + taskName
+            String msg = (i+1)+") Performed \"" + op + "\" on Task " + taskName
                     + " (ID=" + taskID + ")";
             if (i == viewStack.size() - 1) {
                 toDisplay = toDisplay + msg;

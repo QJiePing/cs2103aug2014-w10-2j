@@ -92,26 +92,26 @@ public class PastHistory implements Observer {
 				break;
 			case "COMPLETE":
 				message = message
-						+ String.format("Complete the Task: %s (ID: %s)\n",
+						+ String.format("Switched the Completion Tag of Task: %s (ID: %s)\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
 
 			case "WORKLOAD":
 				message = message
-						+ String.format("Change workload of Task: %s (ID: %s)\n",
+						+ String.format("Changed Workload of Task: %s (ID: %s)\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
 			case "REPEAT":
 				message = message
-						+ String.format("set Task: %s (ID: %s) to be repeated task\n",
+						+ String.format("Set Task: %s (ID: %s) to be repeated\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
 			case "TIME":
 				message = message
-						+ String.format("change the time of Task: %s (ID: %s)\n",
+						+ String.format("Changed the Time of Task: %s (ID: %s)\n",
 								currentRecord.getTask().getTaskName(),
 								currentRecord.getTask().getTaskID());
 				break;
