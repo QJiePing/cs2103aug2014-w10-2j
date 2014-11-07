@@ -2,6 +2,7 @@
 
 package taskaler.common.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.logging.FileHandler;
@@ -21,6 +22,7 @@ public class CommonLogger {
 
     private static final String FORMAT_DAY_MONTH_YEAR = "dd_MM_yyyy";
     private static final String EXCEPTION_FILE_NAME = "Exception_%s.log";
+    private static final String storageDir=".\\taskaler\\";
 
     /**
      * Method to log an exception to the log file. If this method fails, an
@@ -73,10 +75,19 @@ public class CommonLogger {
     }
 
     private CommonLogger() {
+    	File dir=new File(storageDir);
+		if(!dir.exists()){
+			try{
+				dir.mkdir();
+			}catch(Exception e){
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
         try {
             logger = Logger.getLogger(CommonLogger.class.getName());
             String fileName = fileNameGenerator(EXCEPTION_FILE_NAME);
-            handler_formatterSetUp(fileName);
+            handler_formatterSetUp(storageDir+fileName);
             if(Configuration.getInstance().getLogLevel().compareToIgnoreCase("all") == 0){
                 logger.setLevel(Level.ALL);
             }else{

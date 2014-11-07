@@ -14,9 +14,18 @@ public class HistoryStorage {
 
 	private static HistoryStorage instance = null;
 	private static CommonLogger log = CommonLogger.getInstance();
+	private static final String storageDir=".\\taskaler\\";
 
 	private HistoryStorage() {
-
+		File dir=new File(storageDir);
+		if(!dir.exists()){
+			try{
+				dir.mkdir();
+			}catch(Exception e){
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
 	}
 
 	public static HistoryStorage getInstance() {
@@ -42,7 +51,7 @@ public class HistoryStorage {
 			return false;
 		}
 		try {
-			FileWriter fw = new FileWriter(fileName, true);
+			FileWriter fw = new FileWriter(storageDir+fileName, true);
 			fw.append(message + "\n");
 			fw.close();
 			return true;
@@ -62,7 +71,7 @@ public class HistoryStorage {
 	 */
 	public String readFromHistory(String fileName) {
 		try {
-			File f = new File(fileName);
+			File f = new File(storageDir+fileName);
 			Scanner reader = new Scanner(f);
 			String result = "";
 			while (reader.hasNextLine()) {

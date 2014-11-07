@@ -24,12 +24,23 @@ public class Storage {
 	private static CommonLogger log = CommonLogger.getInstance();
 	private static Storage instance = null;
 	private static File configFile=null;
+	private static final String storageDir=".\\taskaler\\";
 
 	/**
 	 * Constructors
 	 */
 	private Storage() {
-	    configFile = new File("config_file");
+
+		File dir=new File(storageDir);
+		if(!dir.exists()){
+			try{
+				dir.mkdir();
+			}catch(Exception e){
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+		configFile = new File(storageDir+"config_file");
 	}
 
 	public static Storage getInstance() {
@@ -38,11 +49,11 @@ public class Storage {
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Task storage method
 	 */
-	
+
 	/**
 	 * Method to read in task data from the text file
 	 * 
@@ -57,7 +68,7 @@ public class Storage {
 		CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> holder = new CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>();
 
 		try {
-			FileReader reader = new FileReader(file);
+			FileReader reader = new FileReader(storageDir+file);
 			Gson gson = createGsonObj();
 			TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>> typeToken = new TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>>() {
 			};
@@ -87,7 +98,7 @@ public class Storage {
 	public boolean writeToFile(String file, TaskList taskList) {
 
 		try {
-			FileWriter fw = new FileWriter(file);
+			FileWriter fw = new FileWriter(storageDir+file);
 			Gson gson = createGsonObj();
 			CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> helper = prepareTaskList(taskList);
 			TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>> typeToken = new TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>>() {
@@ -101,11 +112,11 @@ public class Storage {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Configuration storage method
 	 */
-	
+
 	/**
 	 * Method to read in configuration data from the text file
 	 * 
@@ -115,7 +126,7 @@ public class Storage {
 	 * @return return an config object from the text file
 	 */
 	public ArrayList<String> readConfigFile(){
-		
+
 		ArrayList<String> config =new ArrayList<String>();
 		try {
 			if(!configFile.exists()){
@@ -132,7 +143,7 @@ public class Storage {
 		}
 		return config;
 	}
-	
+
 	/**
 	 * Method to write configuration information to the text file
 	 * 
@@ -158,7 +169,7 @@ public class Storage {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Helper methods
 	 */
