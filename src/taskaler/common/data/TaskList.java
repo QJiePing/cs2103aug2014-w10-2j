@@ -104,6 +104,13 @@ public class TaskList implements Collection<Task> {
         return result;
     }
     
+ 
+    /**
+     * addAll(ArrayList<Object> array) will add all collections of different tasks
+     * into corresponding ArrayList.
+     * @param array
+     * @return
+     */
     public boolean addAll(ArrayList<Object> array){
         boolean result = true;
         if(array == null){
@@ -259,6 +266,11 @@ public class TaskList implements Collection<Task> {
         return collection;
     }
     
+	/**
+	 * toArray(ArrayList<Task> collection) will 
+	 * @param collection
+	 * @return
+	 */
 	public ArrayList<Task> toArray(ArrayList<Task> collection) {
         for (int i = 0; i < this.size(); i++) {
             collection.add(this.get(i).clone());
