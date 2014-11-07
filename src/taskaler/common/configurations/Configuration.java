@@ -13,6 +13,7 @@ public class Configuration {
 
 	private String defaultView = null;
 	private String defaultLogLevel = null; 
+	private String defaultWelcomeMsg = null;
 	private String defaultRowColor = null;
 	private String defaultAltRowColor = null;
 	private String defaultToastColor = null;
@@ -24,23 +25,25 @@ public class Configuration {
 	
 	public static final int VIEW_POISTION = 0;
 	public static final int LOG_LEVEL_POSITION = 1;
-	public static final int ROW_COLOR_POSITION = 2;
-	public static final int ALTROW_COLOR_POSITION = 3;
-	public static final int TOAST_COLOR_POSITION = 4;
-	public static final int DONE_COLOR_POSITION = 5;
-	public static final int HEADER_COLOR_POSITION = 6;
-	public static final int FILENAME_POSITION = 7;
-	public static final int DATEFORMAT_POSITION = 8;
-	public static final int TIMEFORMAT_POSITION = 9;
-	public static final int NUM_OF_ATTRIBUTE = 10;
+	public static final int WECOME_MSG_POSITION = 2;
+	public static final int ROW_COLOR_POSITION = 3;
+	public static final int ALTROW_COLOR_POSITION = 4;
+	public static final int TOAST_COLOR_POSITION = 5;
+	public static final int DONE_COLOR_POSITION = 6;
+	public static final int HEADER_COLOR_POSITION = 7;
+	public static final int FILENAME_POSITION = 8;
+	public static final int DATEFORMAT_POSITION = 9;
+	public static final int TIMEFORMAT_POSITION = 10;
+	public static final int NUM_OF_ATTRIBUTE = 11;
 	
 	public static String DEFAULT_VIEW = "list";
+	public static String DEFAULT_WELCOME_MSG = "Welcome to Taskaler!";
 	public static String DEFAULT_LOG_LEVEL = "all";
 	public static String DEFAULT_ROW_COLOR = "#FFFFFF";
 	public static String DEFAULT_ALTROW_COLOR = "#66CCFF";
 	public static String DEFAULT_TOAST_COLOR = "#FFFF00";
-	public static String DEFAULT_DONE_COLOR = "#996600";
-	public static String DEFAULT_HEADER_COLOR = "#3366FF";
+	public static String DEFAULT_DONE_COLOR = "#FF6600";
+	public static String DEFAULT_HEADER_COLOR = "#9966CC";
 	public static String DEFAULT_FILE_NAME = "task_list";
 	public static String DEFAULT_TIME_FORMAT = "HH:mm";
 	public static String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
@@ -89,6 +92,7 @@ public class Configuration {
 		if(configInfo == null) {
 			defaultView = DEFAULT_VIEW;
 			defaultLogLevel = DEFAULT_LOG_LEVEL;
+			defaultWelcomeMsg = DEFAULT_WELCOME_MSG;
 			defaultRowColor = DEFAULT_ROW_COLOR;
 			defaultAltRowColor = DEFAULT_ALTROW_COLOR;
 			defaultToastColor = DEFAULT_TOAST_COLOR;
@@ -101,6 +105,7 @@ public class Configuration {
 		} else {
 			defaultView = configInfo.get(VIEW_POISTION);
 			defaultLogLevel = configInfo.get(LOG_LEVEL_POSITION);
+			defaultWelcomeMsg = configInfo.get(WECOME_MSG_POSITION);
 			defaultRowColor = configInfo.get(ROW_COLOR_POSITION);
 			defaultAltRowColor = configInfo.get(ALTROW_COLOR_POSITION);
 			defaultToastColor = configInfo.get(TOAST_COLOR_POSITION);
@@ -133,6 +138,9 @@ public class Configuration {
 			}
 			if(configInfo.get(LOG_LEVEL_POSITION).compareToIgnoreCase("all") != 0
 			        && configInfo.get(LOG_LEVEL_POSITION).compareToIgnoreCase("none") != 0){
+			    return null;
+			}
+			if(configInfo.get(WECOME_MSG_POSITION) == null){
 			    return null;
 			}
 			if(!availableColor.contains(configInfo.get(ROW_COLOR_POSITION))) {
@@ -178,6 +186,7 @@ public class Configuration {
 		ArrayList<String> configInfo = new ArrayList<String>();
 		configInfo.add(defaultView);
 		configInfo.add(defaultLogLevel);
+		configInfo.add(defaultWelcomeMsg);
 		configInfo.add(defaultRowColor);
 		configInfo.add(defaultAltRowColor);
 		configInfo.add(defaultToastColor);
@@ -198,6 +207,11 @@ public class Configuration {
 	public String getLogLevel() {
 	    return defaultLogLevel;
 	}
+	
+	public String getWelcomeMsg(){
+	    return defaultWelcomeMsg;
+	}
+	
 	public String getDefaultView() {
 		return defaultView;
 	}
@@ -238,6 +252,10 @@ public class Configuration {
 	
 	public void setDefaultLogLevel(String level){
 	    defaultLogLevel = level;
+	}
+	
+	public void setDefaultWelcomeMsg(String msg){
+	    defaultWelcomeMsg = msg;
 	}
 	
 	public void setDefaultView(String view) {

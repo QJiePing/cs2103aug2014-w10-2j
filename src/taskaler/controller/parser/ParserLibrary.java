@@ -19,6 +19,7 @@ public final class ParserLibrary {
             {{  put("add", CmdType.ADD);
                 put("put", CmdType.ADD);
                 put("delete", CmdType.DELETE);
+                put("del", CmdType.DELETE);
                 put("remove", CmdType.DELETE);
                 put("clear", CmdType.DELETE);
                 put("edit", CmdType.EDIT);

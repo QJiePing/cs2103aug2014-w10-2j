@@ -182,7 +182,7 @@ public class Controller {
                 ArrayList<ArrayList<Task>> lists = new ArrayList<ArrayList<Task>>();
                 lists.add(todayResult);
                 lists.add(overdueResult);
-                ui.display(MSG_WELCOME, headers, lists);
+                ui.display(Configuration.getInstance().getWelcomeMsg(), headers, lists);
                 break;
             case EXIT:
                 System.exit(0);
