@@ -118,6 +118,9 @@ public class Storage {
 		
 		ArrayList<String> config =new ArrayList<String>();
 		try {
+			if(!configFile.exists()){
+				return null;
+			}
 			FileReader reader = new FileReader(configFile);
 			Gson gson = createGsonObj();
 			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {};
