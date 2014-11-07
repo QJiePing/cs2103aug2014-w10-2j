@@ -286,6 +286,16 @@ public class RootController extends BorderPane implements IController {
         ListPaneController pane = new ListPaneController(model);
         anchorPaneDisplay.getChildren().add(pane);
     }
+    
+    public void displayDynamicList(String title, ArrayList<String> header, ArrayList<ArrayList<Task>> listOfTaskList) throws IOException{
+        anchorPaneDisplay.getChildren().clear();
+        ListPaneModel model = new ListPaneModel();
+        model.currentTitle = title;
+        model.currentSubHeaders = header;
+        model.arrayOfTaskLists = listOfTaskList;
+        ListPaneController pane = new ListPaneController(model);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
 
     /**
      * Method to render the calendar view

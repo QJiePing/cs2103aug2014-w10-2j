@@ -23,10 +23,16 @@ public class ListPaneModel implements IModel{
     public String currentTitle;
 
     public ArrayList<Task> currentItemList;
+    
+    public ArrayList<String> currentSubHeaders;
+    
+    public ArrayList<ArrayList<Task>> arrayOfTaskLists;
 
     public ListPaneModel() {
         currentTitle = "";
         currentItemList = new ArrayList<Task>();
+        currentSubHeaders = new ArrayList<String>();
+        arrayOfTaskLists = new ArrayList<ArrayList<Task>>();
     }
 
     @Override

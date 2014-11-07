@@ -34,13 +34,18 @@ import javafx.scene.text.Font;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class ListPaneController extends TitledPane implements IController {
 
     // Current model associated with this controller
     private ListPaneModel currentModel;
 
+    // Class Variables
+    private Configuration config = null;
+
     // Special Constants
     private static final String MSG_NOTHING_TO_DISPLAY = "Nothing to display";
+    private static final String MISMATCHED_NUMBER_OF_TASKS_TO_SUBHEADERS_MSG = "Mismatched number of tasks to subheaders";
     private static final int NAME_COL_INDEX = 3;
     private static final int DATE_COL_INDEX = 2;
     private static final int ID_COL_INDEX = 1;
@@ -54,9 +59,9 @@ public class ListPaneController extends TitledPane implements IController {
     private static final String DEADLINE_HEADER = "D";
     private static final String FLOAT_HEADER = "F";
     private static final int MIN_SPAN = 1;
-    private static final int MAX_COL_SPAN = 4;
+    private static final int MAX_COL_SPAN = 5;
     private static final String FX_BACKGROUND_COLOR_STYLE = "-fx-background-color: %s;";
-    private static final double MAX_WIDTH_VIEW = 400.0;
+    private static final double MAX_WIDTH_VIEW = 500.0;
     private static final String GREEN_COLOR = "#9bbb59";
     private static final String ORANGE_COLOR = "#f79646";
     private static final String RED_COLOR = "#c0504d";
@@ -70,12 +75,12 @@ public class ListPaneController extends TitledPane implements IController {
 
     @FXML
     private GridPane gridList;
-    
+
     @FXML
     private ScrollPane scrollBody;
 
     /**
-     * Default constructor
+     * Default overloaded constructor
      * 
      * @param model
      *            Model to be associated with this view
@@ -83,12 +88,17 @@ public class ListPaneController extends TitledPane implements IController {
      *             Thrown if error encountered while reading FXML
      */
     public ListPaneController(ListPaneModel model) throws IOException {
+        config = Configuration.getInstance();
         currentModel = model;
 
         initialize(common.FXML_LIST_PANE);
-        
+
         update();
-        
+
+    }
+
+    public ListPaneController() throws IOException {
+
     }
 
     @Override
@@ -102,7 +112,14 @@ public class ListPaneController extends TitledPane implements IController {
     @Override
     public void update() throws IOException {
         setTitle(currentModel.currentTitle);
-        populateList(currentModel.currentItemList);
+        if (currentModel.arrayOfTaskLists.size() > 0
+                && currentModel.currentSubHeaders.size() > 0) {
+            populateList(currentModel.currentSubHeaders,
+                    currentModel.arrayOfTaskLists);
+        } else {
+            populateList(currentModel.currentItemList);
+        }
+
     }
 
     /**
@@ -116,6 +133,45 @@ public class ListPaneController extends TitledPane implements IController {
     }
 
     /**
+     * Method to populate a dynamic list with data
+     * 
+     * @param subheaders
+     *            Headers of each Category
+     * @param arrayOfTaskLists
+     *            Array of task lists associated to the headers
+     */
+    private void populateList(ArrayList<String> subheaders,
+            ArrayList<ArrayList<Task>> arrayOfTaskLists) {
+        if (subheaders.size() != arrayOfTaskLists.size()) {
+            createSubHeader(MISMATCHED_NUMBER_OF_TASKS_TO_SUBHEADERS_MSG,
+                    config.getDefaultRowColor(), common.OFFSET_BY_ONE);
+            return;
+        }
+        int currentRow = common.OFFSET_BY_ONE;
+        for (int i = 0; i < subheaders.size(); i++) {
+            createSubHeader(subheaders.get(i), config.getDefaultHeaderColor(),
+                    currentRow);
+            currentRow++;
+            ArrayList<FloatTask> resultFloating = new ArrayList<FloatTask>();
+            ArrayList<RepeatedTask> resultRepeated = new ArrayList<RepeatedTask>();
+            ArrayList<DeadLineTask> resultDeadline = new ArrayList<DeadLineTask>();
+
+            for (Task t : arrayOfTaskLists.get(i)) {
+                if (t instanceof FloatTask) {
+                    resultFloating.add((FloatTask) t);
+                } else if (t instanceof RepeatedTask) {
+                    resultRepeated.add((RepeatedTask) t);
+                } else if (t instanceof DeadLineTask) {
+                    resultDeadline.add((DeadLineTask) t);
+                }
+
+            }
+            currentRow = insertRows(resultFloating, resultRepeated,
+                    resultDeadline, currentRow);
+        }
+    }
+
+    /**
      * Method to populate the view with data
      * 
      * @param list
@@ -123,13 +179,8 @@ public class ListPaneController extends TitledPane implements IController {
      */
     private void populateList(ArrayList<Task> list) {
         if (list == null || list.size() < 1) {
-            Label statusLabel = new Label(MSG_NOTHING_TO_DISPLAY);
-            statusLabel.setPrefWidth(MAX_WIDTH_VIEW);
-            statusLabel.setAlignment(Pos.CENTER);
-            statusLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE,
-                    Configuration.getInstance().getDefaultRowColor()));
-            gridList.add(statusLabel, common.ZERO_INDEX, common.OFFSET_BY_ONE,
-                    MAX_COL_SPAN, MIN_SPAN);
+            createSubHeader(MSG_NOTHING_TO_DISPLAY,
+                    config.getDefaultRowColor(), common.OFFSET_BY_ONE);
             return;
         }
 
@@ -147,7 +198,20 @@ public class ListPaneController extends TitledPane implements IController {
             }
 
         }
-        insertRows(resultFloating, resultRepeated, resultDeadline);
+        insertRows(resultFloating, resultRepeated, resultDeadline,
+                common.OFFSET_BY_ONE);
+    }
+
+    /**
+     * 
+     */
+    private void createSubHeader(String msg, String color, int pos) {
+        Label statusLabel = new Label(msg);
+        statusLabel.setMinWidth(MAX_WIDTH_VIEW);
+        statusLabel.setAlignment(Pos.CENTER);
+        statusLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+        gridList.add(statusLabel, common.ZERO_INDEX, pos, MAX_COL_SPAN,
+                MIN_SPAN);
     }
 
     /**
@@ -159,40 +223,47 @@ public class ListPaneController extends TitledPane implements IController {
      *            List of repeated tasks
      * @param deadlineTaskList
      *            List of deadline tasks
+     * @return Integer representing the current position of the pointer down the
+     *         list
      */
-    private void insertRows(ArrayList<FloatTask> floatingTaskList,
+    private int insertRows(ArrayList<FloatTask> floatingTaskList,
             ArrayList<RepeatedTask> repeatedTaskList,
-            ArrayList<DeadLineTask> deadlineTaskList) {
-        int result = insertRows(FLOAT_HEADER, common.ZERO_INDEX
-                + common.OFFSET_BY_ONE, floatingTaskList, Configuration.getInstance().getDefaultAltRowColor());
+            ArrayList<DeadLineTask> deadlineTaskList, int currentPosition) {
+        int result = insertRows(FLOAT_HEADER, currentPosition,
+                floatingTaskList, Configuration.getInstance()
+                        .getDefaultAltRowColor());
         result = insertRows(DEADLINE_HEADER, result, deadlineTaskList,
                 Configuration.getInstance().getDefaultRowColor());
-        result = insertRows(REPEAT_HEADER, result, repeatedTaskList, Configuration.getInstance().getDefaultAltRowColor());
+        result = insertRows(REPEAT_HEADER, result, repeatedTaskList,
+                Configuration.getInstance().getDefaultAltRowColor());
 
+        return result;
     }
-    
+
     /**
      * Method to programmically scroll up the view
      * 
      */
-    public void scrollUp(){
-        if(scrollBody.getHeight() >= gridList.getHeight()){
+    public void scrollUp() {
+        if (scrollBody.getHeight() >= gridList.getHeight()) {
             return;
         }
-        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() - SCROLL_AMOUNT);
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                - SCROLL_AMOUNT);
     }
-    
+
     /**
      * Mehtod to programmically scroll down the view
      * 
      */
-    public void scrollDown(){
-        if(scrollBody.getHeight() >= gridList.getHeight()){
+    public void scrollDown() {
+        if (scrollBody.getHeight() >= gridList.getHeight()) {
             return;
         }
-        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() + SCROLL_AMOUNT);
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                + SCROLL_AMOUNT);
     }
-    
+
     /**
      * Method to add a single list of tasks into the grid list
      * 
@@ -216,18 +287,17 @@ public class ListPaneController extends TitledPane implements IController {
         // categoryLabel.setRotate(-90.0);
         // categoryLabel.setTranslateY(-50);
         categoryLabel.setAlignment(Pos.CENTER);
-        
+
         int span = taskList.size();
         AnchorPane container = new AnchorPane();
         categoryLabel.setPrefWidth(CATEGORY_WIDTH);
         categoryLabel.setPrefHeight(MIN_CATEGORY_HEIGHT * span);
-        
+
         AnchorPane.setTopAnchor(categoryLabel, 0.0);
         AnchorPane.setBottomAnchor(categoryLabel, 0.0);
         container.getChildren().add(categoryLabel);
         GridPane.setRowSpan(container, span);
-        gridList.add(container, common.ZERO_INDEX, startIndex, MIN_SPAN,
-                span);
+        gridList.add(container, common.ZERO_INDEX, startIndex, MIN_SPAN, span);
 
         for (int i = 0; i < taskList.size(); i++) {
             Task currentTask = (Task) taskList.get(i);
@@ -243,21 +313,23 @@ public class ListPaneController extends TitledPane implements IController {
             date.setPrefWidth(DATE_WIDTH);
             date.setAlignment(Pos.CENTER);
 
-            
-            
             String loadColor = GREY_COLOR;
-            
-            if(currentTask.getTaskWorkLoad().compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0){
+
+            if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                    Task.WORKLOAD_HIGH) == 0) {
                 loadColor = RED_COLOR;
-            }else if(currentTask.getTaskWorkLoad().compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0){
+            } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                    Task.WORKLOAD_MEDIUM) == 0) {
                 loadColor = ORANGE_COLOR;
-            }else if(currentTask.getTaskWorkLoad().compareToIgnoreCase(Task.WORKLOAD_LOW) == 0){
+            } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                    Task.WORKLOAD_LOW) == 0) {
                 loadColor = GREEN_COLOR;
             }
             Label workload = new Label();
-            workload.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, loadColor));
+            workload.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE,
+                    loadColor));
             workload.setPrefWidth(ID_WIDTH);
-            
+
             if (currentTask instanceof RepeatedTask) {
                 RepeatedTask taskHolder = (RepeatedTask) currentTask;
                 String repeatPattern = taskHolder.getPattern();
@@ -267,10 +339,12 @@ public class ListPaneController extends TitledPane implements IController {
                 Calendar deadline = taskHolder.getDeadline();
                 date.setText(calendarToString.parseDate(deadline));
             }
-            if (isEvenRow(startIndex, i)) {
-                color = Configuration.getInstance().getDefaultAltRowColor();
+            if (currentTask.getTaskStatus()) {
+                color = config.getDefaultDoneColor();
+            } else if (isEvenRow(startIndex, i)) {
+                color = config.getDefaultAltRowColor();
             } else {
-                color = Configuration.getInstance().getDefaultRowColor();
+                color = config.getDefaultRowColor();
             }
             date.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
             name.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));

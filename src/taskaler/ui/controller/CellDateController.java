@@ -36,7 +36,7 @@ public class CellDateController extends AnchorPane implements IController {
     private Label lblDate;
 
     @FXML
-    private Pane paneBody;
+    private AnchorPane paneBody;
 
     @FXML
     private Label lblNumber;

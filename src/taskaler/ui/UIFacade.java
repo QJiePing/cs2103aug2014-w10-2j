@@ -229,7 +229,13 @@ public class UIFacade extends Application implements Observer {
      */
     public void display(String title, ArrayList<String> headers,
             ArrayList<ArrayList<Task>> arrayOfTasks) {
-
+        
+        try {
+            rootController.displayDynamicList(title, headers, arrayOfTasks);
+        } catch (IOException e) {
+            rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        }
     }
 
     /**

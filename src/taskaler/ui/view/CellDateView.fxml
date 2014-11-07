@@ -9,19 +9,19 @@
 
 <fx:root fx:id="cellDate" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="59.0" prefWidth="57.0" style="-fx-background-color: WHITE; -fx-border-color: BLACK;" type="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane fx:id="paneBody" layoutX="6.0" layoutY="7.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="paneBody" layoutX="1.0" layoutY="2.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="lblNumber" layoutX="6.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="45.0" text="9+">
+            <Rectangle fx:id="rectangleOrange" arcHeight="5.0" arcWidth="5.0" fill="#f79646" height="17.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="57.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <Rectangle fx:id="rectangleRed" arcHeight="5.0" arcWidth="5.0" fill="#c0504d" height="17.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="57.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <Rectangle fx:id="rectangleGrey" arcHeight="5.0" arcWidth="5.0" fill="#a6a6a6" height="17.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="57.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <Rectangle fx:id="rectangleGreen" arcHeight="5.0" arcWidth="5.0" fill="#9bbb59" height="17.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="57.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <Label fx:id="lblNumber" layoutX="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="45.0" text="9+">
                <font>
                   <Font size="33.0" />
                </font>
             </Label>
-            <Rectangle fx:id="rectangleGreen" arcHeight="5.0" arcWidth="5.0" fill="#9bbb59" height="17.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="55.0" />
-            <Rectangle fx:id="rectangleOrange" arcHeight="5.0" arcWidth="5.0" fill="#f79646" height="17.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="55.0" />
-            <Rectangle fx:id="rectangleGrey" arcHeight="5.0" arcWidth="5.0" fill="#a6a6a6" height="17.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="55.0" />
-            <Rectangle fx:id="rectangleRed" arcHeight="5.0" arcWidth="5.0" fill="#c0504d" height="17.0" layoutY="40.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" visible="false" width="55.0" />
          </children>
-      </Pane>
+      </AnchorPane>
       <Label fx:id="lblDate" alignment="TOP_RIGHT" layoutX="30.0" layoutY="-1.0" prefHeight="31.0" prefWidth="26.0" text="31" textAlignment="RIGHT">
          <font>
             <Font name="System Bold" size="16.0" />
