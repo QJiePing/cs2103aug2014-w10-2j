@@ -51,9 +51,9 @@ import taskaler.ui.controller.common;
  */
 public class RootController extends BorderPane implements IController {
 
-    private static final String CONFIRMATION_MESSAGE = "ARE YOU SURE? KEY IN YOUR PASSCODE IF YOU ARE SURE";
+    private static final String CONFIRMATION_MESSAGE = "ARE YOU SURE? KEY IN YES IF YOU ARE SURE";
     
-    public static final String PASSCODE = "IAMVERYSURE";
+    public static final String PASSCODE = "YES";
     
     
     

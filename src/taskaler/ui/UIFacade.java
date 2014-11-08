@@ -22,6 +22,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import taskaler.archive.OperationRecord;
 import taskaler.common.configurations.Configuration;
@@ -30,8 +31,10 @@ import taskaler.common.data.TaskList;
 import taskaler.common.util.CommonLogger;
 import taskaler.storage.Storage;
 import taskaler.ui.controller.RootController;
+import taskaler.ui.controller.TutorialPaneController;
 import taskaler.ui.hook.DLLConnector;
 import taskaler.ui.model.RootModel;
+import taskaler.ui.model.TutorialPaneModel;
 
 /**
  * Class to act as the facade for the UI component
@@ -70,13 +73,7 @@ public class UIFacade extends Application implements Observer {
     @Override
     public void start(Stage stage) {
         try {
-            /*
-             * userDefaultView = (String) JOptionPane.showInputDialog(null,
-             * "Choose a default view", "Default View Option",
-             * JOptionPane.INFORMATION_MESSAGE, null, DEFAULT_VIEW_OPTIONS,
-             * DEFAULT_VIEW_OPTIONS[0]);
-             */
-
+            
             userDefaultView = Configuration.getInstance().getDefaultView();
             stage.getIcons().add(
                     new Image(getClass().getResourceAsStream(ICON_PNG)));
@@ -100,10 +97,25 @@ public class UIFacade extends Application implements Observer {
                     DLLConnector.isStopped.set(true);
                 }
             });
-
+            
             stage.show();
             primaryStage = stage;
-
+            
+            if(Configuration.getInstance().getIsFirstRun()){
+                Stage tutorialStage = new Stage();
+                tutorialStage.initStyle(StageStyle.UNDECORATED);
+                TutorialPaneModel tutorialModel = new TutorialPaneModel();
+                tutorialModel.page = 0;
+                TutorialPaneController tutController = new TutorialPaneController(tutorialModel);
+                Parent secondaryParent = tutController;
+                Scene secondaryScene = new Scene(secondaryParent);
+                tutorialStage.setScene(secondaryScene);
+                tutorialStage.sizeToScene();
+                stage.toBack();
+                tutorialStage.toFront();
+                tutorialStage.show();
+            }
+            
             createHook();
             // createCleanUp();
         } catch (IOException e) {

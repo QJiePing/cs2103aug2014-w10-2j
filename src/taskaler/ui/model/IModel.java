@@ -19,5 +19,6 @@ public interface IModel {
     public static final String VIEW_ROOT ="Root";
     public static final String VIEW_TASK_PANE ="TaskPane";
     public static final String VIEW_TEXT_PANE ="TextPane";
+    public static final String VIEW_TUTORIAL_PANE ="TutorialPane";
     public abstract HashMap<String, String> toHashMap();
 }

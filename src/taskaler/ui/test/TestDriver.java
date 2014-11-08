@@ -14,6 +14,7 @@ import taskaler.ui.controller.ListPaneController;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.controller.TaskPaneController;
 import taskaler.ui.controller.TextPaneController;
+import taskaler.ui.controller.TutorialPaneController;
 import taskaler.ui.controller.common;
 import taskaler.ui.hook.DLLConnector;
 import taskaler.ui.hook.KeyPressHandler;
@@ -22,6 +23,7 @@ import taskaler.ui.model.ListPaneModel;
 import taskaler.ui.model.RootModel;
 import taskaler.ui.model.TaskPaneModel;
 import taskaler.ui.model.TextPaneModel;
+import taskaler.ui.model.TutorialPaneModel;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -66,6 +68,12 @@ public class TestDriver extends Application {
                 TestArea = calendarPane;
                 break;
             case "CellDate":
+                break;
+            case "TutorialPane":
+                TutorialPaneModel tutorialModel = new TutorialPaneModel();
+                tutorialModel.page = 0;
+                TutorialPaneController controller = new TutorialPaneController(tutorialModel);
+                TestArea = controller;
                 break;
             case "Root":
                 RootModel rootModel = new RootModel();
