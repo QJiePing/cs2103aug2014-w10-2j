@@ -1,5 +1,3 @@
-//@author A0099778X
-
 package taskaler.logic;
 
 import java.util.ArrayList;
@@ -7,6 +5,7 @@ import java.util.Calendar;
 
 import taskaler.logic.common.RepeatPattern;
 
+//@author A0099778X
 public class RepeatedDate {
 	
 	public ArrayList<Calendar> repeatDays;

@@ -1,5 +1,3 @@
-//@author A0099778X
-
 package taskaler.common.util;
 
 import java.io.File;
@@ -12,18 +10,17 @@ import java.util.logging.Logger;
 import taskaler.common.configurations.Configuration;
 import taskaler.common.util.parser.calendarToString;
 
+//@author A0099778X
 public class CommonLogger {
 
     private static Logger logger = null;
     
     private static CommonLogger instance = null;
-    
-    private final static Level currentLogLevel = Level.ALL;
 
     private static final String FORMAT_DAY_MONTH_YEAR = "dd_MM_yyyy";
     private static final String EXCEPTION_FILE_NAME = "Exception_%s.log";
     private static final String storageDir=".\\taskaler\\";
-
+    private static final String logLevelAll = "all";
     /**
      * Method to log an exception to the log file. If this method fails, an
      * error message will be thrown
@@ -88,7 +85,7 @@ public class CommonLogger {
             logger = Logger.getLogger(CommonLogger.class.getName());
             String fileName = fileNameGenerator(EXCEPTION_FILE_NAME);
             handler_formatterSetUp(storageDir+fileName);
-            if(Configuration.getInstance().getLogLevel().compareToIgnoreCase("all") == 0){
+            if(Configuration.getInstance().getLogLevel().compareToIgnoreCase(logLevelAll) == 0){
                 logger.setLevel(Level.ALL);
             }else{
                 logger.setLevel(Level.OFF);

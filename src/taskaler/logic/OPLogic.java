@@ -1,14 +1,10 @@
-//@author A0099778X
-
 package taskaler.logic;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Observable;
 
 import taskaler.archive.OperationRecord;
-import taskaler.common.configurations.Configuration;
 import taskaler.common.data.DeadLineTask;
 import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
@@ -17,6 +13,7 @@ import taskaler.common.data.TaskList;
 import taskaler.logic.common.RepeatPattern;
 
 
+//@author A0099778X
 public class OPLogic extends Observable {
 
     private static OPLogic instance = null;

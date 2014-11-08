@@ -1,11 +1,12 @@
 [
-  "list",
+  "today",
   "all",
+  "Welcome to Taskaler!",
   "#FFFFFF",
   "#66CCFF",
   "#FFFF00",
-  "#996600",
-  "#3366FF",
+  "#FF6600",
+  "#9966CC",
   "task_list",
   "dd/MM/yyyy",
   "HH:mm"
