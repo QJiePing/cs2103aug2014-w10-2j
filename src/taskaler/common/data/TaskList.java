@@ -1,4 +1,3 @@
-//@author A0099778X
 package taskaler.common.data;
 
 import java.util.ArrayList;
@@ -9,6 +8,8 @@ import java.util.Iterator;
 import taskaler.common.data.TaskComparator;
 import taskaler.logic.common;
 
+
+//@author A0099778X
 /**
  * Singleton Class to hold the global task list
  *
@@ -18,6 +19,11 @@ public class TaskList implements Collection<Task> {
     // Special Constants
     public static int TAG_TASK_NOT_EXIST = -1;
     public static int DEFAULT_TASK_ID = 0;
+    public static int DEFAULT_NUM_OF_INCOMPLETE = 0;
+    
+    public static int TAG_FLOAT_TASK = 0;
+    public static int TAG_DEADLINE_TASK = 1;
+    public static int TAG_REPEATED_TASK = 2;
     
     public static String DEADLINE_TASK = "deadline";
     public static String FLOAT_TASK = "float";
@@ -106,7 +112,7 @@ public class TaskList implements Collection<Task> {
     
  
     /**
-     * addAll(ArrayList<Object> array) will add all collections of different tasks
+     * addAll(ArrayList<Object> array) will add all collections of different types of tasks
      * into corresponding ArrayList.
      * @param array
      * @return
@@ -117,9 +123,9 @@ public class TaskList implements Collection<Task> {
             result = false;
             return result;
         }
-        ArrayList<FloatTask> floatArr=(ArrayList<FloatTask>)array.get(0);
-        ArrayList<DeadLineTask> deadlineArr=(ArrayList<DeadLineTask>)array.get(1);
-        ArrayList<RepeatedTask> repeatArr=(ArrayList<RepeatedTask>)array.get(2);
+        ArrayList<FloatTask> floatArr=(ArrayList<FloatTask>)array.get(TAG_FLOAT_TASK);
+        ArrayList<DeadLineTask> deadlineArr=(ArrayList<DeadLineTask>)array.get(TAG_DEADLINE_TASK);
+        ArrayList<RepeatedTask> repeatArr=(ArrayList<RepeatedTask>)array.get(TAG_REPEATED_TASK);
         if(floatArr != null){
             result = floatTaskList.addAll(floatArr);
         }
@@ -267,9 +273,9 @@ public class TaskList implements Collection<Task> {
     }
     
 	/**
-	 * toArray(ArrayList<Task> collection) will 
+	 * Accessor to obtain all the tasks in TaskList
 	 * @param collection
-	 * @return
+	 * @return return ArrayList<Task> that contains all the tasks in TaskList
 	 */
 	public ArrayList<Task> toArray(ArrayList<Task> collection) {
         for (int i = 0; i < this.size(); i++) {
@@ -278,6 +284,10 @@ public class TaskList implements Collection<Task> {
         return collection;
     }
 	
+	/**
+	 * Accessor to obtain all the deadline tasks in TaskList
+	 * @return return ArrayList<DeadLineTask> contains all the deadline tasks
+	 */
     public ArrayList<DeadLineTask> deadlineToArray() {
     	ArrayList<DeadLineTask> collection = new ArrayList<DeadLineTask>();
         for (int i = 0; i < deadlineTaskList.size(); i++) {
@@ -286,6 +296,11 @@ public class TaskList implements Collection<Task> {
         return collection;
     }
     
+    
+    /**
+	 * Accessor to obtain all the float tasks in TaskList
+	 * @return return ArrayList<FloatTask> contains all the float tasks
+	 */
     public ArrayList<FloatTask> floatToArray() {
     	ArrayList<FloatTask> collection = new ArrayList<FloatTask>();
         for (int i = 0; i < floatTaskList.size(); i++) {
@@ -294,6 +309,10 @@ public class TaskList implements Collection<Task> {
         return collection;
     }
     
+    /**
+	 * Accessor to obtain all the repeated tasks in TaskList
+	 * @return return ArrayList<RepeatedtTask> contains all the repeated tasks
+	 */
     public ArrayList<RepeatedTask> repeatedToArray() {
     	ArrayList<RepeatedTask> collection = new ArrayList<RepeatedTask>();
         for (int i = 0; i < repeatedTaskList.size(); i++) {
@@ -320,7 +339,12 @@ public class TaskList implements Collection<Task> {
     }
     
     
-    
+    /**
+     * 
+     * maxTaskID() is to calculate max available task ID in the TaskList
+     * 
+     * @return max available task ID
+     */
     public int maxTaskID() {
     	int maxID = DEFAULT_TASK_ID;
     	
@@ -343,6 +367,10 @@ public class TaskList implements Collection<Task> {
     	
     }
     
+    /**
+     * Accessor to obtain number of incomplete tasks
+     * @return returns number of incomplete tasks
+     */
     public int getNumOfIncomplete() {
     	if(numOfIncompleteTasks == common.DEFAULT_NUM_OF_INCOMPLETE) {
     		if(this != null && this.size() != 0) {
@@ -357,19 +385,27 @@ public class TaskList implements Collection<Task> {
     	return numOfIncompleteTasks;
     }
     
+    /**
+     * mutator to increase the number of incomplete tasks by 1
+     */
     public void incrementNumOfIncomplete() {
     	numOfIncompleteTasks++;
     }
     
+    /**
+     * mutator to decrease the number of incomplete tasks by 1
+     */
     public void decrementNumOfIncomplete() {
-    	if(numOfIncompleteTasks > 0) {
+    	if(numOfIncompleteTasks > DEFAULT_NUM_OF_INCOMPLETE) {
     		numOfIncompleteTasks--;
     	}
     }
     
-    
+    /**
+     * mutator to set the number of incomplete tasks to 0
+     */
     public void defaultNumOfIncomplete() {
-    	numOfIncompleteTasks = 0;
+    	numOfIncompleteTasks = DEFAULT_NUM_OF_INCOMPLETE;
     }
     
     

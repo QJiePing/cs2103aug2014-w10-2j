@@ -1,9 +1,8 @@
-//@author A0099778X
-
 package taskaler.logic;
 
 import java.text.SimpleDateFormat;
 
+//@author A0099778X
 /**
  * All constants used by any logic component
 
@@ -13,6 +12,8 @@ public class common {
     public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("HHmm");
     public static SimpleDateFormat DEFAULT_DATETIME_FORMAT = 
             new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
+    
+    public static String DATE_CHAR_SEPARATOR = "/";
     
     public static String ADD_NO_CONTENT = "No content is added";
     public static String EDIT_NO_CONTENT = "NO content, cannot be edited";

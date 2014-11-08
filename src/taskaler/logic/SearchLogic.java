@@ -1,6 +1,3 @@
-
-//@author A0099778X
-
 package taskaler.logic;
 
 import java.util.ArrayList;
@@ -13,8 +10,9 @@ import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.parser.calendarToString;
 
+//@author A0099778X
 public class SearchLogic {
-
+	
 	/**
      * find(String tagTypeFIND, String paramFIND) is to find all the tasks in
      * taskList:ArrayList<Task> with same information(type and parameter) given
@@ -54,6 +52,7 @@ public class SearchLogic {
     private ArrayList<Task> findBeforeDate(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
         Calendar dateToCompare = Calendar.getInstance();
+        
         try{
             dateToCompare.setTime(common.DEFAULT_DATE_FORMAT.parse(paramFIND));
         } catch (Exception e){
@@ -162,7 +161,7 @@ public class SearchLogic {
     public ArrayList<Task> findByDeadLine(String paramFIND) {
 
         ArrayList<Task> searchResultList = new ArrayList<Task>();
-        String[] filter = paramFIND.split("/");
+        String[] filter = paramFIND.split(common.DATE_CHAR_SEPARATOR);
 
         Task[] listOfTask = TaskList.getInstance().toArray();
 
@@ -189,7 +188,7 @@ public class SearchLogic {
      */
     public ArrayList<Task> todaySearch(String paramFIND) {
         ArrayList<Task> searchResultList = new ArrayList<Task>();
-        String[] filter = paramFIND.split("/");
+        String[] filter = paramFIND.split(common.DATE_CHAR_SEPARATOR);
         
         Task[] listOfTask = TaskList.getInstance().toArray();
 
