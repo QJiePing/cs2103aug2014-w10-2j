@@ -47,7 +47,7 @@ public class HistoryStorage {
 	 *         success or fail
 	 */
 	public boolean writeToHistory(String fileName, String message) {
-		if (message == null || message.isEmpty()) {
+		if (message == null || message.isEmpty() || fileName==null) {
 			return false;
 		}
 		try {

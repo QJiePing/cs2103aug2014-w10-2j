@@ -47,9 +47,9 @@ public class Undo implements Observer {
 
     public Task undo() {
     	
-    	if(record.size()<1){
-    		return null;
-    	}
+		if (record.size() < 1) {
+			return null;
+		}
         /**
          * get the last operation records
          */
@@ -59,20 +59,20 @@ public class Undo implements Observer {
          */
         String operation = inverseFunction(opRecord.getOp());
 
-        Task t = opRecord.getTask();
-        Task result = null;
-        switch (operation) {
-        case "ADD":
-            result = crudLogic.addTask(t);
-            break;
-        case "DELETE":
-            result = crudLogic.deleteTask(t);
-            break;
-        case "EDIT":
-            result = crudLogic.editTask(t);
-            break;
-        }
-        return result;
+		Task t = opRecord.getTask();
+		Task result = null;
+		switch (operation) {
+		case "ADD":
+			result = crudLogic.addTask(t);
+			break;
+		case "DELETE":
+			result = crudLogic.deleteTask(t);
+			break;
+		case "EDIT":
+			result = crudLogic.editTask(t);
+			break;
+		}
+		return result;
     }
 
     /**
@@ -85,24 +85,25 @@ public class Undo implements Observer {
      */
 
     public String inverseFunction(String op) {
-        String result = "";
-        switch (op) {
-        case "ADD":
-            result = "DELETE";
-            break;
-        case "DELETE":
-            result = "ADD";
-            break;
-        case "EDIT":
-        case "DATE":
-        case "COMPLETE":
-        case "WORKLOAD":
-        case "REPEAT":
-        case "TIME":
-            result = "EDIT";
-            break;
-        }
-        return result;
+		String result = "";
+		switch (op) {
+		case "ADD":
+			result = "DELETE";
+			break;
+		case "DELETE":
+			result = "ADD";
+			break;
+		case "EDIT":
+		case "DATE":
+		case "COMPLETE":
+		case "WORKLOAD":
+		case "REPEAT":
+		case "TIME":
+			result = "EDIT";
+			break;
+		default:
+		}
+		return result;
     }
 
     /**
@@ -110,29 +111,29 @@ public class Undo implements Observer {
      * 
      * @return ArrayList<Operation<Task,String>>
      */
-    public ArrayList<OperationRecord<Task, String>> viewUndo() {
-        ListIterator<OperationRecord<Task, String>> itr = record.listIterator();
-        return reverseOrder(itr);
-    }
+	public ArrayList<OperationRecord<Task, String>> viewUndo() {
+		ListIterator<OperationRecord<Task, String>> itr = record.listIterator();
+		return reverseOrder(itr);
+	}
 
-    public String stackToDisplay() {
-        String toDisplay = "";
-        ArrayList<OperationRecord<Task, String>> viewStack = viewUndo();
-        for (int i = 0; i < viewStack.size(); i++) {
-            Task task = viewStack.get(i).getTask();
-            String taskName = task.getTaskName();
-            String taskID = task.getTaskID();
-            String op = viewStack.get(i).getOp();
-            String msg = (i+1)+") Performed \"" + op + "\" on Task " + taskName
-                    + " (ID=" + taskID + ")";
-            if (i == viewStack.size() - 1) {
-                toDisplay = toDisplay + msg;
-            } else {
-                toDisplay = toDisplay + msg + "\n\n";
-            }
-        }
-        return toDisplay;
-    }
+	public String stackToDisplay() {
+		String toDisplay = "";
+		ArrayList<OperationRecord<Task, String>> viewStack = viewUndo();
+		for (int i = 0; i < viewStack.size(); i++) {
+			Task task = viewStack.get(i).getTask();
+			String taskName = task.getTaskName();
+			String taskID = task.getTaskID();
+			String op = viewStack.get(i).getOp();
+			String msg = (i + 1) + ") Performed \"" + op + "\" on Task "
+					+ taskName + " (ID=" + taskID + ")";
+			if (i == viewStack.size() - 1) {
+				toDisplay = toDisplay + msg;
+			} else {
+				toDisplay = toDisplay + msg + "\n\n";
+			}
+		}
+		return toDisplay;
+	}
 
     /**
      * This is to reverse the order of the stack for viewing purposes. Showing
@@ -142,8 +143,8 @@ public class Undo implements Observer {
      *            Iterator of the undo stack
      * @return ArrayList<OperationRecord<Task,String>>
      */
-    private ArrayList<OperationRecord<Task, String>> reverseOrder(
-            ListIterator<OperationRecord<Task, String>> itr) {
+	private ArrayList<OperationRecord<Task, String>> reverseOrder(
+			ListIterator<OperationRecord<Task, String>> itr) {
         /**
          * Holder variables to make the last item in the stack to be the first
          * index of the ArrayList.
@@ -154,13 +155,13 @@ public class Undo implements Observer {
          * Transferring items using the holder variables to make the last item
          * in the iterator to be the first item
          */
-        while (itr.hasNext()) {
-            temp.push(itr.next());
-        }
-        while (!temp.isEmpty()) {
-            undoView.add(temp.pop());
-        }
-        return undoView;
+		while (itr.hasNext()) {
+			temp.push(itr.next());
+		}
+		while (!temp.isEmpty()) {
+			undoView.add(temp.pop());
+		}
+		return undoView;
     }
 
     /**
@@ -169,13 +170,13 @@ public class Undo implements Observer {
      * saved by undo function
      */
     @Override
-    public void update(Observable arg0, Object arg1) {
-        if (arg1 instanceof OperationRecord<?, ?>) {
-            OperationRecord<Task, String> currentRecord = (OperationRecord<Task, String>) arg1;
-            if (currentRecord.getOp().compareToIgnoreCase("UNDO") != 0) {
-                record.push(currentRecord);
-            }
-        }
+	public void update(Observable arg0, Object arg1) {
+		if (arg1 instanceof OperationRecord<?, ?>) {
+			OperationRecord<Task, String> currentRecord = (OperationRecord<Task, String>) arg1;
+			if (currentRecord.getOp().compareToIgnoreCase("UNDO") != 0) {
+				record.push(currentRecord);
+			}
+		}
 
     }
 }
