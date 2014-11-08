@@ -16,13 +16,22 @@ public class HistoryStorageTestUnit {
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		File f = new File("history.txt");
+		File f = new File(".\\taskaler\\history.txt");
 		f.delete();
 	}
+	
+	/**
+	 * Equivalence Partition(file name parameter): null file name, empty file name,
+	 * non-empty file name.
+	 * Equivalence Partition(message parameter): null message, empty message, 
+	 * non-empty message.
+	 */
 
 	/**
-	 * This is a equivalence partitioning case for 'null' value partition. Test
-	 * the history writer method supplied with a null filename
+	 * Write Method
+	 * Combination:
+	 * Equivalence Partition(file name parameter): null file name
+	 * Equivalence Partition(message parameter): non-empty message
 	 */
 	@Test
 	public void test() {
@@ -32,8 +41,10 @@ public class HistoryStorageTestUnit {
 	}
 
 	/**
-	 * This is a equivalence partitioning case for 'null' value partition. Test
-	 * the history writer method supplied with a null message
+	 * Write Method
+	 * Combination:
+	 * Equivalence Partition(file name parameter): non-empty file name
+	 * Equivalence Partition(message parameter): null message
 	 */
 	@Test
 	public void test2() {
@@ -41,25 +52,72 @@ public class HistoryStorageTestUnit {
 		boolean result = historyObj.writeToHistory("history.txt", null);
 		assertFalse(result);
 	}
-
+	
 	/**
-	 * This is a equivalence partitioning case for 'null' value partition. Test
-	 * the history reader method supplied with a null filename
+	 * Write Method
+	 * Combination:
+	 * Equivalence Partition(file name parameter): non-empty file name
+	 * Equivalence Partition(message parameter): empty message
 	 */
 	@Test
 	public void test3() {
 		HistoryStorage historyObj = HistoryStorage.getInstance();
-		String result = historyObj.readFromHistory(null);
-		assertEquals(null, result);
+		boolean result = historyObj.writeToHistory("history.txt", " ");
+		assertTrue(result);
 	}
 
 	/**
-	 * Test if the history writer and reader can read and writer the correct
-	 * number of line of file content
+	 * read method
+	 * Combination:
+	 * Equivalence Partition(file name parameter): null file name
 	 */
 	@Test
-	public void test4() throws IOException {
-		boolean test = false;
+	public void test4() {
+		HistoryStorage historyObj = HistoryStorage.getInstance();
+		String result = historyObj.readFromHistory(null);
+		assertEquals(null, result);
+	}
+	
+	/**
+	 * read method
+	 * Combination:
+	 * Equivalence Partition(file name parameter): empty file name
+	 */
+	@Test
+	public void test5() {
+		HistoryStorage historyObj = HistoryStorage.getInstance();
+		String result = historyObj.readFromHistory(" ");
+		assertEquals(null, result);
+	}
+	
+	/**
+	 * Both read and write methods
+	 * Combination:
+	 * Equivalence Partition(file name parameter): non-empty file name
+	 * Equivalence Partition(message parameter): empty message
+	 */
+	@Test
+	public void test6() {
+		boolean switch1 = false;
+		HistoryStorage store = HistoryStorage.getInstance();
+		store.writeToHistory("history.txt", " ");
+		store.writeToHistory("history.txt", "line2");
+		String result = store.readFromHistory("history.txt");
+		if (result.split("\n")[0].equals("line2")) {
+			switch1 = true;
+		}
+		assertTrue(switch1);
+	}
+
+	/**
+	 * Both read and write methods
+	 * Combination:
+	 * Equivalence Partition(file name parameter): non-empty file name
+	 * Equivalence Partition(message parameter): non-empty message
+	 */
+	@Test
+	public void test7() throws IOException {
+		boolean switch1 = false;
 		HistoryStorage store = HistoryStorage.getInstance();
 		store.writeToHistory("history.txt", "line1");
 		store.writeToHistory("history.txt", "line2");
@@ -67,11 +125,9 @@ public class HistoryStorageTestUnit {
 		String result = store.readFromHistory("history.txt");
 		if (result.split("\n")[1].equals("line1")
 				&& result.split("\n")[0].equals("line2")) {
-			test = true;
-			assertTrue(test);
-		} else {
-			assertTrue(false);
+			switch1 = true;
 		}
+		assertTrue(switch1);
 	}
 
 }

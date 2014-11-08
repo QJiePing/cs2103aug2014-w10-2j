@@ -16,8 +16,14 @@ import taskaler.common.data.RepeatedTask;
 public class UndoTestUnit {
 
 	/**
-	 * Equivalence partition: empty stack, not empty stack (more than 1
-	 * operationRecord object)
+	 * viewUndoMethod 
+	 * Equivalence partition: empty stack, not empty stack (more
+	 * than 1 operationRecord object)
+	 */
+	/**
+	 * inverseFunction 
+	 * Equivalence partition: empty command, valid command,
+	 * invalid command
 	 */
 
 	/**
@@ -77,38 +83,56 @@ public class UndoTestUnit {
 		assertTrue(switch1 && switch2 && switch3);
 
 	}
-	
+
 	/**
-	 * Testing inverse functon of Undo class
+	 * Testing inverseFuncton of Undo class 
 	 * Equivalence Partition: empty command
 	 */
 	@Test
-	public void test3(){
-		boolean switch1=false;
+	public void test3() {
+		boolean switch1 = false;
 		Undo undoObj = new Undo();
-		String result=undoObj.inverseFunction(" ");
-		if(result.isEmpty()){
-			switch1=true;
+		String result = undoObj.inverseFunction(" ");
+		if (result.isEmpty()) {
+			switch1 = true;
 		}
 		assertTrue(switch1);
 	}
+
 	/**
-	 * Testing inverse function of Undo class 
-	 * Equivalence Partition: Non empty command
+	 * Testing inverseFunction of Undo class 
+	 * Equivalence Partition: valid command
 	 */
 	@Test
 	public void test4() {
-		boolean switch1=false;
+		boolean switch1 = false;
 		Undo undoObj = new Undo();
-		String result=undoObj.inverseFunction("ADD");
-		String result2=undoObj.inverseFunction("DELETE");
-		String result3=undoObj.inverseFunction("EDIT");
-		String result4=undoObj.inverseFunction("DATE");
-		String result5=undoObj.inverseFunction("WORKLOAD");
-		
-		if(result.equals("DELETE") && result2.equals("ADD") && result3.equals("EDIT") && result4.equals("EDIT") 
-				&& result5.equals("EDIT")){
-			switch1=true;
+		String result = undoObj.inverseFunction("ADD");
+		String result2 = undoObj.inverseFunction("DELETE");
+		String result3 = undoObj.inverseFunction("EDIT");
+		String result4 = undoObj.inverseFunction("DATE");
+		String result5 = undoObj.inverseFunction("WORKLOAD");
+
+		if (result.equals("DELETE") && result2.equals("ADD")
+				&& result3.equals("EDIT") && result4.equals("EDIT")
+				&& result5.equals("EDIT")) {
+			switch1 = true;
+		}
+		assertTrue(switch1);
+	}
+
+	/**
+	 * Testing inverseFunction of Undo class 
+	 * Equivalence Partition: invalid command
+	 */
+	@Test
+	public void test5() {
+		boolean switch1 = false;
+		Undo undoObj = new Undo();
+		String result = undoObj.inverseFunction("abc");
+
+		if (result.equals("")) {
+			switch1 = true;
 		}
 		assertTrue(switch1);
 	}

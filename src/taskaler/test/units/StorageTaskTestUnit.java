@@ -79,7 +79,7 @@ public class StorageTaskTestUnit {
 	}
 
 	/**
-	 * Testing the case where there is 2 float task in TaskList
+	 * Testing the case where there is 1 float task in TaskList
 	 * 
 	 * Combination:
 	 * Equivalence partitioning: valid file name
@@ -90,10 +90,10 @@ public class StorageTaskTestUnit {
 		boolean result = false;
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
-		taskList.add(new FloatTask("Task1", "1", true, Calendar
-				.getInstance(), "5", "description1", Calendar.getInstance(),
-				Calendar.getInstance()));
-		
+		taskList.add(new FloatTask("Task1", "1", true, Calendar.getInstance(),
+				"5", "description1", Calendar.getInstance(), Calendar
+						.getInstance()));
+
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		storeObj.writeToFile("testing.txt", taskList);
 
@@ -137,18 +137,19 @@ public class StorageTaskTestUnit {
 		Calendar temp = Calendar.getInstance();
 		temp.set(Calendar.YEAR, Calendar.DECEMBER, Calendar.MONDAY);
 		arrCal.add(temp);
-		taskList.add(new FloatTask("Task1", "1", true, Calendar
-				.getInstance(), "5", "description1", Calendar.getInstance(),
-				Calendar.getInstance()));
+		taskList.add(new FloatTask("Task1", "1", true, Calendar.getInstance(),
+				"5", "description1", Calendar.getInstance(), Calendar
+						.getInstance()));
 		taskList.add(new DeadLineTask("Task2", "2", false, Calendar
 				.getInstance(), "1", "description2", Calendar.getInstance(),
 				Calendar.getInstance(), Calendar.getInstance()));
 		taskList.add(new RepeatedTask("Task3", "3", true, Calendar
 				.getInstance(), "2", "description2", Calendar.getInstance(),
-				Calendar.getInstance(),"weekly", arrCal, Calendar.getInstance(), 5));
-		taskList.add(new FloatTask("Task4", "4", true, Calendar
-				.getInstance(), "1", "description4", Calendar.getInstance(),
-				Calendar.getInstance()));
+				Calendar.getInstance(), "weekly", arrCal, Calendar
+						.getInstance(), 5));
+		taskList.add(new FloatTask("Task4", "4", true, Calendar.getInstance(),
+				"1", "description4", Calendar.getInstance(), Calendar
+						.getInstance()));
 
 		/**
 		 * Execute the writeToFile and readFromFile method

@@ -19,16 +19,16 @@ public class StorageConfigTestUnit {
 	 */
 	@Test
 	public void test1() {
-		boolean switch1=false;
-		
-		ArrayList<String> testArr= new ArrayList<String>();
-		TaskAndConfigStorage storeObj= TaskAndConfigStorage.getInstance();
+		boolean switch1 = false;
+
+		ArrayList<String> testArr = new ArrayList<String>();
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		storeObj.writeConfigFile(testArr);
-		
-		ArrayList<String> result= storeObj.readConfigFile();
-		
-		if(result.size()==0){
-			switch1=true;
+
+		ArrayList<String> result = storeObj.readConfigFile();
+
+		if (result.size() == 0) {
+			switch1 = true;
 		}
 		assertTrue(switch1);
 	}
@@ -37,21 +37,22 @@ public class StorageConfigTestUnit {
 	 * Boundary Analysis: array list with more than 1 string object
 	 */
 	@Test
-	public void test2(){
-		boolean switch1=false;
-		
-		ArrayList<String> testArr= new ArrayList<String>();
+	public void test2() {
+		boolean switch1 = false;
+
+		ArrayList<String> testArr = new ArrayList<String>();
 		testArr.add("black");
 		testArr.add("abc");
 		testArr.add("testing 123");
-		TaskAndConfigStorage storeObj= TaskAndConfigStorage.getInstance();
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		storeObj.writeConfigFile(testArr);
-		
-		ArrayList<String> result=storeObj.readConfigFile();
-		
-		if(result.size()>0 && testArr.get(0).equals("black") && testArr.get(1).equals("abc") && 
-				testArr.get(2).equals("testing 123")){
-			switch1=true;
+
+		ArrayList<String> result = storeObj.readConfigFile();
+
+		if (result.size() > 0 && testArr.get(0).equals("black")
+				&& testArr.get(1).equals("abc")
+				&& testArr.get(2).equals("testing 123")) {
+			switch1 = true;
 		}
 		assertTrue(switch1);
 	}
