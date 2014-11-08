@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import taskaler.storage.Storage;
+import taskaler.storage.TaskAndConfigStorage;
 
 //@author A0111798X
 public class StorageConfigTestUnit {
@@ -26,7 +26,7 @@ public class StorageConfigTestUnit {
 		boolean switch1=false;
 		
 		ArrayList<String> testArr= new ArrayList<String>();
-		Storage storeObj= Storage.getInstance();
+		TaskAndConfigStorage storeObj= TaskAndConfigStorage.getInstance();
 		storeObj.writeConfigFile(testArr);
 		
 		ArrayList<String> result= storeObj.readConfigFile();
@@ -48,7 +48,7 @@ public class StorageConfigTestUnit {
 		testArr.add("black");
 		testArr.add("abc");
 		testArr.add("testing 123");
-		Storage storeObj= Storage.getInstance();
+		TaskAndConfigStorage storeObj= TaskAndConfigStorage.getInstance();
 		storeObj.writeConfigFile(testArr);
 		
 		ArrayList<String> result=storeObj.readConfigFile();

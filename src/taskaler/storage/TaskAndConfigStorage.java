@@ -19,17 +19,17 @@ import com.google.gson.reflect.TypeToken;
  * This is the main storage class which performs storage function of Taskaler. It is a 
  * singleton class.
  */
-public class Storage {
+public class TaskAndConfigStorage {
 
 	private static CommonLogger log = CommonLogger.getInstance();
-	private static Storage instance = null;
+	private static TaskAndConfigStorage instance = null;
 	private static File configFile=null;
 	private static final String storageDir=".\\taskaler\\";
 
 	/**
 	 * Constructors
 	 */
-	private Storage() {
+	private TaskAndConfigStorage() {
 
 		File dir=new File(storageDir);
 		if(!dir.exists()){
@@ -43,9 +43,9 @@ public class Storage {
 		configFile = new File(storageDir+"config_file");
 	}
 
-	public static Storage getInstance() {
+	public static TaskAndConfigStorage getInstance() {
 		if (instance == null) {
-			instance = new Storage();
+			instance = new TaskAndConfigStorage();
 		}
 		return instance;
 	}

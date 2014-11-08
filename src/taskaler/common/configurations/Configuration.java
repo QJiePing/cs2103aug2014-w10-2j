@@ -5,7 +5,7 @@ import taskaler.common.util.CommonLogger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import taskaler.storage.Storage;
+import taskaler.storage.TaskAndConfigStorage;
 
 public class Configuration {
 	
@@ -86,7 +86,7 @@ public class Configuration {
 	 * if configuration information is valid
 	 */
 	public void loadConfiguration() {
-		ArrayList<String> configInfo = Storage.getInstance().readConfigFile();
+		ArrayList<String> configInfo = TaskAndConfigStorage.getInstance().readConfigFile();
 		configInfo = checkConfigInfo(configInfo);
 		
 		if(configInfo == null) {
@@ -196,7 +196,7 @@ public class Configuration {
 		configInfo.add(defaultDateFormat.toPattern());
 		configInfo.add(defaultTimeFormat.toPattern());
 		
-		Storage.getInstance().writeConfigFile(configInfo);
+		TaskAndConfigStorage.getInstance().writeConfigFile(configInfo);
 	}
 	
 	/**************** Accessors ***********************/

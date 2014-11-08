@@ -10,7 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 
 import taskaler.common.data.*;
-import taskaler.storage.Storage;
+import taskaler.storage.TaskAndConfigStorage;
 
 //@author A0111798X
 
@@ -38,7 +38,7 @@ public class StorageTaskTestUnit {
 	public void test1() {
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
-		Storage storeObj = Storage.getInstance();
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		boolean result = storeObj.writeToFile(" ", taskList);
 		assertFalse(result);
 	}
@@ -52,7 +52,7 @@ public class StorageTaskTestUnit {
 	public void test2() {
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
-		Storage storeObj = Storage.getInstance();
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		boolean result = storeObj.writeToFile("", taskList);
 		assertFalse(result);
 	}
@@ -67,7 +67,7 @@ public class StorageTaskTestUnit {
 	public void test3() {
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
-		Storage storeObj = Storage.getInstance();
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		storeObj.writeToFile("testing.txt", taskList);
 
 		ArrayList<Object> tempArr = storeObj.readFromFile("testing.txt");
@@ -97,7 +97,7 @@ public class StorageTaskTestUnit {
 				.getInstance(), "5", "description1", Calendar.getInstance(),
 				Calendar.getInstance()));
 		
-		Storage storeObj = Storage.getInstance();
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		storeObj.writeToFile("testing.txt", taskList);
 
 		ArrayList<Object> temp = storeObj.readFromFile("testing.txt");
@@ -156,7 +156,7 @@ public class StorageTaskTestUnit {
 		/**
 		 * Execute the writeToFile and readFromFile method
 		 */
-		Storage storeObj = Storage.getInstance();
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		storeObj.writeToFile("testing.txt", taskList);
 
 		ArrayList<Object> tempArr = storeObj.readFromFile("testing.txt");

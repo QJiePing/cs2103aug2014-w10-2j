@@ -6,7 +6,7 @@ import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.TaskList;
 import taskaler.controller.*;
-import taskaler.storage.Storage;
+import taskaler.storage.TaskAndConfigStorage;
 import taskaler.ui.test.JavaFXThreadingRule;
 
 import java.io.File;
@@ -85,7 +85,7 @@ public class SystemTest {
         controller.executeCMD(cmd5);
         controller.executeCMD(cmd6);
 
-        Storage storeObj = Storage.getInstance();
+        TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
         ArrayList<Object> tempArr = storeObj.readFromFile(TASK_LIST_FILE);
         ArrayList<FloatTask> floatArr = (ArrayList<FloatTask>) tempArr.get(0);
         ArrayList<DeadLineTask> deadlineArr = (ArrayList<DeadLineTask>) tempArr
@@ -131,7 +131,7 @@ public class SystemTest {
 
         controller.executeCMD(cmd1);
 
-        Storage storeObj = Storage.getInstance();
+        TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
         TaskList taskList=TaskList.getInstance();
         taskList.clear();
         storeObj.writeToFile(TASK_LIST_FILE, taskList);
