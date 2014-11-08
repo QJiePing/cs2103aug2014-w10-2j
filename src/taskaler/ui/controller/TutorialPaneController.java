@@ -26,8 +26,19 @@ import javafx.util.Duration;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-// @author A0059806W
+//@author A0059806W
 public class TutorialPaneController extends BorderPane implements IController {
+    // Special Constants
+    private static final int INDEX_OF_LAST_PANE = 0;
+    private static final int DURATION_OF_ANIMATION = 1000;
+    private static final double FULL_OPACITY = 1.0;
+    private static final double NO_OPACITY = 0.0;
+    private static final int END_STEP_PANE = 5;
+    private static final int STEP_4_PANE = 4;
+    private static final int STEP_3_PANE = 3;
+    private static final int STEP_2_PANE = 2;
+    private static final int STEP_1_PANE = 1;
+
     // Current model binded to this view
     private TutorialPaneModel currentModel = null;
 
@@ -77,7 +88,7 @@ public class TutorialPaneController extends BorderPane implements IController {
      */
     @FXML
     private void onPrevBtnClicked(MouseEvent e) {
-        if (currentModel.page > 0) {
+        if (currentModel.page > INDEX_OF_LAST_PANE) {
             currentModel.page--;
             try {
                 update();
@@ -95,7 +106,7 @@ public class TutorialPaneController extends BorderPane implements IController {
      */
     @FXML
     private void onNextBtnClicked(MouseEvent e) {
-        if (currentModel.page < 4) {
+        if (currentModel.page < END_STEP_PANE) {
             currentModel.page++;
             try {
                 update();
@@ -127,7 +138,7 @@ public class TutorialPaneController extends BorderPane implements IController {
      */
     @FXML
     private void onNextAction(ActionEvent e) {
-        if (currentModel.page < 5) {
+        if (currentModel.page < END_STEP_PANE) {
             currentModel.page++;
             try {
                 update();
@@ -172,19 +183,19 @@ public class TutorialPaneController extends BorderPane implements IController {
         resetAllPane();
 
         switch (currentModel.page) {
-        case 1:
+        case STEP_1_PANE:
             currentVisiblePane = paneStep1;
             break;
-        case 2:
+        case STEP_2_PANE:
             currentVisiblePane = paneStep2;
             break;
-        case 3:
+        case STEP_3_PANE:
             currentVisiblePane = paneStep3;
             break;
-        case 4:
+        case STEP_4_PANE:
             currentVisiblePane = paneStep4;
             break;
-        case 5:
+        case END_STEP_PANE:
             currentVisiblePane = paneEnd;
             break;
         default:
@@ -192,10 +203,10 @@ public class TutorialPaneController extends BorderPane implements IController {
             break;
         }
 
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(1000),
-                currentVisiblePane);
-        fadeIn.setFromValue(0.0);
-        fadeIn.setToValue(1.0);
+        FadeTransition fadeIn = new FadeTransition(
+                Duration.millis(DURATION_OF_ANIMATION), currentVisiblePane);
+        fadeIn.setFromValue(NO_OPACITY);
+        fadeIn.setToValue(FULL_OPACITY);
         fadeIn.play();
         currentVisiblePane.setVisible(true);
     }
@@ -205,10 +216,10 @@ public class TutorialPaneController extends BorderPane implements IController {
      * 
      */
     private void resetAllPane() {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(1000),
-                currentVisiblePane);
-        fadeOut.setFromValue(1.0);
-        fadeOut.setToValue(0.0);
+        FadeTransition fadeOut = new FadeTransition(
+                Duration.millis(DURATION_OF_ANIMATION), currentVisiblePane);
+        fadeOut.setFromValue(FULL_OPACITY);
+        fadeOut.setToValue(NO_OPACITY);
         fadeOut.play();
         paneWelcome.setVisible(false);
         paneStep1.setVisible(false);

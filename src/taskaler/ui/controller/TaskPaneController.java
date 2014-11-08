@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderPane;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class TaskPaneController extends BorderPane implements IController {
     // Current model associated with this controller
     private TaskPaneModel currentModel = null;
@@ -105,6 +106,12 @@ public class TaskPaneController extends BorderPane implements IController {
         loader.load();
     }
 
+    /**
+     * Method to set the title of the view
+     * 
+     * @param title
+     *            String to set the title to
+     */
     public void setTitle(String title) {
         lblTaskName.setText(title);
     }
@@ -119,8 +126,8 @@ public class TaskPaneController extends BorderPane implements IController {
     /**
      * Method to populate the fields on the view
      * 
-     * @param t
-     *            The task containing the value fields
+     * @param model
+     *            The model containing the value fields
      */
     public void populateDetails(TaskPaneModel model) {
         lblTaskID.setText(model.taskID);
@@ -163,10 +170,6 @@ public class TaskPaneController extends BorderPane implements IController {
         }
     }
 
-    /**
-     * Method to set the view to display the details of each type of task
-     * 
-     */
     /**
      * Method to set the view to display the details of each type of task
      * 

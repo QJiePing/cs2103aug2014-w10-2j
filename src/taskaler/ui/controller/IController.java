@@ -12,6 +12,7 @@ import java.util.HashMap;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public interface IController {
 
     /**

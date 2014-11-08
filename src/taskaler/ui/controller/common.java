@@ -9,13 +9,16 @@ package taskaler.ui.controller;
  * @author Cheah Kit Weng
  *
  */
+//@author A0059806W
 public final class common {
     
+    // Color constants
     public static final int RECTANGLE_COLOR_GREY    = 1;
     public static final int RECTANGLE_COLOR_GREEN   = 2;
     public static final int RECTANGLE_COLOR_ORANGE  = 4;
     public static final int RECTANGLE_COLOR_RED     = 8;
     
+    // FXML Files 
     public static final String FXML_ROOT            = "/taskaler/ui/view/RootView.fxml";
     public static final String FXML_CALENDAR        = "/taskaler/ui/view/CalendarPaneView.fxml";
     public static final String FXML_CELL_DATE       = "/taskaler/ui/view/CellDateView.fxml";

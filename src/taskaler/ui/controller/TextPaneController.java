@@ -19,8 +19,9 @@ import javafx.scene.control.TitledPane;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class TextPaneController extends TitledPane implements IController {
-    
+
     // Special constants
     private static final double SCROLL_AMOUNT = 0.1;
 
@@ -33,12 +34,12 @@ public class TextPaneController extends TitledPane implements IController {
 
     @FXML
     private TextArea txtBody;
-    
+
     @FXML
     private ScrollPane scrollBody;
 
     /**
-     * Default constructor
+     * Default overloaded constructor
      * 
      * @param model
      *            Model to be associated with this controller
@@ -56,24 +57,26 @@ public class TextPaneController extends TitledPane implements IController {
      * Method to programmically scroll up the view
      * 
      */
-    public void scrollUp(){
-        if(scrollBody.getHeight() >= txtBody.getHeight()){
+    public void scrollUp() {
+        if (scrollBody.getHeight() >= txtBody.getHeight()) {
             return;
         }
-        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() - SCROLL_AMOUNT);
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                - SCROLL_AMOUNT);
     }
-    
+
     /**
      * Method to programmically scroll down the view
      * 
      */
-    public void scrollDown(){
-        if(scrollBody.getHeight() >= txtBody.getHeight()){
+    public void scrollDown() {
+        if (scrollBody.getHeight() >= txtBody.getHeight()) {
             return;
         }
-        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue() + SCROLL_AMOUNT);
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                + SCROLL_AMOUNT);
     }
-    
+
     @Override
     public void initialize(String FXML) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));

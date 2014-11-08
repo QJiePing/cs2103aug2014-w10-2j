@@ -21,11 +21,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
 
 /**
  * Class that acts as the controller for ListPaneView FXML. This class renders a
@@ -94,10 +91,6 @@ public class ListPaneController extends TitledPane implements IController {
         initialize(common.FXML_LIST_PANE);
 
         update();
-
-    }
-
-    public ListPaneController() throws IOException {
 
     }
 
@@ -203,7 +196,14 @@ public class ListPaneController extends TitledPane implements IController {
     }
 
     /**
+     * Method to create a sub header for the list
      * 
+     * @param msg
+     *            The string that will be displayed in the sub header
+     * @param color
+     *            The color to set the sub header to
+     * @param pos
+     *            The position of the sub header
      */
     private void createSubHeader(String msg, String color, int pos) {
         Label statusLabel = new Label(msg);

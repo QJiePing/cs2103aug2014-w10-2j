@@ -22,8 +22,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 /**
- * Class that acts as the controller for CalendarPaneView FXML. This class renders a
- * view for a specified month and year
+ * Class that acts as the controller for CalendarPaneView FXML. This class
+ * renders a view for a specified month and year
  * 
  * @author Cheah Kit Weng, A0059806W
  *
@@ -216,6 +216,13 @@ public class CalendarPaneController extends BorderPane implements IController {
         return result;
     }
 
+    /**
+     * Helper method to map a string workload to a integer representation
+     * 
+     * @param workload
+     *            String to be converted
+     * @return Integer representation of the workload
+     */
     private int mapStringToWorkload(String workload) {
         if (workload.compareToIgnoreCase(Task.WORKLOAD_NONE) == 0) {
             return common.RECTANGLE_COLOR_GREY;

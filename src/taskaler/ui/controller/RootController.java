@@ -6,7 +6,6 @@ package taskaler.ui.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
@@ -49,14 +48,13 @@ import taskaler.ui.controller.common;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class RootController extends BorderPane implements IController {
 
+    // Special Constants
     private static final String CONFIRMATION_MESSAGE = "ARE YOU SURE? KEY IN YES IF YOU ARE SURE";
-    
     public static final String PASSCODE = "YES";
-    
-    
-    
+
     // Current model associated with this controller
     private RootModel currentModel = null;
 
@@ -84,10 +82,9 @@ public class RootController extends BorderPane implements IController {
 
     @FXML
     private Label lblFloating;
-    
+
     @FXML
     private Menu menuCmd;
-    
 
     /**
      * Default constructor
@@ -120,11 +117,11 @@ public class RootController extends BorderPane implements IController {
      * 
      */
     private void updateMenu() {
-        for(String cmd : commands){
+        for (String cmd : commands) {
             MenuItem item = new MenuItem(cmd);
             menuCmd.getItems().add(item);
         }
-        
+
     }
 
     /**
@@ -155,12 +152,12 @@ public class RootController extends BorderPane implements IController {
      * Method to ask the user for confirmation on an action
      * 
      */
-    public Boolean showConfirmation(){
+    public Boolean showConfirmation() {
         String input = JOptionPane.showInputDialog(null, CONFIRMATION_MESSAGE);
-        
-        return PASSCODE.compareTo(input)==0;
+
+        return PASSCODE.compareTo(input) == 0;
     }
-    
+
     /**
      * Method to show a toast notification on the interface
      * 
@@ -192,17 +189,19 @@ public class RootController extends BorderPane implements IController {
             Controller.getInstance().executeCMD(cmd);
             listCmd.setVisible(false);
         } else if (e.getCode() == KeyCode.UP) {
-            Node currentDisplay = anchorPaneDisplay.getChildren().get(common.ZERO_INDEX);
-            if(currentDisplay instanceof ListPaneController){
+            Node currentDisplay = anchorPaneDisplay.getChildren().get(
+                    common.ZERO_INDEX);
+            if (currentDisplay instanceof ListPaneController) {
                 ((ListPaneController) currentDisplay).scrollUp();
-            }else if(currentDisplay instanceof TextPaneController){
+            } else if (currentDisplay instanceof TextPaneController) {
                 ((TextPaneController) currentDisplay).scrollUp();
             }
         } else if (e.getCode() == KeyCode.DOWN) {
-            Node currentDisplay = anchorPaneDisplay.getChildren().get(common.ZERO_INDEX);
-            if(currentDisplay instanceof ListPaneController){
+            Node currentDisplay = anchorPaneDisplay.getChildren().get(
+                    common.ZERO_INDEX);
+            if (currentDisplay instanceof ListPaneController) {
                 ((ListPaneController) currentDisplay).scrollDown();
-            }else if(currentDisplay instanceof TextPaneController){
+            } else if (currentDisplay instanceof TextPaneController) {
                 ((TextPaneController) currentDisplay).scrollDown();
             }
         }
@@ -221,7 +220,7 @@ public class RootController extends BorderPane implements IController {
         if (!isEnterKey(e)
                 && !(txtCmdInput.getText().isEmpty() && isBackSpace(e))) {
             String input = txtCmdInput.getText();
-            
+
             if (!isBackSpace(e)) {
                 input = input + e.getCharacter();
             }
@@ -286,8 +285,21 @@ public class RootController extends BorderPane implements IController {
         ListPaneController pane = new ListPaneController(model);
         anchorPaneDisplay.getChildren().add(pane);
     }
-    
-    public void displayDynamicList(String title, ArrayList<String> header, ArrayList<ArrayList<Task>> listOfTaskList) throws IOException{
+
+    /**
+     * Method to render a list with multiple sub headers
+     * 
+     * @param title
+     *            String to set the title of the list
+     * @param header
+     *            The array of sub headers
+     * @param listOfTaskList
+     *            The array of task lists
+     * @throws IOException
+     *             Thrown if an error was encountered while rendering list
+     */
+    public void displayDynamicList(String title, ArrayList<String> header,
+            ArrayList<ArrayList<Task>> listOfTaskList) throws IOException {
         anchorPaneDisplay.getChildren().clear();
         ListPaneModel model = new ListPaneModel();
         model.currentTitle = title;
@@ -300,10 +312,12 @@ public class RootController extends BorderPane implements IController {
     /**
      * Method to render the calendar view
      * 
+     * @param list
+     *            List of tasks
+     * @param cal
+     *            The calendar to be displayed
      * @throws IOException
-     *             Thrown if an IO error is encountered while rendering
-     *             CalendarPane
-     * 
+     *             Thrown if an IO error is encountered while rendering Calendar
      */
     public void displayCalendar(ArrayList<Task> list, Calendar cal)
             throws IOException {
@@ -348,14 +362,17 @@ public class RootController extends BorderPane implements IController {
                     Configuration.getInstance().getTimeFormat());
         }
         if (t instanceof FloatTask) {
-            model.taskDate = calendarToString
-                    .parseDate(t.getTaskCreationDate(), Configuration.getInstance().getDateFormat());
+            model.taskDate = calendarToString.parseDate(
+                    t.getTaskCreationDate(), Configuration.getInstance()
+                            .getDateFormat());
         } else if (t instanceof DeadLineTask) {
-            model.taskDate = calendarToString.parseDate(((DeadLineTask) t)
-                    .getDeadline(), Configuration.getInstance().getDateFormat());
+            model.taskDate = calendarToString
+                    .parseDate(((DeadLineTask) t).getDeadline(), Configuration
+                            .getInstance().getDateFormat());
         } else if (t instanceof RepeatedTask) {
             model.taskDate = calendarToString.parseDate(((RepeatedTask) t)
-                    .getEndRepeatedDate(), Configuration.getInstance().getDateFormat());
+                    .getEndRepeatedDate(), Configuration.getInstance()
+                    .getDateFormat());
             model.taskPattern = RepeatedTask
                     .patternToEnglish(((RepeatedTask) t).getPattern());
         }

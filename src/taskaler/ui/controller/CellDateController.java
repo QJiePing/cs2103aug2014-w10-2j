@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -22,6 +21,7 @@ import javafx.scene.shape.Rectangle;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class CellDateController extends AnchorPane implements IController {
 
     // Current model associated with this controller
@@ -77,6 +77,12 @@ public class CellDateController extends AnchorPane implements IController {
         loader.load();
     }
 
+    /**
+     * Method to set the title for this view
+     * 
+     * @param title
+     *            String to be set to
+     */
     public void setTitle(String title) {
         lblDate.setText(title);
     }

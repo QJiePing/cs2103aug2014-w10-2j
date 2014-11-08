@@ -27,7 +27,7 @@ public class DLLConnector extends Observable implements Runnable {
     private native boolean isHotKeyPressed();
 
     private native boolean RegisterHotKey(int key, boolean isAltNeeded);
-    
+
     private native boolean UnregisterHotKey();
 
     @Override
@@ -40,13 +40,16 @@ public class DLLConnector extends Observable implements Runnable {
                 notifyObservers("WM_HOTKEY");
             }
         }
-        while(!UnregisterHotKey()){
-            
-        }
 
     }
 
-    // Should not be used; Only meant for the generation of header file
+    /**
+     * Main Method; Should not be used; Only meant for the generation of header
+     * file
+     * 
+     * @param args
+     *            commandline arguments
+     */
     public static void main(String[] args) {
         new DLLConnector().RegisterHotKey(WM_HOTKEY, MOD_ALT);
         new DLLConnector().isHotKeyPressed();
