@@ -1,16 +1,9 @@
 package taskaler.test.integration;
 
 import static org.junit.Assert.*;
-
-import java.util.Calendar;
-
-import org.junit.AfterClass;
 import org.junit.Test;
-
 import taskaler.archive.Undo;
-import taskaler.common.data.FloatTask;
 import taskaler.common.data.Task;
-import taskaler.common.data.TaskList;
 import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
 
@@ -19,7 +12,8 @@ public class OPLogicUndoIntegrationTest {
 
 	/**
 	 * Test undo method in the Undo class interacting with OPLogic class
-	 * Equivalence Partition: no tasks in the undo stack, more than 1 task in the undo stack
+	 * Equivalence Partition: no tasks in the undo stack, more than 1 task in 
+	 * the undo stack
 	 */
 	
 	/**

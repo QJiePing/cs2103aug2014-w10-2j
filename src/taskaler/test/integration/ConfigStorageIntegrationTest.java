@@ -1,15 +1,9 @@
 package taskaler.test.integration;
 
 import static org.junit.Assert.*;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
-
 import taskaler.common.configurations.*;
-
-import org.junit.AfterClass;
 import org.junit.Test;
 
 //@author A0111798X
@@ -46,7 +40,7 @@ public class ConfigStorageIntegrationTest {
 		        readConfig.getLogLevel().equals("all") &&
 				readConfig.getDefaultRowColor().equals("#FFFFFF") && 
 				readConfig.getDefaultAltRowColor().equals("#66CCFF") &&
-				readConfig.getDefaultView().equals("list") &&
+				readConfig.getDefaultView().equals("today") &&
 				readConfig.getTimeFormat().equals("HH:mm")){
 			switch1=true;
 		}
@@ -62,9 +56,8 @@ public class ConfigStorageIntegrationTest {
 		boolean switch1=false;
 
 		Configuration config=Configuration.getInstance();
-		config.setDefaultView("abcdefg");
+		config.setDefaultView("list");
 		config.storeConfigInfo();
-
 		Configuration readConfig=config.getInstance();
 		readConfig.loadConfiguration();
 		if(readConfig.getDefaultView().equals("list")){
@@ -108,7 +101,7 @@ public class ConfigStorageIntegrationTest {
 		readConfig.loadConfiguration();
 		if(readConfig.getDefaultFileName().equals("task_list") && 
 				readConfig.getDefaultRowColor().equals("#FFFFFF") && 
-				readConfig.getDefaultView().equals("list") &&
+				readConfig.getDefaultView().equals("today") &&
 				readConfig.getTimeFormat().equals("HH:mm")){
 			switch1=true;
 		}
@@ -134,13 +127,12 @@ public class ConfigStorageIntegrationTest {
         config.setTimeFormat("");
 		config.storeConfigInfo();
 
-
 		Configuration readConfig=config.getInstance();
 		readConfig.loadConfiguration();
 		if(readConfig.getDefaultFileName().equals("task_list") && 
 				readConfig.getDefaultRowColor().equals("#FF0000") && 
-				readConfig.getDefaultView().equals("list") &&
-				readConfig.getTimeFormat().equals("HHmm")){
+				readConfig.getDefaultView().equals("today") &&
+				readConfig.getTimeFormat().equals("HH:mm")){
 			switch1=true;
 		}
 		assertTrue(switch1);

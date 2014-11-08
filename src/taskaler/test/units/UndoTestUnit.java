@@ -1,13 +1,9 @@
 package taskaler.test.units;
 
 import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import org.junit.AfterClass;
 import org.junit.Test;
-
 import taskaler.archive.OperationRecord;
 import taskaler.archive.Undo;
 import taskaler.common.data.Task;
