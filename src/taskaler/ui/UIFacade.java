@@ -29,7 +29,7 @@ import taskaler.common.configurations.Configuration;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.CommonLogger;
-import taskaler.storage.Storage;
+import taskaler.storage.TaskAndConfigStorage;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.controller.TutorialPaneController;
 import taskaler.ui.hook.DLLConnector;
@@ -196,7 +196,7 @@ public class UIFacade extends Application implements Observer {
      */
     public File loadDll(String parent, String outputFolder, String library)
             throws IOException, UnsatisfiedLinkError {
-        InputStream in = Storage.class.getResourceAsStream(parent + library);
+        InputStream in = TaskAndConfigStorage.class.getResourceAsStream(parent + library);
         byte[] buffer = new byte[1024];
         int read = -1;
         File windowsUserTempDirectory = new File(

@@ -4,7 +4,7 @@ package taskaler.controller;
 
 import taskaler.logic.OPLogic;
 import taskaler.logic.SearchLogic;
-import taskaler.storage.Storage;
+import taskaler.storage.TaskAndConfigStorage;
 import taskaler.ui.UIFacade;
 import taskaler.archive.PastHistory;
 import taskaler.archive.Undo;
@@ -193,7 +193,7 @@ public class Controller {
                 CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
                 throw e;
             }
-            Storage store = Storage.getInstance();
+            TaskAndConfigStorage store = TaskAndConfigStorage.getInstance();
             store.writeToFile(TASK_LIST_FILE, list);
         } catch (Exception e) {
             handleError(e);
@@ -245,7 +245,7 @@ public class Controller {
         findLogic = new SearchLogic();
         history = new PastHistory();
         undo = new Undo();
-        Storage store = Storage.getInstance();
+        TaskAndConfigStorage store = TaskAndConfigStorage.getInstance();
         list.addAll(store.readFromFile(TASK_LIST_FILE));
         ui = new UIFacade();
 

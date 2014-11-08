@@ -97,7 +97,7 @@ public class ConfigStorageIntegrationTest {
 		 */
 		try{
 			String holder="";
-			FileWriter fw= new FileWriter("config_file");
+			FileWriter fw= new FileWriter(".\\taskaler\\config_file");
 			fw.write(holder);
 			fw.close();
 		} catch (IOException e) {

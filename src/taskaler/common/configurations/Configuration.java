@@ -5,7 +5,7 @@ import taskaler.common.util.CommonLogger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import taskaler.storage.Storage;
+import taskaler.storage.TaskAndConfigStorage;
 
 public class Configuration {
 
@@ -73,7 +73,6 @@ public class Configuration {
                 add("#909090"); // grey
             }
         };
-        
         isFirstRun = false;
         loadConfiguration();
     }
@@ -91,7 +90,8 @@ public class Configuration {
      * default set if configuration information is valid
      */
     public void loadConfiguration() {
-        ArrayList<String> configInfo = Storage.getInstance().readConfigFile();
+        ArrayList<String> configInfo = TaskAndConfigStorage.getInstance()
+                .readConfigFile();
         configInfo = checkConfigInfo(configInfo);
 
         if (configInfo == null) {
@@ -163,24 +163,19 @@ public class Configuration {
             if (!availableColor.contains(configInfo.get(ALTROW_COLOR_POSITION))) {
                 return null;
             }
+            if (!availableColor.contains(configInfo.get(ROW_COLOR_POSITION))) {
+                return null;
+            }
+
+            if (!availableColor.contains(configInfo.get(ALTROW_COLOR_POSITION))) {
+                return null;
+            }
 
             if (!availableColor.contains(configInfo.get(TOAST_COLOR_POSITION))) {
                 return null;
             }
 
             if (!availableColor.contains(configInfo.get(DONE_COLOR_POSITION))) {
-                return null;
-            }
-
-            if (!availableColor.contains(configInfo.get(HEADER_COLOR_POSITION))) {
-                return null;
-            }
-
-            if (configInfo.get(DATEFORMAT_POSITION).compareTo("dd/MMM/yyyy") != 0
-                    && configInfo.get(DATEFORMAT_POSITION).compareTo(
-                            "dd/MM/yyyy") != 0
-                    && configInfo.get(DATEFORMAT_POSITION).compareTo(
-                            "dd MMM yyyy") != 0) {
                 return null;
             }
 
@@ -210,7 +205,7 @@ public class Configuration {
         configInfo.add(defaultDateFormat.toPattern());
         configInfo.add(defaultTimeFormat.toPattern());
 
-        Storage.getInstance().writeConfigFile(configInfo);
+        TaskAndConfigStorage.getInstance().writeConfigFile(configInfo);
     }
 
     /**************** Accessors ***********************/
@@ -257,7 +252,7 @@ public class Configuration {
     public String getTimeFormat() {
         return defaultTimeFormat.toPattern();
     }
-    
+
     public boolean getIsFirstRun() {
         return isFirstRun;
     }
