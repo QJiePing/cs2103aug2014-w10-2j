@@ -54,7 +54,7 @@ public class Configuration {
 
     private static CommonLogger log = CommonLogger.getInstance();
 
-    public static ArrayList<String> availableColor = null;
+    public ArrayList<String> availableColor = null;
 
     private Configuration() {
         availableColor = new ArrayList<String>() {
@@ -146,42 +146,44 @@ public class Configuration {
                             "calendar") != 0
                     && configInfo.get(VIEW_POISTION).compareToIgnoreCase(
                             "today") != 0) {
-                return null;
+            	configInfo.set(VIEW_POISTION,DEFAULT_VIEW);
             }
             if (configInfo.get(LOG_LEVEL_POSITION).compareToIgnoreCase("all") != 0
                     && configInfo.get(LOG_LEVEL_POSITION).compareToIgnoreCase(
                             "none") != 0) {
-                return null;
+            	configInfo.set(LOG_LEVEL_POSITION,DEFAULT_LOG_LEVEL);
             }
-            if (configInfo.get(WECOME_MSG_POSITION) == null) {
-                return null;
+            if (configInfo.get(WECOME_MSG_POSITION).isEmpty()) {
+            	configInfo.set(WECOME_MSG_POSITION,DEFAULT_WELCOME_MSG);
             }
+      
             if (!availableColor.contains(configInfo.get(ROW_COLOR_POSITION))) {
-                return null;
+            	configInfo.set(ROW_COLOR_POSITION,DEFAULT_ROW_COLOR);
             }
 
             if (!availableColor.contains(configInfo.get(ALTROW_COLOR_POSITION))) {
-                return null;
-            }
-            if (!availableColor.contains(configInfo.get(ROW_COLOR_POSITION))) {
-                return null;
-            }
-
-            if (!availableColor.contains(configInfo.get(ALTROW_COLOR_POSITION))) {
-                return null;
+            	configInfo.set(ALTROW_COLOR_POSITION,DEFAULT_ALTROW_COLOR);
             }
 
             if (!availableColor.contains(configInfo.get(TOAST_COLOR_POSITION))) {
-                return null;
+            	configInfo.set(TOAST_COLOR_POSITION,DEFAULT_TOAST_COLOR);
             }
 
             if (!availableColor.contains(configInfo.get(DONE_COLOR_POSITION))) {
-                return null;
+            	configInfo.set(DONE_COLOR_POSITION,DEFAULT_DONE_COLOR);
+            }
+            
+            if (!availableColor.contains(configInfo.get(HEADER_COLOR_POSITION))) {
+            	configInfo.set(HEADER_COLOR_POSITION,DEFAULT_HEADER_COLOR);
+            }
+            
+            if(configInfo.get(FILENAME_POSITION).isEmpty()){
+            	configInfo.set(FILENAME_POSITION,DEFAULT_FILE_NAME);
             }
 
             if (configInfo.get(TIMEFORMAT_POSITION).compareTo("hh:mm aa") != 0
                     && configInfo.get(TIMEFORMAT_POSITION).compareTo("HH:mm") != 0) {
-                return null;
+            	configInfo.set(TIMEFORMAT_POSITION,DEFAULT_TIME_FORMAT);
             }
         }
 
@@ -259,7 +261,7 @@ public class Configuration {
 
     /**************** Mutators ************************/
     public void setDefaultFileName(String fileName) {
-        defaultFileName = fileName;
+    	defaultFileName = fileName;
     }
 
     public void setDefaultLogLevel(String level) {
