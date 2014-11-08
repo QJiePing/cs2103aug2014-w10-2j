@@ -16,8 +16,6 @@ public class CommonLogger {
     private static Logger logger = null;
     
     private static CommonLogger instance = null;
-    
-    private final static Level currentLogLevel = Level.ALL;
 
     private static final String FORMAT_DAY_MONTH_YEAR = "dd_MM_yyyy";
     private static final String EXCEPTION_FILE_NAME = "Exception_%s.log";

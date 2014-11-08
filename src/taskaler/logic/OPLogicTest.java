@@ -2,13 +2,9 @@ package taskaler.logic;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-
 import org.junit.Test;
 
 import taskaler.common.data.DeadLineTask;
-import taskaler.common.data.FloatTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
