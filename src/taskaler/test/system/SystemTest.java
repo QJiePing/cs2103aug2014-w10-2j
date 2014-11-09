@@ -68,11 +68,19 @@ public class SystemTest {
      */
 	@Test
 	public void test1() {
+		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		try {
 			controller.start(new Stage());
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
+		/**
+         * Clear the file content for this test case
+         */
+        TaskList taskList=TaskList.getInstance();
+        taskList.clear();
+        storeObj.writeToFile(TASK_LIST_FILE, taskList);
+        
 		boolean switch1 = false;
 		boolean switch2 = false;
 		String cmd1 = "add task1 :It is a float task";
@@ -89,7 +97,6 @@ public class SystemTest {
 		controller.executeCMD(cmd5);
 		controller.executeCMD(cmd6);
 
-		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		ArrayList<Object> tempArr = storeObj.readFromFile(TASK_LIST_FILE);
 		ArrayList<FloatTask> floatArr = (ArrayList<FloatTask>) tempArr.get(0);
 		ArrayList<DeadLineTask> deadlineArr = (ArrayList<DeadLineTask>) tempArr
@@ -109,7 +116,7 @@ public class SystemTest {
         /**
          * Clear the file content for other test case
          */
-        TaskList taskList=TaskList.getInstance();
+        taskList=TaskList.getInstance();
         taskList.clear();
         storeObj.writeToFile(TASK_LIST_FILE, taskList);
     }
