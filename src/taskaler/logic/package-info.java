@@ -1,6 +1,6 @@
 
 /**
- * @author A0099778X
+ * package for logic component
  *
  */
 package taskaler.logic;
