@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class DLLConnector extends Observable implements Runnable {
 
     // Flag to stop the thread

@@ -30,6 +30,7 @@ import taskaler.ui.model.CalendarPaneModel;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class CalendarPaneTest {
 
     private static CalendarPaneController controller = null;

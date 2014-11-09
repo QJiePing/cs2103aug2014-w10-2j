@@ -10,6 +10,7 @@ import java.util.Calendar;
  * Special Calendar Parser
  *
  */
+//@author A0059806W
 public class calendarToString {
     // Special constants
     private static final String REG_MONTH_YEAR = "dd/MM/yyyy";

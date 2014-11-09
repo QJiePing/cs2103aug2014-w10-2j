@@ -8,6 +8,7 @@ import java.util.HashMap;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class TextPaneModel implements IModel {
     // State Attributes
     public static final String TEXT_BODY_ATTRIBUTE = "TEXTBODY";

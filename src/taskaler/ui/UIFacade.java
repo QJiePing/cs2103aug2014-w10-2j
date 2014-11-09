@@ -42,29 +42,18 @@ import taskaler.ui.model.TutorialPaneModel;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class UIFacade extends Application implements Observer {
     // Special Constants
     private static final String TITLE = "Taskaler";
     private static final String DEFAULT_VIEW_CALENDAR = "CALENDAR";
     private static final String DEFAULT_VIEW_LIST = "LIST";
-    private static final String[] DEFAULT_VIEW_OPTIONS = {
-            DEFAULT_VIEW_CALENDAR, DEFAULT_VIEW_LIST };
-
+    
     // User Profile Configs
     private static String userDefaultView = DEFAULT_VIEW_CALENDAR;
 
     // File Constants
     private static final String ICON_PNG = "/res/icon.png";
-
-    // DLL Constants
-    private static final String DLL_PATH_OUTPUT = "/Taskaler";
-    private static final String DLL_PATH_PARENT = "/lib";
-    private static final String DLL_PATH_BIT_32 = "/x86";
-    private static final String DLL_PATH_BIT_64 = "/x64";
-    private static final String DLL_PATH_32 = "/JNILibrary.dll";
-    private static final String DLL_PATH_64 = "/JNILibrary64.dll";
-    private static final String DLL_PATH_MSVCR = "/msvcr120.dll";
-    private static File[] libraryLoaded = null;
 
     // Class Variables
     private RootController rootController = null;
@@ -126,44 +115,11 @@ public class UIFacade extends Application implements Observer {
     }
 
     /**
-     * Method to create clean up procedures
-     * 
-     */
-    private void createCleanUp() {
-        // TODO Implementation required
-        Thread shutDownHook = new Thread() {
-            @Override
-            public void run() {
-                if (libraryLoaded != null) {
-
-                }
-            }
-        };
-        Runtime.getRuntime().addShutdownHook(shutDownHook);
-
-    }
-
-    /**
      * Method to create the hotkey hook
      * 
      */
     private void createHook() {
         try {
-            String jvmVer = System.getProperty("sun.arch.data.model");
-            libraryLoaded = new File[2];
-            if (jvmVer.compareTo("32") == 0) {
-                libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
-                        DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
-                libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
-                        DLL_PATH_OUTPUT, DLL_PATH_32);
-            } else if (jvmVer.compareTo("64") == 0) {
-                libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
-                        DLL_PATH_OUTPUT, DLL_PATH_MSVCR);
-                libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
-                        DLL_PATH_OUTPUT, DLL_PATH_64);
-            } else {
-                throw new Exception("Unknown JVM version detected");
-            }
 
             // Create the source of the key press
             final DLLConnector eventSource = new DLLConnector();
@@ -181,46 +137,7 @@ public class UIFacade extends Application implements Observer {
         }
     }
 
-    /**
-     * Method to load a dll into the JVM
-     * 
-     * @param parent
-     *            The path to the parent of the library
-     * @param outputFolder
-     *            The destination folder
-     * @param library
-     *            the library to be loaded
-     * @return the file object of the library
-     * @throws IOException
-     *             thrown if there is an error reading the file
-     */
-    public File loadDll(String parent, String outputFolder, String library)
-            throws IOException, UnsatisfiedLinkError {
-        InputStream in = TaskAndConfigStorage.class.getResourceAsStream(parent + library);
-        byte[] buffer = new byte[1024];
-        int read = -1;
-        File windowsUserTempDirectory = new File(
-                System.getProperty("java.io.tmpdir") + outputFolder);
-        if (!windowsUserTempDirectory.exists()) {
-            windowsUserTempDirectory.mkdir();
-        }
-        File temp = new File(windowsUserTempDirectory, library);
-        if (temp.exists()) {
-            temp.delete();
-        }
-        // System.out.println("Creating temp dll: " + temp.getAbsolutePath());
-        FileOutputStream fos = new FileOutputStream(temp);
-
-        while ((read = in.read(buffer)) != -1) {
-            fos.write(buffer, 0, read);
-        }
-        fos.close();
-        in.close();
-
-        System.load(temp.getAbsolutePath());
-
-        return temp;
-    }
+    
 
     /**
      * Method to render default view for the list of task

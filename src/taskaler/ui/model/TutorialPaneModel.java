@@ -8,9 +8,12 @@ import java.util.HashMap;
 import taskaler.ui.controller.common;
 
 /**
- * @author Kiwi
+ * Model Associated with the TutorialPane
+ * 
+ * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public class TutorialPaneModel implements IModel {
 
     // Special Constants
