@@ -31,16 +31,16 @@ public class TaskAndConfigStorage {
 	 */
 	private TaskAndConfigStorage() {
 
-		File dir=new File(storageDir);
-		if(!dir.exists()){
-			try{
+		File dir = new File(storageDir);
+		if (!dir.exists()) {
+			try {
 				dir.mkdir();
-			}catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(-1);
 			}
 		}
-		configFile = new File(storageDir+"config_file");
+		configFile = new File(storageDir + "config_file");
 	}
 
 	public static TaskAndConfigStorage getInstance() {
@@ -68,7 +68,7 @@ public class TaskAndConfigStorage {
 		CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> holder = new CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>();
 
 		try {
-			FileReader reader = new FileReader(storageDir+file);
+			FileReader reader = new FileReader(storageDir + file);
 			Gson gson = createGsonObj();
 			TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>> typeToken = new TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>>() {
 			};
@@ -98,7 +98,7 @@ public class TaskAndConfigStorage {
 	public boolean writeToFile(String file, TaskList taskList) {
 
 		try {
-			FileWriter fw = new FileWriter(storageDir+file);
+			FileWriter fw = new FileWriter(storageDir + file);
 			Gson gson = createGsonObj();
 			CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> helper = prepareTaskList(taskList);
 			TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>> typeToken = new TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>>() {
@@ -125,16 +125,17 @@ public class TaskAndConfigStorage {
 	 * 
 	 * @return return an config object from the text file
 	 */
-	public ArrayList<String> readConfigFile(){
+	public ArrayList<String> readConfigFile() {
 
-		ArrayList<String> config =new ArrayList<String>();
+		ArrayList<String> config = new ArrayList<String>();
 		try {
-			if(!configFile.exists()){
+			if (!configFile.exists()) {
 				return null;
 			}
 			FileReader reader = new FileReader(configFile);
 			Gson gson = createGsonObj();
-			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {};
+			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {
+			};
 			config = gson.fromJson(reader, typeToken.getType());
 			reader.close();
 		} catch (Exception e) {
@@ -155,11 +156,12 @@ public class TaskAndConfigStorage {
 	 * @return return a boolean indicating whether the write operation is a
 	 *         success or fail
 	 */
-	public boolean writeConfigFile(ArrayList<String> configArr){
+	public boolean writeConfigFile(ArrayList<String> configArr) {
 		try {
 			FileWriter fw = new FileWriter(configFile);
 			Gson gson = createGsonObj();
-			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {};
+			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {
+			};
 			String output = gson.toJson(configArr, typeToken.getType());
 			fw.write(output);
 			fw.close();
