@@ -34,6 +34,8 @@ import javafx.scene.layout.GridPane;
 //@author A0059806W
 public class ListPaneController extends TitledPane implements IController {
 
+    private static final double ANCHOR_ZERO = 0.0;
+
     // Current model associated with this controller
     private ListPaneModel currentModel;
 
@@ -145,22 +147,7 @@ public class ListPaneController extends TitledPane implements IController {
             createSubHeader(subheaders.get(i), config.getDefaultHeaderColor(),
                     currentRow);
             currentRow++;
-            ArrayList<FloatTask> resultFloating = new ArrayList<FloatTask>();
-            ArrayList<RepeatedTask> resultRepeated = new ArrayList<RepeatedTask>();
-            ArrayList<DeadLineTask> resultDeadline = new ArrayList<DeadLineTask>();
-
-            for (Task t : arrayOfTaskLists.get(i)) {
-                if (t instanceof FloatTask) {
-                    resultFloating.add((FloatTask) t);
-                } else if (t instanceof RepeatedTask) {
-                    resultRepeated.add((RepeatedTask) t);
-                } else if (t instanceof DeadLineTask) {
-                    resultDeadline.add((DeadLineTask) t);
-                }
-
-            }
-            currentRow = insertRows(resultFloating, resultRepeated,
-                    resultDeadline, currentRow);
+            currentRow = insertList(arrayOfTaskLists.get(i), currentRow);
         }
     }
 
@@ -176,12 +163,24 @@ public class ListPaneController extends TitledPane implements IController {
                     config.getDefaultRowColor(), common.OFFSET_BY_ONE);
             return;
         }
+        insertList(list, common.OFFSET_BY_ONE);
+    }
 
+    /**
+     * Method to insert a task list into the list pane
+     * 
+     * @param taskList
+     *            List of tasks
+     * @param currentRow
+     *            The index of the row the task list belongs to
+     * @return Index pointing to the row of the next task list
+     */
+    private int insertList(ArrayList<Task> taskList, int currentRow) {
         ArrayList<FloatTask> resultFloating = new ArrayList<FloatTask>();
         ArrayList<RepeatedTask> resultRepeated = new ArrayList<RepeatedTask>();
         ArrayList<DeadLineTask> resultDeadline = new ArrayList<DeadLineTask>();
 
-        for (Task t : list) {
+        for (Task t : taskList) {
             if (t instanceof FloatTask) {
                 resultFloating.add((FloatTask) t);
             } else if (t instanceof RepeatedTask) {
@@ -191,8 +190,9 @@ public class ListPaneController extends TitledPane implements IController {
             }
 
         }
-        insertRows(resultFloating, resultRepeated, resultDeadline,
-                common.OFFSET_BY_ONE);
+        currentRow = insertRows(resultFloating, resultRepeated, resultDeadline,
+                currentRow);
+        return currentRow;
     }
 
     /**
@@ -223,8 +223,18 @@ public class ListPaneController extends TitledPane implements IController {
      *            List of repeated tasks
      * @param deadlineTaskList
      *            List of deadline tasks
+     * @param currentPosition
+     *            Pointer of the current position on the list
      * @return Integer representing the current position of the pointer down the
      *         list
+     */
+    /**
+     * 
+     * @param floatingTaskList
+     * @param repeatedTaskList
+     * @param deadlineTaskList
+     * @param currentPosition
+     * @return
      */
     private int insertRows(ArrayList<FloatTask> floatingTaskList,
             ArrayList<RepeatedTask> repeatedTaskList,
@@ -253,7 +263,7 @@ public class ListPaneController extends TitledPane implements IController {
     }
 
     /**
-     * Mehtod to programmically scroll down the view
+     * Method to programmically scroll down the view
      * 
      */
     public void scrollDown() {
@@ -279,82 +289,136 @@ public class ListPaneController extends TitledPane implements IController {
      */
     private <T> int insertRows(String category, int startIndex,
             ArrayList<T> taskList, String color) {
-        if (taskList.size() < 1) {
+        if (isEmptyList(taskList)) {
             return startIndex;
         }
+        int span = createCategoryLabel(category, startIndex, taskList.size(),
+                color);
+
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = (Task) taskList.get(i);
+            createTaskRow(startIndex, i, currentTask);
+        }
+        return startIndex + span;
+    }
+
+    /**
+     * Method to create a row to display information of the task provided
+     * 
+     * @param startIndex
+     *            Index of the pointing to the start of the category
+     * @param i
+     *            Offset of this row respective to the start index
+     * @param currentTask
+     *            Current task to populate this row
+     */
+    private void createTaskRow(int startIndex, int i, Task currentTask) {
+        String color = common.EMPTY_STRING;
+        Label id = new Label(currentTask.getTaskID());
+        id.setPrefWidth(ID_WIDTH);
+        id.setAlignment(Pos.CENTER);
+
+        Label name = new Label(currentTask.getTaskName());
+        name.setPrefWidth(NAME_WIDTH);
+        name.setAlignment(Pos.CENTER);
+
+        Label date = new Label(DEFAULT_DATE_VALUE);
+        date.setPrefWidth(DATE_WIDTH);
+        date.setAlignment(Pos.CENTER);
+
+        String loadColor = GREY_COLOR;
+        loadColor = workloadToColor(currentTask, loadColor);
+        Label workload = new Label();
+        workload.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, loadColor));
+        workload.setPrefWidth(ID_WIDTH);
+
+        if (currentTask instanceof RepeatedTask) {
+            RepeatedTask taskHolder = (RepeatedTask) currentTask;
+            String repeatPattern = taskHolder.getPattern();
+            date.setText(repeatPattern);
+        } else if (currentTask instanceof DeadLineTask) {
+            DeadLineTask taskHolder = (DeadLineTask) currentTask;
+            Calendar deadline = taskHolder.getDeadline();
+            date.setText(calendarToString.parseDate(deadline));
+        }
+        if (currentTask.getTaskStatus()) {
+            color = config.getDefaultDoneColor();
+        } else if (isEvenRow(startIndex, i)) {
+            color = config.getDefaultAltRowColor();
+        } else {
+            color = config.getDefaultRowColor();
+        }
+        date.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+        name.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+        id.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+        gridList.add(id, ID_COL_INDEX, startIndex + i);
+        gridList.add(date, DATE_COL_INDEX, startIndex + i);
+        gridList.add(name, NAME_COL_INDEX, startIndex + i);
+        gridList.add(workload, WORKLOAD_COL_INDEX, startIndex + i);
+    }
+
+    /**
+     * Method to convert the workload attribute in the task into the color
+     * representation of the workload
+     * 
+     * @param currentTask
+     *            Task to be checked
+     * @param workloadColor
+     *            Default color
+     * @return String representation of the color of the workload
+     */
+    private String workloadToColor(Task currentTask, String workloadColor) {
+        if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                Task.WORKLOAD_HIGH) == 0) {
+            workloadColor = RED_COLOR;
+        } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                Task.WORKLOAD_MEDIUM) == 0) {
+            workloadColor = ORANGE_COLOR;
+        } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                Task.WORKLOAD_LOW) == 0) {
+            workloadColor = GREEN_COLOR;
+        }
+        return workloadColor;
+    }
+
+    /**
+     * Method to create the category label for the list
+     * 
+     * @param category
+     *            String representing the category
+     * @param startIndex
+     *            Start index of the current list
+     * @param taskListSize
+     *            Size of the task list this label is associated to
+     * @param color
+     *            Color of the label
+     * @return Next index on the list
+     */
+    private <T> int createCategoryLabel(String category, int startIndex,
+            int taskListSize, String color) {
         Label categoryLabel = new Label(category);
         categoryLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
-        // categoryLabel.setRotate(-90.0);
-        // categoryLabel.setTranslateY(-50);
         categoryLabel.setAlignment(Pos.CENTER);
 
-        int span = taskList.size();
+        int span = taskListSize;
         AnchorPane container = new AnchorPane();
         categoryLabel.setPrefWidth(CATEGORY_WIDTH);
         categoryLabel.setPrefHeight(MIN_CATEGORY_HEIGHT * span);
 
-        AnchorPane.setTopAnchor(categoryLabel, 0.0);
-        AnchorPane.setBottomAnchor(categoryLabel, 0.0);
+        AnchorPane.setTopAnchor(categoryLabel, ANCHOR_ZERO);
+        AnchorPane.setBottomAnchor(categoryLabel, ANCHOR_ZERO);
         container.getChildren().add(categoryLabel);
         GridPane.setRowSpan(container, span);
         gridList.add(container, common.ZERO_INDEX, startIndex, MIN_SPAN, span);
+        return span;
+    }
 
-        for (int i = 0; i < taskList.size(); i++) {
-            Task currentTask = (Task) taskList.get(i);
-            Label id = new Label(currentTask.getTaskID());
-            id.setPrefWidth(ID_WIDTH);
-            id.setAlignment(Pos.CENTER);
-
-            Label name = new Label(currentTask.getTaskName());
-            name.setPrefWidth(NAME_WIDTH);
-            name.setAlignment(Pos.CENTER);
-
-            Label date = new Label(DEFAULT_DATE_VALUE);
-            date.setPrefWidth(DATE_WIDTH);
-            date.setAlignment(Pos.CENTER);
-
-            String loadColor = GREY_COLOR;
-
-            if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
-                    Task.WORKLOAD_HIGH) == 0) {
-                loadColor = RED_COLOR;
-            } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
-                    Task.WORKLOAD_MEDIUM) == 0) {
-                loadColor = ORANGE_COLOR;
-            } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
-                    Task.WORKLOAD_LOW) == 0) {
-                loadColor = GREEN_COLOR;
-            }
-            Label workload = new Label();
-            workload.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE,
-                    loadColor));
-            workload.setPrefWidth(ID_WIDTH);
-
-            if (currentTask instanceof RepeatedTask) {
-                RepeatedTask taskHolder = (RepeatedTask) currentTask;
-                String repeatPattern = taskHolder.getPattern();
-                date.setText(repeatPattern);
-            } else if (currentTask instanceof DeadLineTask) {
-                DeadLineTask taskHolder = (DeadLineTask) currentTask;
-                Calendar deadline = taskHolder.getDeadline();
-                date.setText(calendarToString.parseDate(deadline));
-            }
-            if (currentTask.getTaskStatus()) {
-                color = config.getDefaultDoneColor();
-            } else if (isEvenRow(startIndex, i)) {
-                color = config.getDefaultAltRowColor();
-            } else {
-                color = config.getDefaultRowColor();
-            }
-            date.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
-            name.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
-            id.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
-            gridList.add(id, ID_COL_INDEX, startIndex + i);
-            gridList.add(date, DATE_COL_INDEX, startIndex + i);
-            gridList.add(name, NAME_COL_INDEX, startIndex + i);
-            gridList.add(workload, WORKLOAD_COL_INDEX, startIndex + i);
-        }
-        return startIndex + span;
+    /**
+     * @param taskList
+     * @return
+     */
+    private <T> boolean isEmptyList(ArrayList<T> taskList) {
+        return taskList.size() < 1;
     }
 
     /**

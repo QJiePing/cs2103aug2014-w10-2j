@@ -2,6 +2,8 @@ package taskaler.ui.model;
 
 import java.util.HashMap;
 
+import taskaler.ui.controller.common;
+
 /**
  * Model Associated with the TextPane
  * 
@@ -19,13 +21,13 @@ public class TextPaneModel implements IModel {
     public String textBody;
 
     public TextPaneModel() {
-        title = "";
-        textBody = "";
+        title = common.EMPTY_STRING;
+        textBody = common.EMPTY_STRING;
     }
 
     @Override
     public HashMap<String, String> toHashMap() {
-        HashMap<String, String> result = new HashMap();
+        HashMap<String, String> result = new HashMap<String, String>();
         result.put(VIEW_ATTRIBUTE, VIEW_TEXT_PANE);
         result.put(TITLE_ATTRIBUTE, title);
         result.put(TEXT_BODY_ATTRIBUTE, textBody);

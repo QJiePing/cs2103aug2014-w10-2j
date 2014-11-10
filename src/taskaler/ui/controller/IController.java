@@ -18,6 +18,8 @@ public interface IController {
     /**
      * Method to initialize the view
      * 
+     * @param FXML
+     *            The filepath to the FXML file associated to the view
      * @throws IOException
      *             Thrown if an error is encountered while loading FXML file
      * 

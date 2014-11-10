@@ -13,6 +13,7 @@ import taskaler.common.configurations.Configuration;
 import taskaler.common.data.DeadLineTask;
 import taskaler.common.data.RepeatedTask;
 import taskaler.common.data.Task;
+import taskaler.common.util.parser.calendarToString;
 import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.CellDateModel;
 import javafx.fxml.FXML;
@@ -28,8 +29,10 @@ import javafx.scene.layout.GridPane;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-//@author A0059806W
+// @author A0059806W
 public class CalendarPaneController extends BorderPane implements IController {
+    private static final String FX_BACKGROUND_COLOR = "-fx-background-color: %s;";
+
     // Current model associated with this controller
     private CalendarPaneModel currentModel = null;
 
@@ -110,8 +113,8 @@ public class CalendarPaneController extends BorderPane implements IController {
 
         cal.setFirstDayOfWeek(Calendar.SUNDAY);
 
-        SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
-        String currentMonthAndYear = formatter.format(cal.getTime());
+        String currentMonthAndYear = calendarToString.parseDate(cal,
+                REG_MONTH_YEAR);
         setTitle(currentMonthAndYear);
 
         int[][] tasksByDay = computeMonth(cal.get(Calendar.MONTH),
@@ -124,16 +127,12 @@ public class CalendarPaneController extends BorderPane implements IController {
         for (int i = common.OFFSET_BY_ONE; i <= cal
                 .getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
 
-            CellDateModel model = new CellDateModel();
-            model.currentDate = i;
-            model.currentNumberOfEvents = tasksByDay[i][common.ZERO_INDEX];
-            model.currentWorkloadFilters = tasksByDay[i][common.OFFSET_BY_ONE];
-            CellDateController day = new CellDateController(model);
+            CellDateController day = createCellDate(tasksByDay, i);
 
             gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
             if (isToday(date, i)) {
-                day.setStyle(String.format("-fx-background-color: %s;",
-                        Configuration.getInstance().getDefaultHeaderColor()));
+                day.setStyle(String.format(FX_BACKGROUND_COLOR, Configuration
+                        .getInstance().getDefaultHeaderColor()));
             }
 
             dayOfTheWeekIterator++;
@@ -146,6 +145,28 @@ public class CalendarPaneController extends BorderPane implements IController {
             }
 
         }
+    }
+
+    /**
+     * Method to create a cell date
+     * 
+     * @param tasksByDay
+     *            Array of tasks by the day
+     * @param i
+     *            Current day
+     * @return Newly created cell date
+     * @throws IOException
+     *             Thrown if an error is encountered while rendering the cell
+     *             date
+     */
+    private CellDateController createCellDate(int[][] tasksByDay, int i)
+            throws IOException {
+        CellDateModel model = new CellDateModel();
+        model.currentDate = i;
+        model.currentNumberOfEvents = tasksByDay[i][common.ZERO_INDEX];
+        model.currentWorkloadFilters = tasksByDay[i][common.OFFSET_BY_ONE];
+        CellDateController day = new CellDateController(model);
+        return day;
     }
 
     /**
@@ -184,8 +205,7 @@ public class CalendarPaneController extends BorderPane implements IController {
             Calendar currentTime = Calendar.getInstance();
             if (currentTask instanceof DeadLineTask) {
                 currentTime = ((DeadLineTask) currentTask).getDeadline();
-                if (currentTime.get(Calendar.MONTH) == month
-                        && currentTime.get(Calendar.YEAR) == year) {
+                if (isTaskInCurrentMonthAndYear(month, year, currentTime)) {
                     result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
                     if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
@@ -199,8 +219,7 @@ public class CalendarPaneController extends BorderPane implements IController {
                 for (int j = common.ZERO_INDEX; j < currentRepeated
                         .getRepeatedDate().size(); j++) {
                     currentTime = currentRepeated.getRepeatedDate().get(j);
-                    if (currentTime.get(Calendar.MONTH) == month
-                            && currentTime.get(Calendar.YEAR) == year) {
+                    if (isTaskInCurrentMonthAndYear(month, year, currentTime)) {
                         result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
 
                         if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
@@ -214,6 +233,24 @@ public class CalendarPaneController extends BorderPane implements IController {
         }
 
         return result;
+    }
+
+    /**
+     * Method to check if a calendar is in the current month and year
+     * 
+     * @param month
+     *            Current month
+     * @param year
+     *            Current year
+     * @param currentTime
+     *            Calendar to be checked
+     * @return True if the calendar is in the current month and year; False
+     *         otherwise
+     */
+    private boolean isTaskInCurrentMonthAndYear(int month, int year,
+            Calendar currentTime) {
+        return currentTime.get(Calendar.MONTH) == month
+                && currentTime.get(Calendar.YEAR) == year;
     }
 
     /**

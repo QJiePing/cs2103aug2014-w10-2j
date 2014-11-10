@@ -54,6 +54,9 @@ public class RootController extends BorderPane implements IController {
     // Special Constants
     private static final String CONFIRMATION_MESSAGE = "ARE YOU SURE? KEY IN YES IF YOU ARE SURE";
     public static final String PASSCODE = "YES";
+    private static final double ANCHOR_ZERO = 0.0;
+    private static final int HEIGHT_BUFFER = 2;
+    private static final int MIN_HEIGHT_OF_ROW = 30;
 
     // Current model associated with this controller
     private RootModel currentModel = null;
@@ -151,11 +154,15 @@ public class RootController extends BorderPane implements IController {
     /**
      * Method to ask the user for confirmation on an action
      * 
+     * @return True if the user confirms the action; False otherwise
      */
     public Boolean showConfirmation() {
         String input = JOptionPane.showInputDialog(null, CONFIRMATION_MESSAGE);
-
-        return PASSCODE.compareTo(input) == 0;
+        if (input.isEmpty() || PASSCODE.compareTo(input) != 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -183,29 +190,80 @@ public class RootController extends BorderPane implements IController {
      */
     @FXML
     private void txtCmdInputKeyPressed(KeyEvent e) {
-        if (e.getCode() == KeyCode.ENTER) {
+        if (isKeyCodeEnter(e)) {
             String cmd = txtCmdInput.getText();
             txtCmdInput.clear();
             Controller.getInstance().executeCMD(cmd);
             listCmd.setVisible(false);
-        } else if (e.getCode() == KeyCode.UP) {
-            Node currentDisplay = anchorPaneDisplay.getChildren().get(
-                    common.ZERO_INDEX);
-            if (currentDisplay instanceof ListPaneController) {
-                ((ListPaneController) currentDisplay).scrollUp();
-            } else if (currentDisplay instanceof TextPaneController) {
-                ((TextPaneController) currentDisplay).scrollUp();
-            }
-        } else if (e.getCode() == KeyCode.DOWN) {
-            Node currentDisplay = anchorPaneDisplay.getChildren().get(
-                    common.ZERO_INDEX);
-            if (currentDisplay instanceof ListPaneController) {
-                ((ListPaneController) currentDisplay).scrollDown();
-            } else if (currentDisplay instanceof TextPaneController) {
-                ((TextPaneController) currentDisplay).scrollDown();
-            }
+        } else if (isKeyUp(e)) {
+            scrollUp();
+        } else if (isKeyDown(e)) {
+            scrollDown();
         }
 
+    }
+
+    /**
+     * Method to determine if the key code is Enter
+     * 
+     * @param e
+     *            Key event caught
+     * @return True if the key event is a keycode enter; false otherwise
+     */
+    private boolean isKeyCodeEnter(KeyEvent e) {
+        return e.getCode() == KeyCode.ENTER;
+    }
+
+    /**
+     * Method to determine if the key event is a key press down
+     * 
+     * @param e
+     *            Key event caught
+     * @return True if event is a key press down; False otherwise
+     */
+    private boolean isKeyDown(KeyEvent e) {
+        return e.getCode() == KeyCode.DOWN;
+    }
+
+    /**
+     * Method to determine if the key event is a key press up
+     * 
+     * @param e
+     *            Key event caught
+     * @return True if event is a key press up; False otherwise
+     */
+    private boolean isKeyUp(KeyEvent e) {
+        return e.getCode() == KeyCode.UP;
+    }
+
+    /**
+     * Method to scroll children element down if possible. Only ListPane and
+     * TextPane can be scrolled
+     * 
+     */
+    private void scrollDown() {
+        Node currentDisplay = anchorPaneDisplay.getChildren().get(
+                common.ZERO_INDEX);
+        if (currentDisplay instanceof ListPaneController) {
+            ((ListPaneController) currentDisplay).scrollDown();
+        } else if (currentDisplay instanceof TextPaneController) {
+            ((TextPaneController) currentDisplay).scrollDown();
+        }
+    }
+
+    /**
+     * Method to scroll children element up if possible. Only ListPane and
+     * TextPane can be scrolled
+     * 
+     */
+    private void scrollUp() {
+        Node currentDisplay = anchorPaneDisplay.getChildren().get(
+                common.ZERO_INDEX);
+        if (currentDisplay instanceof ListPaneController) {
+            ((ListPaneController) currentDisplay).scrollUp();
+        } else if (currentDisplay instanceof TextPaneController) {
+            ((TextPaneController) currentDisplay).scrollUp();
+        }
     }
 
     /**
@@ -217,32 +275,84 @@ public class RootController extends BorderPane implements IController {
      */
     @FXML
     private void txtcmdInputKetTyped(KeyEvent e) {
-        if (!isEnterKey(e)
-                && !(txtCmdInput.getText().isEmpty() && isBackSpace(e))) {
+        if (isProcessible(e)) {
             String input = txtCmdInput.getText();
 
             if (!isBackSpace(e)) {
                 input = input + e.getCharacter();
             }
-            ObservableList<String> suggestions = FXCollections
-                    .observableArrayList(SUGGESTION_BOX_LABEL);
-            for (int i = 0; i < commands.length; i++) {
-                if (commands[i].startsWith(input)) {
-                    suggestions.add(commands[i]);
-                }
-            }
+
+            ObservableList<String> suggestions = populateSuggestionList(input);
 
             if (suggestions.size() > 1) {
-                listCmd.setItems(suggestions);
-                listCmd.setPrefHeight(30 * suggestions.size() + 2);
-                listCmd.setMinHeight(30 * suggestions.size() + 2);
-                AnchorPane.setBottomAnchor(listCmd, 0.0);
-                listCmd.setVisible(true);
+                displaySuggestionList(suggestions);
                 return;
             }
         }
         listCmd.setVisible(false);
 
+    }
+
+    /**
+     * Method to populate the suggestion list
+     * 
+     * @param input
+     *            Input string to be compared
+     * @return Populated list of suggestions
+     */
+    private ObservableList<String> populateSuggestionList(String input) {
+        ObservableList<String> suggestions = FXCollections
+                .observableArrayList(SUGGESTION_BOX_LABEL);
+
+        for (int i = 0; i < commands.length; i++) {
+            String currentCommand = commands[i];
+            if (isPossibleCommand(input, currentCommand)) {
+                suggestions.add(currentCommand);
+            }
+        }
+        return suggestions;
+    }
+
+    /**
+     * Method to allign and display the suggestion list
+     * 
+     * @param suggestions
+     *            List of suggested commands
+     */
+    private void displaySuggestionList(ObservableList<String> suggestions) {
+        listCmd.setItems(suggestions);
+        listCmd.setPrefHeight(MIN_HEIGHT_OF_ROW * suggestions.size()
+                + HEIGHT_BUFFER);
+        listCmd.setMinHeight(MIN_HEIGHT_OF_ROW * suggestions.size()
+                + HEIGHT_BUFFER);
+        AnchorPane.setBottomAnchor(listCmd, ANCHOR_ZERO);
+        listCmd.setVisible(true);
+    }
+
+    /**
+     * Method to determine if the command is similar to input string
+     * 
+     * @param input
+     *            Input string
+     * @param command
+     *            Command string
+     * @return True if the command is similar to the input string; False
+     *         otherwise
+     */
+    private boolean isPossibleCommand(String input, String command) {
+        return command.startsWith(input);
+    }
+
+    /**
+     * Method to determine if the key event can be processed by the controller
+     * 
+     * @param e
+     *            Key event caught
+     * @return True if key event is to be processed; False otherwise
+     */
+    private boolean isProcessible(KeyEvent e) {
+        return !isEnterKey(e)
+                && !(txtCmdInput.getText().isEmpty() && isBackSpace(e));
     }
 
     /**
@@ -279,11 +389,28 @@ public class RootController extends BorderPane implements IController {
     public void displayList(String title, ArrayList<Task> list)
             throws IOException {
         anchorPaneDisplay.getChildren().clear();
+        ListPaneController pane = createListPane(title, list);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
+     * Method to create a list pane
+     * 
+     * @param title
+     *            Title of the list pane
+     * @param list
+     *            List of tasks
+     * @return Newly created list pane
+     * @throws IOException
+     *             Thrown if an error is encoutnered while rendering list pane
+     */
+    private ListPaneController createListPane(String title, ArrayList<Task> list)
+            throws IOException {
         ListPaneModel model = new ListPaneModel();
         model.currentTitle = title;
         model.currentItemList = list;
         ListPaneController pane = new ListPaneController(model);
-        anchorPaneDisplay.getChildren().add(pane);
+        return pane;
     }
 
     /**
@@ -301,12 +428,33 @@ public class RootController extends BorderPane implements IController {
     public void displayDynamicList(String title, ArrayList<String> header,
             ArrayList<ArrayList<Task>> listOfTaskList) throws IOException {
         anchorPaneDisplay.getChildren().clear();
+        ListPaneController pane = createDynamicListPane(title, header,
+                listOfTaskList);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
+     * Method to create a list pane with multiple sub headers
+     * 
+     * @param title
+     *            Title of the pane
+     * @param header
+     *            sub headers of the list
+     * @param listOfTaskList
+     *            Array of task lists
+     * @return Newly created list pane
+     * @throws IOException
+     *             Thrown if an error was encountered while rendering list
+     */
+    private ListPaneController createDynamicListPane(String title,
+            ArrayList<String> header, ArrayList<ArrayList<Task>> listOfTaskList)
+            throws IOException {
         ListPaneModel model = new ListPaneModel();
         model.currentTitle = title;
         model.currentSubHeaders = header;
         model.arrayOfTaskLists = listOfTaskList;
         ListPaneController pane = new ListPaneController(model);
-        anchorPaneDisplay.getChildren().add(pane);
+        return pane;
     }
 
     /**
@@ -322,7 +470,23 @@ public class RootController extends BorderPane implements IController {
     public void displayCalendar(ArrayList<Task> list, Calendar cal)
             throws IOException {
         anchorPaneDisplay.getChildren().clear();
+        CalendarPaneController pane = createCalendarPane(list, cal);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
 
+    /**
+     * Method to create a calendar pane
+     * 
+     * @param list
+     *            List of tasks
+     * @param cal
+     *            Calendar date to be displayed
+     * @return New created calendar pane
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering Calendar
+     */
+    private CalendarPaneController createCalendarPane(ArrayList<Task> list,
+            Calendar cal) throws IOException {
         CalendarPaneModel model = new CalendarPaneModel();
         model.currentCalendar = cal;
         model.currentMonth = cal.get(Calendar.MONTH) + common.OFFSET_BY_ONE;
@@ -330,7 +494,7 @@ public class RootController extends BorderPane implements IController {
         model.currentTaskList = list;
 
         CalendarPaneController pane = new CalendarPaneController(model);
-        anchorPaneDisplay.getChildren().add(pane);
+        return pane;
     }
 
     /**
@@ -339,11 +503,25 @@ public class RootController extends BorderPane implements IController {
      * @param t
      *            The task to be rendered
      * @throws IOException
-     *             Thrown if an IO error is encountered while rendering
-     *             TaskPanee
+     *             Thrown if an IO error is encountered while rendering TaskPane
      */
     public void displayTask(Task t) throws IOException {
         anchorPaneDisplay.getChildren().clear();
+        TaskPaneController pane = createTaskPane(t);
+        anchorPaneDisplay.getChildren().add(pane);
+
+    }
+
+    /**
+     * Method to create a task pane
+     * 
+     * @param t
+     *            Task to be displayed
+     * @return Newly created task pane
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering TaskPane
+     */
+    private TaskPaneController createTaskPane(Task t) throws IOException {
         TaskPaneModel model = new TaskPaneModel();
         model.task = t;
         model.taskName = t.getTaskName();
@@ -361,6 +539,8 @@ public class RootController extends BorderPane implements IController {
             model.taskEndTime = calendarToString.parseDate(t.getEndTime(),
                     Configuration.getInstance().getTimeFormat());
         }
+
+        // Process the different attributes of different Task types
         if (t instanceof FloatTask) {
             model.taskDate = calendarToString.parseDate(
                     t.getTaskCreationDate(), Configuration.getInstance()
@@ -376,9 +556,9 @@ public class RootController extends BorderPane implements IController {
             model.taskPattern = RepeatedTask
                     .patternToEnglish(((RepeatedTask) t).getPattern());
         }
-        TaskPaneController pane = new TaskPaneController(model);
-        anchorPaneDisplay.getChildren().add(pane);
 
+        TaskPaneController pane = new TaskPaneController(model);
+        return pane;
     }
 
     /**
@@ -394,11 +574,29 @@ public class RootController extends BorderPane implements IController {
      */
     public void displayText(String title, String text) throws IOException {
         anchorPaneDisplay.getChildren().clear();
+        TextPaneController pane = createTextView(title, text);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
+     * Method to create a text pane
+     * 
+     * @param title
+     *            Title of the pane
+     * @param text
+     *            Text to display in the body of the pane
+     * @return Newly created text pane
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering text
+     *             pane
+     */
+    private TextPaneController createTextView(String title, String text)
+            throws IOException {
         TextPaneModel model = new TextPaneModel();
         model.title = title;
         model.textBody = text;
         TextPaneController pane = new TextPaneController(model);
-        anchorPaneDisplay.getChildren().add(pane);
+        return pane;
     }
 
     /**
