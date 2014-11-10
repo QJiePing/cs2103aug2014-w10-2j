@@ -60,12 +60,19 @@ public class DeadLineTask extends Task {
 		return newTask;
 	}
 
-	/**************** Accessor ***********************/
+	/**
+	 * Method to return the date of the deadline
+	 * @return Calendar
+	 */
 	public Calendar getDeadline() {
 		return this._deadLine;
 	}
 
-	/**************** Mutators ************************/
+	/**
+	 * A mutator method to change the date of the deadline
+	 * @param date
+	 * 			The new deadline date of the DeadLineTask
+	 */
 	public void setDeadline(Calendar date) {
 		this._deadLine = date;
 	}

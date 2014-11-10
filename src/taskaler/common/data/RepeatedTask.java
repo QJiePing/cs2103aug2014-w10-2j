@@ -71,43 +71,74 @@ public class RepeatedTask extends Task {
 		return newTask;
 	}
 
-	/**************** Accessor ***********************/
-	
+	/**
+	 * Method to return the String pattern
+	 * @return String
+	 */
 	public String getPattern() {
 	    return this._pattern;
 	}
-	
+	/**
+	 * Method to return an array list of all the date(Calendar object)
+	 * @return ArrayList<Calendar>
+	 */
 	public ArrayList<Calendar> getRepeatedDate() {
 		return this._repeatedDate;
 	}
-
+	/**
+	 * Method to return the last date of the repeating date.
+	 * @return Calendar
+	 */
 	public Calendar getEndRepeatedDate() {
 		return this._endRepeatedDate;
 	}
-
+	/**
+	 * Method to return the collective ID of repeatedTask.
+	 * @return int
+	 */
 	public int getCollectiveID() {
 		return this._collectionID;
 	}
 
-	/**************** Mutators ************************/
-	
+	/**
+	 * A mutator method that change the pattern attributes
+	 * @param pattern
+	 * 				The new string pattern
+	 */
 	public void setPattern(String pattern){
 	    this._pattern = pattern;
 	}
-	
+	/**
+	 * A mutator method that change the array list of dates(Calendar object)
+	 * @param repeat 
+	 * 			The new array list of dates.
+	 */
 	public void setRepeatedDate(ArrayList<Calendar> repeat) {
 		this._repeatedDate = repeat;
 	}
-
+	/**
+	 * A mutator method that change the date of the last repeated date
+	 * @param endRepeat
+	 * 				The new last repeated date.
+	 */
 	public void setEndRepeatedDate(Calendar endRepeat) {
 		this._endRepeatedDate = endRepeat;
 	}
-
+	/**
+	 * A mutator method that change the collective ID
+	 * @param ID
+	 * 			The new collective ID for the repeatedTask.
+	 */
 	public void setCollectiveID(int ID) {
 		this._collectionID = ID;
 	}
-	/******************* Special ***********************/
 	
+	/**
+	 * Change the pattern string to English representation string
+	 * @param pattern
+	 * 				The string pattern of the repeatedTask 
+	 * @return String
+	 */
 	public static String patternToEnglish(String pattern){
 	    String[] patternSplit = pattern.split("\\s+");
 	    if(patternSplit.length == 1){
