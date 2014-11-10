@@ -24,12 +24,16 @@ public class OperationRecord<T, S> {
 	}
 
 	/**
-	 * Mutators Method
+	 * Method return object S
+	 * @return S
 	 */
 	public S getOp() {
 		return this.op;
 	}
-
+	/**
+	 * Method return object T
+	 * @return T
+	 */
 	public T getTask() {
 		return this.t;
 	}

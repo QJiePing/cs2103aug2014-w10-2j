@@ -151,6 +151,10 @@ public class TaskAndConfigStorage {
      *         success or fail
      */
     public boolean writeToFile(String file, TaskList taskList) {
+    	
+    	if(file==null){
+    		return false;
+    	}
 
         try {
             FileWriter fw = new FileWriter(STORAGE_DIR + file);

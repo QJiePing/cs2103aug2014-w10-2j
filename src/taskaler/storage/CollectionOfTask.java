@@ -16,9 +16,6 @@ public class CollectionOfTask<T, Y, Z> {
 	private ArrayList<Y> DeadLineArr;
 	private ArrayList<Z> RepeatedArr;
 
-	/**
-	 * Constructor
-	 */
 	public CollectionOfTask() {
 		floatArr = new ArrayList<T>();
 		DeadLineArr = new ArrayList<Y>();
@@ -26,31 +23,48 @@ public class CollectionOfTask<T, Y, Z> {
 	}
 
 	/**
-	 * Mutator methods
+	 * Mutator method to change the array list
+	 * @param arrList
+	 * 				The new array list
 	 */
 	public void setFloatArr(ArrayList<T> arrList) {
 		this.floatArr = arrList;
 	}
-
+	/**
+	 * Mutator method to change the array list
+	 * @param arrList
+	 * 				The new array list
+	 */
 	public void setDeadLineArr(ArrayList<Y> arrList) {
 		this.DeadLineArr = arrList;
 	}
-
+	/**
+	 * Mutator method to change the array list
+	 * @param arrList
+	 * 				The new array list
+	 */
 	public void setRepeatedArr(ArrayList<Z> arrList) {
 		this.RepeatedArr = arrList;
 	}
 
 	/**
-	 * Accessor Method
+	 * Method return the array list of T objects
+	 * @return ArrayList<T>
 	 */
 	public ArrayList<T> getFloatArr() {
 		return this.floatArr;
 	}
-
+	/**
+	 * Method return the array list of Y objects
+	 * @return ArrayList<Y>
+	 */
 	public ArrayList<Y> getDeadLineArr() {
 		return this.DeadLineArr;
 	}
-
+	/**
+	 * Method return the array list of Z objects
+	 * @return ArrayList<Z>
+	 */
 	public ArrayList<Z> getRepeatedArr() {
 		return this.RepeatedArr;
 	}
