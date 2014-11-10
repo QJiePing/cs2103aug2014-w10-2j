@@ -57,6 +57,9 @@ public class Configuration {
 
     public ArrayList<String> availableColor = null;
 
+    /**
+     * configuration class constructor
+     */
     private Configuration() {
         availableColor = new ArrayList<String>() {
             {
@@ -78,6 +81,11 @@ public class Configuration {
         loadConfiguration();
     }
 
+    /**
+     * Method to get an exist instance of this object
+     * 
+     * @return An instance of this object
+     */
     public static Configuration getInstance() {
         if (instance == null) {
             instance = new Configuration();

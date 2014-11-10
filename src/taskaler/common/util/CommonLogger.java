@@ -101,6 +101,11 @@ public class CommonLogger {
         }
     }
     
+    /**
+     * Method to get an exist instance of this object
+     * 
+     * @return An instance of this object
+     */
     public static CommonLogger getInstance(){
         if(instance == null){
             instance = new CommonLogger();

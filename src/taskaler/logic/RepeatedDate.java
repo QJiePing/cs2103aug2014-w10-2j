@@ -261,6 +261,14 @@ public class RepeatedDate {
 		return repeatDays;
 	}
 
+	/**
+	 * computeLast(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: last day
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
 	private ArrayList<Calendar> computeLast(Calendar startTime, Calendar endRepeatedTime) {
 	    ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
         while(startTime.before(endRepeatedTime)) {
