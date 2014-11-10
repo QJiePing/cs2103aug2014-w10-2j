@@ -1,0 +1,2145 @@
+//@author: a0108541m
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\common.java
+	 */
+
+
+package taskaler.controller;
+
+/**
+ * Contains all constants used in Controller
+ */
+public final class common {
+
+    
+    /**
+     * Enumerator class of all types of user commands
+     */
+    public enum CmdType {
+        ADD, DELETE, EDIT, DEADLINE, TIME, REPEAT, WORKLOAD, TODAY, 
+        COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, EXIT, INVALID
+    }
+
+    // Messages
+    public static final String MSG_WELCOME = "Welcome to Taskaler!";
+    public static final String MSG_DELETED = "The Task \"%s\" has Been Deleted";
+    public static final String MSG_DELETE_ALL = "All tasks have been deleted";
+    public static final String MSG_VIEW_DATE = "All Tasks on \"%s\"";
+    public static final String MSG_VIEW_UNDO = "Actions Last Taken";
+    public static final String MSG_HISTORY = "History";
+    public static final String MSG_FIND = "Search Result for %s, %s";
+    public static final String MSG_UNDO = "The last operation has been undone";
+    public static final String MSG_TODAY = "All Tasks for Today: ";
+    public static final String MSG_OVERDUE = "Tasks Which are Overdue: ";
+
+    // Exception Messages
+    public static final String EXCEPTION_INVALID_ADD = "Invalid ADD parameters";
+    public static final String EXCEPTION_INVALID_COMMAND = "Invalid command entered!";
+    public static final String EXCEPTION_INVALID_TASKID = "Invalid task ID";
+    public static final String EXCEPTION_INVALID_DATE = "Invalid date syntax, try: <dd/mm/yyyy>";
+    public static final String EXCEPTION_INVALID_TIME = "Invalid time syntax, try: HHmm";
+    public static final String EXCEPTION_INVALID_RANGE = 
+            "Invalid %s range syntax, try: <start %s> - <end %s>";
+    public static final String EXCEPTION_INVALID_WORKLOAD = 
+            "Invalid workload attribute syntax, try: <1 or 2 or 3>";
+    public static final String EXCEPTION_INVALID_PATTERN = 
+            "Invalid pattern syntax, try: wednesday, or weekly, or last";
+    public static final String EXCEPTION_INVALID_GOTO = "Invalid goto syntax, try: goto <MM/YYYY>";
+    public static final String EXCEPTION_INVALID_BOOLEAN = 
+            "Invalid boolean attribute syntax, try: true or false";
+    public static final String ERROR_UNEXPECTED = "Unknown error occurred";
+
+    // Magic Numbers
+    public static final int INVALID_VALUE = -1;
+    public static final int MAX_ADD_PARAMETERS = 6;
+    public static final int DELETE_PARAMETERS = 1;
+    public static final int MAX_EDIT_PARAMETERS = 3;
+    public static final int DEADLINE_PARAMETERS = 2;
+    public static final int TIME_PARAMETERS = 3;
+    public static final int MAX_REPEAT_PARAMETERS = 4;
+    public static final int WORKLOAD_PARAMETERS = 2;
+    public static final int COMPLETION_TAG_PARAMETERS = 1;
+    public static final int VIEW_PARAMETERS = 2;
+    public static final int FIND_PARAMETERS = 2;
+    public static final int ARCHIVE_PARAMETERS = 1;
+    public static final int GOTO_PARAMETERS = 1;
+    public static final int TODAY_PARAMETERS = 1;
+    public static final int TAG_LENGTH = 4;
+    public static final int NUM_OF_PARAMS_INDEX = 0;
+    public static final int FORMAT_INDEX = 1;
+    public static final int OFFSET_OF_MONTH = 1;
+    public static final int LENGTH_OF_FROM = 4;
+    public static final int LENGTH_OF_TO = 2;
+    public static final int LENGTH_OF_SYMBOL = 1;
+    public static final int JANUARY = 0;
+    public static final int DECEMBER = 11;
+    public static final int MONTHS_IN_A_YEAR = 12;
+    public static final int MONTH_OVERFLOW_VALUE = 13;
+    public static final int MONTH_INVALID_VALUE = 0;
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\common.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\Controller.java
+	 */
+
+
+package taskaler.controller;
+
+import taskaler.logic.OPLogic;
+import taskaler.logic.SearchLogic;
+import taskaler.storage.TaskAndConfigStorage;
+import taskaler.ui.UIFacade;
+import taskaler.archive.PastHistory;
+import taskaler.archive.Undo;
+import taskaler.common.configurations.Configuration;
+import taskaler.common.data.Task;
+import taskaler.common.data.TaskList;
+import taskaler.common.util.CommonLogger;
+import static taskaler.controller.common.*;
+import taskaler.controller.parser.Parser;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+
+import javafx.stage.Stage;
+
+/**
+ * Instantiates all other components, controls the workflow of Taskaler
+ */
+public class Controller {
+    private static String TASK_LIST_FILE = null;
+
+    private static UIFacade ui = null;
+
+    private static TaskList list = null;
+
+    private static Controller instance = null;
+
+    private static OPLogic crudLogic = null;
+
+    private static SearchLogic findLogic = null;
+
+    private static PastHistory history = null;
+
+    private static Undo undo = null;
+
+    /*********************************** Public Functions ***********************************/
+
+    /**
+     * Method to parse user commands, and pass parameters to UI, Storage and
+     * Logic
+     * 
+     * @param commandString
+     *            User input string
+     */
+    public void executeCMD(String commandString) {
+        try {
+            HashMap<String, String> stateVariables = ui.getCurrentState();
+            Parser values = new Parser();
+            values.parseCMD(commandString, stateVariables);
+            CmdType commandType = values.getCommand();
+            String[] params = values.getParameters();
+            Task result = null;
+            switch (commandType) {
+            case ADD:
+                String nameADD = params[0];
+                String descriptionADD = params[1];
+                String dateADD = params[2];
+                String startTimeADD = params[3];
+                String endTimeADD = params[4];
+                String workloadADD = params[5];
+                result = crudLogic.addTask(nameADD, descriptionADD, dateADD,
+                        startTimeADD, endTimeADD, workloadADD);
+                ui.display(result);
+                break;
+            case DELETE:
+                String taskIDDELETE = params[0];
+                if (taskIDDELETE.equalsIgnoreCase("all")
+                        && ui.showConfirmation()) {
+                    crudLogic.deleteAllTask();
+                    ui.display(MSG_DELETE_ALL,
+                            list.toArray(new ArrayList<Task>()));
+                } else {
+                    result = crudLogic.deleteTask(taskIDDELETE);
+                    String nameDELETED = result.getTaskName();
+                    ui.display(String.format(MSG_DELETED, nameDELETED),
+                            list.toArray(new ArrayList<Task>()));
+                }
+                break;
+            case EDIT:
+                String taskIDEDIT = params[0];
+                String nameEDIT = params[1];
+                String descriptionEDIT = params[2];
+                assert (taskIDEDIT != null);
+                result = crudLogic.editTask(taskIDEDIT, nameEDIT,
+                        descriptionEDIT);
+                ui.display(result);
+                break;
+            case DEADLINE:
+                String taskIDDEADLINE = params[0];
+                String newDeadline = params[1];
+                result = crudLogic.editDate(taskIDDEADLINE, newDeadline);
+                ui.display(result);
+                break;
+            case TIME:
+                String taskIDTIME = params[0];
+                String startTime = params[1];
+                String endTime = params[2];
+                result = crudLogic.editTime(taskIDTIME, startTime, endTime);
+                ui.display(result);
+                break;
+            case REPEAT:
+                String taskIDREPEAT = params[0];
+                String pattern = params[1];
+                String startDate = params[2];
+                String endDate = params[3];
+                result = crudLogic.setRepeat(taskIDREPEAT, pattern, startDate,
+                        endDate);
+                ui.display(result);
+                break;
+            case WORKLOAD:
+                String taskIDWORKLOAD = params[0];
+                String workloadAttribute = params[1];
+                assert (taskIDWORKLOAD != null);
+                result = crudLogic.editWorkload(taskIDWORKLOAD,
+                        workloadAttribute);
+                ui.display(result);
+                break;
+            case COMPLETION_TAG:
+                String taskIDCT = params[0];
+                result = crudLogic.switchTag(taskIDCT);
+                ui.display(result);
+                break;
+            case VIEW:
+                String viewType = params[0];
+                String viewParam = params[1];
+                if (viewType.equals("CALENDAR") || viewType.equals("LIST")) {
+                    ui.display(viewType, list.toArray(new ArrayList<Task>()));
+                } else if (viewType.equals("TASK")) {
+                    result = findLogic.findByID(viewParam);
+                    ui.display(result);
+                } else if (viewType.equals("DATE")) {
+                    ArrayList<Task> viewResult = findLogic.find(viewType,
+                            viewParam);
+                    ui.display(String.format(MSG_VIEW_DATE, viewParam),
+                            viewResult);
+                } else if (viewType.equals("UNDO")) {
+                    String viewUndo = undo.stackToDisplay();
+                    ui.display(MSG_VIEW_UNDO, viewUndo);
+                }
+                break;
+            case FIND:
+                String tagTypeFIND = params[0];
+                String toSearch = params[1];
+                ArrayList<Task> searchResult = findLogic.find(tagTypeFIND,
+                        toSearch);
+                ui.display(String.format(MSG_FIND, tagTypeFIND.toLowerCase(),
+                        toSearch), searchResult);
+                break;
+            case ARCHIVE:
+                String dateARCH = params[0];
+                String out = PastHistory.retrieveHistory(dateARCH);
+                ui.display(MSG_HISTORY, out);
+                break;
+            case UNDO:
+                result = undo.undo();
+                ui.display("LIST", list.toArray(new ArrayList<Task>()));
+                ui.display(MSG_UNDO);
+                break;
+            case GOTO:
+                String dateGOTO = params[0];
+                ui.displayMonth(dateGOTO, list.toArray(new ArrayList<Task>()));
+                break;
+            case TODAY:
+                String date = params[0];
+                ArrayList<Task> todayResult = findLogic.find("today", date);
+                ArrayList<Task> overdueResult = findLogic.find("overdue", date);
+                ArrayList<String> headers = new ArrayList<String>();
+                headers.add(MSG_TODAY);
+                headers.add(MSG_OVERDUE);
+                ArrayList<ArrayList<Task>> lists = new ArrayList<ArrayList<Task>>();
+                lists.add(todayResult);
+                lists.add(overdueResult);
+                ui.display(Configuration.getInstance().getWelcomeMsg(), headers, lists);
+                break;
+            case EXIT:
+                System.exit(0);
+            case INVALID:
+                throw new Exception(EXCEPTION_INVALID_COMMAND);
+            default:
+                Error e = new Error(ERROR_UNEXPECTED);
+                CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+                throw e;
+            }
+            TaskAndConfigStorage store = TaskAndConfigStorage.getInstance();
+            store.writeToFile(TASK_LIST_FILE, list);
+        } catch (Exception e) {
+            handleError(e);
+        } catch (Error e) {
+            handleError(e);
+        }
+    }
+
+    /**
+     * Method to handle Errors
+     * 
+     * @param err
+     *            Error to be handled
+     */
+    private static void handleError(Error err) {
+        ui.display(err.getMessage());
+    }
+
+    /**
+     * Method to handle Exceptions
+     * 
+     * @param err
+     *            Exception to be handled
+     */
+    private static void handleError(Exception err) {
+        ui.display(err.getMessage());
+    }
+
+    /**
+     * Method to get a static instance of Controller object
+     * 
+     * @return A static reference of a Controller object
+     */
+    public static Controller getInstance() {
+        if (instance == null) {
+            instance = new Controller();
+        }
+        return instance;
+    }
+
+    /**
+     * Private default constructor
+     * 
+     */
+    private Controller() {
+        TASK_LIST_FILE = Configuration.getInstance().getDefaultFileName();
+        list = TaskList.getInstance();
+        crudLogic = OPLogic.getInstance();
+        findLogic = new SearchLogic();
+        history = new PastHistory();
+        undo = new Undo();
+        TaskAndConfigStorage store = TaskAndConfigStorage.getInstance();
+        list.addAll(store.readFromFile(TASK_LIST_FILE));
+        ui = new UIFacade();
+
+        crudLogic.addObserver(history);
+        crudLogic.addObserver(undo);
+        crudLogic.addObserver(ui);
+    }
+
+    /**
+     * Method to start the UI
+     * 
+     * @param primaryStage
+     *            Window of the application
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering the UI
+     */
+    public void start(Stage primaryStage) throws IOException {
+        ui.start(primaryStage);
+        if (Configuration.getInstance().getDefaultView().equals("today")) {
+            ui.display(Configuration.getInstance().getDefaultView(),
+                    list.toArray(new ArrayList<Task>()));
+            executeCMD("today");
+        } else {
+            ui.display(Configuration.getInstance().getDefaultView(),
+                    list.toArray(new ArrayList<Task>()));
+        }
+    }
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\Controller.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\parser\ParseAttribute.java
+	 */
+
+
+package taskaler.controller.parser;
+
+import static taskaler.controller.common.*;
+import taskaler.common.util.parser.calendarToString;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+/**
+ * Handles the parsing of specific shared attributes
+ */
+public class ParseAttribute {
+    
+    /**
+     * Parses the date and translates it into a consistent syntax, "dd/MM/yyyy"
+     * 
+     * @param paramDate
+     * @return String date in correct format
+     * @throws Self-generated parse exceptions
+     */
+    public static String parseDate(String paramDate) throws Exception{
+        if(paramDate.equals(null) || paramDate.equals("")){
+            return null;
+        }
+        Calendar cal = Calendar.getInstance();
+        int currentMonth = cal.get(Calendar.MONTH);
+        int currentYear = cal.get(Calendar.YEAR);
+        if(paramDate.equalsIgnoreCase("today")){
+            return calendarToString.parseDate(cal);
+        }
+        if(paramDate.equalsIgnoreCase("tomorrow")){
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            return calendarToString.parseDate(cal);
+        }
+        if(paramDate.equalsIgnoreCase("yesterday")){
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            return calendarToString.parseDate(cal);
+        }
+        String[] dateFormat = tryDateFormats(paramDate);
+        int numOfParams = Integer.parseInt(dateFormat[NUM_OF_PARAMS_INDEX]);
+        Date date = null;
+        if(numOfParams == 0){
+            throw new Exception(EXCEPTION_INVALID_DATE);
+        }
+        else {
+            date = (new SimpleDateFormat(dateFormat[FORMAT_INDEX])).parse(paramDate);
+            cal.setTime(date);
+            if(numOfParams == 1){
+                cal.set(Calendar.MONTH, currentMonth);
+                cal.set(Calendar.YEAR, currentYear);
+            }
+            else if(numOfParams == 2){
+                cal.set(Calendar.YEAR, currentYear);
+            }
+            String dateString = calendarToString.parseDate(cal);
+            return dateString;
+        }
+    }
+    
+    /**
+     * Method to try all date formats in availableDateSyntax
+     * 
+     * @param paramDate
+     * @return String[] correct format for the date
+     */
+    private static String[] tryDateFormats(String paramDate){
+        Date date = null;
+        String[] dateFormat = null;
+        for(int i = 0; i < ParserLibrary.availableDateSyntax.size(); i++){
+            try{
+                dateFormat = ParserLibrary.availableDateSyntax.get(i);
+                SimpleDateFormat sdf = new SimpleDateFormat(dateFormat[FORMAT_INDEX]);
+                date = sdf.parse(paramDate);
+                break;
+            }
+            catch(Exception e){
+                dateFormat = new String[]{"0", null};
+            }
+        }
+        return dateFormat;
+    }
+    
+    /**
+     * Method to return today's date
+     * 
+     * @return today's date in String
+     */
+    public static String getTodayDate() {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        return df.format(Calendar.getInstance().getTime());
+    }
+    
+    /**
+     * Parses a supposed range of dates, times, and the like
+     * 
+     * @param variable 
+     * @param type
+     * @return String[] of startVariable and endVariable
+     * @throws Self-generated parse exceptions
+     */
+    public static String[] parseRange(String variable, String type) throws Exception{
+        int startIndex = 0;
+        int endIndex = 1;
+        
+        String[] startAndEnd = new String[2];
+        int dashIndex = variable.indexOf("-");
+        int fromIndex = variable.indexOf("from"); 
+        int toIndex = variable.indexOf("to");
+        if(dashIndex != INVALID_VALUE){
+            if(type.equalsIgnoreCase("date")){
+                startAndEnd[startIndex] = parseDate(variable.substring(0,dashIndex).trim());
+                startAndEnd[endIndex] = parseDate(variable.substring(dashIndex + LENGTH_OF_SYMBOL).trim());
+            } else if(type.equalsIgnoreCase("time")){
+                startAndEnd[startIndex] = parseTime(variable.substring(0,dashIndex).trim());
+                startAndEnd[endIndex] = parseTime(variable.substring(dashIndex + LENGTH_OF_SYMBOL).trim());
+            }
+        }
+        else if(fromIndex != INVALID_VALUE){
+            if(toIndex != INVALID_VALUE){
+                if(type.equalsIgnoreCase("date")){
+                    startAndEnd[startIndex] = 
+                        parseDate(variable.substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
+                    startAndEnd[endIndex] = parseDate(variable.substring(toIndex + LENGTH_OF_TO).trim());
+            
+                } else if(type.equalsIgnoreCase("time")){
+                    startAndEnd[startIndex] = 
+                            parseTime(variable.substring(fromIndex + LENGTH_OF_FROM, toIndex).trim());
+                        startAndEnd[endIndex] = parseTime(variable.substring(toIndex + LENGTH_OF_TO).trim());
+                }
+            }
+            else {
+                if(type.equalsIgnoreCase("date")){
+                    startAndEnd[startIndex] = 
+                            parseDate(variable.substring(fromIndex + LENGTH_OF_FROM).trim());
+                } else if(type.equalsIgnoreCase("time")){
+                    startAndEnd[startIndex] = 
+                        parseTime(variable.substring(fromIndex + LENGTH_OF_FROM).trim());
+                }
+            }
+        }
+        else if(toIndex != INVALID_VALUE){
+            if(type.equalsIgnoreCase("date")){
+                startAndEnd[endIndex] = parseDate(variable.substring(toIndex + LENGTH_OF_TO).trim());
+            } else if(type.equalsIgnoreCase("time")){
+                startAndEnd[endIndex] = parseTime(variable.substring(toIndex + LENGTH_OF_TO).trim());
+            }
+        }
+        else {
+            try{
+                if(type.equalsIgnoreCase("date")){
+                    startAndEnd[startIndex] = parseDate(variable);
+                } else if(type.equalsIgnoreCase("time")){
+                    startAndEnd[startIndex] = parseTime(variable);
+                }
+            }
+            catch(Exception e){
+                    throw new Exception(String.format(EXCEPTION_INVALID_RANGE, type, type, type));
+            }
+        }
+        return startAndEnd;
+    }
+    
+    /** 
+     * Parses the time and translates it to a consistent syntax, "HHmm"
+     * 
+     * @param time
+     * @return String time in correct format
+     * @throws Self-generated parse exceptions
+     */
+    public static String parseTime(String time) throws Exception{
+        SimpleDateFormat defaultSyntax = new SimpleDateFormat("HHmm");
+        SimpleDateFormat sdf = null;
+        String timeInSyntax = null;
+        Date correctTime = null;
+        if(time == null || time.equals("")){
+            return null;
+        }
+        if(time.equalsIgnoreCase("now")){
+            Calendar nowTime = Calendar.getInstance();
+            return defaultSyntax.format(nowTime.getTime());
+        }
+        for(int i = 0; i < ParserLibrary.availableTimeSyntax.size(); i++){
+            try{
+                sdf = new SimpleDateFormat(ParserLibrary.availableTimeSyntax.get(i));
+                correctTime = sdf.parse(time);
+                timeInSyntax = defaultSyntax.format(correctTime);
+                break;
+            }
+            catch(Exception e){
+                ;
+            }
+        }
+        if(timeInSyntax == null){
+            throw new Exception(EXCEPTION_INVALID_TIME);
+        }
+        return timeInSyntax;
+    }
+    
+    /**
+     * Parses the workload attribute and translates it to a consistent syntax
+     * 
+     * @param workload
+     * @return String workload in correct format
+     * @throws Self-generated parse exceptions
+     */
+    public static String parseWL(String workload) throws Exception {
+        String workloadInSyntax = ParserLibrary.availableWorkloadSyntax.get(workload);
+        if(workloadInSyntax == null){
+            throw new Exception(EXCEPTION_INVALID_WORKLOAD);
+        }
+        else {
+            return workloadInSyntax;
+        }
+    }
+    
+    /**
+     * Parses the pattern keyword and translates it to a consistent syntax
+     * 
+     * @param pattern
+     * @return String pattern in correct format
+     * @throws Self-generated parse exceptions
+     */
+    public static String parsePattern(String pattern) throws Exception {
+        String patternInSyntax = ParserLibrary.availablePatternSyntax.get(pattern);
+        if(patternInSyntax == null){
+            throw new Exception(EXCEPTION_INVALID_PATTERN);
+        }
+        else {
+            return patternInSyntax;
+        }
+    }
+    
+    /**
+     * Method to parse a date combination of month/year, specifically for goto
+     * 
+     * @param monthYear
+     * @param currentYear
+     * @return String date for goto command
+     * @throws Self-generated parse exceptions
+     */
+    public static String parseMonthYear(String monthYear, int currentYear) throws Exception {
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
+        SimpleDateFormat monthFormat2 = new SimpleDateFormat("M");
+        SimpleDateFormat yearFormat = new SimpleDateFormat("y");
+        SimpleDateFormat returnFormat = new SimpleDateFormat("M/yyyy");
+        
+        int dashIndex = monthYear.indexOf("-");
+        int slashIndex = monthYear.indexOf("/");
+        int spaceIndex = monthYear.indexOf(" ");
+        String monthField = null;
+        String yearField = null;
+        int yearInt = 0;
+        Calendar cal = Calendar.getInstance();
+        if(dashIndex != INVALID_VALUE){
+            monthField = monthYear.substring(0, dashIndex).trim();
+            yearField = monthYear.substring(dashIndex + LENGTH_OF_SYMBOL).trim();
+        } else if(slashIndex != INVALID_VALUE){
+            monthField = monthYear.substring(0, slashIndex).trim();
+            yearField = monthYear.substring(slashIndex + LENGTH_OF_SYMBOL).trim();
+        } else if(spaceIndex != INVALID_VALUE){
+            monthField = monthYear.substring(0, spaceIndex).trim();
+            yearField = monthYear.substring(spaceIndex + LENGTH_OF_SYMBOL).trim();
+        } else {
+            monthField = monthYear;
+            yearField = ""+currentYear;
+        }
+        try{
+            cal.setTime(yearFormat.parse(yearField));
+            yearInt = cal.get(Calendar.YEAR);
+        } 
+        catch(Exception e){
+            throw new Exception(EXCEPTION_INVALID_GOTO);
+        }
+        try{
+            cal.setTime(monthFormat.parse(monthField));
+            cal.set(Calendar.YEAR, yearInt);
+        }
+        catch(Exception e){
+            try{
+                cal.setTime(monthFormat2.parse(monthYear));
+                cal.set(Calendar.YEAR, yearInt);
+            }
+            catch(Exception f){
+                throw new Exception(EXCEPTION_INVALID_GOTO);
+            }
+        }
+        return returnFormat.format(cal.getTime());
+    }
+    
+    /**
+     * Method to parse boolean inputs
+     * 
+     * @param answer
+     * @return String in a consistent boolean syntax
+     * @throws Self-generated parse exceptions
+     */
+    public static String parseBool(String answer) throws Exception {
+        String booleanInSyntax = ParserLibrary.availableBooleanSyntax.get(answer);
+        if(booleanInSyntax == null){
+            throw new Exception(EXCEPTION_INVALID_BOOLEAN);
+        }
+        else {
+            return booleanInSyntax;
+        }
+    }
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\parser\ParseAttribute.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\parser\Parser.java
+	 */
+
+
+package taskaler.controller.parser;
+
+import static taskaler.controller.common.*;
+
+import java.util.Calendar;
+import java.util.HashMap;
+
+import taskaler.ui.model.CalendarPaneModel;
+import taskaler.ui.model.IModel;
+import taskaler.ui.model.TaskPaneModel;
+
+/**
+ * Class to handle the parsing of user commands
+ */
+public class Parser {
+    // Local Variables
+    private static String currentState;
+    private static String currentTaskID;
+    private static String currentMonth;
+    private static String currentYear = null;
+    private CmdType command;
+    private String[] parameters;
+
+    
+    /**
+     * Constructor for Parser
+     * @throws Exception
+     */
+    public Parser() throws Exception {
+        ;
+    }
+
+    /**
+     * Method to retrieve the command type
+     * 
+     * @return CmdType
+     */
+    public CmdType getCommand() {
+        return command;
+    }
+
+    /**
+     * Method to retrieve parameters
+     * 
+     * @return String[] array of parameters
+     */
+    public String[] getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Public function to parse the command string
+     * 
+     * @param commandString
+     */
+    public void parseCMD(String commandString,
+            HashMap<String, String> stateVariables) throws Exception {
+        String CMD = getFirstWord(commandString);
+        command = determineCMD_TYPE(CMD);
+        currentState = stateVariables.get(IModel.VIEW_ATTRIBUTE);
+        currentTaskID = stateVariables.get(TaskPaneModel.TASK_ID_ATTRIBUTE);
+        currentMonth = stateVariables
+                .get(CalendarPaneModel.CURRENT_MONTH_ATTRIBUTE);
+        currentYear = stateVariables
+                .get(CalendarPaneModel.CURRENT_YEAR_ATTRIBUTE);
+        parameters = getParams(command, commandString);
+    }
+
+    /**
+     * Method to differentiate between CmdType(s) when given the user command
+     * 
+     * @param command
+     * @return CmdType command type
+     */
+    private CmdType determineCMD_TYPE(String command) {
+        CmdType commandType = ParserLibrary.commandList.get(command
+                .toLowerCase());
+        if (commandType == null) {
+            return CmdType.INVALID;
+        } else {
+            return commandType;
+        }
+    }
+
+    /**
+     * Method to get the parameters for each command, differentiated by CmdType
+     * 
+     * @param commandType
+     * @param commandString
+     * @return String[] parameters
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParams(CmdType commandType, String commandString)
+            throws Exception {
+        switch (commandType) {
+        case ADD:
+            return getParamADD(commandString);
+        case DELETE:
+            return getParamDELETE(commandString);
+        case EDIT:
+            return getParamEDIT(commandString);
+        case DEADLINE:
+            return getParamDEADLINE(commandString);
+        case TIME:
+            return getParamTIME(commandString);
+        case REPEAT:
+            return getParamREPEAT(commandString);
+        case WORKLOAD:
+            return getParamWL(commandString);
+        case COMPLETION_TAG:
+            return getParamCT(commandString);
+        case VIEW:
+            return getParamVIEW(commandString);
+        case FIND:
+            return getParamFIND(commandString);
+        case ARCHIVE:
+            return getParamARCH(commandString);
+        case GOTO:
+            return getParamGOTO(commandString);
+        case TODAY:
+            return getParamTODAY(commandString);
+        default:
+            return null;
+        }
+    }
+
+    /**
+     * Method to retrieve parameters for ADD command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for ADD command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamADD(String commandString) throws Exception {
+        int nameIndex = 0;
+        int descriptionIndex = 1;
+        int dateIndex = 2;
+        int workloadIndex = 5;
+
+        String paramString = removeFirstWord(commandString);
+        String[] paramArray = paramString.split(",");
+        String[] paramADD = new String[MAX_ADD_PARAMETERS];
+        int numOfParams = paramArray.length;
+        switch (numOfParams) {
+        case 1:
+            paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD,
+                    nameIndex, descriptionIndex);
+            break;
+        case 2:
+            paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD,
+                    nameIndex, descriptionIndex);
+            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD,
+                    dateIndex);
+            break;
+        case 3:
+            paramADD = appendNameAndDescription(paramArray[0].trim(), paramADD,
+                    nameIndex, descriptionIndex);
+            paramADD = appendDateAndTime(paramArray[1].trim(), paramADD,
+                    dateIndex);
+            paramADD = appendWorkload(paramArray[2].trim(), paramADD,
+                    workloadIndex);
+            break;
+        default:
+            throw new Exception(EXCEPTION_INVALID_ADD);
+        }
+        return paramADD;
+    }
+
+    /**
+     * Method to append the name and description parameters
+     * 
+     * @param paramString
+     * @param paramArray
+     * @return String[] paramArray after appending name and description
+     */
+    private static String[] appendNameAndDescription(String paramString,
+            String[] paramArray, int indexN, int indexD) {
+        int nameIndex = indexN;
+        int descriptionIndex = indexD;
+
+        int splitIndex = paramString.indexOf(":");
+        if (splitIndex == INVALID_VALUE) {
+            if (!paramString.isEmpty()) {
+                paramArray[nameIndex] = paramString;
+            }
+        } else {
+            String name = paramString.substring(0, splitIndex).trim();
+            String description = paramString.substring(splitIndex + 1).trim();
+            paramArray[nameIndex] = convertToNullIfEmpty(name);
+            paramArray[descriptionIndex] = convertToNullIfEmpty(description);
+        }
+        return paramArray;
+    }
+
+    /**
+     * Method to append the date and time parameters
+     * 
+     * @param paramString
+     * @param paramArray
+     * @return String[] paramArray after appending date and time
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] appendDateAndTime(String paramString,
+            String[] paramArray, int indexDT) throws Exception {
+        int dateIndex = indexDT;
+        int startTimeIndex = dateIndex + 1;
+        int endTimeIndex = dateIndex + 2;
+
+        int splitIndex = paramString.indexOf(":");
+        if (splitIndex == INVALID_VALUE) {
+            paramArray[dateIndex] = ParseAttribute.parseDate(paramString);
+        } else {
+            String date = ParseAttribute.parseDate(paramString.substring(0,
+                    splitIndex).trim());
+            String[] timeRange = ParseAttribute.parseRange(paramString
+                    .substring(splitIndex + LENGTH_OF_SYMBOL).trim(), "time");
+            paramArray[dateIndex] = date;
+            paramArray[startTimeIndex] = timeRange[0];
+            paramArray[endTimeIndex] = timeRange[1];
+        }
+        return paramArray;
+    }
+
+    /**
+     * Method to append the workload attribute parameters
+     * 
+     * @param paramString
+     * @param paramArray
+     * @return String[] paramArray after appending workload
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] appendWorkload(String paramString,
+            String[] paramArray, int indexWL) throws Exception {
+        int workloadIndex = indexWL;
+        String workload = ParseAttribute.parseWL(paramString);
+        paramArray[workloadIndex] = workload;
+        return paramArray;
+    }
+
+    /**
+     * Method to retrieve parameters for the DELETE command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for the DELETE command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamDELETE(String commandString)
+            throws Exception {
+        int taskID_index = 0;
+        String[] paramDELETE = new String[DELETE_PARAMETERS];
+        String taskID = getTaskID(commandString);
+        if (taskID.isEmpty()) {
+            if (currentTaskID != null) {
+                paramDELETE[taskID_index] = currentTaskID;
+            } else {
+                throw new Exception(EXCEPTION_INVALID_TASKID);
+            }
+        } else {
+            paramDELETE[taskID_index] = taskID;
+        }
+        return paramDELETE;
+    }
+
+    /**
+     * Method to retrieve TaskID from the user's command
+     * 
+     * @param commandString
+     * @return String TaskID
+     */
+    private static String getTaskID(String commandString) {
+        String TaskID = getFirstWord(removeFirstWord(commandString));
+        return TaskID;
+    }
+
+    /**
+     * Method to remove the command type and task id from the user's command
+     * effectively getting the parameters for the command
+     * 
+     * @param commandString
+     * @return String paramString
+     */
+    private static String removeCommandAndTaskID(String commandString) {
+        return removeFirstWord(removeFirstWord(commandString));
+    }
+
+    /**
+     * Method to retrieve parameters for EDIT command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for EDIT command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamEDIT(String commandString) throws Exception {
+        int taskIDIndex = 0;
+        int nameIndex = 1;
+        int descriptionIndex = 2;
+
+        String[] paramEDIT = new String[MAX_EDIT_PARAMETERS];
+        String paramString = removeFirstWord(commandString);
+        String[] paramArray = paramString.split("\\s+");
+        if (currentTaskID == null) {
+            if (paramArray.length > 1) {
+                paramEDIT[taskIDIndex] = getFirstWord(paramString);
+                paramEDIT = appendNameAndDescription(
+                        removeFirstWord(paramString), paramEDIT, nameIndex,
+                        descriptionIndex);
+            } else {
+                throw new Exception(EXCEPTION_INVALID_TASKID);
+            }
+        } else {
+            paramEDIT[taskIDIndex] = currentTaskID;
+            paramEDIT = appendNameAndDescription(paramString, paramEDIT,
+                    nameIndex, descriptionIndex);
+        }
+        return paramEDIT;
+    }
+
+    /**
+     * Method to retrieve parameters for DEADLINE command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for DEADLINE command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamDEADLINE(String commandString)
+            throws Exception {
+        int taskID_index = 0;
+        int date_index = 1;
+        String[] paramArray = removeFirstWord(commandString).split("\\s+");
+        String date = removeCommandAndTaskID(commandString);
+        String[] paramDEADLINE = new String[DEADLINE_PARAMETERS];
+        if (paramArray.length == 1) {
+            if (currentTaskID != null) {
+                paramDEADLINE[taskID_index] = currentTaskID;
+                date = removeFirstWord(commandString);
+            } else {
+                throw new Exception(EXCEPTION_INVALID_TASKID);
+            }
+        } else if (paramArray.length == 2) {
+            paramDEADLINE[taskID_index] = getTaskID(commandString);
+        } else {
+            throw new Exception(EXCEPTION_INVALID_DATE);
+        }
+        String dateInFormat = ParseAttribute.parseDate(date);
+        paramDEADLINE[date_index] = dateInFormat;
+        return paramDEADLINE;
+    }
+
+    /**
+     * Method to return the parameters for REPEAT command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for REPEAT command
+     * @throws Invalid date/time/pattern syntax exception
+     */
+    private static String[] getParamREPEAT(String commandString)
+            throws Exception {
+        String[] paramREPEAT = new String[MAX_REPEAT_PARAMETERS];
+        String paramString = removeFirstWord(commandString);
+        int splitIndex = paramString.indexOf(",");
+        String IDAndPatternField = "";
+        String dateField = "";
+        if (splitIndex != INVALID_VALUE) {
+            IDAndPatternField = paramString.substring(0, splitIndex).trim();
+            dateField = paramString.substring(splitIndex + 1).trim();
+            if (!dateField.isEmpty()) {
+                paramREPEAT = appendStartAndEndDate(dateField, paramREPEAT);
+            }
+        } else {
+            IDAndPatternField = paramString.trim();
+        }
+        paramREPEAT = appendIDAndPattern(IDAndPatternField, paramREPEAT);
+        return paramREPEAT;
+    }
+
+    /**
+     * Parses and appends the taskID and pattern parameters, for getParamREPEAT
+     * 
+     * @param field
+     * @param paramArray
+     * @return String[] paramArray after appending ID and pattern
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] appendIDAndPattern(String IDAndPatternfield,
+            String[] paramArray) throws Exception {
+        int taskIDIndex = 0;
+        int patternIndex = 1;
+
+        String[] fieldSplit = IDAndPatternfield.split("\\s+");
+        if (fieldSplit.length == 1) {
+            if (currentTaskID != null) {
+                paramArray[taskIDIndex] = currentTaskID;
+                paramArray[patternIndex] = ParseAttribute
+                        .parsePattern(IDAndPatternfield);
+            } else {
+                throw new Exception(EXCEPTION_INVALID_TASKID);
+            }
+        } else if (fieldSplit.length == 2) {
+            paramArray[taskIDIndex] = getFirstWord(IDAndPatternfield);
+            paramArray[patternIndex] = ParseAttribute
+                    .parsePattern(removeFirstWord(IDAndPatternfield));
+        } else {
+            throw new Exception(EXCEPTION_INVALID_TASKID);
+        }
+        return paramArray;
+    }
+
+    /**
+     * Parses and appends the start and end date parameter(s) to the array, for
+     * getParamREPEAT
+     * 
+     * @param dateField
+     * @param paramArray
+     * @return String[] paramArray after appending start and end date
+     * @throws Invalid start-to-endDate/date syntax exception
+     */
+    private static String[] appendStartAndEndDate(String dateField,
+            String[] paramArray) throws Exception {
+        int startDateIndex = 2;
+        int endDateIndex = 3;
+
+        String[] startAndEndDate = ParseAttribute.parseRange(dateField, "date");
+        paramArray[startDateIndex] = startAndEndDate[0];
+        paramArray[endDateIndex] = startAndEndDate[1];
+
+        return paramArray;
+    }
+
+    /**
+     * Method to retrieve parameters for TIME command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for the TIME command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamTIME(String commandString) throws Exception {
+        int taskIDIndex = 0;
+        int startTimeIndex = 1;
+        int endTimeIndex = 2;
+
+        String[] paramTIME = new String[TIME_PARAMETERS];
+        String[] time = null;
+        String paramString = removeFirstWord(commandString);
+        if (currentTaskID != null) {
+            time = ParseAttribute.parseRange(paramString, "time");
+            paramTIME[taskIDIndex] = currentTaskID;
+            paramTIME[startTimeIndex] = time[0];
+            paramTIME[endTimeIndex] = time[1];
+        } else {
+            time = ParseAttribute.parseRange(removeFirstWord(paramString),
+                    "time");
+            paramTIME[taskIDIndex] = getFirstWord(paramString);
+            paramTIME[startTimeIndex] = time[0];
+            paramTIME[endTimeIndex] = time[1];
+        }
+        return paramTIME;
+    }
+
+    /**
+     * Method to retrieve parameters for WORKLOAD command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for WORKLOAD command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamWL(String commandString) throws Exception {
+        int taskIDIndex = 0;
+        int workloadIndex = 1;
+
+        String paramString = removeFirstWord(commandString);
+        String[] paramWL = new String[WORKLOAD_PARAMETERS];
+        if (currentTaskID != null) {
+            paramWL[taskIDIndex] = currentTaskID;
+            paramWL[workloadIndex] = ParseAttribute.parseWL(paramString);
+        } else {
+            paramWL[taskIDIndex] = getFirstWord(paramString);
+            paramWL[workloadIndex] = ParseAttribute
+                    .parseWL(removeFirstWord(paramString));
+        }
+        return paramWL;
+    }
+
+    /**
+     * Method to retrieve parameters for COMPLETION_TAG commmand
+     * 
+     * @param commandString
+     * @return String[] parameters for COMPLETION_TAG command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamCT(String commandString) throws Exception {
+        int taskIDIndex = 0;
+        String[] paramWL = new String[COMPLETION_TAG_PARAMETERS];
+        String paramString = removeFirstWord(commandString);
+        if (paramString.isEmpty()) {
+            if (currentTaskID != null) {
+                paramWL[taskIDIndex] = currentTaskID;
+            } else {
+                throw new Exception(EXCEPTION_INVALID_TASKID);
+            }
+        } else {
+            paramWL[taskIDIndex] = getTaskID(commandString);
+        }
+        return paramWL;
+    }
+
+    /**
+     * Method to retrieve parameters for VIEW command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for VIEW command
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamVIEW(String commandString) throws Exception {
+        int viewTypeIndex = 0;
+        int viewParamIndex = 1;
+
+        String paramString = removeFirstWord(commandString);
+        String[] paramArray = new String[VIEW_PARAMETERS];
+        if (paramString.equalsIgnoreCase("l")
+                || paramString.equalsIgnoreCase("list")
+                || paramString.equalsIgnoreCase("all")) {
+            paramArray[viewTypeIndex] = "LIST";
+        } else if (paramString.equalsIgnoreCase("c")
+                || paramString.equalsIgnoreCase("cal")
+                || paramString.equalsIgnoreCase("calendar")) {
+            paramArray[viewTypeIndex] = "CALENDAR";
+        } else if (paramString.equalsIgnoreCase("undo")
+                || paramString.equalsIgnoreCase("actions")) {
+            paramArray[viewTypeIndex] = "UNDO";
+        } else {
+            int splitIndex = paramString.indexOf(":");
+            if (splitIndex != INVALID_VALUE) {
+                String viewType = paramString.substring(0, splitIndex).trim();
+                String viewParam = paramString.substring(splitIndex + 1);
+                if (viewType.equalsIgnoreCase("d")
+                        || viewType.equalsIgnoreCase("date")) {
+                    paramArray[viewTypeIndex] = "DATE";
+                    paramArray[viewParamIndex] = ParseAttribute
+                            .parseDate(viewParam);
+                } else {
+                    throw new Exception(EXCEPTION_INVALID_TASKID);
+                }
+            } else {
+                paramArray[viewTypeIndex] = "TASK";
+                paramArray[viewParamIndex] = paramString;
+            }
+        }
+        return paramArray;
+    }
+
+    /**
+     * Method for retrieving parameters for FIND command specifically
+     * Available tags are w, c and x. Absence of tags means find by keyword
+     * 
+     * @param commandString
+     * @return String[] parameters for FIND command
+     * @throws Exception
+     *             if date or workload parameter is invalid
+     */
+    private static String[] getParamFIND(String commandString) throws Exception {
+        int tagIndex = 0;
+        int toSearchIndex = 1;
+
+        String[] paramArray = new String[FIND_PARAMETERS];
+        String paramString = removeFirstWord(commandString);
+        int splitIndex = paramString.indexOf(":");
+        if (splitIndex != INVALID_VALUE) {
+            String findType = paramString.substring(0, splitIndex).trim();
+            if (findType.equalsIgnoreCase("w")
+                    || findType.equalsIgnoreCase("wl")
+                    || findType.equalsIgnoreCase("workload")) {
+                paramArray[tagIndex] = "WORKLOAD";
+                paramArray[toSearchIndex] = ParseAttribute.parseWL(paramString
+                        .substring(splitIndex + 1).trim());
+            } else if (findType.equalsIgnoreCase("c")
+                    || findType.equalsIgnoreCase("created")
+                    || findType.equalsIgnoreCase("creation")) {
+                paramArray[tagIndex] = "CREATED";
+                paramArray[toSearchIndex] = ParseAttribute
+                        .parseDate(paramString.substring(splitIndex + 1).trim());
+            } else if (findType.equalsIgnoreCase("x")
+                    || findType.equalsIgnoreCase("done")
+                    || findType.equalsIgnoreCase("completed")) {
+                paramArray[tagIndex] = "COMPLETED";
+                paramArray[toSearchIndex] = ParseAttribute
+                        .parseBool(paramString.substring(splitIndex + 1).trim());    
+            } else {
+                paramArray[tagIndex] = "KEYWORD";
+                paramArray[toSearchIndex] = paramString;
+            }
+        } else {
+            paramArray[tagIndex] = "KEYWORD";
+            paramArray[toSearchIndex] = paramString;
+        }
+        return paramArray;
+    }
+
+    /**
+     * Method to retrieve the parameters for the ARCHIVE command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for ARCHIVE command
+     * @throws Exception
+     *             if date parameter is invalid
+     */
+    private static String[] getParamARCH(String commandString) throws Exception {
+        String paramString = removeFirstWord(commandString);
+        String[] paramArray = new String[ARCHIVE_PARAMETERS];
+        if (paramString.equals("")) {
+            paramArray[0] = null;
+        } else {
+            paramArray[0] = ParseAttribute.parseDate(paramString);
+        }
+        return paramArray;
+    }
+
+    /**
+     * Method to retrieve today's date for the TODAY command
+     * 
+     * @param commandString
+     * @return String[] parameters for TODAY command
+     */
+    private static String[] getParamTODAY(String commandString) {
+        int dateIndex = 0;
+
+        String[] paramTODAY = new String[TODAY_PARAMETERS];
+        paramTODAY[dateIndex] = ParseAttribute.getTodayDate();
+        return paramTODAY;
+    }
+
+    /**
+     * Method to retrieve parameters for the GOTO command specifically
+     * 
+     * @param commandString
+     * @return String[] parameters for the GOTO command specifically
+     * @throws Self-generated parse exceptions
+     */
+    private static String[] getParamGOTO(String commandString) throws Exception {
+        int monthIndex = 0;
+
+        String[] paramGOTO = new String[GOTO_PARAMETERS];
+        String command = getFirstWord(commandString).toLowerCase();
+        String paramString = removeFirstWord(commandString).toLowerCase();
+        int theMonth;
+        int theYear;
+        if (currentMonth != null && currentYear != null) {
+            theMonth = Integer.parseInt(currentMonth);
+            theYear = Integer.parseInt(currentYear);
+        } else {
+            theMonth = Calendar.getInstance().get(Calendar.MONTH)
+                    + OFFSET_OF_MONTH;
+            theYear = Calendar.getInstance().get(Calendar.YEAR);
+        }
+        if (command.equals("next")) {
+            int nextMonth = theMonth + 1;
+            if (nextMonth == MONTH_OVERFLOW_VALUE) {
+                nextMonth = nextMonth - MONTHS_IN_A_YEAR;
+                String nextYear = "" + (theYear + 1);
+                paramGOTO[monthIndex] = nextMonth + "/" + nextYear;
+            } else {
+                paramGOTO[monthIndex] = nextMonth + "/" + theYear;
+            }
+        } else if (command.equals("back")) {
+            int prevMonth = theMonth - 1;
+            if (prevMonth == MONTH_INVALID_VALUE) {
+                prevMonth = prevMonth + MONTHS_IN_A_YEAR;
+                String prevYear = "" + (theYear - 1);
+                paramGOTO[monthIndex] = prevMonth + "/" + prevYear;
+            } else {
+                paramGOTO[monthIndex] = prevMonth + "/" + theYear;
+            }
+        } else if (command.equals("goto")) {
+            String theDateToGo = ParseAttribute.parseMonthYear(paramString,
+                    theYear);
+            paramGOTO[monthIndex] = theDateToGo;
+        }
+        return paramGOTO;
+    }
+
+    /********************************** Helper Functions *************************************/
+
+    /**
+     * Method for removing the first word(separated by a whitespace) from a
+     * string
+     * 
+     * @param line
+     * @return String remaining string
+     */
+    private static String removeFirstWord(String line) {
+        return line.replaceFirst(getFirstWord(line), "").trim();
+    }
+
+    /**
+     * Method for retrieving the first word(separated by a whitespace) from a
+     * string
+     * 
+     * @param commandString
+     * @return String first word
+     */
+    private static String getFirstWord(String commandString) {
+        String firstWord = commandString.trim().split("\\s+")[0];
+        return firstWord;
+    }
+
+    /**
+     * Returns the string itself, or null if it was an empty string
+     * 
+     * @param string
+     * @return
+     */
+    private static String convertToNullIfEmpty(String string) {
+        if (string.isEmpty()) {
+            return null;
+        } else {
+            return string;
+        }
+    }
+
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\parser\Parser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\parser\ParserLibrary.java
+	 */
+
+
+
+package taskaler.controller.parser;
+
+import static taskaler.controller.common.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+
+/**
+ * Contains the library of formats for various attributes in Taskaler
+ */
+public final class ParserLibrary {
+    
+    /**
+     * Contains the mappings of the command word to the command type
+     */
+    public static final HashMap<String, CmdType> commandList = new HashMap<String, CmdType>()
+            {{  put("add", CmdType.ADD);
+                put("put", CmdType.ADD);
+                put("delete", CmdType.DELETE);
+                put("del", CmdType.DELETE);
+                put("remove", CmdType.DELETE);
+                put("clear", CmdType.DELETE);
+                put("edit", CmdType.EDIT);
+                put("date", CmdType.DEADLINE);
+                put("deadline", CmdType.DEADLINE);
+                put("time", CmdType.TIME);
+                put("setTime", CmdType.TIME);
+                put("repeat", CmdType.REPEAT);
+                put("setRepeat", CmdType.REPEAT);
+                put("workload", CmdType.WORKLOAD);
+                put("wl", CmdType.WORKLOAD);
+                put("priority", CmdType.WORKLOAD);
+                put("completed", CmdType.COMPLETION_TAG);
+                put("done", CmdType.COMPLETION_TAG);
+                put("view", CmdType.VIEW);
+                put("find", CmdType.FIND);
+                put("search", CmdType.FIND);
+                put("arch", CmdType.ARCHIVE);
+                put("archive", CmdType.ARCHIVE);
+                put("history", CmdType.ARCHIVE);
+                put("undo", CmdType.UNDO);
+                put("next", CmdType.GOTO);
+                put("back", CmdType.GOTO);
+                put("goto", CmdType.GOTO);
+                put("today", CmdType.TODAY);
+                put("exit", CmdType.EXIT);
+            }};
+            
+    /**
+     * Returns the list of available command words (keys of the commandList)
+     * 
+     * @return String[] command words
+     */
+    public static String[] getCommands(){
+        Set<String> commandSet = commandList.keySet();
+        String[] array = new String[commandSet.size()];
+        return commandSet.toArray(array);
+    }
+    
+    /**
+     * Contains the available variations of date formats for user input, and its number of arguments 
+     */
+    public static final ArrayList<String[]> availableDateSyntax = new ArrayList<String[]>()
+            {{  add(new String[]{"3","d/M/y"});
+                add(new String[]{"3","d/MMM/y"});
+                add(new String[]{"3","d.M.y"});
+                add(new String[]{"3","d.MMM.y"});
+                add(new String[]{"3","d-M-y"});
+                add(new String[]{"3","d-MMM-y"});
+                add(new String[]{"2","d-MMM"});
+                add(new String[]{"2","d/MMM"});
+                add(new String[]{"2","d.MMM"});
+                add(new String[]{"2","d/M"});
+                add(new String[]{"2","d.M"});
+                add(new String[]{"2","d-M"});
+                add(new String[]{"1","d"});
+            }};
+            
+    /**
+     * Contains the available variations of time formats for user input
+     */
+    public static final ArrayList<String> availableTimeSyntax = new ArrayList<String>()
+            {{  add("hhmmaa");
+                add("hh:mmaa");
+                add("hh.mmaa");
+                add("hhmm aa");
+                add("hh:mm aa");
+                add("hh.mm aa");
+                add("HHmm");
+                add("HH:mm");
+                add("HH.mm");
+                add("hhaa");
+                add("hhaa");
+                add("hh aa");
+                add("HH");
+            }};
+    
+    /**
+     * Contains the available variations of time formats for user input
+     */            
+    public static final HashMap<String, String> availableWorkloadSyntax = new HashMap<String, String>()
+            {{  put("high", "3");
+                put("low", "1");
+                put("medium", "2");
+                put("med", "2");
+                put("1", "1");
+                put("2", "2");
+                put("3", "3");
+                put("0", "0");
+                put("one", "1");
+                put("two", "2");
+                put("three", "3");
+                put("zero", "0");
+                put("none", "0");
+            }};
+    
+    /**
+     * Contains the available variations of "repeat pattern" formats for user input
+     */
+    public static final HashMap<String, String> availablePatternSyntax = new HashMap<String, String>()
+            {{  put("daily", "1 DAY");
+                put("everyday", "1 DAY");
+                put("weekly", "1 WEEK");
+                put("monthly", "1 MONTH");
+                put("yearly", "1 YEAR");
+                put("annually", "1 YEAR");
+                put("fortnightly", "2 WEEK");
+                put("alternate", "2 DAY");
+                put("weekends", "WEEKEND");
+                put("weekend", "WEEKEND");
+                put("weekday", "WEEKDAY");
+                put("weekdays", "WEEKDAY");
+                put("last", "LAST");
+                put("final", "LAST");
+                put("sunday", "1 DAYOFWEEK");
+                put("monday", "2 DAYOFWEEK");
+                put("tuesday", "3 DAYOFWEEK");
+                put("wednesday", "4 DAYOFWEEK");
+                put("thursday", "5 DAYOFWEEK");
+                put("friday", "6 DAYOFWEEK");
+                put("saturday", "7 DAYOFWEEK");
+                put("sundays", "1 DAYOFWEEK");
+                put("mondays", "2 DAYOFWEEK");
+                put("tuesdays", "3 DAYOFWEEK");
+                put("wednesdays", "4 DAYOFWEEK");
+                put("thursdays", "5 DAYOFWEEK");
+                put("fridays", "6 DAYOFWEEK");
+                put("saturdays", "7 DAYOFWEEK");
+                put("sun", "1 DAYOFWEEK");
+                put("mon", "2 DAYOFWEEK");
+                put("tue", "3 DAYOFWEEK");
+                put("wed", "4 DAYOFWEEK");
+                put("thu", "5 DAYOFWEEK");
+                put("fri", "6 DAYOFWEEK");
+                put("sat", "7 DAYOFWEEK");
+            }};
+            
+    /**
+     * Contains the available variations of boolean formats for user input
+     */
+    public static final HashMap<String, String> availableBooleanSyntax = new HashMap<String, String>()
+            {{  put("true", "true");
+                put("yes", "true");
+                put("y", "true");
+                put("1", "true");
+                put("false", "false");
+                put("no", "false");
+                put("n", "false");
+                put("0", "false");
+            }};
+}
+
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\controller\parser\ParserLibrary.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\test\units\ParserTest.java
+	 */
+
+
+package taskaler.test.units;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import taskaler.controller.common.*;
+import taskaler.controller.parser.Parser;
+
+import java.util.Calendar;
+import java.util.HashMap;
+
+
+public class ParserTest {
+    private static Parser newParser;
+
+    // stateVariables represent the "current" pane of the UI, and any relevant
+    // information
+    private static HashMap<String, String> stateVariables = new HashMap<String, String>();
+
+    // function to reset newParser
+    private static void reset() throws Exception {
+        newParser = new Parser();
+        stateVariables = new HashMap<String, String>();
+    }
+
+    @Test
+    public void test_parseADD() {
+        try {
+            CmdType currentCMD;
+            String[] currentParams;
+
+            // Adding task with only name
+            reset();
+            newParser.parseCMD("add hello", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.ADD);
+            assertEquals(currentParams.length, 6);
+            assertEquals(currentParams[0], "hello");
+            assertEquals(currentParams[1], null);
+
+            // Adding task with name and description only
+            reset();
+            newParser.parseCMD("add hello:world!", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.ADD);
+            assertEquals(currentParams.length, 6);
+            assertEquals(currentParams[0], "hello");
+            assertEquals(currentParams[1], "world!");
+
+            // Adding task, with name, description, date, time and workload (All
+            // parameters)
+            reset();
+            newParser.parseCMD("add bye:world??, 09/jan:from 10am to 1030, 2",
+                    stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.ADD);
+            assertEquals(currentParams.length, 6);
+            assertEquals(currentParams[0], "bye");
+            assertEquals(currentParams[1], "world??");
+            assertEquals(currentParams[2], "09/01/2014");
+            assertEquals(currentParams[3], "1000");
+            assertEquals(currentParams[4], "1030");
+            assertEquals(currentParams[5], "2");
+
+            // Adding task, with name, description, time, and workload
+            reset();
+            newParser.parseCMD("add hello:world!!, :1430-1530, 2",
+                    stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.ADD);
+            assertEquals(currentParams.length, 6);
+            assertEquals(currentParams[0], "hello");
+            assertEquals(currentParams[1], "world!!");
+            assertEquals(currentParams[2], null);
+            assertEquals(currentParams[3], "1430");
+            assertEquals(currentParams[4], "1530");
+            assertEquals(currentParams[5], "2");
+
+            // Invalid add
+            reset();
+            newParser.parseCMD("add ", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.ADD);
+            assertEquals(currentParams.length, 6);
+            assertEquals(currentParams[0], null);
+            assertEquals(currentParams[1], null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_parseDELETE() {
+        try {
+            CmdType currentCMD;
+            String[] currentParams;
+
+            // Delete task 1
+            reset();
+            newParser.parseCMD("delete 1", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.DELETE);
+            assertEquals(currentParams.length, 1);
+            assertEquals(currentParams[0], "1");
+
+            // Test for no task ID, but is in TaskPane
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "21");
+            newParser.parseCMD("delete ", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.DELETE);
+            assertEquals(currentParams.length, 1);
+            assertEquals(currentParams[0], "21");
+
+            // Test for no task ID, and not in TaskPane
+            reset();
+            try {
+                newParser.parseCMD("delete ", stateVariables);
+                currentCMD = newParser.getCommand();
+                currentParams = newParser.getParameters();
+                assertEquals(currentCMD, CmdType.DELETE);
+                assertEquals(currentParams.length, 1);
+                assertEquals(currentParams[0], "");
+            } catch (Exception e) {
+                assertEquals(e.getMessage(), "Invalid task ID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_parseEDIT() {
+        try {
+            CmdType currentCMD;
+            String[] currentParams;
+
+            // edit task 1 with new name, and new description
+            reset();
+            newParser.parseCMD("edit 1 bye: ha", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.EDIT);
+            assertEquals(currentParams.length, 3);
+            assertEquals(currentParams[0], "1");
+            assertEquals(currentParams[1], "bye");
+            assertEquals(currentParams[2], "ha");
+
+            // edit task 2 with new description only
+            reset();
+            newParser.parseCMD("edit 2 :haha", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.EDIT);
+            assertEquals(currentParams.length, 3);
+            assertEquals(currentParams[0], "2");
+            assertEquals(currentParams[1], null);
+            assertEquals(currentParams[2], "haha");
+
+            // edit on the task pane, task 3 with new name and new description
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "3");
+            newParser.parseCMD("edit hahaha : byebye", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.EDIT);
+            assertEquals(currentParams.length, 3);
+            assertEquals(currentParams[0], "3");
+            assertEquals(currentParams[1], "hahaha");
+            assertEquals(currentParams[2], "byebye");
+
+            // edit on the task pane, task 4 with new name only
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "4");
+            newParser.parseCMD("edit ahah", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.EDIT);
+            assertEquals(currentParams.length, 3);
+            assertEquals(currentParams[0], "4");
+            assertEquals(currentParams[1], "ahah");
+            assertEquals(currentParams[2], null);
+
+            // edit without taskid but not on TaskPane
+            reset();
+            try {
+                newParser.parseCMD("edit ahah", stateVariables);
+                currentCMD = newParser.getCommand();
+                currentParams = newParser.getParameters();
+                assertEquals(currentCMD, CmdType.EDIT);
+                assertEquals(currentParams.length, 3);
+                assertEquals(currentParams[0], "ahah");
+                assertEquals(currentParams[1], "l");
+                assertEquals(currentParams[2], null);
+            } catch (Exception e) {
+                assertEquals(e.getMessage(), "Invalid task ID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_parseWORKLOAD() {
+        CmdType currentCMD;
+        String[] currentParams;
+
+        try {
+            // edit workload of task 5
+            reset();
+            newParser.parseCMD("workload 5 high", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.WORKLOAD);
+            assertEquals(currentParams[0], "5");
+            assertEquals(currentParams[1], "3");
+
+            // edit workload on the taskPane, task 6
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "6");
+            newParser.parseCMD("workload 1", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.WORKLOAD);
+            assertEquals(currentParams[0], "6");
+            assertEquals(currentParams[1], "1");
+
+            // edit without taskid, but not on TaskPane
+            try {
+                reset();
+                newParser.parseCMD("workload", stateVariables);
+                currentCMD = newParser.getCommand();
+                currentParams = newParser.getParameters();
+                assertEquals(currentCMD, CmdType.WORKLOAD);
+                assertEquals(currentParams[0], null);
+                assertEquals(currentParams[1], null);
+            } catch (Exception e) {
+                assertEquals(e.getMessage(),
+                        "Invalid workload attribute syntax, try: <1 or 2 or 3>");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_parseVIEW() {
+        CmdType currentCMD;
+        String[] currentParams;
+
+        try {
+            //view list mode
+            reset();
+            newParser.parseCMD("view l", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.VIEW);
+            assertEquals(currentParams[0], "LIST");
+            assertEquals(currentParams[1], null);
+            
+            //view calendar mode
+            reset();
+            newParser.parseCMD("view c", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.VIEW);
+            assertEquals(currentParams[0], "CALENDAR");
+            assertEquals(currentParams[1], null);
+            
+            //view specific task
+            reset();
+            newParser.parseCMD("view 23", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.VIEW);
+            assertEquals(currentParams[0], "TASK");
+            assertEquals(currentParams[1], "23");
+            
+            //view all tasks on a specific date
+            reset();
+            newParser.parseCMD("view d: 09/11", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.VIEW);
+            assertEquals(currentParams[0], "DATE");
+            assertEquals(currentParams[1], "09/11/2014");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_parseTIME() {
+        CmdType currentCMD;
+        String[] currentParams;
+
+        try {
+            // Editting time on task 11, no specification of start or end time
+            reset();
+            newParser.parseCMD("time 11 0900", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.TIME);
+            assertEquals(currentParams[0], "11");
+            assertEquals(currentParams[1], "0900");
+            assertEquals(currentParams[2], null);
+
+            // Editting time on task 12, only start time
+            reset();
+            newParser.parseCMD("time 12 from 0915", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.TIME);
+            assertEquals(currentParams[0], "12");
+            assertEquals(currentParams[1], "0915");
+            assertEquals(currentParams[2], null);
+
+            // Editting time on task 13, only end time
+            reset();
+            newParser.parseCMD("time 13 -1030", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.TIME);
+            assertEquals(currentParams[0], "13");
+            assertEquals(currentParams[1], null);
+            assertEquals(currentParams[2], "1030");
+
+            // Editting time on TaskPane, task 14, both start and end times
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "14");
+            newParser.parseCMD("time 11am-1030", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.TIME);
+            assertEquals(currentParams[0], "14");
+            assertEquals(currentParams[1], "1100");
+            assertEquals(currentParams[2], "1030");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_parseREPEAT() {
+        CmdType currentCMD;
+        String[] currentParams;
+
+        try {
+            // Test for no start and end date provided
+            reset();
+            newParser.parseCMD("repeat 11 alternate", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.REPEAT);
+            assertEquals(currentParams[0], "11");
+            assertEquals(currentParams[1], "2 DAY");
+            assertEquals(currentParams[2], null);
+            assertEquals(currentParams[3], null);
+
+            // Test for no TaskID provided, but currently in TaskPane, only
+            // startDate
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "12");
+            newParser
+                    .parseCMD("repeat weekly, from 19/10/2014", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.REPEAT);
+            assertEquals(currentParams[0], "12");
+            assertEquals(currentParams[1], "1 WEEK");
+            assertEquals(currentParams[2], "19/10/2014");
+            assertEquals(currentParams[3], null);
+
+            // Test for no TaskID provided, but currently in TaskPane, only
+            // endDate
+            reset();
+            stateVariables.put("VIEW", "TaskPane");
+            stateVariables.put("TASKID", "12");
+            newParser.parseCMD("repeat last, to 19/10/2014", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.REPEAT);
+            assertEquals(currentParams[0], "12");
+            assertEquals(currentParams[1], "LAST");
+            assertEquals(currentParams[2], null);
+            assertEquals(currentParams[3], "19/10/2014");
+
+            // Test for the full set of parameters
+            reset();
+            newParser.parseCMD("repeat 13 weekdays, 19/Oct/2014 - 21/10/14",
+                    stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.REPEAT);
+            assertEquals(currentParams[0], "13");
+            assertEquals(currentParams[1], "WEEKDAY");
+            assertEquals(currentParams[2], "19/10/2014");
+            assertEquals(currentParams[3], "21/10/2014");
+
+            // Test for no taskID but not on taskPane
+            try {
+                reset();
+                newParser.parseCMD("repeat", stateVariables);
+                currentCMD = newParser.getCommand();
+                currentParams = newParser.getParameters();
+                assertEquals(currentCMD, CmdType.WORKLOAD);
+                assertEquals(currentParams[0], null);
+                assertEquals(currentParams[1], null);
+            } catch (Exception e) {
+                assertEquals(e.getMessage(), "Invalid task ID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_parseGOTO() {
+        CmdType currentCMD;
+        String[] currentParams;
+        Calendar cal = Calendar.getInstance();
+
+        try {
+            // next command, not on calendarPane (today's date is used)
+            reset();
+            newParser.parseCMD("next", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            String correctNextMonth = (cal.get(Calendar.MONTH) + 2) + "/"
+                    + cal.get(Calendar.YEAR);
+            assertEquals(currentCMD, CmdType.GOTO);
+            assertEquals(currentParams[0], correctNextMonth);
+
+            reset();
+            // next command, on calendarPane, december 2015
+            stateVariables.put("VIEW", "CALENDARPANE");
+            stateVariables.put("CURRENTMONTH", "12");
+            stateVariables.put("CURRENTYEAR", "2015");
+            newParser.parseCMD("next", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.GOTO);
+            assertEquals(currentParams[0], "1/2016");
+
+            // back command, not on calendarPane (today's date is used)
+            reset();
+            newParser.parseCMD("back", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            String correctPrevMonth = (cal.get(Calendar.MONTH)) + "/"
+                    + cal.get(Calendar.YEAR);
+            assertEquals(currentCMD, CmdType.GOTO);
+            assertEquals(currentParams[0], correctPrevMonth);
+
+            // back command, on calendarPane, january 2015
+            reset();
+            stateVariables.put("VIEW", "CALENDARPANE");
+            stateVariables.put("CURRENTMONTH", "1");
+            stateVariables.put("CURRENTYEAR", "2015");
+            newParser.parseCMD("back", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.GOTO);
+            assertEquals(currentParams[0], "12/2014");
+
+            // goto command, month and year
+            reset();
+            newParser.parseCMD("goto sep/16", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.GOTO);
+            assertEquals(currentParams[0], "9/2016");
+
+            // goto command, month only
+            reset();
+            newParser.parseCMD("goto 10", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.GOTO);
+            assertEquals(currentParams[0], "10/2014");
+
+            // goto command, month only, different format
+            reset();
+            newParser.parseCMD("goto nov", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.GOTO);
+            assertEquals(currentParams[0], "11/2014");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // This is the boundary case for the Parser
+    @Test
+    public void test_noSuchCommand() {
+        CmdType currentCMD;
+        String[] currentParams;
+        try {
+            reset();
+            newParser.parseCMD("asdf", stateVariables);
+            currentCMD = newParser.getCommand();
+            currentParams = newParser.getParameters();
+            assertEquals(currentCMD, CmdType.INVALID);
+            assertNull(currentParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\test\units\ParserTest.java
+
+
+
+
+

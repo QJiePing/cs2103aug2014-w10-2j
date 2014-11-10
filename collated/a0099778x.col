@@ -1,0 +1,2663 @@
+//@author: a0099778x
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\archive\PastHistory.java
+	 */
+
+
+public class PastHistory implements Observer {
+	public static String HISTORY_FILE_NAME = "History_%s_%s_%s.log";
+	public static String NO_DATE_SPECIFIED = "";
+	public static String NO_HISTORY_RECORD_MESSAGE = "No history found";
+	public static String DATE_CHAR_SEPARATOR = "/";
+
+	public static int DAY_INDEX = 0;
+	public static int MONTH_INDEX = 1;
+	public static int YEAR_INDEX = 2;
+
+	/**
+	 * logHistory(String logMessage) will call storage to log the message
+	 * @param logMessage
+	 * @throws Exception
+	 */
+	public static void logHistory(String logMessage) throws Exception {
+		String fileName = fileNameGenerator(NO_DATE_SPECIFIED);
+		
+		HistoryStorage historyStore = HistoryStorage.getInstance();
+		historyStore.writeToHistory(fileName, logMessage);
+	}
+
+	/**
+	 * retrieveHistory(String retrieveDate) will call storage to read the history record
+	 * of all the operations done in the given date.
+	 * @param retrieveDate
+	 * @return
+	 */
+	public static String retrieveHistory(String retrieveDate) {
+		String fileName = fileNameGenerator(retrieveDate);
+		
+		HistoryStorage historyStore = HistoryStorage.getInstance();
+		String currentHistory = historyStore.readFromHistory(fileName);
+
+		if (currentHistory == null) {
+			return NO_HISTORY_RECORD_MESSAGE;
+		}
+
+		return currentHistory;
+	}
+
+	/**
+	 * fileNameGenerator(String date) will help to generate a new file name according to the
+	 * data required
+	 * @param date
+	 * @return return the new file Name
+	 */
+	private static String fileNameGenerator(String date) {
+		String fileName;
+		String[] fileNameDate;
+		if (date == null || date.isEmpty()) {
+			fileNameDate = calendarToString.toArray(Calendar.getInstance());
+		} else {
+			fileNameDate = date.split(DATE_CHAR_SEPARATOR);
+		}
+
+		fileName = String.format(HISTORY_FILE_NAME, fileNameDate[DAY_INDEX],
+				fileNameDate[MONTH_INDEX], fileNameDate[YEAR_INDEX]);
+
+		return fileName;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof OperationRecord<?, ?>) {
+			OperationRecord<Task, String> currentRecord = (OperationRecord<Task, String>) arg;
+
+			String message = "["
+					+ calendarToString.parseDate(Calendar.getInstance(),
+							"hh:mm:ss") + "]";
+			switch (currentRecord.getOp()) {
+			case "ADD":
+				message = message
+						+ String.format("Added new Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "DELETE":
+				message = message
+						+ String.format("Deleted Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "EDIT":
+				message = message
+						+ String.format("Modified Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "DATE":
+				message = message
+						+ String.format("Modified date of Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "COMPLETE":
+				message = message
+						+ String.format("Switched the Completion Tag of Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+
+			case "WORKLOAD":
+				message = message
+						+ String.format("Changed Workload of Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "REPEAT":
+				message = message
+						+ String.format("Set Task: %s (ID: %s) to be repeated\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "TIME":
+				message = message
+						+ String.format("Changed the Time of Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			case "UNDO":
+				message = message
+						+ String.format("Reverted Task: %s (ID: %s)\n",
+								currentRecord.getTask().getTaskName(),
+								currentRecord.getTask().getTaskID());
+				break;
+			}
+
+			try {
+				logHistory(message);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\archive\PastHistory.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\configurations\Configuration.java
+	 */
+
+public class Configuration {
+
+    private static Configuration instance = null;
+
+    private String defaultView = null;
+    private String defaultLogLevel = null;
+    private String defaultWelcomeMsg = null;
+    private String defaultRowColor = null;
+    private String defaultAltRowColor = null;
+    private String defaultToastColor = null;
+    private String defaultDoneColor = null;
+    private String defaultHeaderColor = null;
+    private String defaultFileName = null;
+    private SimpleDateFormat defaultDateFormat = null;
+    private SimpleDateFormat defaultTimeFormat = null;
+
+    // Variable to keep track of if this is first run of Taskaler. Not meant to
+    // be stored by storage
+    private static boolean isFirstRun = false;
+
+    public static final int VIEW_POISTION = 0;
+    public static final int LOG_LEVEL_POSITION = 1;
+    public static final int WECOME_MSG_POSITION = 2;
+    public static final int ROW_COLOR_POSITION = 3;
+    public static final int ALTROW_COLOR_POSITION = 4;
+    public static final int TOAST_COLOR_POSITION = 5;
+    public static final int DONE_COLOR_POSITION = 6;
+    public static final int HEADER_COLOR_POSITION = 7;
+    public static final int FILENAME_POSITION = 8;
+    public static final int DATEFORMAT_POSITION = 9;
+    public static final int TIMEFORMAT_POSITION = 10;
+    public static final int NUM_OF_ATTRIBUTE = 11;
+
+    public static String DEFAULT_VIEW = "today";
+    public static String DEFAULT_WELCOME_MSG = "Welcome to Taskaler!";
+    public static String DEFAULT_LOG_LEVEL = "all";
+    public static String DEFAULT_ROW_COLOR = "#FFFFFF";
+    public static String DEFAULT_ALTROW_COLOR = "#66CCFF";
+    public static String DEFAULT_TOAST_COLOR = "#FFFF00";
+    public static String DEFAULT_DONE_COLOR = "#FF6600";
+    public static String DEFAULT_HEADER_COLOR = "#9966CC";
+    public static String DEFAULT_FILE_NAME = "task_list";
+    public static String DEFAULT_TIME_FORMAT = "HH:mm";
+    public static String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
+
+    private static CommonLogger log = CommonLogger.getInstance();
+
+    public ArrayList<String> availableColor = null;
+
+    /**
+     * configuration class constructor
+     */
+    private Configuration() {
+        availableColor = new ArrayList<String>() {
+            {
+                add("#FFFFFF"); // white
+                add("#66CCFF"); // light blue
+                add("#FFFF00"); // yellow
+                add("#FF0000"); // red
+                add("#FF6699"); // pink
+                add("#FF6666"); // peach
+                add("#9966CC"); // bluish-purple
+                add("#FF6600"); // orange
+                add("#3366FF"); // blue
+                add("#CC0099"); // violet
+                add("#996600"); // mud brown
+                add("#909090"); // grey
+            }
+        };
+        isFirstRun = false;
+        loadConfiguration();
+    }
+
+    /**
+     * Method to get an exist instance of this object
+     * 
+     * @return An instance of this object
+     */
+    public static Configuration getInstance() {
+        if (instance == null) {
+            instance = new Configuration();
+        }
+
+        return instance;
+    }
+
+    /**
+     * loadConfiguration() will set all the configuration attributes to user
+     * default set if configuration information is valid
+     */
+    public void loadConfiguration() {
+        ArrayList<String> configInfo = TaskAndConfigStorage.getInstance()
+                .readConfigFile();
+        configInfo = checkConfigInfo(configInfo);
+
+        if (configInfo == null) {
+            defaultView = DEFAULT_VIEW;
+            defaultLogLevel = DEFAULT_LOG_LEVEL;
+            defaultWelcomeMsg = DEFAULT_WELCOME_MSG;
+            defaultRowColor = DEFAULT_ROW_COLOR;
+            defaultAltRowColor = DEFAULT_ALTROW_COLOR;
+            defaultToastColor = DEFAULT_TOAST_COLOR;
+            defaultDoneColor = DEFAULT_DONE_COLOR;
+            defaultHeaderColor = DEFAULT_HEADER_COLOR;
+            defaultFileName = DEFAULT_FILE_NAME;
+            defaultTimeFormat = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
+            defaultDateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+            storeConfigInfo();
+            isFirstRun = true;
+        } else {
+            defaultView = configInfo.get(VIEW_POISTION);
+            defaultLogLevel = configInfo.get(LOG_LEVEL_POSITION);
+            defaultWelcomeMsg = configInfo.get(WECOME_MSG_POSITION);
+            defaultRowColor = configInfo.get(ROW_COLOR_POSITION);
+            defaultAltRowColor = configInfo.get(ALTROW_COLOR_POSITION);
+            defaultToastColor = configInfo.get(TOAST_COLOR_POSITION);
+            defaultDoneColor = configInfo.get(DONE_COLOR_POSITION);
+            defaultHeaderColor = configInfo.get(HEADER_COLOR_POSITION);
+            defaultFileName = configInfo.get(FILENAME_POSITION);
+            defaultDateFormat = new SimpleDateFormat(
+                    configInfo.get(DATEFORMAT_POSITION));
+            defaultTimeFormat = new SimpleDateFormat(
+                    configInfo.get(TIMEFORMAT_POSITION));
+
+        }
+
+    }
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\configurations\Configuration.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\configurations\Configuration.java
+	 */
+
+    /**
+     * storeConfigInfo() will call the storage to store all the attribute
+     */
+    public void storeConfigInfo() {
+        ArrayList<String> configInfo = new ArrayList<String>();
+        configInfo.add(defaultView);
+        configInfo.add(defaultLogLevel);
+        configInfo.add(defaultWelcomeMsg);
+        configInfo.add(defaultRowColor);
+        configInfo.add(defaultAltRowColor);
+        configInfo.add(defaultToastColor);
+        configInfo.add(defaultDoneColor);
+        configInfo.add(defaultHeaderColor);
+        configInfo.add(defaultFileName);
+        configInfo.add(defaultDateFormat.toPattern());
+        configInfo.add(defaultTimeFormat.toPattern());
+
+        TaskAndConfigStorage.getInstance().writeConfigFile(configInfo);
+    }
+
+    /**
+     * Accessor to get default file name
+     * @return default file name
+     */
+    public String getDefaultFileName() {
+        return defaultFileName;
+    }
+
+    /**
+     * Accessor to get default log level
+     * @return default log level name
+     */
+    public String getLogLevel() {
+        return defaultLogLevel;
+    }
+
+    /**
+     * Accessor to get default welcome message
+     * @return default welcome message
+     */
+    public String getWelcomeMsg() {
+        return defaultWelcomeMsg;
+    }
+
+    /**
+     * Accessor to get default view
+     * @return default view
+     */
+    public String getDefaultView() {
+        return defaultView;
+    }
+
+    /**
+     * Accessor to get default row color
+     * @return default row color
+     */
+    public String getDefaultRowColor() {
+        return defaultRowColor;
+    }
+
+    /**
+     * Accessor to get default alternate row color
+     * @return default alternate row color
+     */
+    public String getDefaultAltRowColor() {
+        return defaultAltRowColor;
+    }
+
+    /**
+     * Accessor to get default toast color
+     * @return default alternate toast color
+     */
+    public String getDefaultToastColor() {
+        return defaultToastColor;
+    }
+
+    /**
+     * Accessor to get default color for completed task
+     * @return default color for completed task
+     */
+    public String getDefaultDoneColor() {
+        return defaultDoneColor;
+    }
+
+    /**
+     * Accessor to get default header color
+     * @return default header color
+     */
+    public String getDefaultHeaderColor() {
+        return defaultHeaderColor;
+    }
+
+    /**
+     * Accessor to get default data format
+     * @return default data format
+     */
+    public String getDateFormat() {
+        return defaultDateFormat.toPattern();
+    }
+
+    /**
+     * Accessor to get default time format
+     * @return default time format
+     */
+    public String getTimeFormat() {
+        return defaultTimeFormat.toPattern();
+    }
+
+    /**
+     * Accessor to check whether the user is running the taskaler first time
+     * @return true if user is running the taskaler first time, else false.
+     */
+    public boolean getIsFirstRun() {
+        return isFirstRun;
+    }
+
+    /**************** Mutators ************************/
+    /**
+     * Mutators to set default file name
+     * @return default default file name
+     */
+    public void setDefaultFileName(String fileName) {
+    	defaultFileName = fileName;
+    }
+
+    /**
+     * Mutator to set default log level
+     * @return default log level name
+     */
+    public void setDefaultLogLevel(String level) {
+        defaultLogLevel = level;
+    }
+
+    /**
+     * Mutator to set default welcome message
+     * @return default welcome message
+     */
+    public void setDefaultWelcomeMsg(String msg) {
+        defaultWelcomeMsg = msg;
+    }
+
+    /**
+     * Mutator to set default view
+     * @return default view
+     */
+    public void setDefaultView(String view) {
+        defaultView = view;
+    }
+
+    /**
+     * Mutator to set default row color
+     * @return default row color
+     */
+    public void setDefaultRowColor(String color) {
+        defaultRowColor = color;
+    }
+
+    /**
+     * Mutator to set default alternate row color
+     * @return default alternate row color
+     */
+    public void setDefaultAltRowColor(String color) {
+        defaultAltRowColor = color;
+    }
+
+    /**
+     * Mutator to set default toast color
+     * @return default alternate toast color
+     */
+    public void setDefaultToastColor(String color) {
+        defaultToastColor = color;
+    }
+
+    /**
+     * Mutator to set default color for completed task
+     * @return default color for completed task
+     */
+    public void setDefaultDoneColor(String color) {
+        defaultDoneColor = color;
+    }
+
+    /**
+     * Mutator to set default header color
+     * @return default header color
+     */
+    public void setDefaultHeaderColor(String color) {
+        defaultHeaderColor = color;
+    }
+
+    /**
+     * Mutator to set default data format
+     * @return default data format
+     */
+    public void setDateFormat(String dateFormat) {
+        defaultDateFormat = new SimpleDateFormat(dateFormat);
+    }
+
+    /**
+     * Mutator to set default time format
+     * @return default time format
+     */
+    public void setTimeFormat(String timeFormat) {
+        defaultTimeFormat = new SimpleDateFormat(timeFormat);
+    }
+
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\configurations\Configuration.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\data\TaskList.java
+	 */
+
+/**
+ * Singleton Class to hold the global task list
+ *
+ */
+public class TaskList implements Collection<Task> {
+
+    // Special Constants
+    public static int TAG_TASK_NOT_EXIST = -1;
+    public static int DEFAULT_TASK_ID = 0;
+    public static int DEFAULT_NUM_OF_INCOMPLETE = 0;
+    
+    public static int TAG_FLOAT_TASK = 0;
+    public static int TAG_DEADLINE_TASK = 1;
+    public static int TAG_REPEATED_TASK = 2;
+    
+    public static String DEADLINE_TASK = "deadline";
+    public static String FLOAT_TASK = "float";
+    public static String REPEATED_TASK = "repeated";
+
+    // Static class variables
+    private static TaskList instance = null;
+    private static ArrayList<DeadLineTask> deadlineTaskList = null;
+    private static ArrayList<FloatTask> floatTaskList = null;
+    private static ArrayList<RepeatedTask> repeatedTaskList = null;
+    
+    private static int numOfIncompleteTasks = common.DEFAULT_NUM_OF_INCOMPLETE;
+
+    /**
+     * Private constructor
+     * 
+     */
+    private TaskList() {
+    	deadlineTaskList = new ArrayList<DeadLineTask>();
+    	floatTaskList = new ArrayList<FloatTask>();
+    	repeatedTaskList = new ArrayList<RepeatedTask>();
+    }
+
+    /**
+     * Gets the global task list. Creates a new task list if first call.
+     * 
+     * @return Global task list
+     */
+    public static TaskList getInstance() {
+        if (instance == null) {
+            instance = new TaskList();
+        }
+
+        return instance;
+    }
+
+    @Override
+	public boolean add(Task task) {
+        if(task == null){
+            return false;
+        }
+        boolean result = false;
+        if(task instanceof DeadLineTask) {
+        	result = deadlineTaskList.add((DeadLineTask) task);
+        	Comparator<Task> c = new TaskComparator();
+        	deadlineTaskList.sort(c);
+            
+        } else if (task instanceof FloatTask) {
+        	result = floatTaskList.add((FloatTask) task);
+        	Comparator<Task> c = new TaskComparator();
+        	floatTaskList.sort(c);
+        	
+        } else if (task instanceof RepeatedTask) {
+        	result = repeatedTaskList.add((RepeatedTask) task);
+        	Comparator<Task> c = new TaskComparator();
+        	repeatedTaskList.sort(c);
+        }
+        
+        
+        return result;
+    }
+
+    @Override
+	public boolean addAll(Collection<? extends Task> collection) {
+        if(collection == null){
+            return false;
+        }
+        boolean result = false;
+        if(collection instanceof DeadLineTask) {
+        	result = deadlineTaskList.addAll((Collection<? extends DeadLineTask>) collection);
+        	Comparator<Task> c = new TaskComparator();
+        	deadlineTaskList.sort(c);
+            
+        } else if (collection instanceof FloatTask) {
+        	result = floatTaskList.addAll((Collection<? extends FloatTask>) collection);
+        	Comparator<Task> c = new TaskComparator();
+        	floatTaskList.sort(c);
+        	
+        } else if (collection instanceof RepeatedTask) {
+        	result = repeatedTaskList.addAll((Collection<? extends RepeatedTask>) collection);
+        	Comparator<Task> c = new TaskComparator();
+        	repeatedTaskList.sort(c);
+        }
+        return result;
+    }
+    
+ 
+    /**
+     * addAll(ArrayList<Object> array) will add all collections of different types of tasks
+     * into corresponding ArrayList.
+     * @param array
+     * @return
+     */
+    public boolean addAll(ArrayList<Object> array){
+        boolean result = true;
+        if(array == null){
+            result = false;
+            return result;
+        }
+        ArrayList<FloatTask> floatArr=(ArrayList<FloatTask>)array.get(TAG_FLOAT_TASK);
+        ArrayList<DeadLineTask> deadlineArr=(ArrayList<DeadLineTask>)array.get(TAG_DEADLINE_TASK);
+        ArrayList<RepeatedTask> repeatArr=(ArrayList<RepeatedTask>)array.get(TAG_REPEATED_TASK);
+        if(floatArr != null){
+            result = floatTaskList.addAll(floatArr);
+        }
+        if(deadlineArr != null){
+            result = deadlineTaskList.addAll(deadlineArr);
+        }
+        if(repeatArr != null){
+            result = repeatedTaskList.addAll(repeatArr);
+        }
+        return result;
+    }
+    
+    @Override
+	public void clear() {
+		deadlineTaskList.clear();
+		floatTaskList.clear();
+		repeatedTaskList.clear();
+	}
+    
+    @Override
+    public boolean contains(Object obj) {
+    	boolean contain = false;
+    	
+    	if(obj instanceof DeadLineTask) {
+    		contain = deadlineTaskList.contains(obj);
+        } else if (obj instanceof FloatTask) {
+        	contain = floatTaskList.contains(obj);
+        } else if (obj instanceof RepeatedTask) {
+        	contain = repeatedTaskList.contains(obj);
+        }
+    	
+		return contain;
+    }
+    
+    @Override
+    public boolean containsAll(Collection<?> collection) {
+    	boolean containAll = false;
+    	
+    	if(collection instanceof DeadLineTask) {
+    		containAll = deadlineTaskList.containsAll(collection);
+        } else if (collection instanceof FloatTask) {
+        	containAll = floatTaskList.containsAll(collection);
+        } else if (collection instanceof RepeatedTask) {
+        	containAll = repeatedTaskList.containsAll(collection);
+        }
+    	
+		return containAll;
+    }
+    
+    @Override
+    public boolean isEmpty() {
+		return deadlineTaskList.isEmpty() && floatTaskList.isEmpty()
+				&& repeatedTaskList.isEmpty();
+    }
+    
+    @Override
+    public Iterator<Task> iterator() {
+		return null;
+    }
+    
+    @Override
+    public boolean remove(Object obj) {
+    	if(obj instanceof DeadLineTask) {
+    		return deadlineTaskList.remove(obj);
+    	} else if(obj instanceof FloatTask) {
+    		return floatTaskList.remove(obj);
+    	} else {
+    		return repeatedTaskList.remove(obj);
+    	}
+    }
+    
+    
+    /**
+     * Mutator to remove an element by its index
+     * 
+     * @param index
+     *            Index of element to be removed
+     * @return returns true if operation was successful; False otherwise
+     */
+    public Task remove(int index) {
+    	if(index < floatTaskList.size()) {
+    		return floatTaskList.remove(index);
+    	} else if(index < floatTaskList.size() + deadlineTaskList.size()) {
+    		return deadlineTaskList.remove(index-floatTaskList.size());
+    	} else {
+    		return repeatedTaskList.remove(index-floatTaskList.size()-deadlineTaskList.size());
+    	}
+    }
+    
+    @Override
+    public boolean removeAll(Collection<?> collection) {
+    	if(collection instanceof DeadLineTask) {
+    		return deadlineTaskList.removeAll(collection);
+    	} else if(collection instanceof FloatTask) {
+    		return floatTaskList.removeAll(collection);
+    	} else {
+    		return repeatedTaskList.removeAll(collection);
+    	}
+    }
+    
+    @Override
+    public boolean retainAll(Collection<?> collection) {
+    	if(collection instanceof DeadLineTask) {
+    		return deadlineTaskList.retainAll(collection);
+    	} else if(collection instanceof FloatTask) {
+    		return floatTaskList.retainAll(collection);
+    	} else {
+    		return repeatedTaskList.retainAll(collection);
+    	}	
+    }
+    
+    @Override
+    public int size() {
+		return deadlineTaskList.size() + floatTaskList.size()
+				+ repeatedTaskList.size();
+    }
+    
+    @Override
+    public Task[] toArray() {
+        Task[] array = new Task[this.size()];
+        for (int i = 0; i < array.length; i++) {
+        	if(i < floatTaskList.size()) {
+        		array[i] = floatTaskList.get(i);
+        	} else if(i < floatTaskList.size() + deadlineTaskList.size()) {
+        		array[i] = deadlineTaskList.get(i - floatTaskList.size());
+        	} else {
+        		array[i] = repeatedTaskList.get(i-floatTaskList.size()-deadlineTaskList.size());
+        	}
+        }
+        return array;
+    }
+    
+	@Override
+    public <T> T[] toArray(T[] collection) {
+        for (int i = 0; i < collection.length; i++) {
+            if(i < floatTaskList.size()) {
+            	collection[i] = (T) floatTaskList.get(i);
+        	} else if(i < floatTaskList.size() + deadlineTaskList.size()) {
+        		collection[i] = (T) deadlineTaskList.get(i - floatTaskList.size());
+        	} else {
+        		collection[i] = (T) repeatedTaskList.get(i-floatTaskList.size()-deadlineTaskList.size());
+        	}
+        }
+        return collection;
+    }
+    
+	/**
+	 * Accessor to obtain all the tasks in TaskList
+	 * @param collection
+	 * @return return ArrayList<Task> that contains all the tasks in TaskList
+	 */
+	public ArrayList<Task> toArray(ArrayList<Task> collection) {
+        for (int i = 0; i < this.size(); i++) {
+            collection.add(this.get(i).clone());
+        }
+        return collection;
+    }
+	
+	/**
+	 * Accessor to obtain all the deadline tasks in TaskList
+	 * @return return ArrayList<DeadLineTask> contains all the deadline tasks
+	 */
+    public ArrayList<DeadLineTask> deadlineToArray() {
+    	ArrayList<DeadLineTask> collection = new ArrayList<DeadLineTask>();
+        for (int i = 0; i < deadlineTaskList.size(); i++) {
+            collection.add(deadlineTaskList.get(i).clone());
+        }
+        return collection;
+    }
+    
+    
+    /**
+	 * Accessor to obtain all the float tasks in TaskList
+	 * @return return ArrayList<FloatTask> contains all the float tasks
+	 */
+    public ArrayList<FloatTask> floatToArray() {
+    	ArrayList<FloatTask> collection = new ArrayList<FloatTask>();
+        for (int i = 0; i < floatTaskList.size(); i++) {
+            collection.add(floatTaskList.get(i).clone());
+        }
+        return collection;
+    }
+    
+    /**
+	 * Accessor to obtain all the repeated tasks in TaskList
+	 * @return return ArrayList<RepeatedtTask> contains all the repeated tasks
+	 */
+    public ArrayList<RepeatedTask> repeatedToArray() {
+    	ArrayList<RepeatedTask> collection = new ArrayList<RepeatedTask>();
+        for (int i = 0; i < repeatedTaskList.size(); i++) {
+            collection.add(repeatedTaskList.get(i).clone());
+        }
+        return collection;
+    }
+    
+    /**
+     * Retrieves the task specified by the index
+     * 
+     * @param i
+     *            The index of the task
+     * @return The task at the index
+     */
+    public Task get(int i) {
+    	if(i < floatTaskList.size()) {
+    		return floatTaskList.get(i);
+    	} else if(i < floatTaskList.size() + deadlineTaskList.size()) {
+    		return deadlineTaskList.get(i - floatTaskList.size());
+    	} else {
+    		return repeatedTaskList.get(i-floatTaskList.size()-deadlineTaskList.size());
+    	}
+    }
+    
+    
+    /**
+     * 
+     * maxTaskID() is to calculate max available task ID in the TaskList
+     * 
+     * @return max available task ID
+     */
+    public int maxTaskID() {
+    	int maxID = DEFAULT_TASK_ID;
+    	
+    	if(!deadlineTaskList.isEmpty()) {
+    		String maxDeadlineTaskID = deadlineTaskList.get(deadlineTaskList.size()-1).getTaskID();
+    		maxID = Math.max(maxID, Integer.parseInt(maxDeadlineTaskID));
+    	}
+    	
+    	if(!floatTaskList.isEmpty()) {
+    		String maxFloatTaskID = floatTaskList.get(floatTaskList.size()-1).getTaskID();
+    		maxID = Math.max(maxID, Integer.parseInt(maxFloatTaskID));
+    	}
+    	
+    	if(!repeatedTaskList.isEmpty()) {
+    		String maxRepeatedTaskID = repeatedTaskList.get(repeatedTaskList.size()-1).getTaskID();
+    		maxID = Math.max(maxID, Integer.parseInt(maxRepeatedTaskID));
+    	}
+    	
+    	return maxID;
+    	
+    }
+    
+    /**
+     * Accessor to obtain number of incomplete tasks
+     * @return returns number of incomplete tasks
+     */
+    public int getNumOfIncomplete() {
+    	if(numOfIncompleteTasks == common.DEFAULT_NUM_OF_INCOMPLETE) {
+    		if(this != null && this.size() != 0) {
+				for (int i = 0; i < this.size(); i++) {
+					if (!this.get(i).getTaskStatus()) {
+						numOfIncompleteTasks++;
+					}
+				}
+    		}
+    	}
+    	
+    	return numOfIncompleteTasks;
+    }
+    
+    /**
+     * mutator to increase the number of incomplete tasks by 1
+     */
+    public void incrementNumOfIncomplete() {
+    	numOfIncompleteTasks++;
+    }
+    
+    /**
+     * mutator to decrease the number of incomplete tasks by 1
+     */
+    public void decrementNumOfIncomplete() {
+    	if(numOfIncompleteTasks > DEFAULT_NUM_OF_INCOMPLETE) {
+    		numOfIncompleteTasks--;
+    	}
+    }
+    
+    /**
+     * mutator to set the number of incomplete tasks to 0
+     */
+    public void defaultNumOfIncomplete() {
+    	numOfIncompleteTasks = DEFAULT_NUM_OF_INCOMPLETE;
+    }
+    
+    
+
+
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\data\TaskList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\util\CommonLogger.java
+	 */
+
+public class CommonLogger {
+
+    private static Logger logger = null;
+    
+    private static CommonLogger instance = null;
+
+    private static final String FORMAT_DAY_MONTH_YEAR = "dd_MM_yyyy";
+    private static final String EXCEPTION_FILE_NAME = "Exception_%s.log";
+    private static final String storageDir=".\\taskaler\\";
+    private static final String logLevelAll = "all";
+    /**
+     * Method to log an exception to the log file. If this method fails, an
+     * error message will be thrown
+     * 
+     * @param error
+     *            The exception to be logged
+     * @param logLevel
+     *            The level of exception to be logged; Accepted log levels are
+     *            ALL, CONFIG, INFO, WARNING, SEVERE
+     */
+    public void exceptionLogger(Exception error, Level logLevel) {
+        logger.log(logLevel, error.getMessage(), error);
+    }
+    
+    /**
+     * Method to log an error to the log file. If this method fails, an
+     * error message will be thrown
+     * 
+     * @param error
+     *            The throwable to be logged
+     * @param logLevel
+     *            The level of exception to be logged; Accepted log levels are
+     *            ALL, CONFIG, INFO, WARNING, SEVERE
+     */
+    public void exceptionLogger(Error error, Level logLevel) {
+        logger.log(logLevel, error.getMessage(), error);
+    }
+
+    /**
+     * Method to set up the log file handler.
+     * 
+     * @param fileName
+     *            The filename to be associated with this log
+     * @throws IOException
+     *             Thrown if an IO error is encountered while opening file
+     * @throws SecurityException
+     *             Thrown if there is a error with an existing security manager
+     * @see FileHandler#FileHandler(String)
+     */
+    private void handler_formatterSetUp(String fileName)
+            throws IOException, SecurityException {
+        FileHandler fileHandler = new FileHandler(fileName, true);
+
+        logger.setUseParentHandlers(false);
+
+        LoggerFormatter formatter = new LoggerFormatter();
+        fileHandler.setFormatter(formatter);
+        logger.addHandler(fileHandler);
+    }
+
+    /**
+     * constructor
+     */
+    private CommonLogger() {
+    	File dir=new File(storageDir);
+		if(!dir.exists()){
+			try{
+				dir.mkdir();
+			}catch(Exception e){
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+        try {
+            logger = Logger.getLogger(CommonLogger.class.getName());
+            String fileName = fileNameGenerator(EXCEPTION_FILE_NAME);
+            handler_formatterSetUp(storageDir+fileName);
+            if(Configuration.getInstance().getLogLevel().compareToIgnoreCase(logLevelAll) == 0){
+                logger.setLevel(Level.ALL);
+            }else{
+                logger.setLevel(Level.OFF);
+            }
+            
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Method to get an exist instance of this object
+     * 
+     * @return An instance of this object
+     */
+    public static CommonLogger getInstance(){
+        if(instance == null){
+            instance = new CommonLogger();
+        }
+        
+        return instance;
+    }
+
+    /**
+	 * fileNameGenerator(String date) will help to generate a new file name
+	 * 
+	 * @param fileNameType
+	 * @return return the new file Name
+	 */
+    private static String fileNameGenerator(String fileNameType) {
+        Calendar currentDate = Calendar.getInstance();
+        String date = calendarToString.parseDate(currentDate,
+                FORMAT_DAY_MONTH_YEAR);
+
+        return String.format(fileNameType, date);
+    }
+
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\util\CommonLogger.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\util\LoggerFormatter.java
+	 */
+
+
+public class LoggerFormatter extends Formatter {
+    // this formatter code is modified from http://kodejava.org/how-do-i-create-a-custom-logger-formatter/
+    // Create a DateFormat to format the logger timestamp.
+    //
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("[dd/MM/yyyy] [hh:mm:ss]");
+    
+    private static int BUILDER_CAPACITY = 1000;
+    
+    private static String CHAR_SEPARATOR = " - ";
+    private static String CHAR_NEWLINE = "\n";
+    
+    @Override
+	public String format(LogRecord record) {
+    	
+    	StringBuilder builder = new StringBuilder(BUILDER_CAPACITY);
+        builder.append(DATE_FORMAT.format(new Date(record.getMillis()))).append(CHAR_SEPARATOR);
+        builder.append(formatMessage(record));
+        builder.append(CHAR_NEWLINE);
+        
+        return builder.toString();
+    }
+
+ 
+    @Override
+	public String getHead(Handler h) {
+        return super.getHead(h);
+    }
+ 
+    @Override
+	public String getTail(Handler h) {
+        return super.getTail(h);
+    }
+}
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\common\util\LoggerFormatter.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\common.java
+	 */
+
+/**
+ * All constants used by any logic component
+
+ */
+public class common {
+    public static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+    public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat("HHmm");
+    public static SimpleDateFormat DEFAULT_DATETIME_FORMAT = 
+            new SimpleDateFormat("dd/MM/yyyy: HHmm-HHmm");
+    
+    public static String DATE_CHAR_SEPARATOR = "/";
+    
+    public static String ADD_NO_CONTENT = "No content is added";
+    public static String EDIT_NO_CONTENT = "NO content, cannot be edited";
+    public static String TASKID_NOT_EXIST = "Task ID no exist";
+    public static String TASK_PARAMETER_DEFAULT_VALUE = "";
+    public static String TAG_TRUE = "true";
+    public static String TAG_TIME = "time";
+    public static String TAG_DATE = "date";
+    
+    public static String NOTIFY_TYPE_ADD = "ADD";
+    public static String NOTIFY_TYPE_EDIT = "EDIT";
+    public static String NOTIFY_TYPE_DELETE = "DELETE";
+    public static String NOTIFY_TYPE_UNDO = "UNDO";
+    public static String NOTIFY_TYPE_DATE = "DATE";
+    public static String NOTIFY_TYPE_TIME = "TIME";
+    public static String NOTIFY_TYPE_REPEAT = "REPEAT";
+    public static String NOTIFY_TYPE_WORKLOAD = "WORKLOAD";
+    public static String NOTIFY_TYPE_COMPLETE = "COMPLETE";
+
+    public static int TAG_TYPE_DATE = 0;
+    public static int TAG_TYPE_MONTH = 1;
+    public static int TAG_TYPE_YEAR = 2;
+    public static int TAG_TASK_NOT_EXIST = -1;
+    public static int DAYS_IN_A_WEEK = 7;
+    public static int DAYS_IN_TWO_WEEK = 14;
+    public static int OFF_SET_BY_ONE = 1;
+    public static int DAYS_OF_ALTER = 2;
+
+    public static int DEFAULT_TASK_ID = 0;
+    public static int DEFAULT_COLLECTION_ID = 1;
+    public static int DEFAULT_TASK_TYPE = 0;
+    public static int DEADLINE_TASK_TYPE = -1;
+    public static int FLOAT_TASK_TYPE = -2;
+    public static int REPEATED_TASK_TYPE = -3;
+    public static int DEFAULT_NUM_OF_INCOMPLETE = 0;
+
+    public static final int SUNDAY = 1;
+    public static final int MONDAY = 2;
+    public static final int TUESDAY = 3;
+    public static final int WEDNESDAY = 4;
+    public static final int THURSDAY = 5;
+    public static final int FRIDAY = 6;
+    public static final int SATURDAY = 7;
+    
+
+    public static boolean TASK_INITIAL_STATUS = false;
+    public static boolean TASK_COMPLETED_STATUS = true;
+    
+    
+    public enum RepeatPattern {
+        DAY, ALTER, WEEK, WEEKDAY, WEEKEND, MONTH, YEAR, 
+        SUN, MON, TUES, WED, THURS, FRI, SAT, TWO_WEEK, LAST, NONE
+    }
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\common.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\OPLogic.java
+	 */
+
+public class OPLogic extends Observable {
+
+    private static OPLogic instance = null;
+
+    /**
+     * Inaccessible default constructor
+     */
+    private OPLogic() {
+
+    }
+
+    /**
+     * Method to get an exist instance of this object
+     * 
+     * @return An instance of this object
+     */
+    public static OPLogic getInstance() {
+        if (instance == null) {
+            instance = new OPLogic();
+        }
+
+        return instance;
+    }
+    
+    /**
+     * Special method for undo feature
+     * 
+     * @param t Task to be re-added into the list
+     * @return Task that has been re-added
+     */
+    public Task addTask(Task t){
+        TaskList.getInstance().add(t);
+        
+        if(!t.getTaskStatus()) {
+        	TaskList.getInstance().incrementNumOfIncomplete();
+        }
+
+        notifyObservers(common.NOTIFY_TYPE_UNDO, t);
+        return t;
+    }
+    
+    /**
+     * Special method for undo feature
+     * 
+     * @param t Task to be deleted from the list
+     * @return Task that has been deleted
+     */
+    public Task deleteTask(Task t){
+    	int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to delete a task
+            return null;
+        }
+
+        Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
+        
+        if(!taskToBeRemoved.getTaskStatus()) {
+        	TaskList.getInstance().decrementNumOfIncomplete();
+        }
+        notifyObservers(common.NOTIFY_TYPE_UNDO, taskToBeRemoved);
+        return t;
+    }
+    
+    /**
+     * Special method for undo feature
+     * 
+     * @param t Task to be overridden in the list
+     * @return Task that has been overridden
+     */
+    public Task editTask(Task t){
+    	int taskIDIndex = SearchLogic.findTaskByID(t.getTaskID());
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to delete a task
+            return null;
+        }
+        
+        Task oldTask = TaskList.getInstance().remove(taskIDIndex);
+        TaskList.getInstance().add(t);
+        
+        
+        if(t.getTaskStatus() != oldTask.getTaskStatus()) {
+        	if(!oldTask.getTaskStatus()) {
+            	TaskList.getInstance().decrementNumOfIncomplete();
+            } else {
+                TaskList.getInstance().incrementNumOfIncomplete();
+            }
+        }
+        notifyObservers(common.NOTIFY_TYPE_UNDO, oldTask);
+        return oldTask;
+    }
+    
+
+    /**
+     * addTask(String name_ADD, String description_ADD) will add a new task with
+     * specified task name and description into taskList:ArrayList<Task>. New
+     * added task will have a unique task ID, and task status will be set to Not
+     * Done
+     * 
+     * @param name_ADD
+     * @param description_ADD
+     * @return return null if task name is null, return the newly added task
+     *         otherwise.
+     * 
+     */
+    public Task addTask(String name_ADD, String description_ADD, String date_ADD, 
+            String startTime, String endTime, String workload_ADD) {
+
+        // assume task name cannot be null
+        if (name_ADD == null) {
+            // fail to add a new task
+            return null;
+        } else {
+
+            if (description_ADD == null) {
+                // change to default value
+                description_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
+            }
+            
+            if(workload_ADD == null){
+                workload_ADD = common.TASK_PARAMETER_DEFAULT_VALUE;
+            }
+            
+            Calendar start = null;
+            Calendar end = null;
+            if(startTime != null){
+                start = setNewCalendarDate(startTime, common.TAG_TIME);
+            }
+            if(endTime != null){
+                end = setNewCalendarDate(endTime, common.TAG_TIME);
+            }
+            
+            // generate a new task ID
+            int newTaskID = generateTaskID();
+
+            Task newTask;
+            if(date_ADD == null) {
+            	//float task
+	            newTask = new FloatTask(name_ADD, Integer.toString(newTaskID),
+	                    common.TASK_INITIAL_STATUS, Calendar.getInstance(),
+	                    workload_ADD, description_ADD, start, end);
+            } else {
+            	//deadline task
+                Calendar date = setNewCalendarDate(date_ADD, common.TAG_DATE);
+				newTask = new DeadLineTask(name_ADD,
+						Integer.toString(newTaskID),
+						common.TASK_INITIAL_STATUS, Calendar.getInstance(), workload_ADD,
+						description_ADD, date, start, end);
+            }
+            
+            TaskList.getInstance().add(newTask);
+            TaskList.getInstance().incrementNumOfIncomplete();
+            notifyObservers(common.NOTIFY_TYPE_ADD, newTask);
+
+            return newTask;
+        }
+
+    }
+
+    /**
+     * 
+     * generateTaskID() will generate a unique new task ID for
+     * taskList:ArrayList<Task>
+     * 
+     * @return return new taskID
+     */
+    private int generateTaskID() {
+        int taskID = TaskList.getInstance().maxTaskID();
+
+        return taskID + common.OFF_SET_BY_ONE;
+    }
+
+    /**
+     * 
+     * Task deleteTask(String taskID_DELETE) is to delete a specified task with
+     * given ID in taskList:ArrayList<Task>.
+     * 
+     * @param taskID_DELETE
+     * @return return null if task ID not exist, otherwise, return the deleted
+     *         task
+     * 
+     */
+    public Task deleteTask(String taskID_DELETE) {
+    	
+    	int taskIDIndex = SearchLogic.findTaskByID(taskID_DELETE);
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to delete a task
+            return null;
+        }
+
+        Task taskToBeRemoved = TaskList.getInstance().remove(taskIDIndex);
+        if(!taskToBeRemoved.getTaskStatus()) {
+        	TaskList.getInstance().decrementNumOfIncomplete();
+        }
+        notifyObservers(common.NOTIFY_TYPE_DELETE, taskToBeRemoved);
+        return taskToBeRemoved;
+
+    }
+    
+    
+    /**
+     * 
+     * Task deleteAll() will remove all the tasks in taskList:ArrayList<Task>.
+     * 
+     * @return return true all the tasks is successfully deleted
+     * 
+     */
+    public boolean deleteAllTask() {
+    	TaskList.getInstance().clear();
+    	
+    	//set number of incomplete tasks to zero
+    	TaskList.getInstance().defaultNumOfIncomplete();
+    	
+    	return true;
+    }
+
+    /**
+     * 
+     * editTask(String taskID_EDIT, String name_EDIT, String description_EDIT)
+     * is to edit a existing task with given ID in taskList:ArrayList<Task> by
+     * given name and/or description
+     * 
+     * @param taskID_EDIT
+     * @param name_EDIT
+     * @param description_EDIT
+     * @return return null if task ID not exist or both name and description
+     *         given are null, edited task otherwise
+     * 
+     */
+    public Task editTask(String taskID_EDIT, String name_EDIT,
+            String description_EDIT) {
+
+        int taskIDIndex = SearchLogic.findTaskByID(taskID_EDIT);
+
+        if (isError(name_EDIT, description_EDIT, taskIDIndex)) {
+            return null;
+        }
+
+        notifyObservers(common.NOTIFY_TYPE_EDIT, TaskList.getInstance().get(taskIDIndex));
+
+        // assume name will not change to null
+        if (name_EDIT != null) {
+            TaskList.getInstance().get(taskIDIndex).changeTaskName(name_EDIT);
+        }
+
+        if (description_EDIT != null) {
+            TaskList.getInstance().get(taskIDIndex)
+                    .changeTaskDescription(description_EDIT);
+        }
+
+        return TaskList.getInstance().get(taskIDIndex);
+
+    }
+
+    /**
+     * 
+     * isError(String name_EDIT, String description_EDIT, int taskIDIndex) is to
+     * for error checking. It will check validity of all the parameters given
+     * 
+     * @param name_EDIT
+     * @param description_EDIT
+     * @param taskIDIndex
+     * @return return true if any of parameters cannot be use for editing, false
+     *         otherwise
+     * 
+     */
+    private static boolean isError(String name_EDIT, String description_EDIT,
+            int taskIDIndex) {
+
+        boolean errorFinder = false;
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            errorFinder = true; // fail to edit a task
+        } else if (name_EDIT == null && description_EDIT == null) {
+            errorFinder = true; // fail to edit a task
+        }
+
+        return errorFinder;
+    }
+
+    /**
+     * 
+     * Task editDate(String taskID, String date) is to
+     * edit a existing task with same given ID in taskList:ArrayList<Task> by
+     * given name and/or description
+     * 
+     * @param taskID
+     * @param date
+     * @return return null if given task ID not exist, edited task otherwise
+     */
+    public Task editDate(String taskID, String date) {
+        Calendar newDeadLine = setNewCalendarDate(date, common.TAG_DATE);
+        int taskIDIndex = SearchLogic.findTaskByID(taskID);
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to edit a task
+            return null;
+        }
+        
+        Task newTask = TaskList.getInstance().get(taskIDIndex);
+        
+        notifyObservers(common.NOTIFY_TYPE_DATE, newTask);
+        
+        if (taskIDIndex < TaskList.getInstance().floatToArray().size()) {
+        	//float task "zone"
+        	//float task has no date attribute
+        	//remove task from float task list and add to deadline task list
+        	Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
+        	newTask = new DeadLineTask(deletedTask.getTaskName(),
+					deletedTask.getTaskID(), common.TASK_INITIAL_STATUS,
+					deletedTask.getTaskCreationDate(), deletedTask.getTaskWorkLoad(),
+					deletedTask.getTaskDescription(), newDeadLine, 
+					deletedTask.getStartTime(), deletedTask.getEndTime());
+        	TaskList.getInstance().add(newTask);
+        	
+        } else if (taskIDIndex < TaskList.getInstance().floatToArray().size() + TaskList.getInstance().deadlineToArray().size()) {
+        	//deadline task "zone"
+        	((DeadLineTask) newTask).setDeadline(newDeadLine);
+       
+        } else {
+        	//repeated task "zone"
+        	((RepeatedTask) newTask).setEndRepeatedDate(newDeadLine);
+        }
+
+        return newTask;
+    }
+    
+    /**
+     * 
+     * setNewCalenderDate(String date) is to create a new
+     * calendar date will given day, month and year
+     * 
+     * @param day
+     * @param month
+     * @param year
+     * @return return new calendar date
+     */
+    private static Calendar setNewCalendarDate(String date, String type) {
+        Calendar newDeadLine = Calendar.getInstance();
+        try{
+        	if(type.compareToIgnoreCase(common.TAG_DATE)== 0) {
+                newDeadLine.setTime(common.DEFAULT_DATE_FORMAT.parse(date));
+        	}
+            else if(type.compareToIgnoreCase(common.TAG_TIME) == 0){
+                newDeadLine.setTime(common.DEFAULT_TIME_FORMAT.parse(date));
+            }
+        }
+        catch(Exception e){
+            ;
+        }
+        return newDeadLine;
+    }
+    
+    /**
+     * 
+     * Task editTime(String taskID, String startTime, String endTime) is to
+     * edit a existing task with same given ID in taskList:ArrayList<Task> by
+     * given start time and end time
+     * 
+     * @param taskID
+     * @param startTime
+     * @param endTime
+     * @return return null if given task ID not exist, edited task otherwise
+     */
+    
+    public Task editTime(String taskID, String startTime, String endTime){
+    	int taskIDIndex = SearchLogic.findTaskByID(taskID);
+        
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to edit a task
+            return null;
+        }
+        
+        notifyObservers(common.NOTIFY_TYPE_TIME, TaskList.getInstance().get(taskIDIndex));
+        
+        
+        //The code below can be simplified to:
+        if(startTime != null){
+            Calendar start = setNewCalendarDate(startTime, common.TAG_TIME);
+            TaskList.getInstance().get(taskIDIndex).changeStartTime(start);
+        }
+        if(endTime != null){
+            Calendar end = setNewCalendarDate(endTime, common.TAG_TIME);
+            TaskList.getInstance().get(taskIDIndex).changeEndTime(end);
+        }
+        return TaskList.getInstance().get(taskIDIndex);
+    }
+    
+    
+    
+    /**
+     * 
+     * Task setRepeat(String taskID, String pattern, String startDate, String endDate)
+     * will change any existed task to RepeatTask object with given pattern, start date
+     * and end repeated date
+     * 
+     * @param taskID
+     * @param pattern
+     * @param startDate
+     * @param endDate
+     * @return return null if given task ID not exist, edited task otherwise
+     */
+    public Task setRepeat(String taskID, String pattern, String startDate, String endDate){
+        Calendar startRepeatedDate = setNewCalendarDate(startDate, common.TAG_DATE);
+        Calendar endRepeatedDate = setNewCalendarDate(endDate, common.TAG_DATE);
+        if(endDate == null) {
+        	//default end repeted time is 1 month.
+        	endRepeatedDate.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
+        }
+        RepeatedDate repeatedDate = new RepeatedDate();
+        
+        int taskIDIndex = SearchLogic.findTaskByID(taskID);
+        
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST || repeatedDate.getPattern(pattern) == RepeatPattern.NONE) {
+            // fail to edit a task
+            return null;
+        }
+        
+        notifyObservers(common.NOTIFY_TYPE_REPEAT, TaskList.getInstance().get(taskIDIndex));
+        
+        ArrayList<Calendar> dates = repeatedDate.getRepeatDay(startRepeatedDate, endRepeatedDate, pattern);
+        
+        //remove task from float task list or deadline task list
+        Task deletedTask = TaskList.getInstance().remove(taskIDIndex);
+        
+        int collectionID = generateCollectionID();
+        
+		Task newTask = new RepeatedTask(deletedTask.getTaskName(), deletedTask.getTaskID(),
+				deletedTask.getTaskStatus(), deletedTask.getTaskCreationDate(), 
+				deletedTask.getTaskWorkLoad(), deletedTask.getTaskDescription(),
+				deletedTask.getStartTime(), deletedTask.getEndTime(), RepeatedTask.patternToEnglish(pattern), dates, endRepeatedDate, 
+				collectionID);
+		
+		TaskList.getInstance().add(newTask);
+        return newTask;
+    }
+    
+    /**
+     * 
+     * generateCollectionID() will generate a unique collection ID for
+     * new RepeatedTask object
+     * 
+     * @return return new collection ID
+     */
+	private int generateCollectionID() {
+		
+		int sizeOfRepeatedTask = TaskList.getInstance().repeatedToArray().size();
+        int collectionID = common.DEFAULT_COLLECTION_ID;
+        if(sizeOfRepeatedTask != 0) {
+        	collectionID = TaskList.getInstance().repeatedToArray().get(sizeOfRepeatedTask-1).getCollectiveID()+1;
+        }
+        
+		return collectionID;
+	}
+   
+
+	/**
+     * 
+     * Task editWorkload(String taskID, String workloadAttribute) is to change
+     * the workload attribute of a task with same given task ID in
+     * taskList:ArrayList<Task> to new workload attribute
+     * 
+     * @param taskID
+     * @param workloadAttribute
+     * @return return null if given task ID not exist, edited task otherwise
+     */
+    public Task editWorkload(String taskID, String workloadAttribute) {
+        int workloadAtt = Integer.parseInt(workloadAttribute);
+        int taskIDIndex = SearchLogic.findTaskByID(taskID);
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to edit a task
+            return null;
+        }
+
+        notifyObservers(common.NOTIFY_TYPE_WORKLOAD, TaskList.getInstance().get(taskIDIndex));
+
+        // assume workloadAtt is within the range of 1-3
+        TaskList.getInstance().get(taskIDIndex)
+                .changeTaskWorkLoad(Integer.toString(workloadAtt));
+
+        return TaskList.getInstance().get(taskIDIndex);
+    }
+
+    /**
+     * 
+     * switchTag(String taskID) will change the status of a task with given ID
+     * in taskList:ArrayList<Task> to "Done"
+     * 
+     * @param taskID
+     * @return return null if given task ID not exist, edited task otherwise
+     */
+    public Task switchTag(String taskID) {
+        int taskIDIndex = SearchLogic.findTaskByID(taskID);
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            // fail to edit a task
+            return null;
+        }
+
+        Task oldTask = TaskList.getInstance().get(taskIDIndex).clone();
+        
+        toggleStatus(taskIDIndex);
+        notifyObservers(common.NOTIFY_TYPE_COMPLETE, oldTask);
+        
+        return TaskList.getInstance().get(taskIDIndex);
+    }
+
+    /**
+     * toggleStatus(int taskIDIndex) will toggle the task status
+     * 
+     * @param taskIDIndex
+     */
+	private void toggleStatus(int taskIDIndex) {
+		
+		if(TaskList.getInstance().get(taskIDIndex).getTaskStatus()) {
+        	TaskList.getInstance().get(taskIDIndex).changeTaskStatus(common.TASK_INITIAL_STATUS);
+        	//increment number of incomplete tasks
+        	TaskList.getInstance().incrementNumOfIncomplete();
+        } else {
+        	TaskList.getInstance().get(taskIDIndex).changeTaskStatus(common.TASK_COMPLETED_STATUS);
+        	//decrement number of incomplete tasks
+        	TaskList.getInstance().decrementNumOfIncomplete();
+        }
+		
+	}
+
+	/**
+	 * notifyObservers(String type, Task task) is to notify all the Observers for
+	 * the changes made
+	 * 
+	 * @param type
+	 * @param task
+	 */
+    private void notifyObservers(String type, Task task) {
+        setChanged();
+        OperationRecord<Task, String> record = new OperationRecord<Task, String>(
+                task.clone(), type);
+        notifyObservers(record);
+    }
+
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\OPLogic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\RepeatedDate.java
+	 */
+
+public class RepeatedDate {
+	
+	public ArrayList<Calendar> repeatDays;
+	
+	public RepeatedDate() {
+		
+	}
+	
+	/**
+	 * getRepeatDay(Calendar startTime, Calendar endRepeatedTime, String pattern) is to
+	 * compute all the dates for repeated task from startTime to endRepeatedTime with
+	 * the given pattern
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @param pattern
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+    public ArrayList<Calendar> getRepeatDay(Calendar startTime, Calendar endRepeatedTime, String pattern) {
+    	repeatDays = new ArrayList<Calendar>();
+    	RepeatPattern repeatPattern = getPattern(pattern);
+    	switch(repeatPattern) {
+    	case DAY:
+    		repeatDays = computeDaily((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case SUN:
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.SUNDAY);
+    		break;
+    	case MON:
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.MONDAY);
+    		break;
+    	case TUES:
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.TUESDAY);
+    		break;
+    	case WED:
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.WEDNESDAY);
+    		break;
+    	case THURS:
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.THURSDAY);
+    		break;
+    	case FRI:
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.FRIDAY);
+    		break;
+    	case SAT:
+    		repeatDays = computeSpecifyDay((Calendar) startTime.clone(), endRepeatedTime, common.SATURDAY);
+    		break;
+    	case ALTER:
+    		repeatDays = computeAlter((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case WEEK:
+    		repeatDays = computeWeekly((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+		case TWO_WEEK:
+			repeatDays = computeTwoWeeks((Calendar) startTime.clone(),endRepeatedTime);
+			break;
+    	case WEEKDAY:
+    		repeatDays = computeWeekday((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case WEEKEND:
+    		repeatDays = computeWeekend((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case MONTH:
+    		repeatDays = computeMonthly((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case YEAR:
+    		repeatDays = computeYearly((Calendar) startTime.clone(), endRepeatedTime);
+    		break;
+    	case LAST:
+            repeatDays = computeLast((Calendar) startTime.clone(), endRepeatedTime);
+            break;
+    	}
+		return repeatDays;
+	}
+
+    
+    /**
+	 * computeSpecifyDay(Calendar startTime, Calendar endRepeatedTime, int pattern)
+	 * is to compute all the dates for repeated task with pattern: repeat on Mon
+	 * or Tues or Wed or Thur or Fri or Sat or Sun
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @param pattern
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+    private ArrayList<Calendar> computeSpecifyDay(Calendar startTime,
+			Calendar endRepeatedTime, int pattern) {
+    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		int day = newDay.get(Calendar.DAY_OF_WEEK);
+    		if (day == pattern) {
+    			repeatDays.add(newDay);
+    			startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
+    		} else {
+    			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
+    		}
+			
+    	}
+		return repeatDays;
+	}
+    
+    /**
+     * computeTwoWeeks(Calendar startTime, Calendar endRepeatedTime) is to
+     * compute all the dates for repeated task with pattern: repeat once for two weeks
+     * 
+     * @param startTime
+     * @param endRepeatedTime
+     * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+     */
+	private ArrayList<Calendar> computeTwoWeeks(Calendar startTime, Calendar endRepeatedTime) {
+    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_TWO_WEEK);
+    	}
+		return repeatDays;
+	}
+
+
+	/**
+	 * computeYearly(Calendar startTime, Calendar endRepeatedTime) is to 
+     * compute all the dates for repeated task with pattern: repeat once per year
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeYearly(Calendar startTime, Calendar endRepeatedTime) {
+    	ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.YEAR, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	/**
+	 * computeMonthly(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat once per month
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeMonthly(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	/**
+	 * computeWeekend(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat only on weekend
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeWeekend(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		int day = newDay.get(Calendar.DAY_OF_WEEK);
+    		if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) {
+    			repeatDays.add(newDay);
+    		}
+			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	/**
+	 * computeWeekday(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat on weekday
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeWeekday(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		int day = newDay.get(Calendar.DAY_OF_WEEK);
+    		if (!(day == Calendar.SATURDAY || day == Calendar.SUNDAY)) {
+    			repeatDays.add(newDay);
+    		}
+			startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	/**
+	 * computeWeekly(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat once per week
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeWeekly(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_IN_A_WEEK);
+    	}
+		return repeatDays;
+	}
+
+	
+	/**
+	 * computeAlter(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat once for two days
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeAlter(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.DAY_OF_MONTH, common.DAYS_OF_ALTER);
+    	}
+		return repeatDays;
+	}
+
+	
+	/**
+	 * computeDaily(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: repeat daily
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeDaily(Calendar startTime, Calendar endRepeatedTime) {
+		ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+    	while(startTime.compareTo(endRepeatedTime) <= 0) {
+    		Calendar newDay = (Calendar) startTime.clone();
+    		repeatDays.add(newDay);
+            startTime.add(Calendar.DAY_OF_MONTH, common.OFF_SET_BY_ONE);
+    	}
+		return repeatDays;
+	}
+
+	/**
+	 * computeLast(Calendar startTime, Calendar endRepeatedTime) is to
+	 * compute all the dates for repeated task with pattern: last day
+	 * 
+	 * @param startTime
+	 * @param endRepeatedTime
+	 * @return return ArrayList<Calendar> with all repeated dates for RepeatedTask object
+	 */
+	private ArrayList<Calendar> computeLast(Calendar startTime, Calendar endRepeatedTime) {
+	    ArrayList<Calendar> repeatDays = new ArrayList<Calendar>();
+        while(startTime.before(endRepeatedTime)) {
+            int lastDate = startTime.getActualMaximum(Calendar.DATE);
+            Calendar newDay = (Calendar) startTime.clone();
+            newDay.set(Calendar.DATE, lastDate);
+            repeatDays.add(newDay);
+            startTime.add(Calendar.MONTH, common.OFF_SET_BY_ONE);
+        }
+        return repeatDays;
+    }
+	/**
+	 * getPattern(String pattern) convert the given pattern to enum type
+	 *  
+	 * @param pattern
+	 * @return
+	 */
+	public RepeatPattern getPattern(String pattern) {
+    	pattern = pattern.toUpperCase();
+		RepeatPattern repeatPattern = RepeatPattern.NONE;
+    	if(pattern.equals("1 DAY")) {
+    		repeatPattern = RepeatPattern.DAY;
+    	} else if (pattern.equals("2 DAY")) {
+    		repeatPattern = RepeatPattern.ALTER;
+    	} else if (pattern.equals("1 WEEK")) {
+    		repeatPattern = RepeatPattern.WEEK;
+    	} else if (pattern.equals("2 WEEK")) {
+    		repeatPattern = RepeatPattern.TWO_WEEK;
+    	} else if (pattern.equals("WEEKDAY")) {
+    		repeatPattern = RepeatPattern.WEEKDAY;
+    	} else if (pattern.equals("WEEKEND")) {
+    		repeatPattern = RepeatPattern.WEEKEND;
+    	} else if (pattern.equals("1 MONTH")) {
+    		repeatPattern = RepeatPattern.MONTH;
+    	} else if (pattern.equals("1 YEAR")) {
+    		repeatPattern = RepeatPattern.YEAR;
+    	} else if (pattern.equals("1 DAYOFWEEK")) {
+        	repeatPattern = RepeatPattern.SUN;
+    	} else if (pattern.equals("2 DAYOFWEEK")) {
+        	repeatPattern = RepeatPattern.MON;
+    	} else if (pattern.equals("3 DAYOFWEEK")) {
+        	repeatPattern = RepeatPattern.TUES;
+    	} else if (pattern.equals("4 DAYOFWEEK")) {
+        	repeatPattern = RepeatPattern.WED;
+    	} else if (pattern.equals("5 DAYOFWEEK")) {
+        	repeatPattern = RepeatPattern.THURS;
+    	} else if (pattern.equals("6 DAYOFWEEK")) {
+        	repeatPattern = RepeatPattern.FRI;
+    	} else if (pattern.equals("7 DAYOFWEEK")) {
+        	repeatPattern = RepeatPattern.SAT;
+    	} else if (pattern.equals("LAST")){
+    	    repeatPattern = RepeatPattern.LAST;
+	    } else {
+    		repeatPattern = RepeatPattern.NONE;
+    	}
+    	
+		return repeatPattern;
+	}
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\RepeatedDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\SearchLogic.java
+	 */
+
+public class SearchLogic {
+	
+	/**
+     * find(String tagTypeFIND, String paramFIND) is to find all the tasks in
+     * taskList:ArrayList<Task> with same information(type and parameter) given
+     * 
+     * @param tagTypeFIND
+     * @param paramFIND
+     * @return return a list of tasks
+     */
+    public ArrayList<Task> find(String tagTypeFIND, String paramFIND) {
+
+        switch (tagTypeFIND.toUpperCase()) {
+        case "KEYWORD":
+            return findByKeyword(paramFIND);
+        case "DATE":
+            return findByDeadLine(paramFIND);
+        case "WORKLOAD":
+            return findByWorkload(paramFIND);
+        case "CREATED":
+            return findByCreation(paramFIND);
+        case "COMPLETED":
+            return findCompleted(paramFIND);
+        case "TODAY":
+            return todaySearch(paramFIND);
+        case "OVERDUE":
+            return findBeforeDate(paramFIND);
+        }
+        return null;
+    }
+
+    /**
+     * findBeforeDate() will find all the DeadLineTask(s) with due date 
+     * before paramFIND, in a taskList:ArrayList<Task>
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    private ArrayList<Task> findBeforeDate(String paramFIND) {
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+        Calendar dateToCompare = Calendar.getInstance();
+        
+        try{
+            dateToCompare.setTime(common.DEFAULT_DATE_FORMAT.parse(paramFIND));
+        } catch (Exception e){
+            ;
+        }
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+        for (int i = 0; i < listOfTask.length; i++) {
+            
+            Task targetTask = listOfTask[i];
+            if(targetTask instanceof DeadLineTask) {
+                Calendar date = ((DeadLineTask) targetTask).getDeadline();
+                if(date.before(dateToCompare)){
+                    searchResultList.add(targetTask);
+                }  
+            } 
+            
+        }
+        return searchResultList;
+    }
+    
+    /**
+     * findCompleted() will find all the completed/incomplete tasks in 
+     * taskList:ArrayList<Task> according to the paramFIND
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    private ArrayList<Task> findCompleted(String paramFIND) {
+    	boolean tag = false;
+    	
+    	if(paramFIND.compareToIgnoreCase(common.TAG_TRUE) == 0) {
+    		tag = true;
+    	}
+    	
+    	ArrayList<Task> searchResultList = new ArrayList<Task>();
+
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+		for (int i = 0; i < listOfTask.length; i++) {
+			if(listOfTask[i].getTaskStatus() == tag) {
+				searchResultList.add(listOfTask[i]);
+			}
+		}
+
+        return searchResultList;
+	}
+
+
+	/**
+     * findByCreation(String paramFIND) is to find all the tasks in 
+     * taskList:ArrayList<Task> with same creation date given
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    private ArrayList<Task> findByCreation(String paramFIND) {
+    	ArrayList<Task> searchResultList = new ArrayList<Task>();
+        String[] filter = paramFIND.split("/");
+
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+		for (int i = 0; i < listOfTask.length; i++) {
+
+			String[] creationDate = calendarToString.toArray(listOfTask[i].getTaskCreationDate());
+			if(compareDeadline(filter, creationDate)) {
+				searchResultList.add(listOfTask[i]);
+			}
+
+		}
+
+        return searchResultList;
+	}
+
+	/**
+     * 
+     * findByWorkload(String paramFIND) is to find all the tasks in
+     * taskList:ArrayList<Task> with same workload given attribute
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    public ArrayList<Task> findByWorkload(String paramFIND) {
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+
+        for (int i = 0; i < TaskList.getInstance().size(); i++) {
+            if (TaskList.getInstance().get(i).getTaskWorkLoad()
+                    .equals(paramFIND)) {
+                searchResultList.add(TaskList.getInstance().get(i));
+            }
+        }
+
+        return searchResultList;
+    }
+    
+
+
+    /**
+     * 
+     * findByDeadLine(String paramFIND) is to find all the tasks in
+     * taskList:ArrayList<Task> with same date given
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    public ArrayList<Task> findByDeadLine(String paramFIND) {
+
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+        String[] filter = paramFIND.split(common.DATE_CHAR_SEPARATOR);
+
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+		for (int i = 0; i < listOfTask.length; i++) {
+
+			Task targetTask = listOfTask[i];
+			if(checkTargetTask(filter, targetTask)) {
+				searchResultList.add(targetTask);
+			}
+
+		}
+
+        return searchResultList;
+    }
+    
+    
+    
+    /**
+     * Generate list for "Today's tasks", includes all floatTasks, deadlineTasks 
+     * which match deadline = today, and repeatTasks which have a repeatedDate as today 
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    public ArrayList<Task> todaySearch(String paramFIND) {
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+        String[] filter = paramFIND.split(common.DATE_CHAR_SEPARATOR);
+        
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+        for (int i = 0; i < listOfTask.length; i++) {
+            Task targetTask = listOfTask[i];
+            if(targetTask instanceof FloatTask) {
+                searchResultList.add(targetTask);
+            } else if(checkTargetTask(filter, targetTask)){
+                searchResultList.add(targetTask);
+            }
+        }
+        return searchResultList;
+    }
+    
+    /**
+     * 
+     * checkTargetTask(String[] filter, Task targetTask) is to find check whether a given task
+     * match the deadline in given filter
+     * 
+     * @param paramFIND
+     * @return return true if both are the same deadline; False otherwise
+     */
+    
+	private boolean checkTargetTask(String[] filter, Task targetTask) {
+		String[] date = null;
+		
+		if (targetTask instanceof FloatTask) {
+			// floating task is found via its creation date
+			date = calendarToString.toArray(((FloatTask) targetTask)
+					.getTaskCreationDate());
+			if(compareDeadline(filter, date)) {
+				return true;
+			}
+			
+		} else if (targetTask instanceof DeadLineTask) {
+			// only DeadLineTask has deadline attribute
+			date = calendarToString.toArray(((DeadLineTask) targetTask)
+					.getDeadline());
+			if(compareDeadline(filter, date)) {
+				return true;
+			}
+			
+		} else if (targetTask instanceof RepeatedTask) {
+			// only RepeatedTask have repeated date attribute
+			RepeatedTask currentRepeat = (RepeatedTask) targetTask;
+			for (Calendar repeatDate : currentRepeat.getRepeatedDate()) {
+				date = calendarToString.toArray(repeatDate);
+				if(compareDeadline(filter, date)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+    /**
+     * compareDeadline(String[] indexOfTask, Task[] listOfTask, int i, String[] date) 
+     * will compare if passed values are
+     * referring to the same deadline
+     * 
+     * @param filter
+     * @param listOfTask
+     * @param i
+     * @param date
+     * @return return true if both are the same deadline; False otherwise
+     */
+	private boolean compareDeadline(String[] deadline1, String[] deadline2) {
+		
+		if (deadline1[common.TAG_TYPE_DATE].compareToIgnoreCase(deadline2[common.TAG_TYPE_DATE]) == 0
+				&& deadline1[common.TAG_TYPE_MONTH].compareToIgnoreCase(deadline2[common.TAG_TYPE_MONTH]) == 0
+				&& deadline1[common.TAG_TYPE_YEAR].compareToIgnoreCase(deadline2[common.TAG_TYPE_YEAR]) == 0) {
+			return true;
+		}
+		
+		return false;
+	}
+
+
+    /**
+     * 
+     * findByKeyword(String paramFIND) is to find all the tasks in
+     * taskList:ArrayList<Task> with same keyword given
+     * 
+     * @param paramFIND
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    private ArrayList<Task> findByKeyword(String paramFIND) {
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+
+        for (int i = 0; i < TaskList.getInstance().size(); i++) {
+            if (TaskList.getInstance().get(i).getTaskName().contains(paramFIND)) {
+                searchResultList.add(TaskList.getInstance().get(i));
+            }
+        }
+
+        return searchResultList;
+    }
+    
+    
+    /**
+     * 
+     * findByMonthAndYear(String MonthFIND, String YearFind) is to find all the
+     * tasks in taskList:ArrayList<Task> with same month and year given
+     * 
+     * @param MonthFIND
+     * @param YearFind
+     * @return return list of Tasks (can be empty if nothing is found)
+     */
+    public ArrayList<Task> findByMonthAndYear(String monthFind, String yearFind) {
+
+        ArrayList<Task> searchResultList = new ArrayList<Task>();
+        Task[] listOfTask = TaskList.getInstance().toArray();
+
+        for (int i = 0; i < listOfTask.length; i++) {
+            Task targetTask = listOfTask[i];
+            if(checkTargetTaskMY(monthFind, yearFind, targetTask)) {
+            	searchResultList.add(targetTask);
+            }
+
+        }
+
+        return searchResultList;
+    }
+
+    
+    /**
+     * 
+     * checkTargetTaskMY(String[] filter, Task targetTask) is to find check whether a given task
+     * match the month and year of the deadline in given filter
+     * 
+     * @param paramFIND
+     * @return return true if both are the same deadline; False otherwise
+     */
+	private boolean checkTargetTaskMY(String monthFind, String yearFind, Task targetTask) {
+        String[] date = null;
+        
+		if (targetTask instanceof DeadLineTask) {
+		    // only DeadLineTask has deadline attribute
+		    date = calendarToString.toArray(((DeadLineTask) targetTask).getDeadline());
+		    if (date[common.TAG_TYPE_MONTH].compareToIgnoreCase(monthFind) == 0
+					&& date[common.TAG_TYPE_YEAR]
+							.compareToIgnoreCase(yearFind) == 0) {
+				return true;
+			}
+		    
+		} else if (targetTask instanceof RepeatedTask) {
+		    // only RepeatedTask have repeated date attribute
+		    RepeatedTask currentRepeat = (RepeatedTask) targetTask;
+		    for (Calendar repeatDate : currentRepeat.getRepeatedDate()) {
+		        date = calendarToString.toArray(repeatDate);
+		        if (date[common.TAG_TYPE_MONTH].compareToIgnoreCase(monthFind) == 0
+						&& date[common.TAG_TYPE_YEAR]
+								.compareToIgnoreCase(yearFind) == 0) {
+					return true;
+				}
+		    }
+		}
+		
+		return false;
+	}
+
+    /**
+     * 
+     * findById(string taskID) function is to find a specify task with same
+     * taksID given
+     * 
+     * @param taskID
+     * @return return a task with Task data type
+     */
+    public Task findByID(String taskID) {
+        int taskIDIndex = findTaskByID(taskID);
+
+        if (taskIDIndex == common.TAG_TASK_NOT_EXIST) {
+            return null;
+        }
+
+        return TaskList.getInstance().get(taskIDIndex);
+    }
+
+    /**
+     * 
+     * findTaskByID(String taskID) function is to find a specify task with same
+     * taksID given
+     * 
+     * @param taskID
+     * @return return task ID
+     */
+    protected static int findTaskByID(String taskID) {
+        int taskIDIndex = findTaskIndex(taskID);
+
+        return taskIDIndex;
+    }
+
+    /**
+     * 
+     * findTaskIndex(String taskID) is to find the task index in
+     * taskList:ArrayList<Task> with same taskID given
+     * 
+     * @param taskID
+     * @return return index of the task in taskList
+     */
+    private static int findTaskIndex(String taskID) {
+        int taskIDIndex = common.TAG_TASK_NOT_EXIST;
+        for (int i = 0; i < TaskList.getInstance().size(); i++) {
+            if (TaskList.getInstance().get(i).getTaskID().equals(taskID)) {
+                taskIDIndex = i;
+            }
+        }
+        return taskIDIndex;
+    }
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\logic\SearchLogic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\JiePing\workspace\CS2103T\src\taskaler\test\units\OPLogicTest.java
+	 */
+
+public class OPLogicTest {
+	
+	public static int DEFAULT_TASK_SIZE = 0;
+	public static int TASK_SIZE_ONE = 1;
+	public static int TASK_SIZE_TWO = 2;
+	public static int TASK_SIZE_THREE = 3;
+	public static int DEFAULT_NUM_INCOMPLETED = 0;
+	public static int NUM_INCOMPLETED_ONE = 1;
+	public static int NUM_INCOMPLETED_TWO = 2;
+	public static int NUM_INCOMPLETED_THREE = 3;
+	public static String TEST_FILE_NAME1 = "my_test1";
+	public static String TEST_FILE_NAME2 = "my_test2";
+	public static String TEST_FILE_NAME3 = "my_test3";
+	public static String TEST_FILE_NAME4 = "test";
+	public static String TEST_FILE_NAME5 = "t";
+	public static String TEST_DESCRIPTION1 = "my_description";
+	public static String TEST_DESCRIPTION2 = "description";
+	public static String TEST_DESCRIPTION3 = "d";
+	public static String TEST_DATE1 = "11/11/2011";
+	public static String TEST_DATE2 = "22/10/2011";
+	public static String TEST_DATE3 = "26/10/2014";
+	public static String TEST_DATE4 = "24/11/2014";
+	
+	
+	public static String TEST_TASK_ID0 = "0";
+	public static String TEST_TASK_ID1 = "1";
+	public static String TEST_TASK_ID2 = "2";
+	public static String TEST_TASK_ID3 = "3";
+	public static String TEST_TASK_ID4 = "4";
+	
+	public static String TEST_WORKLOAD0 = "0";
+	public static String TEST_WORKLOAD1 = "1";
+	public static String TEST_WORKLOAD2 = "2";
+	public static String TEST_WORKLOAD3 = "3";
+	
+	public static String TEST_PATTERN_WEEKDAY = "weekday";
+	public static String TEST_PATTERN_WEEKEND = "weekend";
+	
+	@Test
+	public void test() {
+		
+		
+
+		SearchLogic search = new SearchLogic();
+		//*********************test addTask********************//
+		Task task;
+		
+		/* This is a boundary case for add nothing */
+		task = OPLogic.getInstance().addTask(null, null, null, null, null, null);
+		assertEquals(null, task);
+		assertEquals(DEFAULT_TASK_SIZE, TaskList.getInstance().size());
+		assertEquals(DEFAULT_NUM_INCOMPLETED, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a case for adding a task with one parameter - task name*/
+		task = OPLogic.getInstance().addTask(TEST_FILE_NAME1, null, null, null, null, null);
+		assertEquals(TEST_FILE_NAME1, task.getTaskName());
+		assertEquals(task, search.findByID(task.getTaskID()));
+		assertEquals(TASK_SIZE_ONE, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_ONE, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a case for adding a task with two parameters - task name, task description*/
+		task = OPLogic.getInstance().addTask(TEST_FILE_NAME2, TEST_DESCRIPTION1, null, null, null, null);
+		assertEquals(TEST_FILE_NAME2, task.getTaskName());
+		assertEquals(TEST_DESCRIPTION1, task.getTaskDescription());
+		assertEquals(task, search.findByID(task.getTaskID()));
+		assertEquals(TASK_SIZE_TWO, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+		
+		task = OPLogic.getInstance().addTask(TEST_FILE_NAME3, TEST_DESCRIPTION1, TEST_DATE1, null, null, null);
+		assertEquals(TEST_FILE_NAME3, task.getTaskName());
+		assertEquals(TEST_DESCRIPTION1, task.getTaskDescription());
+		assertEquals(TEST_DATE1, calendarToString.parseDate(((DeadLineTask) task).getDeadline()));
+		assertEquals(task, search.findByID(task.getTaskID()));
+		assertEquals(TASK_SIZE_THREE, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_THREE, TaskList.getInstance().getNumOfIncomplete());
+		
+		//*********************test deleteTask********************//
+		
+		/* This is a boundary case for deleting not existed task */
+		String taskID = TEST_TASK_ID0;
+		task = OPLogic.getInstance().deleteTask(taskID);
+		assertEquals(null, task);
+		assertEquals(NUM_INCOMPLETED_THREE, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a boundary case for deleting not existed task */
+		taskID = TEST_TASK_ID4;
+		task = OPLogic.getInstance().deleteTask(taskID);
+		assertEquals(null, task);
+		assertEquals(NUM_INCOMPLETED_THREE, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a case for deleting successfully*/
+		taskID = TEST_TASK_ID1;
+		task = OPLogic.getInstance().deleteTask(taskID);
+		assertEquals(null, search.findByID(taskID));
+		assertEquals(TASK_SIZE_TWO, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+		
+		
+		//*********************test editTask********************//
+		/* This is a boundary case for editing not existed task */
+		taskID = TEST_TASK_ID0;
+		task = OPLogic.getInstance().editTask(taskID, TEST_FILE_NAME4, TEST_DESCRIPTION2);
+		assertEquals(null, task);
+		assertEquals(null, search.findByID(taskID));
+		assertEquals(TASK_SIZE_TWO, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a boundary case for changing both task name and description to null*/
+		taskID = TEST_TASK_ID2;
+		task = OPLogic.getInstance().editTask(taskID, null, null);
+		assertEquals(null, task);
+		assertEquals(TASK_SIZE_TWO, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a case for changing task name successfully*/
+		taskID = TEST_TASK_ID2;
+		task = OPLogic.getInstance().editTask(taskID, TEST_FILE_NAME4, null);
+		assertEquals(task.getTaskName(), TEST_FILE_NAME4);
+		assertEquals(TASK_SIZE_TWO, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a case for changing task description successfully*/
+		taskID = TEST_TASK_ID2;
+		task = OPLogic.getInstance().editTask(taskID, null, TEST_DESCRIPTION2);
+		assertEquals(task.getTaskDescription(), TEST_DESCRIPTION2);
+		assertEquals(TASK_SIZE_TWO, TaskList.getInstance().size());
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a case for changing both task name and description successfully*/
+		taskID = TEST_TASK_ID2;
+		task = OPLogic.getInstance().editTask(taskID, TEST_FILE_NAME5, TEST_DESCRIPTION3);
+		assertEquals(task.getTaskName(), TEST_FILE_NAME5);
+		assertEquals(task.getTaskDescription(), TEST_DESCRIPTION3);
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().size());
+		
+		
+		//*********************test editDate********************//
+		
+		/* This is a boundary case for changing deadline of not existed task*/
+		taskID = TEST_TASK_ID1;
+		task = OPLogic.getInstance().editDate(taskID, TEST_DATE2);
+		assertEquals(null, task);
+		
+		/* This is a case for changing deadline successfully*/
+		taskID = TEST_TASK_ID2;
+		task = OPLogic.getInstance().editDate(taskID, TEST_DATE2);
+		assertEquals(TEST_DATE2, calendarToString.parseDate(((DeadLineTask) search.findByID(taskID)).getDeadline()));
+		
+		//*********************test editWorkload********************//
+		
+		/* This is a boundary case for changing workload of not existed task*/
+		taskID = TEST_TASK_ID1;
+		task = OPLogic.getInstance().editWorkload(taskID, TEST_WORKLOAD2);
+		assertEquals(null, task);
+		
+		/* This is a case for changing workload successfully*/
+		taskID = TEST_TASK_ID2;
+		assertEquals(TEST_WORKLOAD0, search.findByID(taskID).getTaskWorkLoad());
+		task = OPLogic.getInstance().editWorkload(taskID, TEST_WORKLOAD2);
+		assertEquals(TEST_WORKLOAD2, search.findByID(taskID).getTaskWorkLoad());
+		
+		
+		//*********************test setRepeat********************//
+		Task task1 = OPLogic.getInstance().setRepeat(taskID, TEST_PATTERN_WEEKEND, TEST_DATE3, TEST_DATE4);
+		Task task2 = OPLogic.getInstance().setRepeat(TEST_TASK_ID3, TEST_PATTERN_WEEKDAY, TEST_DATE3, TEST_DATE4);
+		assertEquals(true, (task1 instanceof RepeatedTask));
+		assertEquals(true, (task2 instanceof RepeatedTask));
+	
+		//*********************test editStatus********************//
+		
+		/* This is a boundary case for changing work status of not existed task */
+		taskID = TEST_TASK_ID1;
+		task = OPLogic.getInstance().switchTag(taskID);
+		assertEquals(null, task);
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+
+		/* This is a case for changing work status successfully */
+		taskID = TEST_TASK_ID2;
+		assertEquals(false, search.findByID(taskID).getTaskStatus());
+		task = OPLogic.getInstance().switchTag(taskID);
+		assertEquals(true, search.findByID(taskID).getTaskStatus());
+		assertEquals(NUM_INCOMPLETED_ONE, TaskList.getInstance().getNumOfIncomplete());
+		
+		/* This is a case for changing work status back to incomplete successfully */
+		taskID = TEST_TASK_ID2;
+		assertEquals(true, search.findByID(taskID).getTaskStatus());
+		task = OPLogic.getInstance().switchTag(taskID);
+		assertEquals(false, search.findByID(taskID).getTaskStatus());
+		assertEquals(NUM_INCOMPLETED_TWO, TaskList.getInstance().getNumOfIncomplete());
+		
+	}
+
+}
+
+	// End of segment: C:\Users\JiePing\workspace\CS2103T\src\taskaler\test\units\OPLogicTest.java
+
+
+
+
+
