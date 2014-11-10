@@ -212,96 +212,187 @@ public class Configuration {
         TaskAndConfigStorage.getInstance().writeConfigFile(configInfo);
     }
 
-    /**************** Accessors ***********************/
+    /**
+     * Accessor to get default file name
+     * @return default file name
+     */
     public String getDefaultFileName() {
         return defaultFileName;
     }
 
+    /**
+     * Accessor to get default log level
+     * @return default log level name
+     */
     public String getLogLevel() {
         return defaultLogLevel;
     }
 
+    /**
+     * Accessor to get default welcome message
+     * @return default welcome message
+     */
     public String getWelcomeMsg() {
         return defaultWelcomeMsg;
     }
 
+    /**
+     * Accessor to get default view
+     * @return default view
+     */
     public String getDefaultView() {
         return defaultView;
     }
 
+    /**
+     * Accessor to get default row color
+     * @return default row color
+     */
     public String getDefaultRowColor() {
         return defaultRowColor;
     }
 
+    /**
+     * Accessor to get default alternate row color
+     * @return default alternate row color
+     */
     public String getDefaultAltRowColor() {
         return defaultAltRowColor;
     }
 
+    /**
+     * Accessor to get default toast color
+     * @return default alternate toast color
+     */
     public String getDefaultToastColor() {
         return defaultToastColor;
     }
 
+    /**
+     * Accessor to get default color for completed task
+     * @return default color for completed task
+     */
     public String getDefaultDoneColor() {
         return defaultDoneColor;
     }
 
+    /**
+     * Accessor to get default header color
+     * @return default header color
+     */
     public String getDefaultHeaderColor() {
         return defaultHeaderColor;
     }
 
+    /**
+     * Accessor to get default data format
+     * @return default data format
+     */
     public String getDateFormat() {
         return defaultDateFormat.toPattern();
     }
 
+    /**
+     * Accessor to get default time format
+     * @return default time format
+     */
     public String getTimeFormat() {
         return defaultTimeFormat.toPattern();
     }
 
+    /**
+     * Accessor to check whether the user is running the taskaler first time
+     * @return true if user is running the taskaler first time, else false.
+     */
     public boolean getIsFirstRun() {
         return isFirstRun;
     }
 
     /**************** Mutators ************************/
+    /**
+     * Mutators to set default file name
+     * @return default default file name
+     */
     public void setDefaultFileName(String fileName) {
     	defaultFileName = fileName;
     }
 
+    /**
+     * Mutator to set default log level
+     * @return default log level name
+     */
     public void setDefaultLogLevel(String level) {
         defaultLogLevel = level;
     }
 
+    /**
+     * Mutator to set default welcome message
+     * @return default welcome message
+     */
     public void setDefaultWelcomeMsg(String msg) {
         defaultWelcomeMsg = msg;
     }
 
+    /**
+     * Mutator to set default view
+     * @return default view
+     */
     public void setDefaultView(String view) {
         defaultView = view;
     }
 
+    /**
+     * Mutator to set default row color
+     * @return default row color
+     */
     public void setDefaultRowColor(String color) {
         defaultRowColor = color;
     }
 
+    /**
+     * Mutator to set default alternate row color
+     * @return default alternate row color
+     */
     public void setDefaultAltRowColor(String color) {
         defaultAltRowColor = color;
     }
 
+    /**
+     * Mutator to set default toast color
+     * @return default alternate toast color
+     */
     public void setDefaultToastColor(String color) {
         defaultToastColor = color;
     }
 
+    /**
+     * Mutator to set default color for completed task
+     * @return default color for completed task
+     */
     public void setDefaultDoneColor(String color) {
         defaultDoneColor = color;
     }
 
+    /**
+     * Mutator to set default header color
+     * @return default header color
+     */
     public void setDefaultHeaderColor(String color) {
         defaultHeaderColor = color;
     }
 
+    /**
+     * Mutator to set default data format
+     * @return default data format
+     */
     public void setDateFormat(String dateFormat) {
         defaultDateFormat = new SimpleDateFormat(dateFormat);
     }
 
+    /**
+     * Mutator to set default time format
+     * @return default time format
+     */
     public void setTimeFormat(String timeFormat) {
         defaultTimeFormat = new SimpleDateFormat(timeFormat);
     }

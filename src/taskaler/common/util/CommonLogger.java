@@ -71,6 +71,9 @@ public class CommonLogger {
         logger.addHandler(fileHandler);
     }
 
+    /**
+     * constructor
+     */
     private CommonLogger() {
     	File dir=new File(storageDir);
 		if(!dir.exists()){
@@ -106,6 +109,12 @@ public class CommonLogger {
         return instance;
     }
 
+    /**
+	 * fileNameGenerator(String date) will help to generate a new file name
+	 * 
+	 * @param fileNameType
+	 * @return return the new file Name
+	 */
     private static String fileNameGenerator(String fileNameType) {
         Calendar currentDate = Calendar.getInstance();
         String date = calendarToString.parseDate(currentDate,
