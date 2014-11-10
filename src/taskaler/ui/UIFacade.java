@@ -3,10 +3,7 @@
  */
 package taskaler.ui;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -29,7 +26,6 @@ import taskaler.common.configurations.Configuration;
 import taskaler.common.data.Task;
 import taskaler.common.data.TaskList;
 import taskaler.common.util.CommonLogger;
-import taskaler.storage.TaskAndConfigStorage;
 import taskaler.ui.controller.RootController;
 import taskaler.ui.controller.TutorialPaneController;
 import taskaler.ui.hook.DLLConnector;
@@ -42,13 +38,15 @@ import taskaler.ui.model.TutorialPaneModel;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-//@author A0059806W
+// @author A0059806W
 public class UIFacade extends Application implements Observer {
     // Special Constants
-    private static final String TITLE = "Taskaler";
+    private static final String TITLE_STRING = "Taskaler";
     private static final String DEFAULT_VIEW_CALENDAR = "CALENDAR";
     private static final String DEFAULT_VIEW_LIST = "LIST";
-    
+    private static final int MAX_WIDTH = 400;
+    private static final int MAX_HEIGHT = 499;
+
     // User Profile Configs
     private static String userDefaultView = DEFAULT_VIEW_CALENDAR;
 
@@ -62,56 +60,102 @@ public class UIFacade extends Application implements Observer {
     @Override
     public void start(Stage stage) {
         try {
-            
+
             userDefaultView = Configuration.getInstance().getDefaultView();
-            stage.getIcons().add(
-                    new Image(getClass().getResourceAsStream(ICON_PNG)));
-            stage.setTitle(TITLE);
-            stage.setResizable(false);
+            setupPrimaryStage(stage);
 
-            RootModel model = new RootModel();
-            model.totalFloating = TaskList.getInstance().floatToArray().size();
-            model.totalNotDone = TaskList.getInstance().getNumOfIncomplete();
-
-            rootController = new RootController(model);
-            Parent pane = rootController;
-            Scene scene = new Scene(pane, 400, 499);
-
-            stage.setScene(scene);
-            stage.sizeToScene();
-
-            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent we) {
-                    DLLConnector.isStopped.set(true);
-                }
-            });
-            
             stage.show();
             primaryStage = stage;
-            
-            if(Configuration.getInstance().getIsFirstRun()){
-                Stage tutorialStage = new Stage();
-                tutorialStage.initStyle(StageStyle.UNDECORATED);
-                TutorialPaneModel tutorialModel = new TutorialPaneModel();
-                tutorialModel.page = 0;
-                TutorialPaneController tutController = new TutorialPaneController(tutorialModel);
-                Parent secondaryParent = tutController;
-                Scene secondaryScene = new Scene(secondaryParent);
-                tutorialStage.setScene(secondaryScene);
-                tutorialStage.sizeToScene();
-                stage.toBack();
-                tutorialStage.toFront();
-                tutorialStage.show();
+
+            if (isFirstRun()) {
+                createTutorialPane(stage);
             }
-            
+
             createHook();
-            // createCleanUp();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
         }
 
+    }
+
+    /**
+     * Method to determine if this is the first time that Taskaler is being
+     * executed
+     * 
+     * @return True if this is the first run of Taskaler; False otherwise
+     */
+    private boolean isFirstRun() {
+        return Configuration.getInstance().getIsFirstRun();
+    }
+
+    /**
+     * Method to structure the primary stage
+     * 
+     * @param stage
+     *            The stage to be treated as the primary stage
+     * @throws IOException
+     *             Thrown if an error is encountered while rendering root pane
+     */
+    private void setupPrimaryStage(Stage stage) throws IOException {
+        stage.getIcons().add(
+                new Image(getClass().getResourceAsStream(ICON_PNG)));
+        stage.setTitle(TITLE_STRING);
+        stage.setResizable(false);
+
+        Parent pane = createRootPane();
+        Scene scene = new Scene(pane, MAX_WIDTH, MAX_HEIGHT);
+
+        stage.setScene(scene);
+        stage.sizeToScene();
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent we) {
+                DLLConnector.isStopped.set(true);
+            }
+        });
+    }
+
+    /**
+     * Method to create a root pane
+     * 
+     * @return Newly created root pane
+     * @throws IOException
+     *             Thrown if an error is encountered while rendering the
+     */
+    private Parent createRootPane() throws IOException {
+        RootModel model = new RootModel();
+        model.totalFloating = TaskList.getInstance().floatToArray().size();
+        model.totalNotDone = TaskList.getInstance().getNumOfIncomplete();
+        rootController = new RootController(model);
+        Parent pane = rootController;
+        return pane;
+    }
+
+    /**
+     * Method to create a tutorial pane; Moves the primary stage back and the
+     * tutorial pane stage to the front
+     * 
+     * @param stage
+     *            Primary stage
+     * @throws IOException
+     *             Thrown if an error is encountered while rendering the
+     *             tutorial pane
+     */
+    private void createTutorialPane(Stage stage) throws IOException {
+        Stage tutorialStage = new Stage();
+        tutorialStage.initStyle(StageStyle.UNDECORATED);
+        TutorialPaneModel tutorialModel = new TutorialPaneModel();
+        tutorialModel.page = 0;
+        TutorialPaneController tutController = new TutorialPaneController(
+                tutorialModel);
+        Parent secondaryParent = tutController;
+        Scene secondaryScene = new Scene(secondaryParent);
+        tutorialStage.setScene(secondaryScene);
+        tutorialStage.sizeToScene();
+        stage.toBack();
+        tutorialStage.toFront();
+        tutorialStage.show();
     }
 
     /**
@@ -137,8 +181,6 @@ public class UIFacade extends Application implements Observer {
         }
     }
 
-    
-
     /**
      * Method to render default view for the list of task
      */
@@ -158,7 +200,7 @@ public class UIFacade extends Application implements Observer {
      */
     public void display(String title, ArrayList<String> headers,
             ArrayList<ArrayList<Task>> arrayOfTasks) {
-        
+
         try {
             rootController.displayDynamicList(title, headers, arrayOfTasks);
         } catch (IOException e) {
