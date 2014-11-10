@@ -14,14 +14,14 @@ public class HistoryStorage {
 
 	private static HistoryStorage instance = null;
 	private static CommonLogger log = CommonLogger.getInstance();
-	private static final String STORAGE_DIR=".\\taskaler\\";
+	private static final String STORAGE_DIR = ".\\taskaler\\";
 
 	private HistoryStorage() {
-		File dir=new File(STORAGE_DIR);
-		if(!dir.exists()){
-			try{
+		File dir = new File(STORAGE_DIR);
+		if (!dir.exists()) {
+			try {
 				dir.mkdir();
-			}catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(-1);
 			}
@@ -70,8 +70,11 @@ public class HistoryStorage {
 	 * @return return a String of all the history records
 	 */
 	public String readFromHistory(String fileName) {
+		if (fileName == null) {
+			return null;
+		}
 		try {
-			File f = new File(STORAGE_DIR+fileName);
+			File f = new File(STORAGE_DIR + fileName);
 			Scanner reader = new Scanner(f);
 			String result = "";
 			while (reader.hasNextLine()) {
