@@ -11,6 +11,9 @@ import taskaler.ui.model.CalendarPaneModel;
 import taskaler.ui.model.IModel;
 import taskaler.ui.model.TaskPaneModel;
 
+/**
+ * Class to handle the parsing of user commands
+ */
 public class Parser {
     // Local Variables
     private static String currentState;
@@ -20,10 +23,10 @@ public class Parser {
     private CmdType command;
     private String[] parameters;
 
+    
     /**
-     * @param commandString
-     * 
-     * Contructor for Parser
+     * Constructor for Parser
+     * @throws Exception
      */
     public Parser() throws Exception {
         ;
@@ -82,11 +85,12 @@ public class Parser {
     }
 
     /**
-     * Method to get the parameters for each command, differentiated by CMD_TYPE
+     * Method to get the parameters for each command, differentiated by CmdType
      * 
      * @param commandType
      * @param commandString
      * @return String[] parameters
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParams(CmdType commandType, String commandString)
             throws Exception {
@@ -127,6 +131,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for ADD command
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamADD(String commandString) throws Exception {
         int nameIndex = 0;
@@ -195,7 +200,7 @@ public class Parser {
      * @param paramString
      * @param paramArray
      * @return String[] paramArray after appending date and time
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     private static String[] appendDateAndTime(String paramString,
             String[] paramArray, int indexDT) throws Exception {
@@ -224,7 +229,7 @@ public class Parser {
      * @param paramString
      * @param paramArray
      * @return String[] paramArray after appending workload
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     private static String[] appendWorkload(String paramString,
             String[] paramArray, int indexWL) throws Exception {
@@ -239,6 +244,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for the DELETE command
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamDELETE(String commandString)
             throws Exception {
@@ -284,6 +290,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for EDIT command
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamEDIT(String commandString) throws Exception {
         int taskIDIndex = 0;
@@ -315,6 +322,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for DEADLINE command
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamDEADLINE(String commandString)
             throws Exception {
@@ -345,8 +353,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for REPEAT command
-     * @throws Exception
-     *             Invalid date/time/pattern syntax
+     * @throws Invalid date/time/pattern syntax exception
      */
     private static String[] getParamREPEAT(String commandString)
             throws Exception {
@@ -374,7 +381,7 @@ public class Parser {
      * @param field
      * @param paramArray
      * @return String[] paramArray after appending ID and pattern
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     private static String[] appendIDAndPattern(String IDAndPatternfield,
             String[] paramArray) throws Exception {
@@ -407,8 +414,7 @@ public class Parser {
      * @param dateField
      * @param paramArray
      * @return String[] paramArray after appending start and end date
-     * @throws Exception
-     *             Invalid start-to-endDate/date syntax
+     * @throws Invalid start-to-endDate/date syntax exception
      */
     private static String[] appendStartAndEndDate(String dateField,
             String[] paramArray) throws Exception {
@@ -427,7 +433,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for the TIME command
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamTIME(String commandString) throws Exception {
         int taskIDIndex = 0;
@@ -457,6 +463,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for WORKLOAD command
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamWL(String commandString) throws Exception {
         int taskIDIndex = 0;
@@ -480,7 +487,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for COMPLETION_TAG command
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamCT(String commandString) throws Exception {
         int taskIDIndex = 0;
@@ -503,6 +510,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for VIEW command
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamVIEW(String commandString) throws Exception {
         int viewTypeIndex = 0;
@@ -627,6 +635,7 @@ public class Parser {
      * 
      * @param commandString
      * @return String[] parameters for the GOTO command specifically
+     * @throws Self-generated parse exceptions
      */
     private static String[] getParamGOTO(String commandString) throws Exception {
         int monthIndex = 0;

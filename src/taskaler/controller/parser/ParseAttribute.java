@@ -9,10 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
 /**
- * @author Brendan
- *
  * Handles the parsing of specific shared attributes
  */
 public class ParseAttribute {
@@ -22,6 +19,7 @@ public class ParseAttribute {
      * 
      * @param paramDate
      * @return String date in correct format
+     * @throws Self-generated parse exceptions
      */
     public static String parseDate(String paramDate) throws Exception{
         if(paramDate.equals(null) || paramDate.equals("")){
@@ -101,7 +99,7 @@ public class ParseAttribute {
      * @param variable 
      * @param type
      * @return String[] of startVariable and endVariable
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     public static String[] parseRange(String variable, String type) throws Exception{
         int startIndex = 0;
@@ -170,7 +168,7 @@ public class ParseAttribute {
      * 
      * @param time
      * @return String time in correct format
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     public static String parseTime(String time) throws Exception{
         SimpleDateFormat defaultSyntax = new SimpleDateFormat("HHmm");
@@ -206,7 +204,7 @@ public class ParseAttribute {
      * 
      * @param workload
      * @return String workload in correct format
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     public static String parseWL(String workload) throws Exception {
         String workloadInSyntax = ParserLibrary.availableWorkloadSyntax.get(workload);
@@ -223,7 +221,7 @@ public class ParseAttribute {
      * 
      * @param pattern
      * @return String pattern in correct format
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     public static String parsePattern(String pattern) throws Exception {
         String patternInSyntax = ParserLibrary.availablePatternSyntax.get(pattern);
@@ -241,7 +239,7 @@ public class ParseAttribute {
      * @param monthYear
      * @param currentYear
      * @return String date for goto command
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     public static String parseMonthYear(String monthYear, int currentYear) throws Exception {
         SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
@@ -297,7 +295,7 @@ public class ParseAttribute {
      * 
      * @param answer
      * @return String in a consistent boolean syntax
-     * @throws Exception
+     * @throws Self-generated parse exceptions
      */
     public static String parseBool(String answer) throws Exception {
         String booleanInSyntax = ParserLibrary.availableBooleanSyntax.get(answer);
