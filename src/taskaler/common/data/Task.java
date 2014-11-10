@@ -61,71 +61,117 @@ public abstract class Task {
 
 	}
 
-	/**************** Accessors ***********************/
+	/**
+	 * Method to return the task name.
+	 * @return String
+	 */
 	public String getTaskName() {
 		return _taskName;
 	}
-
+	/**
+	 * Method to return the task id.
+	 * @return String
+	 */
 	public String getTaskID() {
 		return _taskID;
 	}
-
+	/**
+	 * Method to return the task status.
+	 * @return boolean
+	 */
 	public boolean getTaskStatus() {
 		return _taskStatus;
 	}
-
+	/**
+	 * Method to return the start time of the task.
+	 * @return Calendar
+	 */
 	public Calendar getStartTime() {
 		return _taskStartTime;
 	}
-
+	/**
+	 * Method to return the end time of the task.
+	 * @return Calendar
+	 */
 	public Calendar getEndTime() {
 		return _taskEndTime;
 	}
-
+	/**
+	 * Method to return the task workload value.
+	 * @return String
+	 */
 	public String getTaskWorkLoad() {
 		return workloadToString(_taskWorkLoad);
 	}
-
+	/**
+	 * Method to return the task creation date.
+	 * @return Calendar
+	 */
 	public Calendar getTaskCreationDate() {
 		return _creationDate;
 	}
-
+	/**
+	 * Method to return the task description.
+	 * @return String
+	 */
 	public String getTaskDescription() {
 		return _taskDescription;
 	}
 
-	/**************** Mutators ************************/
+	/**
+	 * A mutator method to change the task name.
+	 * @param newTaskName
+	 * 				The new task name of the task.
+	 */
 	public void changeTaskName(String newTaskName) {
 		_taskName = newTaskName;
 	}
 
 	/**
-	 * TaskID may be unique
-	 * 
-	 * public void changeTaskID(String newTaskID) { _taskID = newTaskID; }
+	 * A mutator method to change the task's status.
+	 * @param newTaskStatus
+	 * 				The new status of the task.
 	 */
-
 	public void changeTaskStatus(boolean newTaskStatus) {
 		_taskStatus = newTaskStatus;
 	}
-
+	/**
+	 * A mutator method to change the start time of the task.
+	 * @param newTime
+	 * 				The new start time of the task.
+	 */
 	public void changeStartTime(Calendar newTime) {
 		_taskStartTime = newTime;
 	}
-
+	/**
+	 * A mutator method to change the end time of the task.
+	 * @param newTime
+	 * 				The new end time of the task.
+	 */
 	public void changeEndTime(Calendar newTime) {
 		_taskEndTime = newTime;
 	}
-
+	/**
+	 * A mutator method to change the task workload value.
+	 * @param newTaskWordLoad
+	 * 				The new workload value of the task.
+	 */
 	public void changeTaskWorkLoad(String newTaskWordLoad) {
 		_taskWorkLoad = workloadFromString(newTaskWordLoad);
 	}
-
+	/**
+	 * A mutator method to change the task description.
+	 * @param newTaskDescription
+	 * 				The new description of the task.
+	 */
 	public void changeTaskDescription(String newTaskDescription) {
 		_taskDescription = newTaskDescription;
 	}
 
-	/**************** Class Methods ************************/
+	/**
+	 * Class methods
+	 */
+	
 	/**
 	 * Abstract method to create a new task object with the same values To be
 	 * implemented by the subclass
@@ -138,7 +184,7 @@ public abstract class Task {
 	 * 
 	 * @param input
 	 *            String to be mapped
-	 * @return WorkloadProperty mapped to string
+	 * @return WorkloadProperty
 	 */
 	protected static WorkloadProperty workloadFromString(String input) {
 		if (input.compareToIgnoreCase(WORKLOAD_HIGH) == 0) {
@@ -157,7 +203,7 @@ public abstract class Task {
 	 * 
 	 * @param workload
 	 *            Property to be converted
-	 * @return String representation of workload
+	 * @return String
 	 */
 	protected static String workloadToString(WorkloadProperty workload) {
 		if (workload == null) {

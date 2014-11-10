@@ -53,7 +53,12 @@ public class PastHistory implements Observer {
 		return currentHistory;
 	}
 
-	
+	/**
+	 * fileNameGenerator(String date) will help to generate a new file name according to the
+	 * data required
+	 * @param date
+	 * @return return the new file Name
+	 */
 	private static String fileNameGenerator(String date) {
 		String fileName;
 		String[] fileNameDate;
