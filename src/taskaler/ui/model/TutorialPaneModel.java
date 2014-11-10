@@ -20,14 +20,14 @@ public class TutorialPaneModel implements IModel {
     private static final String PAGE_ATTRIBUTE = "PAGE";
     
     // Class variables
-    public int page = 0;
+    public int page = common.ZERO_INDEX;
     
     public TutorialPaneModel(){
-        page = 0;
+        page = common.ZERO_INDEX;
     }
     @Override
     public HashMap<String, String> toHashMap() {
-        HashMap<String, String> result = new HashMap();
+        HashMap<String, String> result = new HashMap<String, String>();
         result.put(VIEW_ATTRIBUTE, VIEW_TUTORIAL_PANE);
         result.put(PAGE_ATTRIBUTE, page + common.EMPTY_STRING);
         return result;

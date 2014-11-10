@@ -6,7 +6,7 @@ package taskaler.ui.controller;
 /**
  * Class to hold common variables used by the UI controllers
  * 
- * @author Cheah Kit Weng
+ * @author Cheah Kit Weng, A0059806W
  *
  */
 //@author A0059806W

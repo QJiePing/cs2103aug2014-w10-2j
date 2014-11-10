@@ -24,9 +24,6 @@ import javafx.stage.Stage;
 
 /**
  * Instantiates all other components, controls the workflow of Taskaler
- * 
- * @author Brendan
- *
  */
 public class Controller {
     private static String TASK_LIST_FILE = null;

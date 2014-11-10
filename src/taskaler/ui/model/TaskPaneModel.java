@@ -17,6 +17,7 @@ import taskaler.ui.controller.common;
 //@author A0059806W
 public class TaskPaneModel implements IModel {
 
+    private static final String MSG_NOT_SET = "Not Set";
     // State Attributes
     public static final String TASK_DESCRIPTION_ATTRIBUTE = "TASKDESCRIPTION";
     public static final String TASK_WORKLOAD_ATTRIBUTE = "TASKWORKLOAD";
@@ -46,15 +47,15 @@ public class TaskPaneModel implements IModel {
      * 
      */
     public TaskPaneModel() {
-        taskName = "";
-        taskID = "";
+        taskName = common.EMPTY_STRING;
+        taskID = common.EMPTY_STRING;
         taskStatus = true;
-        taskDate = "";
+        taskDate = common.EMPTY_STRING;
         taskWorkload = common.RECTANGLE_COLOR_GREY;
-        taskDescription = "None";
-        taskPattern = "";
-        taskStartTime = "Not Set";
-        taskEndTime = "Not Set";
+        taskDescription = MSG_NOT_SET;
+        taskPattern = common.EMPTY_STRING;
+        taskStartTime = MSG_NOT_SET;
+        taskEndTime = MSG_NOT_SET;
         task = null;
     }
 

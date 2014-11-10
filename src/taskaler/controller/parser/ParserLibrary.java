@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-
+/**
+ * Contains the library of formats for various attributes in Taskaler
+ */
 public final class ParserLibrary {
     
     /**

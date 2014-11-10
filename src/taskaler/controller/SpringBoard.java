@@ -1,6 +1,5 @@
-/**
- * 
- */
+//@author A0059806W
+
 package taskaler.controller;
 
 import javafx.application.Application;
@@ -8,7 +7,6 @@ import javafx.stage.Stage;
 
 /**
  * Class to act as springboard to begin launching the Taskaler
- *
  */
 public class SpringBoard extends Application{
 
@@ -28,6 +26,7 @@ public class SpringBoard extends Application{
      * 
      * @param primaryStage
      *            Main stage argument for UI
+     * @throws Exception
      */
     @Override
     public void start(Stage primaryStage) throws Exception {

@@ -33,8 +33,58 @@ import taskaler.ui.model.CalendarPaneModel;
 //@author A0059806W
 public class CalendarPaneTest {
 
-    private static CalendarPaneController controller = null;
+    // Test case 7 parameters
+    private static final String MSG_FAILED_7TH = "Failed Test Case 7";
+    private static final String MSG_PASSED_7TH = "Test Case 7 passed";
 
+    // Test case 6 parameters
+    private static final String MSG_FAILED_6TH = "Failed Test Case 6";
+    private static final String MSG_PASSED_6TH = "Test Case 6 passed";
+    private static final int NEGATIVE_DAY = -1;
+    private static final int NEGATIVE_MONTH = -1;
+    private static final int NEGATIVE_YEAR = -1;
+
+    // Test case 5 parameters
+    private static final String MSG_FAILED_5TH = "Failed Test Case 5";
+    private static final String MSG_PASSED_5TH = "Test Case 5 passed";
+    private static final int ZERO_DAY = 0;
+    private static final int ZERO_MONTH = 0;
+    private static final int ZERO_YEAR = 0;
+
+    // Test case 4 parameters
+    private static final String MSG_FAILED_4TH = "Failed Test Case 4";
+    private static final String MSG_PASSED_4TH = "Test Case 4 passed";
+
+    // Test case 3 parameters
+    private static final String MSG_FAILED_3RD = "Failed Test Case 3";
+    private static final String MSG_PASSED_3RD = "Test Case 3 passed";
+
+    // Test case 2 parameters
+    private static final String MSG_FAILED_2ND = "Failed Test Case 2";
+    private static final String MSG_PASSED_2ND = "Test Case 2 passed";
+
+    // General case parameters
+    private static final String MSG_FAILED_GENERAL = "Failed general case";
+    private static final String MSG_PASSED_GENERAL = "General Case passed";
+
+    // Special test case constants
+    private static final String MSG_DEADLINE_TEST = "This is a test Deadline task";
+    private static final String WORKLOAD_MEDIUM = "medium";
+    private static final String ID_THREE = "3";
+    private static final String MSG_TEST_ON_DEADLINE = "Test on Deadline";
+    private static final int COLLECTION_ID_ONE = 1;
+    private static final String MSG_REPEATED_TEST = "This is a test repeated task";
+    private static final String WORKLOAD_HIGH = "High";
+    private static final String ID_TWO = "2";
+    private static final String MSG_TEST_ON_REPEATED = "Test on repeated task";
+    private static final int OFFSET_BY_ONE_DAY = 1;
+    private static final String MSG_FLOATING_TEST = "This is a test floating task";
+    private static final String WORKLOAD_LOW = "low";
+    private static final String ID_ONE = "1";
+    private static final String MSG_TEST_ON_FLOATING = "Test on floating";
+    private static final int FEBBURARY = 2;
+
+    // Special rule for JavaFX unit test
     @Rule
     public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 
@@ -46,33 +96,34 @@ public class CalendarPaneTest {
     public ArrayList<Task> generateList() {
         ArrayList<Task> result = new ArrayList<Task>();
         Calendar deadline = Calendar.getInstance();
-        deadline.add(Calendar.MONTH, 2);
+        deadline.add(Calendar.MONTH, FEBBURARY);
 
-        FloatTask task1 = new FloatTask("Test on floating", "1", true,
-                Calendar.getInstance(), "low", "This is a test floating task",
+        FloatTask task1 = new FloatTask(MSG_TEST_ON_FLOATING, ID_ONE, true,
+                Calendar.getInstance(), WORKLOAD_LOW, MSG_FLOATING_TEST,
                 Calendar.getInstance(), Calendar.getInstance());
 
         
         ArrayList<Calendar> listOfTestDays = new ArrayList<Calendar>();
         Calendar eachDate = Calendar.getInstance();
-        eachDate.add(Calendar.DATE, 1);
+        eachDate.add(Calendar.DATE, OFFSET_BY_ONE_DAY);
         listOfTestDays.add(eachDate);
-        eachDate.add(Calendar.DATE, 1);
+        eachDate.add(Calendar.DATE, OFFSET_BY_ONE_DAY);
         listOfTestDays.add(eachDate);
-        eachDate.add(Calendar.DATE, 1);
+        eachDate.add(Calendar.DATE, OFFSET_BY_ONE_DAY);
         listOfTestDays.add(eachDate);
         
-        RepeatedTask task2 = new RepeatedTask("Test on repeated task", "2",
-                true, Calendar.getInstance(), "High",
-                "This is a test repeated task", Calendar.getInstance(),
-                deadline, null, listOfTestDays, deadline, 1);
+        RepeatedTask task2 = new RepeatedTask(MSG_TEST_ON_REPEATED, ID_TWO,
+                true, Calendar.getInstance(), WORKLOAD_HIGH,
+                MSG_REPEATED_TEST, Calendar.getInstance(),
+                deadline, null, listOfTestDays, deadline, COLLECTION_ID_ONE);
 
-        DeadLineTask task3 = new DeadLineTask("Test on Deadline", "3",
-                true, Calendar.getInstance(), "medium",
-                "This is a test Deadline task", deadline, deadline, deadline);
+        DeadLineTask task3 = new DeadLineTask(MSG_TEST_ON_DEADLINE, ID_THREE,
+                true, Calendar.getInstance(), WORKLOAD_MEDIUM,
+                MSG_DEADLINE_TEST, deadline, deadline, deadline);
 
         result.add(task1);
         result.add(task2);
+        result.add(task3);
 
         return result;
     }
@@ -80,7 +131,6 @@ public class CalendarPaneTest {
     /**
      * Generates a general case
      * 
-     * @return model with general case
      */
     @Test
     public void testCase1() {
@@ -88,10 +138,10 @@ public class CalendarPaneTest {
         testCase.currentCalendar = Calendar.getInstance();
         testCase.currentTaskList = generateList();
         try {
-            controller = new CalendarPaneController(testCase);
-            assertTrue("General Case passed", true);
+            new CalendarPaneController(testCase);
+            assertTrue(MSG_PASSED_GENERAL, true);
         } catch (Exception err) {
-            fail("Failed general case");
+            fail(MSG_FAILED_GENERAL);
         }
 
     }
@@ -99,7 +149,6 @@ public class CalendarPaneTest {
     /**
      * Boundary test for the "empty" partition in terms on arraylist
      * 
-     * @return model with general case
      */
     @Test
     public void testCase2() {
@@ -108,17 +157,16 @@ public class CalendarPaneTest {
         testCase.currentTaskList = new ArrayList<Task>();
 
         try {
-            controller = new CalendarPaneController(testCase);
-            assertTrue("Test Case 2 passed", true);
+            new CalendarPaneController(testCase);
+            assertTrue(MSG_PASSED_2ND, true);
         } catch (Exception err) {
-            fail("Failed Test Case 2");
+            fail(MSG_FAILED_2ND);
         }
     }
 
     /**
      * Boundary test for the "null" partition in terms on arraylist
      * 
-     * @return model with general case
      */
     @Test
     public void testCase3() {
@@ -127,17 +175,16 @@ public class CalendarPaneTest {
         testCase.currentTaskList = null;
 
         try {
-            controller = new CalendarPaneController(testCase);
-            assertTrue("Test Case 3 passed", true);
+            new CalendarPaneController(testCase);
+            assertTrue(MSG_PASSED_3RD, true);
         } catch (Exception err) {
-            fail("Failed Test Case 3");
+            fail(MSG_FAILED_3RD);
         }
     }
 
     /**
      * Boundary test for the "null" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase4() {
@@ -146,57 +193,54 @@ public class CalendarPaneTest {
         testCase.currentTaskList = generateList();
 
         try {
-            controller = new CalendarPaneController(testCase);
-            assertTrue("Test Case 4 passed", true);
+            new CalendarPaneController(testCase);
+            assertTrue(MSG_PASSED_4TH, true);
         } catch (Exception err) {
-            fail("Failed Test Case 4");
+            fail(MSG_FAILED_4TH);
         }
     }
 
     /**
      * Boundary test for the "zero" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase5() {
         CalendarPaneModel testCase = new CalendarPaneModel();
         testCase.currentCalendar = Calendar.getInstance();
-        testCase.currentCalendar.set(0, 0, 0);
+        testCase.currentCalendar.set(ZERO_YEAR, ZERO_MONTH, ZERO_DAY);
         testCase.currentTaskList = generateList();
 
         try {
-            controller = new CalendarPaneController(testCase);
-            assertTrue("Test Case 5 passed", true);
+            new CalendarPaneController(testCase);
+            assertTrue(MSG_PASSED_5TH, true);
         } catch (Exception err) {
-            fail("Failed Test Case 5");
+            fail(MSG_FAILED_5TH);
         }
     }
 
     /**
      * Boundary test for the "negative" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase6() {
         CalendarPaneModel testCase = new CalendarPaneModel();
         testCase.currentCalendar = Calendar.getInstance();
-        testCase.currentCalendar.set(-1, -1, -1);
+        testCase.currentCalendar.set(NEGATIVE_YEAR, NEGATIVE_MONTH, NEGATIVE_DAY);
         testCase.currentTaskList = generateList();
 
         try {
-            controller = new CalendarPaneController(testCase);
-            assertTrue("Test Case 6 passed", true);
+            new CalendarPaneController(testCase);
+            assertTrue(MSG_PASSED_6TH, true);
         } catch (Exception err) {
-            fail("Failed Test Case 6");
+            fail(MSG_FAILED_6TH);
         }
     }
 
     /**
      * Boundary test for the "Max" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase7() {
@@ -207,10 +251,10 @@ public class CalendarPaneTest {
         testCase.currentTaskList = generateList();
 
         try {
-            controller = new CalendarPaneController(testCase);
-            assertTrue("Test Case 7 passed", true);
+            new CalendarPaneController(testCase);
+            assertTrue(MSG_PASSED_7TH, true);
         } catch (Exception err) {
-            fail("Failed Test Case 7");
+            fail(MSG_FAILED_7TH);
         }
     }
-}
+    }

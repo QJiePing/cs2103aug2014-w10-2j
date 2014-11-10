@@ -3,13 +3,14 @@
 package taskaler.controller;
 
 /**
- * @author Brendan
- *
- *         Contains all constants used in Controller
+ * Contains all constants used in Controller
  */
 public final class common {
 
-    // enum for all the types of commands for Taskaler
+    
+    /**
+     * Enumerator class of all types of user commands
+     */
     public enum CmdType {
         ADD, DELETE, EDIT, DEADLINE, TIME, REPEAT, WORKLOAD, TODAY, 
         COMPLETION_TAG, VIEW, FIND, ARCHIVE, UNDO, GOTO, EXIT, INVALID

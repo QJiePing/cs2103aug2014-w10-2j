@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import taskaler.common.data.Task;
+import taskaler.ui.controller.common;
 
 /**
  * Model Associated with the ListPane
@@ -30,7 +31,7 @@ public class ListPaneModel implements IModel{
     public ArrayList<ArrayList<Task>> arrayOfTaskLists;
 
     public ListPaneModel() {
-        currentTitle = "";
+        currentTitle = common.EMPTY_STRING;
         currentItemList = new ArrayList<Task>();
         currentSubHeaders = new ArrayList<String>();
         arrayOfTaskLists = new ArrayList<ArrayList<Task>>();

@@ -14,7 +14,7 @@ import taskaler.ui.controller.common;
  *
  */
 //@author A0059806W
-public class RootModel implements IModel{
+public class RootModel implements IModel {
 
     // State Attributes
     public static final String INPUT_ATTRIBUTE = "INPUT";
@@ -23,18 +23,22 @@ public class RootModel implements IModel{
     public static final String TOTAL_FLOATING_ATTRIBUTE = "TOTALFLOATING";
 
     public String notification;
-    
+
     public String input;
-    
+
     public int totalNotDone;
-    
+
     public int totalFloating;
-    
-    public RootModel(){
-        notification = "";
-        input = "";
-        totalNotDone = 0;
-        totalFloating = 0;
+
+    /**
+     * Default Constructor
+     * 
+     */
+    public RootModel() {
+        notification = common.EMPTY_STRING;
+        input = common.EMPTY_STRING;
+        totalNotDone = common.ZERO_INDEX;
+        totalFloating = common.ZERO_INDEX;
     }
 
     @Override
@@ -44,7 +48,8 @@ public class RootModel implements IModel{
         result.put(NOTIFICATION_ATTRIBUTE, notification);
         result.put(INPUT_ATTRIBUTE, input);
         result.put(TOTAL_NOT_DONE_ATTRIBUTE, totalNotDone + common.EMPTY_STRING);
-        result.put(TOTAL_FLOATING_ATTRIBUTE, totalFloating + common.EMPTY_STRING);
+        result.put(TOTAL_FLOATING_ATTRIBUTE, totalFloating
+                + common.EMPTY_STRING);
         return null;
     }
 }

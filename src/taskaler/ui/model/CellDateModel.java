@@ -31,8 +31,8 @@ public class CellDateModel implements IModel{
      * Default Constructor
      */
     public CellDateModel() {
-        currentDate = 1;
-        currentNumberOfEvents = 0;
+        currentDate = common.OFFSET_BY_ONE;
+        currentNumberOfEvents = common.ZERO_INDEX;
         currentWorkloadFilters = common.RECTANGLE_COLOR_GREY;
     }
 

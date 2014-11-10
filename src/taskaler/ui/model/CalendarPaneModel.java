@@ -36,8 +36,8 @@ public class CalendarPaneModel implements IModel{
 
     public CalendarPaneModel() {
         currentTaskList = new ArrayList<Task>();
-        currentYear = 0;
-        currentMonth = 0;
+        currentYear = common.ZERO_INDEX;
+        currentMonth = common.ZERO_INDEX;
         currentCalendar = Calendar.getInstance();
     }
 
