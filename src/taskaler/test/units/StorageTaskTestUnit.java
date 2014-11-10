@@ -1,11 +1,14 @@
 package taskaler.test.units;
 
 import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import org.junit.AfterClass;
 import org.junit.Test;
+
 import taskaler.common.data.*;
 import taskaler.storage.TaskAndConfigStorage;
 
@@ -13,9 +16,25 @@ import taskaler.storage.TaskAndConfigStorage;
 
 public class StorageTaskTestUnit {
 
+	private static final String TASK4_DESCRIPTION = "description4";
+	private static final String STRING_VALUE_4 = "4";
+	private static final String TASK4_NAME = "Task4";
+	private static final String WEEKLY_VALUE = "weekly";
+	private static final String TASK3_NAME = "Task3";
+	private static final String STRING_VALUE_3 = "3";
+	private static final String TASK2_DESCRIPTION = "description2";
+	private static final String STRING_VALUE_2 = "2";
+	private static final String TASK2_NAME = "Task2";
+	private static final String TASK1_DESCRIPTION = "description1";
+	private static final String STRING_VALUE_5 = "5";
+	private static final String STRING_VALUE_1 = "1";
+	private static final String TASK1_NAME = "Task1";
+	private static final String EMPTY_STRING = "";
+	private static final String TESTING_FILE = "testing.txt";
+
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		File f = new File("testing.txt");
+		File f = new File(TESTING_FILE);
 		f.delete();
 	}
 	
@@ -36,7 +55,7 @@ public class StorageTaskTestUnit {
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
-		boolean result = storeObj.writeToFile(" ", taskList);
+		boolean result = storeObj.writeToFile(null, taskList);
 		assertFalse(result);
 	}
 	/**
@@ -50,7 +69,7 @@ public class StorageTaskTestUnit {
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
-		boolean result = storeObj.writeToFile("", taskList);
+		boolean result = storeObj.writeToFile(EMPTY_STRING, taskList);
 		assertFalse(result);
 	}
 
@@ -65,9 +84,9 @@ public class StorageTaskTestUnit {
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
-		storeObj.writeToFile("testing.txt", taskList);
+		storeObj.writeToFile(TESTING_FILE, taskList);
 
-		ArrayList<Object> tempArr = storeObj.readFromFile("testing.txt");
+		ArrayList<Object> tempArr = storeObj.readFromFile(TESTING_FILE);
 		ArrayList<FloatTask> floatArr = (ArrayList<FloatTask>) tempArr.get(0);
 		ArrayList<DeadLineTask> deadlineArr = (ArrayList<DeadLineTask>) tempArr
 				.get(1);
@@ -90,14 +109,14 @@ public class StorageTaskTestUnit {
 		boolean result = false;
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
-		taskList.add(new FloatTask("Task1", "1", true, Calendar.getInstance(),
-				"5", "description1", Calendar.getInstance(), Calendar
+		taskList.add(new FloatTask(TASK1_NAME, STRING_VALUE_1, true, Calendar.getInstance(),
+				STRING_VALUE_5, TASK1_DESCRIPTION, Calendar.getInstance(), Calendar
 						.getInstance()));
 
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
-		storeObj.writeToFile("testing.txt", taskList);
+		storeObj.writeToFile(TESTING_FILE, taskList);
 
-		ArrayList<Object> temp = storeObj.readFromFile("testing.txt");
+		ArrayList<Object> temp = storeObj.readFromFile(TESTING_FILE);
 		ArrayList<FloatTask> floatArr = (ArrayList<FloatTask>) temp.get(0);
 		for (int i = 0; i < taskList.size(); i++) {
 			if (taskList.get(i).getTaskID().equals(floatArr.get(i).getTaskID())) {
@@ -137,27 +156,27 @@ public class StorageTaskTestUnit {
 		Calendar temp = Calendar.getInstance();
 		temp.set(Calendar.YEAR, Calendar.DECEMBER, Calendar.MONDAY);
 		arrCal.add(temp);
-		taskList.add(new FloatTask("Task1", "1", true, Calendar.getInstance(),
-				"5", "description1", Calendar.getInstance(), Calendar
+		taskList.add(new FloatTask(TASK1_NAME, STRING_VALUE_1, true, Calendar.getInstance(),
+				STRING_VALUE_5, TASK1_DESCRIPTION, Calendar.getInstance(), Calendar
 						.getInstance()));
-		taskList.add(new DeadLineTask("Task2", "2", false, Calendar
-				.getInstance(), "1", "description2", Calendar.getInstance(),
+		taskList.add(new DeadLineTask(TASK2_NAME, STRING_VALUE_2, false, Calendar
+				.getInstance(), STRING_VALUE_1, TASK2_DESCRIPTION, Calendar.getInstance(),
 				Calendar.getInstance(), Calendar.getInstance()));
-		taskList.add(new RepeatedTask("Task3", "3", true, Calendar
-				.getInstance(), "2", "description2", Calendar.getInstance(),
-				Calendar.getInstance(), "weekly", arrCal, Calendar
+		taskList.add(new RepeatedTask(TASK3_NAME, STRING_VALUE_3, true, Calendar
+				.getInstance(), STRING_VALUE_2, TASK2_DESCRIPTION, Calendar.getInstance(),
+				Calendar.getInstance(), WEEKLY_VALUE, arrCal, Calendar
 						.getInstance(), 5));
-		taskList.add(new FloatTask("Task4", "4", true, Calendar.getInstance(),
-				"1", "description4", Calendar.getInstance(), Calendar
+		taskList.add(new FloatTask(TASK4_NAME, STRING_VALUE_4, true, Calendar.getInstance(),
+				STRING_VALUE_1, TASK4_DESCRIPTION, Calendar.getInstance(), Calendar
 						.getInstance()));
 
 		/**
 		 * Execute the writeToFile and readFromFile method
 		 */
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
-		storeObj.writeToFile("testing.txt", taskList);
+		storeObj.writeToFile(TESTING_FILE, taskList);
 
-		ArrayList<Object> tempArr = storeObj.readFromFile("testing.txt");
+		ArrayList<Object> tempArr = storeObj.readFromFile(TESTING_FILE);
 		ArrayList<FloatTask> floatArr = (ArrayList<FloatTask>) tempArr.get(0);
 		ArrayList<DeadLineTask> deadlineArr = (ArrayList<DeadLineTask>) tempArr
 				.get(1);

@@ -14,9 +14,16 @@ import taskaler.storage.HistoryStorage;
 
 public class HistoryStorageTestUnit {
 
+	private static final String FILE_DIR = ".\\taskaler\\history.txt";
+	private static final String MSG_1 = "message1";
+	private static final String LINE_1 = "line1";
+	private static final String EMPTY_STRING = " ";
+	private static final String LINE_2 = "line2";
+	private static final String HISTORY_TXT = "history.txt";
+
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		File f = new File(".\\taskaler\\history.txt");
+		File f = new File(FILE_DIR);
 		f.delete();
 	}
 	
@@ -36,7 +43,7 @@ public class HistoryStorageTestUnit {
 	@Test
 	public void test() {
 		HistoryStorage historyObj = HistoryStorage.getInstance();
-		boolean result = historyObj.writeToHistory(null, "message1");
+		boolean result = historyObj.writeToHistory(null, MSG_1);
 		assertFalse(result);
 	}
 
@@ -49,7 +56,7 @@ public class HistoryStorageTestUnit {
 	@Test
 	public void test2() {
 		HistoryStorage historyObj = HistoryStorage.getInstance();
-		boolean result = historyObj.writeToHistory("history.txt", null);
+		boolean result = historyObj.writeToHistory(HISTORY_TXT, null);
 		assertFalse(result);
 	}
 	
@@ -62,7 +69,7 @@ public class HistoryStorageTestUnit {
 	@Test
 	public void test3() {
 		HistoryStorage historyObj = HistoryStorage.getInstance();
-		boolean result = historyObj.writeToHistory("history.txt", " ");
+		boolean result = historyObj.writeToHistory(HISTORY_TXT, EMPTY_STRING);
 		assertTrue(result);
 	}
 
@@ -86,7 +93,7 @@ public class HistoryStorageTestUnit {
 	@Test
 	public void test5() {
 		HistoryStorage historyObj = HistoryStorage.getInstance();
-		String result = historyObj.readFromHistory(" ");
+		String result = historyObj.readFromHistory(EMPTY_STRING);
 		assertEquals(null, result);
 	}
 	
@@ -100,10 +107,10 @@ public class HistoryStorageTestUnit {
 	public void test6() {
 		boolean switch1 = false;
 		HistoryStorage store = HistoryStorage.getInstance();
-		store.writeToHistory("history.txt", " ");
-		store.writeToHistory("history.txt", "line2");
-		String result = store.readFromHistory("history.txt");
-		if (result.split("\n")[0].equals("line2")) {
+		store.writeToHistory(HISTORY_TXT, EMPTY_STRING);
+		store.writeToHistory(HISTORY_TXT, LINE_2);
+		String result = store.readFromHistory(HISTORY_TXT);
+		if (result.split("\n")[0].equals(LINE_2)) {
 			switch1 = true;
 		}
 		assertTrue(switch1);
@@ -119,12 +126,12 @@ public class HistoryStorageTestUnit {
 	public void test7() throws IOException {
 		boolean switch1 = false;
 		HistoryStorage store = HistoryStorage.getInstance();
-		store.writeToHistory("history.txt", "line1");
-		store.writeToHistory("history.txt", "line2");
+		store.writeToHistory(HISTORY_TXT, LINE_1);
+		store.writeToHistory(HISTORY_TXT, LINE_2);
 
-		String result = store.readFromHistory("history.txt");
-		if (result.split("\n")[1].equals("line1")
-				&& result.split("\n")[0].equals("line2")) {
+		String result = store.readFromHistory(HISTORY_TXT);
+		if (result.split("\n")[1].equals(LINE_1)
+				&& result.split("\n")[0].equals(LINE_2)) {
 			switch1 = true;
 		}
 		assertTrue(switch1);

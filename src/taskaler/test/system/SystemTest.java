@@ -25,6 +25,27 @@ import org.junit.Test;
 
 public class SystemTest {
 	
+	private static final String CHANGED_TASK_NAME = "changedTaskName";
+	private static final String TESTCASE4_CMD6 = "delete 3";
+	private static final String TESTCASE4_CMD5 = "edit changedTaskName";
+	private static final String TESTCASE4_CMD4 = "repeat 3 monday, to 24/11/2014";
+	private static final String TESTCASE4_CMD3 = "add task3 :It is a repeated task, 3/11/2014, 3";
+	private static final String TESTCASE4_CMD2 = "add task2 :It is a deadline task, 29/10/2014, 2";
+	private static final String FAILED_MSG_3 = "Integration test case 4 failed";
+	private static final String FAILED_MSG_2 = "Failed empty command test";
+	private static final String EMPTY_STRING = " ";
+	private static final String FAILED_MSG_1 = "Failed illegal command test";
+	private static final String TESTCASE2_CMD1 = "illegal command";
+	private static final String TASK2_NAME = "task2";
+	private static final String TASK1_NAME = "task1";
+	private static final String TESTCASE1_RESULT1 = "changedTask3";
+	private static final String UNDO_COMMAND = "undo";
+	private static final String TESTCASE1_CMD5 = "delete 1";
+	private static final String TESTCASE1_CMD4 = "edit changedTask3";
+	private static final String TESTCASE1_CMD3 = "add task3 :It is a deadline task, 29/10/2014, 2";
+	private static final String TESTCASE1_CMD2 = "add task2 :It is a float task2";
+	private static final String COMMON_ADD_CMD = "add task1 :It is a float task";
+
 	/**
 	 * The file name should be the same as the file name state in the configuration file.
 	 */
@@ -83,32 +104,26 @@ public class SystemTest {
         
 		boolean switch1 = false;
 		boolean switch2 = false;
-		String cmd1 = "add task1 :It is a float task";
-		String cmd2 = "add task2 :It is a float task2";
-		String cmd3 = "add task3 :It is a deadline task, 29/10/2014, 2";
-		String cmd4 = "edit changedTask3";
-		String cmd5 = "delete 1";
-		String cmd6 = "undo";
 
-		controller.executeCMD(cmd1);
-		controller.executeCMD(cmd2);
-		controller.executeCMD(cmd3);
-		controller.executeCMD(cmd4);
-		controller.executeCMD(cmd5);
-		controller.executeCMD(cmd6);
+		controller.executeCMD(COMMON_ADD_CMD);
+		controller.executeCMD(TESTCASE1_CMD2);
+		controller.executeCMD(TESTCASE1_CMD3);
+		controller.executeCMD(TESTCASE1_CMD4);
+		controller.executeCMD(TESTCASE1_CMD5);
+		controller.executeCMD(UNDO_COMMAND);
 
 		ArrayList<Object> tempArr = storeObj.readFromFile(TASK_LIST_FILE);
 		ArrayList<FloatTask> floatArr = (ArrayList<FloatTask>) tempArr.get(0);
 		ArrayList<DeadLineTask> deadlineArr = (ArrayList<DeadLineTask>) tempArr
 				.get(1);
 
-		if (deadlineArr.get(0).getTaskName().equals("changedTask3")) {
+		if (deadlineArr.get(0).getTaskName().equals(TESTCASE1_RESULT1)) {
 			switch1 = true;
 		}
 
 		if (floatArr.size() == 2) {
-			if (floatArr.get(0).getTaskName().equals("task1")
-					&& floatArr.get(1).getTaskName().equals("task2")) {
+			if (floatArr.get(0).getTaskName().equals(TASK1_NAME)
+					&& floatArr.get(1).getTaskName().equals(TASK2_NAME)) {
 				switch2 = true;
 			}
 		}
@@ -140,9 +155,7 @@ public class SystemTest {
 			fail(e.getMessage());
 		}
 
-		String cmd1 = "illegal command";
-
-		controller.executeCMD(cmd1);
+		controller.executeCMD(TESTCASE2_CMD1);
 
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		ArrayList<Object> tempArr = storeObj.readFromFile(TASK_LIST_FILE);
@@ -156,7 +169,7 @@ public class SystemTest {
 				&& repeatedArr.size() == 0) {
 			assertTrue(true);
 		} else {
-			fail("Failed illegal command test");
+			fail(FAILED_MSG_1);
 		}
 
 	}
@@ -178,7 +191,7 @@ public class SystemTest {
 			fail(e.getMessage());
 		}
 
-		String cmd1 = " ";
+		String cmd1 = EMPTY_STRING;
 
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		ArrayList<Object> tempArr = storeObj.readFromFile(TASK_LIST_FILE);
@@ -204,7 +217,7 @@ public class SystemTest {
 				&& repeatedArr.size() == repeatedNum) {
 			assertTrue(true);
 		} else {
-			fail("Failed empty command test");
+			fail(FAILED_MSG_2);
 		}
 	}
     /**
@@ -227,21 +240,13 @@ public class SystemTest {
 			fail(e.getMessage());
 		}
 
-		String cmd1 = "add task1 :It is a float task";
-		String cmd2 = "add task2 :It is a deadline task, 29/10/2014, 2";
-		String cmd3 = "add task3 :It is a repeated task, 3/11/2014, 3";
-		String cmd4 = "repeat 3 monday, to 24/11/2014";
-		String cmd5 = "edit changedTaskName";
-		String cmd6 = "delete 3";
-		String cmd7 = "undo";
-
-		controller.executeCMD(cmd1);
-		controller.executeCMD(cmd2);
-		controller.executeCMD(cmd3);
-		controller.executeCMD(cmd4);
-		controller.executeCMD(cmd5);
-		controller.executeCMD(cmd6);
-		controller.executeCMD(cmd7);
+		controller.executeCMD(COMMON_ADD_CMD);
+		controller.executeCMD(TESTCASE4_CMD2);
+		controller.executeCMD(TESTCASE4_CMD3);
+		controller.executeCMD(TESTCASE4_CMD4);
+		controller.executeCMD(TESTCASE4_CMD5);
+		controller.executeCMD(TESTCASE4_CMD6);
+		controller.executeCMD(UNDO_COMMAND);
 
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		ArrayList<Object> tempArr = storeObj.readFromFile(TASK_LIST_FILE);
@@ -250,12 +255,12 @@ public class SystemTest {
 				.get(1);
 		ArrayList<RepeatedTask> repeatedArr = (ArrayList<RepeatedTask>) tempArr
 				.get(2);
-		if (floatArr.get(0).getTaskName().equals("task1")
-				&& deadlineArr.get(0).getTaskName().equals("task2")
-				&& repeatedArr.get(0).getTaskName().equals("changedTaskName")) {
+		if (floatArr.get(0).getTaskName().equals(TASK1_NAME)
+				&& deadlineArr.get(0).getTaskName().equals(TASK2_NAME)
+				&& repeatedArr.get(0).getTaskName().equals(CHANGED_TASK_NAME)) {
 			assertTrue(true);
 		} else {
-			fail("Integration test case 4 failed");
+			fail(FAILED_MSG_3);
 		}
 
 		/**
