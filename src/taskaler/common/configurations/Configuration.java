@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import taskaler.storage.TaskAndConfigStorage;
 
+//@author A0099778X
 public class Configuration {
 
     private static Configuration instance = null;
@@ -126,7 +127,7 @@ public class Configuration {
         }
 
     }
-
+    //@author A0111798X
     /**
      * checkConfigInfo(ArrayList<String> configInfo) will check the
      * configuration information are all valid
@@ -189,7 +190,8 @@ public class Configuration {
 
         return configInfo;
     }
-
+    
+    //@author A0099778X
     /**
      * storeConfigInfo() will call the storage to store all the attribute
      */
