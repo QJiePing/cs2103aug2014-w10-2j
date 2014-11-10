@@ -45,11 +45,11 @@ public class OPLogicUndoIntegrationTest {
 	 */
 	@Test
 	public void test() {
-		boolean switch1=false;
-		Undo undoObj=new Undo();
-		Task result=undoObj.undo();
-		if(result==null){
-			switch1=true;
+		boolean switch1 = false;
+		Undo undoObj = new Undo();
+		Task result = undoObj.undo();
+		if (result == null) {
+			switch1 = true;
 		}
 		assertTrue(switch1);
 	}
@@ -59,17 +59,21 @@ public class OPLogicUndoIntegrationTest {
 	 * Equivalence Partition: more than 1 task in the undo stack
 	 */
 	@Test
-	public void test2(){
-		boolean switch1=false;
-		Undo undoObj=new Undo();
-		OPLogic logic= OPLogic.getInstance();
+	public void test2() {
+		boolean switch1 = false;
+		Undo undoObj = new Undo();
+		OPLogic logic = OPLogic.getInstance();
 		logic.addObserver(undoObj);
-		Task task1=logic.addTask(TASK1_NAME, TASK1_DESCRIPTION, TASK1_CREATION_DATE, TASK1_START_TIME, TASK1_END_TIME, TASK1_WORKLOAD);
-		Task task2=logic.addTask(TASK2_NAME, TASK2_DESCRIPTION, TASK2_CREATION_DATE, TASK2_START_TIME, TASK2_END_TIME, TASK2_WORKLOAD);
+		Task task1 = logic.addTask(TASK1_NAME, TASK1_DESCRIPTION,
+				TASK1_CREATION_DATE, TASK1_START_TIME, TASK1_END_TIME,
+				TASK1_WORKLOAD);
+		Task task2 = logic.addTask(TASK2_NAME, TASK2_DESCRIPTION,
+				TASK2_CREATION_DATE, TASK2_START_TIME, TASK2_END_TIME,
+				TASK2_WORKLOAD);
 		logic.deleteTask(task1.getTaskID());
-		Task result=undoObj.undo();
-		if(result.getTaskName().equals(TASK1_NAME)){
-			switch1=true;
+		Task result = undoObj.undo();
+		if (result.getTaskName().equals(TASK1_NAME)) {
+			switch1 = true;
 		}
 		assertTrue(switch1);
 	}
@@ -78,18 +82,20 @@ public class OPLogicUndoIntegrationTest {
 	 * Equivalence Partition: 1 task in the undo stack
 	 */
 	@Test
-	public void test3(){
-		boolean switch1=false;
-		Undo undoObj=new Undo();
-		OPLogic logic= OPLogic.getInstance();
+	public void test3() {
+		boolean switch1 = false;
+		Undo undoObj = new Undo();
+		OPLogic logic = OPLogic.getInstance();
 		logic.addObserver(undoObj);
-		Task task3=logic.addTask(TASK3_NAME, TASK3_DESCRIPTION, TASK3_CREATION_DATE, TASK3_START_TIME, TASK3_END_TIME, TASK3_WORKLOAD);
+		Task task3 = logic.addTask(TASK3_NAME, TASK3_DESCRIPTION,
+				TASK3_CREATION_DATE, TASK3_START_TIME, TASK3_END_TIME,
+				TASK3_WORKLOAD);
 		logic.editTask(task3.getTaskID(), EDITED_NAME, EDITED_DESCRIPTION);
 		undoObj.undo();
-		SearchLogic search=new SearchLogic();
-		Task result=search.findByID(task3.getTaskID());
-		if(result.getTaskName().equals(TASK3_NAME)){
-			switch1=true;
+		SearchLogic search = new SearchLogic();
+		Task result = search.findByID(task3.getTaskID());
+		if (result.getTaskName().equals(TASK3_NAME)) {
+			switch1 = true;
 		}
 		assertTrue(switch1);
 	}

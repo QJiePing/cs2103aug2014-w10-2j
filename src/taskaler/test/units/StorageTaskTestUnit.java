@@ -109,9 +109,9 @@ public class StorageTaskTestUnit {
 		boolean result = false;
 		TaskList taskList = TaskList.getInstance();
 		taskList.clear();
-		taskList.add(new FloatTask(TASK1_NAME, STRING_VALUE_1, true, Calendar.getInstance(),
-				STRING_VALUE_5, TASK1_DESCRIPTION, Calendar.getInstance(), Calendar
-						.getInstance()));
+		taskList.add(new FloatTask(TASK1_NAME, STRING_VALUE_1, true, Calendar
+				.getInstance(), STRING_VALUE_5, TASK1_DESCRIPTION, Calendar
+				.getInstance(), Calendar.getInstance()));
 
 		TaskAndConfigStorage storeObj = TaskAndConfigStorage.getInstance();
 		storeObj.writeToFile(TESTING_FILE, taskList);
@@ -156,19 +156,20 @@ public class StorageTaskTestUnit {
 		Calendar temp = Calendar.getInstance();
 		temp.set(Calendar.YEAR, Calendar.DECEMBER, Calendar.MONDAY);
 		arrCal.add(temp);
-		taskList.add(new FloatTask(TASK1_NAME, STRING_VALUE_1, true, Calendar.getInstance(),
-				STRING_VALUE_5, TASK1_DESCRIPTION, Calendar.getInstance(), Calendar
+		taskList.add(new FloatTask(TASK1_NAME, STRING_VALUE_1, true, Calendar
+				.getInstance(), STRING_VALUE_5, TASK1_DESCRIPTION, Calendar
+				.getInstance(), Calendar.getInstance()));
+		taskList.add(new DeadLineTask(TASK2_NAME, STRING_VALUE_2, false,
+				Calendar.getInstance(), STRING_VALUE_1, TASK2_DESCRIPTION,
+				Calendar.getInstance(), Calendar.getInstance(), Calendar
 						.getInstance()));
-		taskList.add(new DeadLineTask(TASK2_NAME, STRING_VALUE_2, false, Calendar
-				.getInstance(), STRING_VALUE_1, TASK2_DESCRIPTION, Calendar.getInstance(),
-				Calendar.getInstance(), Calendar.getInstance()));
-		taskList.add(new RepeatedTask(TASK3_NAME, STRING_VALUE_3, true, Calendar
-				.getInstance(), STRING_VALUE_2, TASK2_DESCRIPTION, Calendar.getInstance(),
-				Calendar.getInstance(), WEEKLY_VALUE, arrCal, Calendar
-						.getInstance(), 5));
-		taskList.add(new FloatTask(TASK4_NAME, STRING_VALUE_4, true, Calendar.getInstance(),
-				STRING_VALUE_1, TASK4_DESCRIPTION, Calendar.getInstance(), Calendar
-						.getInstance()));
+		taskList.add(new RepeatedTask(TASK3_NAME, STRING_VALUE_3, true,
+				Calendar.getInstance(), STRING_VALUE_2, TASK2_DESCRIPTION,
+				Calendar.getInstance(), Calendar.getInstance(), WEEKLY_VALUE,
+				arrCal, Calendar.getInstance(), 5));
+		taskList.add(new FloatTask(TASK4_NAME, STRING_VALUE_4, true, Calendar
+				.getInstance(), STRING_VALUE_1, TASK4_DESCRIPTION, Calendar
+				.getInstance(), Calendar.getInstance()));
 
 		/**
 		 * Execute the writeToFile and readFromFile method

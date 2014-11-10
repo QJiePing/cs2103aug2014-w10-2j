@@ -41,69 +41,69 @@ public class TaskAndConfigStorage {
     /**
      * Constructors
      */
-    private TaskAndConfigStorage() {
+	private TaskAndConfigStorage() {
 
-        File dir = new File(STORAGE_DIR);
-        if (!dir.exists()) {
-            try {
-                dir.mkdir();
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
-        }
-        configFile = new File(STORAGE_DIR + "config_file");
+		File dir = new File(STORAGE_DIR);
+		if (!dir.exists()) {
+			try {
+				dir.mkdir();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+		configFile = new File(STORAGE_DIR + "config_file");
 
-        try {
-            libraryLoaded = new File[2];
-            if (is32Bit()) {
-                libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
-                        STORAGE_DIR, DLL_PATH_MSVCR);
-                libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
-                        STORAGE_DIR, DLL_PATH_32);
-            } else if (is64Bit()) {
-                libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
-                        STORAGE_DIR, DLL_PATH_MSVCR);
-                libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
-                        STORAGE_DIR, DLL_PATH_64);
-            } else {
-                throw new Exception(MSG_UNKNOWN_OS_VERSION);
-            }
-        } catch (UnsatisfiedLinkError e) {
-            log.exceptionLogger(e, Level.CONFIG);
-        } catch (IOException e) {
-            log.exceptionLogger(e, Level.WARNING);
-        } catch (Exception e) {
-            log.exceptionLogger(e, Level.CONFIG);
-        }
-    }
+		try {
+			libraryLoaded = new File[2];
+			if (is32Bit()) {
+				libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
+						STORAGE_DIR, DLL_PATH_MSVCR);
+				libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_32,
+						STORAGE_DIR, DLL_PATH_32);
+			} else if (is64Bit()) {
+				libraryLoaded[0] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
+						STORAGE_DIR, DLL_PATH_MSVCR);
+				libraryLoaded[1] = loadDll(DLL_PATH_PARENT + DLL_PATH_BIT_64,
+						STORAGE_DIR, DLL_PATH_64);
+			} else {
+				throw new Exception(MSG_UNKNOWN_OS_VERSION);
+			}
+		} catch (UnsatisfiedLinkError e) {
+			log.exceptionLogger(e, Level.CONFIG);
+		} catch (IOException e) {
+			log.exceptionLogger(e, Level.WARNING);
+		} catch (Exception e) {
+			log.exceptionLogger(e, Level.CONFIG);
+		}
+	}
 
     /**
      * Method to check if the OS is 32-bits
      * 
      * @return True if the OS is 32-bits; False otherwise
      */
-    private boolean is32Bit() {
-        String jvmVer = System.getProperty(OS_BIT_PROPERTY);
-        return jvmVer.compareTo(OS_32_BIT) == 0;
-    }
+	private boolean is32Bit() {
+		String jvmVer = System.getProperty(OS_BIT_PROPERTY);
+		return jvmVer.compareTo(OS_32_BIT) == 0;
+	}
 
     /**
      * Method to check if the OS is 64-bits
      * 
      * @return True if the OS is 64-bits; False otherwise
      */
-    private boolean is64Bit() {
-        String jvmVer = System.getProperty(OS_BIT_PROPERTY);
-        return jvmVer.compareTo(OS_64_BIT) == 0;
-    }
+	private boolean is64Bit() {
+		String jvmVer = System.getProperty(OS_BIT_PROPERTY);
+		return jvmVer.compareTo(OS_64_BIT) == 0;
+	}
 
-    public static TaskAndConfigStorage getInstance() {
-        if (instance == null) {
-            instance = new TaskAndConfigStorage();
-        }
-        return instance;
-    }
+	public static TaskAndConfigStorage getInstance() {
+		if (instance == null) {
+			instance = new TaskAndConfigStorage();
+		}
+		return instance;
+	}
 
     /**
      * Task storage method
@@ -117,27 +117,27 @@ public class TaskAndConfigStorage {
      * 
      * @return return an arraylist of saved tasks from the text file
      */
-    public ArrayList<Object> readFromFile(String file) {
+	public ArrayList<Object> readFromFile(String file) {
 
-        ArrayList<Object> result = new ArrayList<Object>();
-        CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> holder = new CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>();
+		ArrayList<Object> result = new ArrayList<Object>();
+		CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> holder = new CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>();
 
-        try {
-            FileReader reader = new FileReader(STORAGE_DIR + file);
-            Gson gson = createGsonObj();
-            TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>> typeToken = new TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>>() {
-            };
-            holder = gson.fromJson(reader, typeToken.getType());
-            result.add(holder.getFloatArr());
-            result.add(holder.getDeadLineArr());
-            result.add(holder.getRepeatedArr());
-            reader.close();
-        } catch (Exception e) {
-            log.exceptionLogger(e, Level.SEVERE);
-            return null;
-        }
-        return result;
-    }
+		try {
+			FileReader reader = new FileReader(STORAGE_DIR + file);
+			Gson gson = createGsonObj();
+			TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>> typeToken = new TypeToken<CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>>() {
+			};
+			holder = gson.fromJson(reader, typeToken.getType());
+			result.add(holder.getFloatArr());
+			result.add(holder.getDeadLineArr());
+			result.add(holder.getRepeatedArr());
+			reader.close();
+		} catch (Exception e) {
+			log.exceptionLogger(e, Level.SEVERE);
+			return null;
+		}
+		return result;
+	}
 
     /**
      * Method to write all saved tasks information to the text file
@@ -184,25 +184,25 @@ public class TaskAndConfigStorage {
      * 
      * @return return an config object from the text file
      */
-    public ArrayList<String> readConfigFile() {
+	public ArrayList<String> readConfigFile() {
 
-        ArrayList<String> config = new ArrayList<String>();
-        try {
-            if (!configFile.exists()) {
-                return null;
-            }
-            FileReader reader = new FileReader(configFile);
-            Gson gson = createGsonObj();
-            TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {
-            };
-            config = gson.fromJson(reader, typeToken.getType());
-            reader.close();
-        } catch (Exception e) {
-            log.exceptionLogger(e, Level.SEVERE);
-            return null;
-        }
-        return config;
-    }
+		ArrayList<String> config = new ArrayList<String>();
+		try {
+			if (!configFile.exists()) {
+				return null;
+			}
+			FileReader reader = new FileReader(configFile);
+			Gson gson = createGsonObj();
+			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {
+			};
+			config = gson.fromJson(reader, typeToken.getType());
+			reader.close();
+		} catch (Exception e) {
+			log.exceptionLogger(e, Level.SEVERE);
+			return null;
+		}
+		return config;
+	}
 
     /**
      * Method to write configuration information to the text file
@@ -215,21 +215,21 @@ public class TaskAndConfigStorage {
      * @return return a boolean indicating whether the write operation is a
      *         success or fail
      */
-    public boolean writeConfigFile(ArrayList<String> configArr) {
-        try {
-            FileWriter fw = new FileWriter(configFile);
-            Gson gson = createGsonObj();
-            TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {
-            };
-            String output = gson.toJson(configArr, typeToken.getType());
-            fw.write(output);
-            fw.close();
-        } catch (Exception e) {
-            log.exceptionLogger(e, Level.SEVERE);
-            return false;
-        }
-        return true;
-    }
+	public boolean writeConfigFile(ArrayList<String> configArr) {
+		try {
+			FileWriter fw = new FileWriter(configFile);
+			Gson gson = createGsonObj();
+			TypeToken<ArrayList<String>> typeToken = new TypeToken<ArrayList<String>>() {
+			};
+			String output = gson.toJson(configArr, typeToken.getType());
+			fw.write(output);
+			fw.close();
+		} catch (Exception e) {
+			log.exceptionLogger(e, Level.SEVERE);
+			return false;
+		}
+		return true;
+	}
 
     /**
      * Helper methods
@@ -242,14 +242,14 @@ public class TaskAndConfigStorage {
      *            TaskList object that contains all the tasks information
      * @return CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>
      */
-    private CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> prepareTaskList(
-            TaskList taskList) {
-        CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> helper = new CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>();
-        helper.setFloatArr(taskList.floatToArray());
-        helper.setDeadLineArr(taskList.deadlineToArray());
-        helper.setRepeatedArr(taskList.repeatedToArray());
-        return helper;
-    }
+	private CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> prepareTaskList(
+			TaskList taskList) {
+		CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask> helper = new CollectionOfTask<FloatTask, DeadLineTask, RepeatedTask>();
+		helper.setFloatArr(taskList.floatToArray());
+		helper.setDeadLineArr(taskList.deadlineToArray());
+		helper.setRepeatedArr(taskList.repeatedToArray());
+		return helper;
+	}
 
     /**
      * Method to instantiate a gson object for the reading json object from json
@@ -258,12 +258,12 @@ public class TaskAndConfigStorage {
      * 
      * @return return a gson object
      */
-    private Gson createGsonObj() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setPrettyPrinting();
-        Gson gson = gsonBuilder.create();
-        return gson;
-    }
+	private Gson createGsonObj() {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.setPrettyPrinting();
+		Gson gson = gsonBuilder.create();
+		return gson;
+	}
 
     /**
      * Method to load a dll into the JVM
@@ -278,32 +278,32 @@ public class TaskAndConfigStorage {
      * @throws IOException
      *             thrown if there is an error reading the file
      */
-    private File loadDll(String parent, String outputFolder, String library)
-            throws IOException, UnsatisfiedLinkError {
-        InputStream in = TaskAndConfigStorage.class.getResourceAsStream(parent
-                + library);
-        byte[] buffer = new byte[1024];
-        int read = -1;
-        File windowsUserTempDirectory = new File(outputFolder);
-        if (!windowsUserTempDirectory.exists()) {
-            windowsUserTempDirectory.mkdir();
-        }
-        File temp = new File(windowsUserTempDirectory, library);
-        if (temp.exists()) {
-            temp.delete();
-        }
-        // System.out.println("Creating temp dll: " + temp.getAbsolutePath());
-        FileOutputStream fos = new FileOutputStream(temp);
+	private File loadDll(String parent, String outputFolder, String library)
+			throws IOException, UnsatisfiedLinkError {
+		InputStream in = TaskAndConfigStorage.class.getResourceAsStream(parent
+				+ library);
+		byte[] buffer = new byte[1024];
+		int read = -1;
+		File windowsUserTempDirectory = new File(outputFolder);
+		if (!windowsUserTempDirectory.exists()) {
+			windowsUserTempDirectory.mkdir();
+		}
+		File temp = new File(windowsUserTempDirectory, library);
+		if (temp.exists()) {
+			temp.delete();
+		}
+		// System.out.println("Creating temp dll: " + temp.getAbsolutePath());
+		FileOutputStream fos = new FileOutputStream(temp);
 
-        while ((read = in.read(buffer)) != -1) {
-            fos.write(buffer, 0, read);
-        }
-        fos.close();
-        in.close();
+		while ((read = in.read(buffer)) != -1) {
+			fos.write(buffer, 0, read);
+		}
+		fos.close();
+		in.close();
 
-        System.load(temp.getAbsolutePath());
+		System.load(temp.getAbsolutePath());
 
-        return temp;
-    }
+		return temp;
+	}
 
 }

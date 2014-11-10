@@ -76,14 +76,15 @@ public class UndoTestUnit {
 		FloatTask floatTask = new FloatTask(TASK1_NAME, STRING_VALUE_1, true,
 				Calendar.getInstance(), STRING_VALUE_3, TASK1_DESCRIPTION,
 				Calendar.getInstance(), Calendar.getInstance());
-		RepeatedTask repeatTask = new RepeatedTask(TASK3_NAME, STRING_VALUE_3, true,
-				Calendar.getInstance(), STRING_VALUE_2, TASK3_DESCRIPTION,
-				Calendar.getInstance(), Calendar.getInstance(), WEEKLY_VALUE,
-				arrCal, Calendar.getInstance(), VALUE_5);
-		DeadLineTask deadlineTask = new DeadLineTask(TASK2_NAME, STRING_VALUE_2, false,
-				Calendar.getInstance(), STRING_VALUE_1, TASK3_DESCRIPTION,
-				Calendar.getInstance(), Calendar.getInstance(),
-				Calendar.getInstance());
+		RepeatedTask repeatTask = new RepeatedTask(TASK3_NAME, STRING_VALUE_3,
+				true, Calendar.getInstance(), STRING_VALUE_2,
+				TASK3_DESCRIPTION, Calendar.getInstance(),
+				Calendar.getInstance(), WEEKLY_VALUE, arrCal,
+				Calendar.getInstance(), VALUE_5);
+		DeadLineTask deadlineTask = new DeadLineTask(TASK2_NAME,
+				STRING_VALUE_2, false, Calendar.getInstance(), STRING_VALUE_1,
+				TASK3_DESCRIPTION, Calendar.getInstance(),
+				Calendar.getInstance(), Calendar.getInstance());
 		/**
 		 * Testing
 		 */

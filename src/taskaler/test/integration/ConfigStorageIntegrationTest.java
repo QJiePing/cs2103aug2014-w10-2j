@@ -64,10 +64,13 @@ public class ConfigStorageIntegrationTest {
 		if (readConfig.getDefaultFileName().equals(DEFAULT_FILENAME)
 				&& readConfig.getLogLevel().equals(DEFAULT_LOG_LEVEL)
 				&& readConfig.getDefaultRowColor().equals(DEFAULT_ROW_COLOR)
-				&& readConfig.getDefaultAltRowColor().equals(DEFAULT_ALT_ROW_COLOR)
-				&& readConfig.getDefaultToastColor().equals(DEFAULT_TOAST_COLOR)
+				&& readConfig.getDefaultAltRowColor().equals(
+						DEFAULT_ALT_ROW_COLOR)
+				&& readConfig.getDefaultToastColor()
+						.equals(DEFAULT_TOAST_COLOR)
 				&& readConfig.getDefaultDoneColor().equals(DEFAULT_DONE_COLOR)
-				&& readConfig.getDefaultHeaderColor().equals(DEFAULT_HEADER_COLOR)
+				&& readConfig.getDefaultHeaderColor().equals(
+						DEFAULT_HEADER_COLOR)
 				&& readConfig.getWelcomeMsg().equals(DEFAULT_WELCOME_MSG)
 				&& readConfig.getDefaultView().equals(DEFAULT_VIEW)
 				&& readConfig.getTimeFormat().equals(DEFAULT_TIME_FORMAT)) {
@@ -90,15 +93,18 @@ public class ConfigStorageIntegrationTest {
 		Configuration readConfig = config.getInstance();
 		readConfig.loadConfiguration();
 		if (readConfig.getDefaultView().equals(DEFAULT_VIEW)
-			&& readConfig.getLogLevel().equals(DEFAULT_LOG_LEVEL)
-			&& readConfig.getDefaultRowColor().equals(DEFAULT_ROW_COLOR)
-			&& readConfig.getDefaultAltRowColor().equals(DEFAULT_ALT_ROW_COLOR)
-			&& readConfig.getDefaultToastColor().equals(DEFAULT_TOAST_COLOR)
-			&& readConfig.getDefaultDoneColor().equals(DEFAULT_DONE_COLOR)
-			&& readConfig.getDefaultHeaderColor().equals(DEFAULT_HEADER_COLOR)
-			&& readConfig.getWelcomeMsg().equals(DEFAULT_WELCOME_MSG)
-			&& readConfig.getDefaultFileName().equals(DEFAULT_FILENAME)
-			&& readConfig.getTimeFormat().equals(DEFAULT_TIME_FORMAT)) {
+				&& readConfig.getLogLevel().equals(DEFAULT_LOG_LEVEL)
+				&& readConfig.getDefaultRowColor().equals(DEFAULT_ROW_COLOR)
+				&& readConfig.getDefaultAltRowColor().equals(
+						DEFAULT_ALT_ROW_COLOR)
+				&& readConfig.getDefaultToastColor()
+						.equals(DEFAULT_TOAST_COLOR)
+				&& readConfig.getDefaultDoneColor().equals(DEFAULT_DONE_COLOR)
+				&& readConfig.getDefaultHeaderColor().equals(
+						DEFAULT_HEADER_COLOR)
+				&& readConfig.getWelcomeMsg().equals(DEFAULT_WELCOME_MSG)
+				&& readConfig.getDefaultFileName().equals(DEFAULT_FILENAME)
+				&& readConfig.getTimeFormat().equals(DEFAULT_TIME_FORMAT)) {
 			switch1 = true;
 		}
 		assertTrue(switch1);
@@ -131,10 +137,13 @@ public class ConfigStorageIntegrationTest {
 		if (readConfig.getDefaultFileName().equals(DEFAULT_FILENAME)
 				&& readConfig.getDefaultRowColor().equals(DEFAULT_ROW_COLOR)
 				&& readConfig.getLogLevel().equals(DEFAULT_LOG_LEVEL)
-				&& readConfig.getDefaultAltRowColor().equals(DEFAULT_ALT_ROW_COLOR)
-				&& readConfig.getDefaultToastColor().equals(DEFAULT_TOAST_COLOR)
+				&& readConfig.getDefaultAltRowColor().equals(
+						DEFAULT_ALT_ROW_COLOR)
+				&& readConfig.getDefaultToastColor()
+						.equals(DEFAULT_TOAST_COLOR)
 				&& readConfig.getDefaultDoneColor().equals(DEFAULT_DONE_COLOR)
-				&& readConfig.getDefaultHeaderColor().equals(DEFAULT_HEADER_COLOR)
+				&& readConfig.getDefaultHeaderColor().equals(
+						DEFAULT_HEADER_COLOR)
 				&& readConfig.getWelcomeMsg().equals(DEFAULT_WELCOME_MSG)
 				&& readConfig.getDateFormat().equals(DEFAULT_DATE_FORMAT)
 				&& readConfig.getDefaultView().equals(DEFAULT_VIEW)
@@ -160,10 +169,13 @@ public class ConfigStorageIntegrationTest {
 		readConfig.loadConfiguration();
 		if (readConfig.getDefaultFileName().equals(DEFAULT_FILENAME)
 				&& readConfig.getDefaultRowColor().equals(TESTCASE4_ROW_VALUE)
-				&& readConfig.getDefaultAltRowColor().equals(DEFAULT_ALT_ROW_COLOR)
-				&& readConfig.getDefaultToastColor().equals(DEFAULT_TOAST_COLOR)
+				&& readConfig.getDefaultAltRowColor().equals(
+						DEFAULT_ALT_ROW_COLOR)
+				&& readConfig.getDefaultToastColor()
+						.equals(DEFAULT_TOAST_COLOR)
 				&& readConfig.getDefaultDoneColor().equals(DEFAULT_DONE_COLOR)
-				&& readConfig.getDefaultHeaderColor().equals(DEFAULT_HEADER_COLOR)
+				&& readConfig.getDefaultHeaderColor().equals(
+						DEFAULT_HEADER_COLOR)
 				&& readConfig.getLogLevel().equals(DEFAULT_LOG_LEVEL)
 				&& readConfig.getWelcomeMsg().equals(DEFAULT_WELCOME_MSG)
 				&& readConfig.getDefaultView().equals(DEFAULT_VIEW)
@@ -191,10 +203,13 @@ public class ConfigStorageIntegrationTest {
 		if (readConfig.getDefaultFileName().equals(TESTCASE5_FILENAME)
 				&& readConfig.getDefaultRowColor().equals(TESTCASE5_ROW_VALUE)
 				&& readConfig.getDefaultView().equals(DEFAULT_VIEW)
-				&& readConfig.getDefaultAltRowColor().equals(DEFAULT_ALT_ROW_COLOR)
-				&& readConfig.getDefaultToastColor().equals(DEFAULT_TOAST_COLOR)
+				&& readConfig.getDefaultAltRowColor().equals(
+						DEFAULT_ALT_ROW_COLOR)
+				&& readConfig.getDefaultToastColor()
+						.equals(DEFAULT_TOAST_COLOR)
 				&& readConfig.getDefaultDoneColor().equals(DEFAULT_DONE_COLOR)
-				&& readConfig.getDefaultHeaderColor().equals(DEFAULT_HEADER_COLOR)
+				&& readConfig.getDefaultHeaderColor().equals(
+						DEFAULT_HEADER_COLOR)
 				&& readConfig.getWelcomeMsg().equals(DEFAULT_WELCOME_MSG)
 				&& readConfig.getLogLevel().equals(DEFAULT_LOG_LEVEL)
 				&& readConfig.getTimeFormat().equals(DEFAULT_TIME_FORMAT)) {

@@ -49,26 +49,26 @@ public class SystemTest {
 	/**
 	 * The file name should be the same as the file name state in the configuration file.
 	 */
-    private static final String TASK_LIST_FILE = "task_list";
+	private static final String TASK_LIST_FILE = "task_list";
 
-    @Rule
-    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+	@Rule
+	public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
 
-    static Controller controller = null;
+	static Controller controller = null;
 
-    @After
-    public void tearDownAfterClass() throws Exception {
-        File f = new File(".\\taskaler\\"+TASK_LIST_FILE);
-        if (f.exists()) {
-           f.delete();
-        }
-        controller = null;
-    }
+	@After
+	public void tearDownAfterClass() throws Exception {
+		File f = new File(".\\taskaler\\" + TASK_LIST_FILE);
+		if (f.exists()) {
+			f.delete();
+		}
+		controller = null;
+	}
 
-    @Before
-    public void setUp() {
-        controller = Controller.getInstance();
-    }
+	@Before
+	public void setUp() {
+		controller = Controller.getInstance();
+	}
     /**
      * Equivalence Partition: Invalid Command, Empty Command, Valid Command
      * Boundary Analysis: 0,1 or more than 1 tasks
@@ -96,12 +96,12 @@ public class SystemTest {
 			fail(e.getMessage());
 		}
 		/**
-         * Clear the file content for this test case
-         */
-        TaskList taskList=TaskList.getInstance();
-        taskList.clear();
-        storeObj.writeToFile(TASK_LIST_FILE, taskList);
-        
+		 * Clear the file content for this test case
+		 */
+		TaskList taskList = TaskList.getInstance();
+		taskList.clear();
+		storeObj.writeToFile(TASK_LIST_FILE, taskList);
+
 		boolean switch1 = false;
 		boolean switch2 = false;
 
@@ -128,13 +128,13 @@ public class SystemTest {
 			}
 		}
 		assertTrue((switch1 && switch2));
-        /**
-         * Clear the file content for other test case
-         */
-        taskList=TaskList.getInstance();
-        taskList.clear();
-        storeObj.writeToFile(TASK_LIST_FILE, taskList);
-    }
+		/**
+		 * Clear the file content for other test case
+		 */
+		taskList = TaskList.getInstance();
+		taskList.clear();
+		storeObj.writeToFile(TASK_LIST_FILE, taskList);
+	}
 
     /**
      * Integration test 2
@@ -147,7 +147,7 @@ public class SystemTest {
      * Expected result: There should not have any changes to the tasklist and
      * the components should not crash
      */
-    @Test
+	@Test
 	public void test2() {
 		try {
 			controller.start(new Stage());
@@ -183,7 +183,7 @@ public class SystemTest {
      * 
      * Expected Result: No changes are made to TaskList and program should not crash.
      */
-    @Test
+	@Test
 	public void test3() {
 		try {
 			controller.start(new Stage());

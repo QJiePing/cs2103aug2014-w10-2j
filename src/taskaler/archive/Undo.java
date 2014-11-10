@@ -19,10 +19,10 @@ public class Undo implements Observer {
     /**
      * constructor
      */
-    public Undo() {
-        record = new Stack<OperationRecord<Task, String>>();
-        crudLogic = OPLogic.getInstance();
-    }
+	public Undo() {
+		record = new Stack<OperationRecord<Task, String>>();
+		crudLogic = OPLogic.getInstance();
+	}
 
     /**
      * Save all the operation execute by the user and task affected by the
@@ -57,7 +57,7 @@ public class Undo implements Observer {
         /**
          * determine the inverse function
          */
-        String operation = inverseFunction(opRecord.getOp());
+		String operation = inverseFunction(opRecord.getOp());
 
 		Task t = opRecord.getTask();
 		Task result = null;
@@ -84,7 +84,7 @@ public class Undo implements Observer {
      * @return String
      */
 
-    public String inverseFunction(String op) {
+	public String inverseFunction(String op) {
 		String result = "";
 		switch (op) {
 		case "ADD":
@@ -104,7 +104,7 @@ public class Undo implements Observer {
 		default:
 		}
 		return result;
-    }
+	}
 
     /**
      * Method to display the view of all the item in the undo stack. Listing the
@@ -169,7 +169,7 @@ public class Undo implements Observer {
      * executed by the user. Only ADD, DELETE and EDIT operation task will be
      * saved by undo function
      */
-    @Override
+	@Override
 	public void update(Observable arg0, Object arg1) {
 		if (arg1 instanceof OperationRecord<?, ?>) {
 			OperationRecord<Task, String> currentRecord = (OperationRecord<Task, String>) arg1;
@@ -178,5 +178,5 @@ public class Undo implements Observer {
 			}
 		}
 
-    }
+	}
 }
