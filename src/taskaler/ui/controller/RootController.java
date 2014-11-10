@@ -48,7 +48,7 @@ import taskaler.ui.controller.common;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-//@author A0059806W
+// @author A0059806W
 public class RootController extends BorderPane implements IController {
 
     // Special Constants
@@ -380,6 +380,8 @@ public class RootController extends BorderPane implements IController {
     /**
      * Method to render the list view
      * 
+     * @param title
+     *            String to set the title of this view to
      * @param list
      *            The list to be rendered
      * @throws IOException

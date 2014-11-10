@@ -31,7 +31,7 @@ import javafx.scene.layout.GridPane;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-//@author A0059806W
+// @author A0059806W
 public class ListPaneController extends TitledPane implements IController {
 
     private static final double ANCHOR_ZERO = 0.0;
@@ -228,14 +228,6 @@ public class ListPaneController extends TitledPane implements IController {
      * @return Integer representing the current position of the pointer down the
      *         list
      */
-    /**
-     * 
-     * @param floatingTaskList
-     * @param repeatedTaskList
-     * @param deadlineTaskList
-     * @param currentPosition
-     * @return
-     */
     private int insertRows(ArrayList<FloatTask> floatingTaskList,
             ArrayList<RepeatedTask> repeatedTaskList,
             ArrayList<DeadLineTask> deadlineTaskList, int currentPosition) {
@@ -414,8 +406,11 @@ public class ListPaneController extends TitledPane implements IController {
     }
 
     /**
+     * Method to determine if the list of tasks is empty
+     * 
      * @param taskList
-     * @return
+     *            List of tasks
+     * @return True if the list is empty; False otherwise
      */
     private <T> boolean isEmptyList(ArrayList<T> taskList) {
         return taskList.size() < 1;

@@ -131,7 +131,6 @@ public class CalendarPaneTest {
     /**
      * Generates a general case
      * 
-     * @return model with general case
      */
     @Test
     public void testCase1() {
@@ -150,7 +149,6 @@ public class CalendarPaneTest {
     /**
      * Boundary test for the "empty" partition in terms on arraylist
      * 
-     * @return model with general case
      */
     @Test
     public void testCase2() {
@@ -169,7 +167,6 @@ public class CalendarPaneTest {
     /**
      * Boundary test for the "null" partition in terms on arraylist
      * 
-     * @return model with general case
      */
     @Test
     public void testCase3() {
@@ -188,7 +185,6 @@ public class CalendarPaneTest {
     /**
      * Boundary test for the "null" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase4() {
@@ -207,7 +203,6 @@ public class CalendarPaneTest {
     /**
      * Boundary test for the "zero" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase5() {
@@ -227,7 +222,6 @@ public class CalendarPaneTest {
     /**
      * Boundary test for the "negative" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase6() {
@@ -247,7 +241,6 @@ public class CalendarPaneTest {
     /**
      * Boundary test for the "Max" partition in terms on Calendar
      * 
-     * @return model with general case
      */
     @Test
     public void testCase7() {

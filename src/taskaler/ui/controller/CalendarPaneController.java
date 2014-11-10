@@ -193,6 +193,8 @@ public class CalendarPaneController extends BorderPane implements IController {
      * 
      * @param month
      *            The month to compute
+     * @param year
+     *            The year to compute
      * @return returns an array of int with each index representing the the day
      *         and the values representing the total tasks and collective
      *         workload

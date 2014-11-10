@@ -21,7 +21,7 @@ import javafx.scene.shape.Rectangle;
  * @author Cheah Kit Weng, A0059806W
  *
  */
-//@author A0059806W
+// @author A0059806W
 public class CellDateController extends AnchorPane implements IController {
 
     // Current model associated with this controller
@@ -56,8 +56,8 @@ public class CellDateController extends AnchorPane implements IController {
     /**
      * Overloaded constructor
      * 
-     * @param date
-     *            The date to set the cell to
+     * @param model
+     *            The model to bind to this view
      * @throws IOException
      *             Thrown when error met while reading FXML
      */

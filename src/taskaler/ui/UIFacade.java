@@ -183,6 +183,9 @@ public class UIFacade extends Application implements Observer {
 
     /**
      * Method to render default view for the list of task
+     * 
+     * @param list
+     *            List of tasks to display
      */
     public void display(ArrayList<Task> list) {
         display(userDefaultView, list);
@@ -238,8 +241,8 @@ public class UIFacade extends Application implements Observer {
     /**
      * Method to display the calendar for a specified month
      * 
-     * @param month
-     *            Month to be displayed
+     * @param date
+     *            Date to be displayed
      * @param list
      *            List of tasks
      */
@@ -261,6 +264,8 @@ public class UIFacade extends Application implements Observer {
     /**
      * Method to render a view in Task view.
      * 
+     * @param t
+     *            Task to display
      */
     public void display(Task t) {
         if (t == null) {
