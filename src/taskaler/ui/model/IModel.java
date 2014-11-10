@@ -11,6 +11,7 @@ import java.util.HashMap;
  * @author Cheah Kit Weng, A0059806W
  *
  */
+//@author A0059806W
 public interface IModel {
     public static final String VIEW_ATTRIBUTE ="VIEW";
     public static final String VIEW_CALENDAR_PANE ="CalendarPane";

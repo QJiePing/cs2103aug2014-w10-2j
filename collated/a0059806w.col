@@ -1,0 +1,2859 @@
+//@author: a0059806w
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\common\util\parser\calendarToString.java
+	 */
+
+public class calendarToString {
+    // Special constants
+    private static final String REG_MONTH_YEAR = "dd/MM/yyyy";
+
+    /**
+     * Custom calendar parser. The resulting string is in the form of dd/MM/yyyy
+     * 
+     * @param c
+     *            Calendar object to be parsed into string
+     * @return String representation of Calendar object
+     */
+    public static String parseDate(Calendar c) {
+        SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
+        String deadline = formatter.format(c.getTime());
+
+        return deadline;
+    }
+
+    /**
+     * Custom calendar parser. The resulting string is in the form of the
+     * specified regex
+     * 
+     * @param c
+     *            The calendar object to be parsed
+     * @param regex
+     *            The format of the output string
+     * @return String representation of the calendar object
+     */
+    public static String parseDate(Calendar c, String regex) {
+        SimpleDateFormat formatter = new SimpleDateFormat(regex);
+        String deadline = formatter.format(c.getTime());
+
+        return deadline;
+    }
+
+    /**
+     * Custom calendar parser. Converts the Calendar object into an array. The
+     * resulting array has the following fields index 0 => dd index 1 => MM
+     * index 2 => yyyy
+     * 
+     * @param c
+     *            Calendar object to be parsed into array
+     * @return Array representation of Calendar object
+     */
+    public static String[] toArray(Calendar c) {
+        String deadLine = parseDate(c);
+        String[] date = deadLine.split("/");
+        return date;
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\common\util\parser\calendarToString.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\CalendarPaneController.java
+	 */
+
+public class CalendarPaneController extends BorderPane implements IController {
+    // Current model associated with this controller
+    private CalendarPaneModel currentModel = null;
+
+    // Special Constants
+    private static final String FXML_ELEMENT_GROUP = "Group";
+    private static final String FXML_ELEMENT_ANCHOR_PANE = "AnchorPane";
+    private static final String REG_MONTH_YEAR = "MMM yyyy";
+    private static final int MAX_RENDERABLE_ROWS = 5;
+    private static final int MAX_DAYS_IN_A_WEEK = 7;
+    private static final int MAX_NUMBER_OF_DAYS = 31;
+
+    // Binded FXML Elements
+    @FXML
+    private Label lblCurrent;
+
+    @FXML
+    private GridPane gridView;
+
+    /**
+     * Overloaded Constructor for inbuilt goto and listing items
+     * 
+     * @param model
+     *            Model to be associated with this controller
+     * @throws IOException
+     *             Thrown when an error is encountered while updating or
+     *             initializing the controller
+     */
+    public CalendarPaneController(CalendarPaneModel model) throws IOException {
+        currentModel = model;
+        if (currentModel.currentTaskList == null) {
+            currentModel.currentTaskList = new ArrayList<Task>();
+        }
+
+        if (currentModel.currentCalendar == null) {
+            currentModel.currentCalendar = Calendar.getInstance();
+        }
+
+        initialize(common.FXML_CALENDAR);
+        update();
+    }
+
+    /**
+     * Method to set the title of this view
+     * 
+     * @param title
+     *            String to set the title to
+     */
+    public void setTitle(String title) {
+        lblCurrent.setText(title);
+    }
+
+    @Override
+    public void update() throws IOException {
+        goToDate(currentModel.currentCalendar);
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+    }
+
+    /**
+     * Method to populate the calendar grids
+     * 
+     * @param date
+     *            The calendar object to set the month and year of the calendar
+     * @throws IOException
+     *             Thrown if an error is encountered while reading CellDate FXML
+     */
+    private void populateCalendar(Calendar date) throws IOException {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, date.get(Calendar.YEAR));
+        cal.set(Calendar.MONTH, date.get(Calendar.MONTH));
+        cal.set(Calendar.DAY_OF_MONTH, common.OFFSET_BY_ONE);
+
+        cal.setFirstDayOfWeek(Calendar.SUNDAY);
+
+        SimpleDateFormat formatter = new SimpleDateFormat(REG_MONTH_YEAR);
+        String currentMonthAndYear = formatter.format(cal.getTime());
+        setTitle(currentMonthAndYear);
+
+        int[][] tasksByDay = computeMonth(cal.get(Calendar.MONTH),
+                cal.get(Calendar.YEAR));
+
+        int dayOfTheWeekIterator = cal.get(Calendar.DAY_OF_WEEK)
+                - common.OFFSET_BY_ONE;
+        int weekOfTheMonthIterator = common.OFFSET_BY_ONE;
+
+        for (int i = common.OFFSET_BY_ONE; i <= cal
+                .getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+
+            CellDateModel model = new CellDateModel();
+            model.currentDate = i;
+            model.currentNumberOfEvents = tasksByDay[i][common.ZERO_INDEX];
+            model.currentWorkloadFilters = tasksByDay[i][common.OFFSET_BY_ONE];
+            CellDateController day = new CellDateController(model);
+
+            gridView.add(day, dayOfTheWeekIterator, weekOfTheMonthIterator);
+            if (isToday(date, i)) {
+                day.setStyle(String.format("-fx-background-color: %s;",
+                        Configuration.getInstance().getDefaultHeaderColor()));
+            }
+
+            dayOfTheWeekIterator++;
+            if (isThisDaySunday(dayOfTheWeekIterator)) {
+                weekOfTheMonthIterator++;
+                dayOfTheWeekIterator = common.ZERO_INDEX;
+                if (hasOverflowedCalendarUI(weekOfTheMonthIterator)) {
+                    weekOfTheMonthIterator = common.OFFSET_BY_ONE;
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Method to check if the date being processed is today
+     * 
+     * @param date
+     *            The month and year of processing
+     * @param i
+     *            the The day of processing
+     * @return True if the system date is the same as the processing date; False
+     *         otherwise
+     */
+    private boolean isToday(Calendar date, int i) {
+        return Calendar.getInstance().get(Calendar.DAY_OF_MONTH) == i
+                && Calendar.getInstance().get(Calendar.MONTH) == date
+                        .get(Calendar.MONTH)
+                && Calendar.getInstance().get(Calendar.YEAR) == date
+                        .get(Calendar.YEAR);
+    }
+
+    /**
+     * Method to count the number of tasks and obtain the collective workload
+     * for each day of the month
+     * 
+     * @param month
+     *            The month to compute
+     * @return returns an array of int with each index representing the the day
+     *         and the values representing the total tasks and collective
+     *         workload
+     */
+    private int[][] computeMonth(int month, int year) {
+        int[][] result = new int[MAX_NUMBER_OF_DAYS + common.OFFSET_BY_ONE][2];
+
+        for (int i = common.ZERO_INDEX; i < currentModel.currentTaskList.size(); i++) {
+            Task currentTask = currentModel.currentTaskList.get(i);
+            Calendar currentTime = Calendar.getInstance();
+            if (currentTask instanceof DeadLineTask) {
+                currentTime = ((DeadLineTask) currentTask).getDeadline();
+                if (currentTime.get(Calendar.MONTH) == month
+                        && currentTime.get(Calendar.YEAR) == year) {
+                    result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
+
+                    if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
+                            .getTaskWorkLoad())) {
+                        result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = mapStringToWorkload(currentTask
+                                .getTaskWorkLoad());
+                    }
+                }
+            } else if (currentTask instanceof RepeatedTask) {
+                RepeatedTask currentRepeated = (RepeatedTask) currentTask;
+                for (int j = common.ZERO_INDEX; j < currentRepeated
+                        .getRepeatedDate().size(); j++) {
+                    currentTime = currentRepeated.getRepeatedDate().get(j);
+                    if (currentTime.get(Calendar.MONTH) == month
+                            && currentTime.get(Calendar.YEAR) == year) {
+                        result[currentTime.get(Calendar.DATE)][common.ZERO_INDEX]++;
+
+                        if (result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] < mapStringToWorkload(currentTask
+                                .getTaskWorkLoad())) {
+                            result[currentTime.get(Calendar.DATE)][common.OFFSET_BY_ONE] = mapStringToWorkload(currentTask
+                                    .getTaskWorkLoad());
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Helper method to map a string workload to a integer representation
+     * 
+     * @param workload
+     *            String to be converted
+     * @return Integer representation of the workload
+     */
+    private int mapStringToWorkload(String workload) {
+        if (workload.compareToIgnoreCase(Task.WORKLOAD_NONE) == 0) {
+            return common.RECTANGLE_COLOR_GREY;
+        } else if (workload.compareToIgnoreCase(Task.WORKLOAD_LOW) == 0) {
+            return common.RECTANGLE_COLOR_GREEN;
+        } else if (workload.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
+            return common.RECTANGLE_COLOR_ORANGE;
+        } else if (workload.compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0) {
+            return common.RECTANGLE_COLOR_RED;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Method to detect if the number of cells has overflowed the maximum number
+     * of rows
+     * 
+     * @param weekOfTheMonthIterator
+     *            the number of rows to check
+     * @return True if overflow detected; False otherwise
+     */
+    private boolean hasOverflowedCalendarUI(int weekOfTheMonthIterator) {
+        return weekOfTheMonthIterator > MAX_RENDERABLE_ROWS;
+    }
+
+    /**
+     * Method to determine if the day is next Sunday
+     * 
+     * @param dayOfTheWeekIterator
+     *            The day to be checked
+     * @return True if the day is next Sunday; False otherwise
+     */
+    private boolean isThisDaySunday(int dayOfTheWeekIterator) {
+        return dayOfTheWeekIterator % MAX_DAYS_IN_A_WEEK == 0;
+    }
+
+    /**
+     * Method to move calendar to a specified month and year
+     * 
+     * @param now
+     *            The calendar object that represent the desired month and year
+     * @throws IOException
+     *             Thrown if an IO error is encountered while loading CellDate
+     */
+    public void goToDate(Calendar now) throws IOException {
+        clearGrid();
+        populateCalendar(now);
+    }
+
+    /**
+     * Method to clear the elements in the calendar
+     * 
+     */
+    private void clearGrid() {
+        Object[] list = gridView.getChildren().toArray();
+        for (Object node : list) {
+            if (!node.getClass().getName().contains(FXML_ELEMENT_ANCHOR_PANE)
+                    && !node.getClass().getName().contains(FXML_ELEMENT_GROUP)) {
+                gridView.getChildren().remove(node);
+            }
+        }
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\CalendarPaneController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\CellDateController.java
+	 */
+
+public class CellDateController extends AnchorPane implements IController {
+
+    // Current model associated with this controller
+    private CellDateModel currentModel = null;
+
+    // Special Constants
+    private static final int MAX_NUMBER_OF_TASKS_FOR_DISPLAY = 9;
+    private static final int MIN_NUMBER_OF_TASK_FOR_DISPLAY = 1;
+
+    // Binded FXML Elements
+    @FXML
+    private Label lblDate;
+
+    @FXML
+    private AnchorPane paneBody;
+
+    @FXML
+    private Label lblNumber;
+
+    @FXML
+    private Rectangle rectangleGrey;
+
+    @FXML
+    private Rectangle rectangleGreen;
+
+    @FXML
+    private Rectangle rectangleOrange;
+
+    @FXML
+    private Rectangle rectangleRed;
+
+    /**
+     * Overloaded constructor
+     * 
+     * @param date
+     *            The date to set the cell to
+     * @throws IOException
+     *             Thrown when error met while reading FXML
+     */
+    public CellDateController(CellDateModel model) throws IOException {
+
+        currentModel = model;
+
+        initialize(common.FXML_CELL_DATE);
+        update();
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+    }
+
+    /**
+     * Method to set the title for this view
+     * 
+     * @param title
+     *            String to be set to
+     */
+    public void setTitle(String title) {
+        lblDate.setText(title);
+    }
+
+    @Override
+    public void update() {
+        setTitle(currentModel.currentDate + common.EMPTY_STRING);
+        int totalNumberOfTasks = currentModel.currentNumberOfEvents;
+        int workloadFilter = currentModel.currentWorkloadFilters;
+        if (totalNumberOfTasks > 0) {
+            boolean isGreyVisible = false;
+            boolean isGreenVisible = false;
+            boolean isOrangeVisible = false;
+            boolean isRedVisible = false;
+            if (workloadFilter == common.RECTANGLE_COLOR_RED) {
+                isRedVisible = true;
+            } else if (workloadFilter == common.RECTANGLE_COLOR_ORANGE) {
+                isOrangeVisible = true;
+            } else if (workloadFilter == common.RECTANGLE_COLOR_GREEN) {
+                isGreenVisible = true;
+            } else {
+                isGreyVisible = true;
+            }
+
+            setNumberOfTasks(totalNumberOfTasks);
+            setCircleVisible(isGreyVisible, isGreenVisible, isOrangeVisible,
+                    isRedVisible);
+            setBodyVisible(true);
+        } else {
+            setBodyVisible(false);
+        }
+    }
+
+    /**
+     * Method to make the body of the cell visible
+     * 
+     * @param isVisible
+     *            The boolean to determine if the body is visible
+     */
+    private void setBodyVisible(boolean isVisible) {
+        paneBody.setVisible(isVisible);
+    }
+
+    /**
+     * Method to set the number of tasks
+     * 
+     * @param totalNumberOfTasks
+     *            The total number of tasks
+     */
+    private void setNumberOfTasks(int totalNumberOfTasks) {
+        if (totalNumberOfTasks < MIN_NUMBER_OF_TASK_FOR_DISPLAY) {
+            setBodyVisible(false);
+            return;
+        }
+        if (totalNumberOfTasks > MAX_NUMBER_OF_TASKS_FOR_DISPLAY) {
+            lblNumber.setText(MAX_NUMBER_OF_TASKS_FOR_DISPLAY
+                    + common.PLUS_STRING);
+        } else {
+            lblNumber.setText(totalNumberOfTasks + common.EMPTY_STRING);
+        }
+    }
+
+    /**
+     * Method to reset visibility of all circles to false
+     * 
+     */
+    private void resetCircleVisibility() {
+        rectangleGrey.setVisible(false);
+        rectangleGreen.setVisible(false);
+        rectangleOrange.setVisible(false);
+        rectangleRed.setVisible(false);
+
+    }
+
+    /**
+     * Method to set the visibility of each circle
+     * 
+     * @param grey
+     *            Boolean for the visibility of the grey circle
+     * @param green
+     *            Boolean for the visibility of the green circle
+     * @param orange
+     *            Boolean for the visibility of the orange circle
+     * @param red
+     *            Boolean for the visibility of the red circle
+     */
+    private void setCircleVisible(boolean grey, boolean green, boolean orange,
+            boolean red) {
+        resetCircleVisibility();
+        setCircleVisible(common.RECTANGLE_COLOR_GREY, grey);
+        setCircleVisible(common.RECTANGLE_COLOR_GREEN, green);
+        setCircleVisible(common.RECTANGLE_COLOR_ORANGE, orange);
+        setCircleVisible(common.RECTANGLE_COLOR_RED, red);
+    }
+
+    /**
+     * Private method to set the visibility of a circle
+     * 
+     * @param color
+     *            The color of the circle to be set
+     * @param isVisible
+     *            The boolean to determine if circle is visible
+     */
+    private void setCircleVisible(int color, boolean isVisible) {
+        switch (color) {
+        case common.RECTANGLE_COLOR_GREY:
+            rectangleGrey.setVisible(isVisible);
+        case common.RECTANGLE_COLOR_GREEN:
+            rectangleGreen.setVisible(isVisible);
+        case common.RECTANGLE_COLOR_ORANGE:
+            rectangleOrange.setVisible(isVisible);
+        case common.RECTANGLE_COLOR_RED:
+            rectangleRed.setVisible(isVisible);
+
+        }
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\CellDateController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\common.java
+	 */
+
+public final class common {
+    
+    // Color constants
+    public static final int RECTANGLE_COLOR_GREY    = 1;
+    public static final int RECTANGLE_COLOR_GREEN   = 2;
+    public static final int RECTANGLE_COLOR_ORANGE  = 4;
+    public static final int RECTANGLE_COLOR_RED     = 8;
+    
+    // FXML Files 
+    public static final String FXML_ROOT            = "/taskaler/ui/view/RootView.fxml";
+    public static final String FXML_CALENDAR        = "/taskaler/ui/view/CalendarPaneView.fxml";
+    public static final String FXML_CELL_DATE       = "/taskaler/ui/view/CellDateView.fxml";
+    public static final String FXML_TASK_PANE       = "/taskaler/ui/view/TaskPaneView.fxml";
+    public static final String FXML_LIST_PANE       = "/taskaler/ui/view/ListPaneView.fxml";
+    public static final String FXML_TEXT_PANE       = "/taskaler/ui/view/TextPaneView.fxml";
+    public static final String FXML_TUTORIAL_PANE   = "/taskaler/ui/view/TutorialPaneView.fxml";
+    
+    // Global Constants
+    public static final int ZERO_INDEX      = 0;
+    public static final int OFFSET_BY_ONE   = 1;
+    public static final String EMPTY_STRING = "";
+    public static final String PLUS_STRING  = "+";
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\common.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\IController.java
+	 */
+
+public interface IController {
+
+    /**
+     * Method to initialize the view
+     * 
+     * @throws IOException
+     *             Thrown if an error is encountered while loading FXML file
+     * 
+     */
+    public abstract void initialize(String FXML) throws IOException;
+
+    /**
+     * Method to update the view
+     * 
+     * @throws IOException
+     *             Thrown if an IO error is encountered while updating a view
+     */
+    public abstract void update() throws IOException;
+
+    /**
+     * Method to get the current state of the view
+     * 
+     * @return HashMap representation of the current view
+     */
+    public abstract HashMap<String, String> getState();
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\IController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\ListPaneController.java
+	 */
+
+public class ListPaneController extends TitledPane implements IController {
+
+    // Current model associated with this controller
+    private ListPaneModel currentModel;
+
+    // Class Variables
+    private Configuration config = null;
+
+    // Special Constants
+    private static final String MSG_NOTHING_TO_DISPLAY = "Nothing to display";
+    private static final String MISMATCHED_NUMBER_OF_TASKS_TO_SUBHEADERS_MSG = "Mismatched number of tasks to subheaders";
+    private static final int NAME_COL_INDEX = 3;
+    private static final int DATE_COL_INDEX = 2;
+    private static final int ID_COL_INDEX = 1;
+    private static final String DEFAULT_DATE_VALUE = "-";
+    private static final int DATE_WIDTH = 83;
+    private static final int NAME_WIDTH = 225;
+    private static final int ID_WIDTH = 40;
+    private static final int MIN_CATEGORY_HEIGHT = 17;
+    private static final int CATEGORY_WIDTH = 30;
+    private static final String REPEAT_HEADER = "R";
+    private static final String DEADLINE_HEADER = "D";
+    private static final String FLOAT_HEADER = "F";
+    private static final int MIN_SPAN = 1;
+    private static final int MAX_COL_SPAN = 5;
+    private static final String FX_BACKGROUND_COLOR_STYLE = "-fx-background-color: %s;";
+    private static final double MAX_WIDTH_VIEW = 500.0;
+    private static final String GREEN_COLOR = "#9bbb59";
+    private static final String ORANGE_COLOR = "#f79646";
+    private static final String RED_COLOR = "#c0504d";
+    private static final String GREY_COLOR = "#a6a6a6";
+    private static final int WORKLOAD_COL_INDEX = 4;
+    private static final double SCROLL_AMOUNT = 0.1;
+
+    // Binded FXML Elements
+    @FXML
+    private TitledPane paneListView;
+
+    @FXML
+    private GridPane gridList;
+
+    @FXML
+    private ScrollPane scrollBody;
+
+    /**
+     * Default overloaded constructor
+     * 
+     * @param model
+     *            Model to be associated with this view
+     * @throws IOException
+     *             Thrown if error encountered while reading FXML
+     */
+    public ListPaneController(ListPaneModel model) throws IOException {
+        config = Configuration.getInstance();
+        currentModel = model;
+
+        initialize(common.FXML_LIST_PANE);
+
+        update();
+
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+    }
+
+    @Override
+    public void update() throws IOException {
+        setTitle(currentModel.currentTitle);
+        if (currentModel.arrayOfTaskLists.size() > 0
+                && currentModel.currentSubHeaders.size() > 0) {
+            populateList(currentModel.currentSubHeaders,
+                    currentModel.arrayOfTaskLists);
+        } else {
+            populateList(currentModel.currentItemList);
+        }
+
+    }
+
+    /**
+     * Method to set the title of this view
+     * 
+     * @param title
+     *            String to set the title to
+     */
+    public void setTitle(String title) {
+        paneListView.setText(title);
+    }
+
+    /**
+     * Method to populate a dynamic list with data
+     * 
+     * @param subheaders
+     *            Headers of each Category
+     * @param arrayOfTaskLists
+     *            Array of task lists associated to the headers
+     */
+    private void populateList(ArrayList<String> subheaders,
+            ArrayList<ArrayList<Task>> arrayOfTaskLists) {
+        if (subheaders.size() != arrayOfTaskLists.size()) {
+            createSubHeader(MISMATCHED_NUMBER_OF_TASKS_TO_SUBHEADERS_MSG,
+                    config.getDefaultRowColor(), common.OFFSET_BY_ONE);
+            return;
+        }
+        int currentRow = common.OFFSET_BY_ONE;
+        for (int i = 0; i < subheaders.size(); i++) {
+            createSubHeader(subheaders.get(i), config.getDefaultHeaderColor(),
+                    currentRow);
+            currentRow++;
+            ArrayList<FloatTask> resultFloating = new ArrayList<FloatTask>();
+            ArrayList<RepeatedTask> resultRepeated = new ArrayList<RepeatedTask>();
+            ArrayList<DeadLineTask> resultDeadline = new ArrayList<DeadLineTask>();
+
+            for (Task t : arrayOfTaskLists.get(i)) {
+                if (t instanceof FloatTask) {
+                    resultFloating.add((FloatTask) t);
+                } else if (t instanceof RepeatedTask) {
+                    resultRepeated.add((RepeatedTask) t);
+                } else if (t instanceof DeadLineTask) {
+                    resultDeadline.add((DeadLineTask) t);
+                }
+
+            }
+            currentRow = insertRows(resultFloating, resultRepeated,
+                    resultDeadline, currentRow);
+        }
+    }
+
+    /**
+     * Method to populate the view with data
+     * 
+     * @param list
+     *            The list to display on the view
+     */
+    private void populateList(ArrayList<Task> list) {
+        if (list == null || list.size() < 1) {
+            createSubHeader(MSG_NOTHING_TO_DISPLAY,
+                    config.getDefaultRowColor(), common.OFFSET_BY_ONE);
+            return;
+        }
+
+        ArrayList<FloatTask> resultFloating = new ArrayList<FloatTask>();
+        ArrayList<RepeatedTask> resultRepeated = new ArrayList<RepeatedTask>();
+        ArrayList<DeadLineTask> resultDeadline = new ArrayList<DeadLineTask>();
+
+        for (Task t : list) {
+            if (t instanceof FloatTask) {
+                resultFloating.add((FloatTask) t);
+            } else if (t instanceof RepeatedTask) {
+                resultRepeated.add((RepeatedTask) t);
+            } else if (t instanceof DeadLineTask) {
+                resultDeadline.add((DeadLineTask) t);
+            }
+
+        }
+        insertRows(resultFloating, resultRepeated, resultDeadline,
+                common.OFFSET_BY_ONE);
+    }
+
+    /**
+     * Method to create a sub header for the list
+     * 
+     * @param msg
+     *            The string that will be displayed in the sub header
+     * @param color
+     *            The color to set the sub header to
+     * @param pos
+     *            The position of the sub header
+     */
+    private void createSubHeader(String msg, String color, int pos) {
+        Label statusLabel = new Label(msg);
+        statusLabel.setMinWidth(MAX_WIDTH_VIEW);
+        statusLabel.setAlignment(Pos.CENTER);
+        statusLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+        gridList.add(statusLabel, common.ZERO_INDEX, pos, MAX_COL_SPAN,
+                MIN_SPAN);
+    }
+
+    /**
+     * Method to add all tasks to the grid list
+     * 
+     * @param floatingTaskList
+     *            List of floating tasks
+     * @param repeatedTaskList
+     *            List of repeated tasks
+     * @param deadlineTaskList
+     *            List of deadline tasks
+     * @return Integer representing the current position of the pointer down the
+     *         list
+     */
+    private int insertRows(ArrayList<FloatTask> floatingTaskList,
+            ArrayList<RepeatedTask> repeatedTaskList,
+            ArrayList<DeadLineTask> deadlineTaskList, int currentPosition) {
+        int result = insertRows(FLOAT_HEADER, currentPosition,
+                floatingTaskList, Configuration.getInstance()
+                        .getDefaultAltRowColor());
+        result = insertRows(DEADLINE_HEADER, result, deadlineTaskList,
+                Configuration.getInstance().getDefaultRowColor());
+        result = insertRows(REPEAT_HEADER, result, repeatedTaskList,
+                Configuration.getInstance().getDefaultAltRowColor());
+
+        return result;
+    }
+
+    /**
+     * Method to programmically scroll up the view
+     * 
+     */
+    public void scrollUp() {
+        if (scrollBody.getHeight() >= gridList.getHeight()) {
+            return;
+        }
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                - SCROLL_AMOUNT);
+    }
+
+    /**
+     * Mehtod to programmically scroll down the view
+     * 
+     */
+    public void scrollDown() {
+        if (scrollBody.getHeight() >= gridList.getHeight()) {
+            return;
+        }
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                + SCROLL_AMOUNT);
+    }
+
+    /**
+     * Method to add a single list of tasks into the grid list
+     * 
+     * @param category
+     *            Category of this batch of tasks
+     * @param startIndex
+     *            Index to to start from on the grid
+     * @param taskList
+     *            List of tasks
+     * @param color
+     *            Color to assign to this category of tasks
+     * @return Index that the next list should start from
+     */
+    private <T> int insertRows(String category, int startIndex,
+            ArrayList<T> taskList, String color) {
+        if (taskList.size() < 1) {
+            return startIndex;
+        }
+        Label categoryLabel = new Label(category);
+        categoryLabel.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+        // categoryLabel.setRotate(-90.0);
+        // categoryLabel.setTranslateY(-50);
+        categoryLabel.setAlignment(Pos.CENTER);
+
+        int span = taskList.size();
+        AnchorPane container = new AnchorPane();
+        categoryLabel.setPrefWidth(CATEGORY_WIDTH);
+        categoryLabel.setPrefHeight(MIN_CATEGORY_HEIGHT * span);
+
+        AnchorPane.setTopAnchor(categoryLabel, 0.0);
+        AnchorPane.setBottomAnchor(categoryLabel, 0.0);
+        container.getChildren().add(categoryLabel);
+        GridPane.setRowSpan(container, span);
+        gridList.add(container, common.ZERO_INDEX, startIndex, MIN_SPAN, span);
+
+        for (int i = 0; i < taskList.size(); i++) {
+            Task currentTask = (Task) taskList.get(i);
+            Label id = new Label(currentTask.getTaskID());
+            id.setPrefWidth(ID_WIDTH);
+            id.setAlignment(Pos.CENTER);
+
+            Label name = new Label(currentTask.getTaskName());
+            name.setPrefWidth(NAME_WIDTH);
+            name.setAlignment(Pos.CENTER);
+
+            Label date = new Label(DEFAULT_DATE_VALUE);
+            date.setPrefWidth(DATE_WIDTH);
+            date.setAlignment(Pos.CENTER);
+
+            String loadColor = GREY_COLOR;
+
+            if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                    Task.WORKLOAD_HIGH) == 0) {
+                loadColor = RED_COLOR;
+            } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                    Task.WORKLOAD_MEDIUM) == 0) {
+                loadColor = ORANGE_COLOR;
+            } else if (currentTask.getTaskWorkLoad().compareToIgnoreCase(
+                    Task.WORKLOAD_LOW) == 0) {
+                loadColor = GREEN_COLOR;
+            }
+            Label workload = new Label();
+            workload.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE,
+                    loadColor));
+            workload.setPrefWidth(ID_WIDTH);
+
+            if (currentTask instanceof RepeatedTask) {
+                RepeatedTask taskHolder = (RepeatedTask) currentTask;
+                String repeatPattern = taskHolder.getPattern();
+                date.setText(repeatPattern);
+            } else if (currentTask instanceof DeadLineTask) {
+                DeadLineTask taskHolder = (DeadLineTask) currentTask;
+                Calendar deadline = taskHolder.getDeadline();
+                date.setText(calendarToString.parseDate(deadline));
+            }
+            if (currentTask.getTaskStatus()) {
+                color = config.getDefaultDoneColor();
+            } else if (isEvenRow(startIndex, i)) {
+                color = config.getDefaultAltRowColor();
+            } else {
+                color = config.getDefaultRowColor();
+            }
+            date.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+            name.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+            id.setStyle(String.format(FX_BACKGROUND_COLOR_STYLE, color));
+            gridList.add(id, ID_COL_INDEX, startIndex + i);
+            gridList.add(date, DATE_COL_INDEX, startIndex + i);
+            gridList.add(name, NAME_COL_INDEX, startIndex + i);
+            gridList.add(workload, WORKLOAD_COL_INDEX, startIndex + i);
+        }
+        return startIndex + span;
+    }
+
+    /**
+     * Method to check if the pointer at an even row
+     * 
+     * @param startIndex
+     *            Start index for this category of tasks
+     * @param i
+     *            Offset
+     * @return True if pointer is at an even row; False otherwise
+     */
+    private boolean isEvenRow(int startIndex, int i) {
+        return (startIndex + i) % 2 == 0;
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\ListPaneController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\RootController.java
+	 */
+
+public class RootController extends BorderPane implements IController {
+
+    // Special Constants
+    private static final String CONFIRMATION_MESSAGE = "ARE YOU SURE? KEY IN YES IF YOU ARE SURE";
+    public static final String PASSCODE = "YES";
+
+    // Current model associated with this controller
+    private RootModel currentModel = null;
+
+    // Class variables
+    private String[] commands = null;
+    private static final String SUGGESTION_BOX_LABEL = "Suggestion(s):";
+    private static final String CHAR_ENTER = "\r";
+    private static final String CHAR_BACKSPACE = "\b";
+
+    // FXML Element Bindings
+    @FXML
+    private Pane anchorPaneDisplay;
+
+    @FXML
+    private TextField txtCmdInput;
+
+    @FXML
+    private ListView<String> listCmd;
+
+    @FXML
+    private Label lblToast;
+
+    @FXML
+    private Label lblNotDone;
+
+    @FXML
+    private Label lblFloating;
+
+    @FXML
+    private Menu menuCmd;
+
+    /**
+     * Default constructor
+     * 
+     * @param model
+     *            Model to be associated with this controller
+     * @throws IOException
+     *             Thrown if an error is encountered while reading the FXML file
+     */
+    public RootController(RootModel model) throws IOException {
+        currentModel = model;
+
+        initialize(common.FXML_ROOT);
+        update();
+    }
+
+    @Override
+    public void update() {
+        if (!currentModel.notification.isEmpty()) {
+            showToast(currentModel.notification);
+        }
+
+        commands = ParserLibrary.getCommands();
+        updateMenu();
+        update(currentModel.totalNotDone, currentModel.totalFloating);
+    }
+
+    /**
+     * Method to generate the command help in the menu
+     * 
+     */
+    private void updateMenu() {
+        for (String cmd : commands) {
+            MenuItem item = new MenuItem(cmd);
+            menuCmd.getItems().add(item);
+        }
+
+    }
+
+    /**
+     * Method to update only the score board
+     * 
+     * @param totalNotDone
+     *            Total number of tasks that are not done
+     * @param totalFloating
+     *            Total number of tasks that are not confirmed
+     */
+    public void update(int totalNotDone, int totalFloating) {
+        currentModel.totalNotDone = totalNotDone;
+        currentModel.totalFloating = totalFloating;
+        lblNotDone.setText(totalNotDone + common.EMPTY_STRING);
+        lblFloating.setText(totalFloating + common.EMPTY_STRING);
+
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+    }
+
+    /**
+     * Method to ask the user for confirmation on an action
+     * 
+     */
+    public Boolean showConfirmation() {
+        String input = JOptionPane.showInputDialog(null, CONFIRMATION_MESSAGE);
+
+        return PASSCODE.compareTo(input) == 0;
+    }
+
+    /**
+     * Method to show a toast notification on the interface
+     * 
+     * @param text
+     *            Text to be shown on the toast
+     */
+    public void showToast(String text) {
+        currentModel.notification = text;
+        lblToast.setText(text);
+        lblToast.setVisible(true);
+        FadeTransition ft = new FadeTransition(Duration.millis(5000), lblToast);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+        ft.play();
+    }
+
+    /**
+     * Method which is binded to the KeyPressed event of txtCmdInput element
+     * This method passes user input to the controller
+     * 
+     * @param e
+     *            Key pressed event
+     */
+    @FXML
+    private void txtCmdInputKeyPressed(KeyEvent e) {
+        if (e.getCode() == KeyCode.ENTER) {
+            String cmd = txtCmdInput.getText();
+            txtCmdInput.clear();
+            Controller.getInstance().executeCMD(cmd);
+            listCmd.setVisible(false);
+        } else if (e.getCode() == KeyCode.UP) {
+            Node currentDisplay = anchorPaneDisplay.getChildren().get(
+                    common.ZERO_INDEX);
+            if (currentDisplay instanceof ListPaneController) {
+                ((ListPaneController) currentDisplay).scrollUp();
+            } else if (currentDisplay instanceof TextPaneController) {
+                ((TextPaneController) currentDisplay).scrollUp();
+            }
+        } else if (e.getCode() == KeyCode.DOWN) {
+            Node currentDisplay = anchorPaneDisplay.getChildren().get(
+                    common.ZERO_INDEX);
+            if (currentDisplay instanceof ListPaneController) {
+                ((ListPaneController) currentDisplay).scrollDown();
+            } else if (currentDisplay instanceof TextPaneController) {
+                ((TextPaneController) currentDisplay).scrollDown();
+            }
+        }
+
+    }
+
+    /**
+     * Method which is binded to the KeyTyped event of txtCmdInput element This
+     * method creates the suggestion view
+     * 
+     * @param e
+     *            Key typed event
+     */
+    @FXML
+    private void txtcmdInputKetTyped(KeyEvent e) {
+        if (!isEnterKey(e)
+                && !(txtCmdInput.getText().isEmpty() && isBackSpace(e))) {
+            String input = txtCmdInput.getText();
+
+            if (!isBackSpace(e)) {
+                input = input + e.getCharacter();
+            }
+            ObservableList<String> suggestions = FXCollections
+                    .observableArrayList(SUGGESTION_BOX_LABEL);
+            for (int i = 0; i < commands.length; i++) {
+                if (commands[i].startsWith(input)) {
+                    suggestions.add(commands[i]);
+                }
+            }
+
+            if (suggestions.size() > 1) {
+                listCmd.setItems(suggestions);
+                listCmd.setPrefHeight(30 * suggestions.size() + 2);
+                listCmd.setMinHeight(30 * suggestions.size() + 2);
+                AnchorPane.setBottomAnchor(listCmd, 0.0);
+                listCmd.setVisible(true);
+                return;
+            }
+        }
+        listCmd.setVisible(false);
+
+    }
+
+    /**
+     * Method to check if the key is a backspace key
+     * 
+     * @param e
+     *            Key event to check
+     * @return True if key is backspace key; False otherwise
+     */
+    private boolean isEnterKey(KeyEvent e) {
+        return e.getCharacter().compareToIgnoreCase(CHAR_ENTER) == 0;
+    }
+
+    /**
+     * Method to check if the key is a enter key
+     * 
+     * @param e
+     *            Key event to check
+     * @return True if key is enter key; False otherwise
+     */
+    private boolean isBackSpace(KeyEvent e) {
+        return e.getCharacter().compareToIgnoreCase(CHAR_BACKSPACE) == 0;
+    }
+
+    /**
+     * Method to render the list view
+     * 
+     * @param list
+     *            The list to be rendered
+     * @throws IOException
+     *             Thrown if any IO error was encountered while rendering
+     *             ListPane
+     */
+    public void displayList(String title, ArrayList<Task> list)
+            throws IOException {
+        anchorPaneDisplay.getChildren().clear();
+        ListPaneModel model = new ListPaneModel();
+        model.currentTitle = title;
+        model.currentItemList = list;
+        ListPaneController pane = new ListPaneController(model);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
+     * Method to render a list with multiple sub headers
+     * 
+     * @param title
+     *            String to set the title of the list
+     * @param header
+     *            The array of sub headers
+     * @param listOfTaskList
+     *            The array of task lists
+     * @throws IOException
+     *             Thrown if an error was encountered while rendering list
+     */
+    public void displayDynamicList(String title, ArrayList<String> header,
+            ArrayList<ArrayList<Task>> listOfTaskList) throws IOException {
+        anchorPaneDisplay.getChildren().clear();
+        ListPaneModel model = new ListPaneModel();
+        model.currentTitle = title;
+        model.currentSubHeaders = header;
+        model.arrayOfTaskLists = listOfTaskList;
+        ListPaneController pane = new ListPaneController(model);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
+     * Method to render the calendar view
+     * 
+     * @param list
+     *            List of tasks
+     * @param cal
+     *            The calendar to be displayed
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering Calendar
+     */
+    public void displayCalendar(ArrayList<Task> list, Calendar cal)
+            throws IOException {
+        anchorPaneDisplay.getChildren().clear();
+
+        CalendarPaneModel model = new CalendarPaneModel();
+        model.currentCalendar = cal;
+        model.currentMonth = cal.get(Calendar.MONTH) + common.OFFSET_BY_ONE;
+        model.currentYear = cal.get(Calendar.YEAR);
+        model.currentTaskList = list;
+
+        CalendarPaneController pane = new CalendarPaneController(model);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
+     * Method to render a view for an individual task
+     * 
+     * @param t
+     *            The task to be rendered
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering
+     *             TaskPanee
+     */
+    public void displayTask(Task t) throws IOException {
+        anchorPaneDisplay.getChildren().clear();
+        TaskPaneModel model = new TaskPaneModel();
+        model.task = t;
+        model.taskName = t.getTaskName();
+        model.taskID = t.getTaskID();
+        model.taskStatus = t.getTaskStatus();
+        model.taskWorkload = parseWorkload(t.getTaskWorkLoad());
+        model.taskDescription = t.getTaskDescription();
+
+        if (t.getStartTime() != null) {
+            model.taskStartTime = calendarToString.parseDate(t.getStartTime(),
+                    Configuration.getInstance().getTimeFormat());
+        }
+
+        if (t.getEndTime() != null) {
+            model.taskEndTime = calendarToString.parseDate(t.getEndTime(),
+                    Configuration.getInstance().getTimeFormat());
+        }
+        if (t instanceof FloatTask) {
+            model.taskDate = calendarToString.parseDate(
+                    t.getTaskCreationDate(), Configuration.getInstance()
+                            .getDateFormat());
+        } else if (t instanceof DeadLineTask) {
+            model.taskDate = calendarToString
+                    .parseDate(((DeadLineTask) t).getDeadline(), Configuration
+                            .getInstance().getDateFormat());
+        } else if (t instanceof RepeatedTask) {
+            model.taskDate = calendarToString.parseDate(((RepeatedTask) t)
+                    .getEndRepeatedDate(), Configuration.getInstance()
+                    .getDateFormat());
+            model.taskPattern = RepeatedTask
+                    .patternToEnglish(((RepeatedTask) t).getPattern());
+        }
+        TaskPaneController pane = new TaskPaneController(model);
+        anchorPaneDisplay.getChildren().add(pane);
+
+    }
+
+    /**
+     * Method to render a view that contains text only
+     * 
+     * @param title
+     *            Title for the view
+     * @param text
+     *            The body text
+     * @throws IOException
+     *             Thrown if an IO error is encountered while rendering text
+     *             pane
+     */
+    public void displayText(String title, String text) throws IOException {
+        anchorPaneDisplay.getChildren().clear();
+        TextPaneModel model = new TextPaneModel();
+        model.title = title;
+        model.textBody = text;
+        TextPaneController pane = new TextPaneController(model);
+        anchorPaneDisplay.getChildren().add(pane);
+    }
+
+    /**
+     * Method to convert the string representation of the workload attribute to
+     * integer representation
+     * 
+     * @param taskWorkLoad
+     *            Value to be parsed
+     * @return Integer representation of value
+     */
+    private int parseWorkload(String taskWorkLoad) {
+        if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_LOW) == 0) {
+            return common.RECTANGLE_COLOR_GREEN;
+        } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_MEDIUM) == 0) {
+            return common.RECTANGLE_COLOR_ORANGE;
+        } else if (taskWorkLoad.compareToIgnoreCase(Task.WORKLOAD_HIGH) == 0) {
+            return common.RECTANGLE_COLOR_RED;
+        } else {
+            return common.RECTANGLE_COLOR_GREY;
+        }
+    }
+
+    /**
+     * Method to give focus to the window
+     * 
+     */
+    public void giveFocus() {
+        txtCmdInput.requestFocus();
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return ((IController) anchorPaneDisplay.getChildren().get(
+                common.ZERO_INDEX)).getState();
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\RootController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\TaskPaneController.java
+	 */
+
+public class TaskPaneController extends BorderPane implements IController {
+    // Current model associated with this controller
+    private TaskPaneModel currentModel = null;
+
+    // Binded FXML Elements
+    @FXML
+    private Label lblDate;
+
+    @FXML
+    private Label lblHigh;
+
+    @FXML
+    private Label lblMedium;
+
+    @FXML
+    private Label lblLow;
+
+    @FXML
+    private Label lblDefault;
+
+    @FXML
+    private Label lblStatus;
+
+    @FXML
+    private ImageView imgCheck;
+
+    @FXML
+    private Label lblTaskID;
+
+    @FXML
+    private Label lblTaskName;
+
+    @FXML
+    private TextArea txtTaskDescription;
+
+    @FXML
+    private Label lblFloatingHeader;
+
+    @FXML
+    private Label lblDeadlineHeader;
+
+    @FXML
+    private Label lblRepeatHeader;
+
+    @FXML
+    private Label lblPatternHeader;
+
+    @FXML
+    private Label lblPattern;
+
+    @FXML
+    private Label lblStartTime;
+
+    @FXML
+    private Label lblEndTime;
+
+    /**
+     * Default constructor
+     * 
+     * @param model
+     *            Model to be associated with this view
+     * @throws IOException
+     *             Thrown if error encountered while reading FXML
+     */
+    public TaskPaneController(TaskPaneModel model) throws IOException {
+
+        currentModel = model;
+
+        initialize(common.FXML_TASK_PANE);
+        update();
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+    }
+
+    /**
+     * Method to set the title of the view
+     * 
+     * @param title
+     *            String to set the title to
+     */
+    public void setTitle(String title) {
+        lblTaskName.setText(title);
+    }
+
+    @Override
+    public void update() {
+        setTitle(currentModel.taskName);
+        populateDetails(currentModel);
+
+    }
+
+    /**
+     * Method to populate the fields on the view
+     * 
+     * @param model
+     *            The model containing the value fields
+     */
+    public void populateDetails(TaskPaneModel model) {
+        lblTaskID.setText(model.taskID);
+        lblStartTime.setText(model.taskStartTime);
+        lblEndTime.setText(model.taskEndTime);
+        if (model.taskStatus) {
+            lblStatus.setText(TaskPaneModel.DONE_VALUE);
+            imgCheck.setVisible(true);
+        } else {
+            lblStatus.setText(TaskPaneModel.NOT_DONE_VALUE);
+            imgCheck.setVisible(false);
+        }
+        lblDate.setText(model.taskDate);
+        txtTaskDescription.setText(model.taskDescription);
+
+        switch (model.taskWorkload) {
+        case common.RECTANGLE_COLOR_GREEN:
+            lblLow.setVisible(true);
+            lblDefault.setVisible(false);
+            break;
+        case common.RECTANGLE_COLOR_ORANGE:
+            lblMedium.setVisible(true);
+            lblDefault.setVisible(false);
+            break;
+        case common.RECTANGLE_COLOR_RED:
+            lblHigh.setVisible(true);
+            lblDefault.setVisible(false);
+            break;
+        case common.RECTANGLE_COLOR_GREY:
+            lblDefault.setVisible(true);
+            break;
+        }
+
+        if (model.task instanceof FloatTask) {
+            setType(true, false, false, null);
+        } else if (model.task instanceof DeadLineTask) {
+            setType(false, true, false, null);
+        } else if (model.task instanceof RepeatedTask) {
+            setType(false, false, true, model.taskPattern);
+        }
+    }
+
+    /**
+     * Method to set the view to display the details of each type of task
+     * 
+     * @param isFloat
+     *            True if is Floating Task
+     * @param isDeadline
+     *            True if is Deadline Task
+     * @param isRepeat
+     *            True if is Repeated Task
+     * @param pattern
+     *            Special argument required if it is a repeated task
+     */
+    public void setType(boolean isFloat, boolean isDeadline, boolean isRepeat,
+            String pattern) {
+        lblFloatingHeader.setVisible(isFloat);
+        lblDeadlineHeader.setVisible(isDeadline);
+        lblRepeatHeader.setVisible(isRepeat);
+        lblPatternHeader.setVisible(isRepeat);
+        lblPattern.setVisible(isRepeat);
+
+        if (isRepeat) {
+            lblPattern.setText(pattern);
+        }
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\TaskPaneController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\TextPaneController.java
+	 */
+
+public class TextPaneController extends TitledPane implements IController {
+
+    // Special constants
+    private static final double SCROLL_AMOUNT = 0.1;
+
+    // Current model associated with this controller
+    private TextPaneModel currentModel = null;
+
+    // FXML Element Bindings
+    @FXML
+    private TitledPane titledPane;
+
+    @FXML
+    private TextArea txtBody;
+
+    @FXML
+    private ScrollPane scrollBody;
+
+    /**
+     * Default overloaded constructor
+     * 
+     * @param model
+     *            Model to be associated with this controller
+     * @throws IOException
+     *             Thrown if an error is encountered while reading the FXML file
+     */
+    public TextPaneController(TextPaneModel model) throws IOException {
+        currentModel = model;
+
+        initialize(common.FXML_TEXT_PANE);
+        update();
+    }
+
+    /**
+     * Method to programmically scroll up the view
+     * 
+     */
+    public void scrollUp() {
+        if (scrollBody.getHeight() >= txtBody.getHeight()) {
+            return;
+        }
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                - SCROLL_AMOUNT);
+    }
+
+    /**
+     * Method to programmically scroll down the view
+     * 
+     */
+    public void scrollDown() {
+        if (scrollBody.getHeight() >= txtBody.getHeight()) {
+            return;
+        }
+        scrollBody.setVvalue(scrollBody.vvalueProperty().doubleValue()
+                + SCROLL_AMOUNT);
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+    }
+
+    @Override
+    public void update() throws IOException {
+        setTitle(currentModel.title);
+        setTextBody(currentModel.textBody);
+    }
+
+    /**
+     * Method to set the body of the view
+     * 
+     * @param textBody
+     *            Text for the text body
+     */
+    private void setTextBody(String textBody) {
+        txtBody.setText(textBody);
+    }
+
+    /**
+     * Method to set the title of the view
+     * 
+     * @param title
+     *            Title of the view
+     */
+    private void setTitle(String title) {
+        titledPane.setText(title);
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return currentModel.toHashMap();
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\TextPaneController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\TutorialPaneController.java
+	 */
+
+public class TutorialPaneController extends BorderPane implements IController {
+    // Special Constants
+    private static final int INDEX_OF_LAST_PANE = 0;
+    private static final int DURATION_OF_ANIMATION = 1000;
+    private static final double FULL_OPACITY = 1.0;
+    private static final double NO_OPACITY = 0.0;
+    private static final int END_STEP_PANE = 5;
+    private static final int STEP_4_PANE = 4;
+    private static final int STEP_3_PANE = 3;
+    private static final int STEP_2_PANE = 2;
+    private static final int STEP_1_PANE = 1;
+
+    // Current model binded to this view
+    private TutorialPaneModel currentModel = null;
+
+    // Binded FXML Elements
+    @FXML
+    private AnchorPane paneWelcome;
+
+    @FXML
+    private AnchorPane paneStep1;
+
+    @FXML
+    private AnchorPane paneStep2;
+
+    @FXML
+    private AnchorPane paneStep3;
+
+    @FXML
+    private AnchorPane paneStep4;
+
+    @FXML
+    private AnchorPane paneEnd;
+
+    // Class variable
+    private AnchorPane currentVisiblePane;
+
+    /**
+     * Default Overloaded Constructor
+     * 
+     * @param model
+     *            Model to bind this view to
+     * @throws IOException
+     *             Thrown if an error is encountered while creating the view
+     */
+    public TutorialPaneController(TutorialPaneModel model) throws IOException {
+        currentModel = model;
+
+        initialize(common.FXML_TUTORIAL_PANE);
+
+        update();
+    }
+
+    /**
+     * Method to bind the prev button to this handler
+     * 
+     * @param e
+     *            Mouse event caught
+     */
+    @FXML
+    private void onPrevBtnClicked(MouseEvent e) {
+        if (currentModel.page > INDEX_OF_LAST_PANE) {
+            currentModel.page--;
+            try {
+                update();
+            } catch (IOException error) {
+                CommonLogger.getInstance().exceptionLogger(error, Level.SEVERE);
+            }
+        }
+    }
+
+    /**
+     * Method to bind the next button to this handler
+     * 
+     * @param e
+     *            Mouse event caught
+     */
+    @FXML
+    private void onNextBtnClicked(MouseEvent e) {
+        if (currentModel.page < END_STEP_PANE) {
+            currentModel.page++;
+            try {
+                update();
+            } catch (IOException error) {
+                CommonLogger.getInstance().exceptionLogger(error, Level.SEVERE);
+            }
+        } else {
+            exitTutorial();
+        }
+
+    }
+
+    /**
+     * Method to bind the exit button to this handler
+     * 
+     * @param e
+     *            Mouse event caught
+     */
+    @FXML
+    private void onExitBtnClicked(MouseEvent e) {
+        exitTutorial();
+    }
+
+    /**
+     * Method to bind to the enter key to the Next action
+     * 
+     * @param e
+     *            Action event caught
+     */
+    @FXML
+    private void onNextAction(ActionEvent e) {
+        if (currentModel.page < END_STEP_PANE) {
+            currentModel.page++;
+            try {
+                update();
+            } catch (IOException error) {
+                CommonLogger.getInstance().exceptionLogger(error, Level.SEVERE);
+            }
+        } else {
+            exitTutorial();
+        }
+    }
+
+    /**
+     * Method to bind the esc key to the exit action
+     * 
+     * @param e
+     *            Action event caught
+     */
+    @FXML
+    private void onExitAction(ActionEvent e) {
+        exitTutorial();
+    }
+
+    /**
+     * Method to close this stage
+     * 
+     */
+    private void exitTutorial() {
+        Stage stage = (Stage) this.getScene().getWindow();
+        stage.close();
+    }
+
+    @Override
+    public void initialize(String FXML) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML));
+        loader.setRoot(this);
+        loader.setController(this);
+        loader.load();
+    }
+
+    @Override
+    public void update() throws IOException {
+        resetAllPane();
+
+        switch (currentModel.page) {
+        case STEP_1_PANE:
+            currentVisiblePane = paneStep1;
+            break;
+        case STEP_2_PANE:
+            currentVisiblePane = paneStep2;
+            break;
+        case STEP_3_PANE:
+            currentVisiblePane = paneStep3;
+            break;
+        case STEP_4_PANE:
+            currentVisiblePane = paneStep4;
+            break;
+        case END_STEP_PANE:
+            currentVisiblePane = paneEnd;
+            break;
+        default:
+            currentVisiblePane = paneWelcome;
+            break;
+        }
+
+        FadeTransition fadeIn = new FadeTransition(
+                Duration.millis(DURATION_OF_ANIMATION), currentVisiblePane);
+        fadeIn.setFromValue(NO_OPACITY);
+        fadeIn.setToValue(FULL_OPACITY);
+        fadeIn.play();
+        currentVisiblePane.setVisible(true);
+    }
+
+    /**
+     * Method to reset the visibility of all panes
+     * 
+     */
+    private void resetAllPane() {
+        FadeTransition fadeOut = new FadeTransition(
+                Duration.millis(DURATION_OF_ANIMATION), currentVisiblePane);
+        fadeOut.setFromValue(FULL_OPACITY);
+        fadeOut.setToValue(NO_OPACITY);
+        fadeOut.play();
+        paneWelcome.setVisible(false);
+        paneStep1.setVisible(false);
+        paneStep2.setVisible(false);
+        paneStep3.setVisible(false);
+        paneStep4.setVisible(false);
+        paneEnd.setVisible(false);
+    }
+
+    @Override
+    public HashMap<String, String> getState() {
+        return null;
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\controller\TutorialPaneController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\hook\DLLConnector.java
+	 */
+
+public class DLLConnector extends Observable implements Runnable {
+
+    // Flag to stop the thread
+    public static AtomicReference<Boolean> isStopped = new AtomicReference<Boolean>();
+
+    // the ASCII hot key; 0x42 is 'b'
+    private static final int WM_HOTKEY = 0x42;
+
+    // Is ALT key required
+    private static final boolean MOD_ALT = true;
+
+    // DLL API to be called
+    private native boolean isHotKeyPressed();
+
+    private native boolean RegisterHotKey(int key, boolean isAltNeeded);
+
+    private native boolean UnregisterHotKey();
+
+    @Override
+    public void run() {
+        isStopped.set(false);
+        RegisterHotKey(WM_HOTKEY, MOD_ALT);
+        while (!isStopped.get()) {
+            if (isHotKeyPressed()) {
+                setChanged();
+                notifyObservers("WM_HOTKEY");
+            }
+        }
+
+    }
+
+    /**
+     * Main Method; Should not be used; Only meant for the generation of header
+     * file
+     * 
+     * @param args
+     *            commandline arguments
+     */
+    public static void main(String[] args) {
+        new DLLConnector().RegisterHotKey(WM_HOTKEY, MOD_ALT);
+        new DLLConnector().isHotKeyPressed();
+        new DLLConnector().UnregisterHotKey();
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\hook\DLLConnector.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\CalendarPaneModel.java
+	 */
+
+public class CalendarPaneModel implements IModel{
+
+    // State Attributes
+    public static final String CURRENT_CALENDAR_ATTRIBUTE = "CURRENTCALENDAR";
+    public static final String CURRENT_YEAR_ATTRIBUTE = "CURRENTYEAR";
+    public static final String CURRENT_MONTH_ATTRIBUTE = "CURRENTMONTH";
+    public static final String CURRENT_TASKLIST_ATTRIBUTE = "CURRENTTASKLIST";
+
+    public ArrayList<Task> currentTaskList;
+
+    public int currentYear;
+
+    public int currentMonth;
+
+    public Calendar currentCalendar;
+
+    public CalendarPaneModel() {
+        currentTaskList = new ArrayList<Task>();
+        currentYear = 0;
+        currentMonth = 0;
+        currentCalendar = Calendar.getInstance();
+    }
+
+    @Override
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> result = new HashMap<String, String>();
+        result.put(VIEW_ATTRIBUTE, VIEW_CALENDAR_PANE);
+        result.put(CURRENT_TASKLIST_ATTRIBUTE, currentTaskList.toString());
+        result.put(CURRENT_MONTH_ATTRIBUTE, currentMonth + common.EMPTY_STRING);
+        result.put(CURRENT_YEAR_ATTRIBUTE, currentYear + common.EMPTY_STRING);
+        result.put(CURRENT_CALENDAR_ATTRIBUTE, calendarToString.parseDate(currentCalendar));
+        return result;
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\CalendarPaneModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\CellDateModel.java
+	 */
+
+public class CellDateModel implements IModel{
+
+    // State Attributes
+    public static final String CURRENT_WORKLOAD_FILTERS_ATTRIBUTE = "CURRENTWORKLOADFILTERS";
+    public static final String CURRENT_NUMBER_OF_EVENTS_ATTRIBUTE = "CURRENTNUMBEROFEVENTS";
+    public static final String CURRENT_DATE_ATTRIBUTE = "CURRENTDATE";
+
+    public int currentDate;
+
+    public int currentNumberOfEvents;
+
+    public int currentWorkloadFilters;
+
+    /**
+     * Default Constructor
+     */
+    public CellDateModel() {
+        currentDate = 1;
+        currentNumberOfEvents = 0;
+        currentWorkloadFilters = common.RECTANGLE_COLOR_GREY;
+    }
+
+    @Override
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> result = new HashMap<String, String>();
+        result.put(VIEW_ATTRIBUTE, VIEW_CELL_DATE);
+        result.put(CURRENT_DATE_ATTRIBUTE, currentDate + common.EMPTY_STRING);
+        result.put(CURRENT_NUMBER_OF_EVENTS_ATTRIBUTE, currentNumberOfEvents + common.EMPTY_STRING);
+        result.put(CURRENT_WORKLOAD_FILTERS_ATTRIBUTE, currentWorkloadFilters + common.EMPTY_STRING);
+        return result;
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\CellDateModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\IModel.java
+	 */
+
+public interface IModel {
+    public static final String VIEW_ATTRIBUTE ="VIEW";
+    public static final String VIEW_CALENDAR_PANE ="CalendarPane";
+    public static final String VIEW_CELL_DATE ="CalendarPane";
+    public static final String VIEW_LIST_PANE ="ListPane";
+    public static final String VIEW_ROOT ="Root";
+    public static final String VIEW_TASK_PANE ="TaskPane";
+    public static final String VIEW_TEXT_PANE ="TextPane";
+    public static final String VIEW_TUTORIAL_PANE ="TutorialPane";
+    public abstract HashMap<String, String> toHashMap();
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\IModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\ListPaneModel.java
+	 */
+
+public class ListPaneModel implements IModel{
+
+    // State Attributes
+    public static final String CURRENT_ITEM_LIST_ATTRIBUTE = "CURRENTITEMLIST";
+    public static final String CURRENT_TITLE_ATTRIBUTE = "CURRENTTITLE";
+
+    public String currentTitle;
+
+    public ArrayList<Task> currentItemList;
+    
+    public ArrayList<String> currentSubHeaders;
+    
+    public ArrayList<ArrayList<Task>> arrayOfTaskLists;
+
+    public ListPaneModel() {
+        currentTitle = "";
+        currentItemList = new ArrayList<Task>();
+        currentSubHeaders = new ArrayList<String>();
+        arrayOfTaskLists = new ArrayList<ArrayList<Task>>();
+    }
+
+    @Override
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> result = new HashMap<String, String>();
+        result.put(VIEW_ATTRIBUTE, VIEW_LIST_PANE);
+        result.put(CURRENT_TITLE_ATTRIBUTE, currentTitle);
+        result.put(CURRENT_ITEM_LIST_ATTRIBUTE, currentItemList.toString());
+        return result;
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\ListPaneModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\RootModel.java
+	 */
+
+public class RootModel implements IModel{
+
+    // State Attributes
+    public static final String INPUT_ATTRIBUTE = "INPUT";
+    public static final String NOTIFICATION_ATTRIBUTE = "NOTIFICATION";
+    public static final String TOTAL_NOT_DONE_ATTRIBUTE = "TOTALNOTDONE";
+    public static final String TOTAL_FLOATING_ATTRIBUTE = "TOTALFLOATING";
+
+    public String notification;
+    
+    public String input;
+    
+    public int totalNotDone;
+    
+    public int totalFloating;
+    
+    public RootModel(){
+        notification = "";
+        input = "";
+        totalNotDone = 0;
+        totalFloating = 0;
+    }
+
+    @Override
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> result = new HashMap<String, String>();
+        result.put(VIEW_ATTRIBUTE, VIEW_ROOT);
+        result.put(NOTIFICATION_ATTRIBUTE, notification);
+        result.put(INPUT_ATTRIBUTE, input);
+        result.put(TOTAL_NOT_DONE_ATTRIBUTE, totalNotDone + common.EMPTY_STRING);
+        result.put(TOTAL_FLOATING_ATTRIBUTE, totalFloating + common.EMPTY_STRING);
+        return null;
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\RootModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\TaskPaneModel.java
+	 */
+
+public class TaskPaneModel implements IModel {
+
+    // State Attributes
+    public static final String TASK_DESCRIPTION_ATTRIBUTE = "TASKDESCRIPTION";
+    public static final String TASK_WORKLOAD_ATTRIBUTE = "TASKWORKLOAD";
+    public static final String TASK_DUE_DATE_ATTRIBUTE = "TASKDUEDATE";
+    public static final String TASK_STATUS_ATTRIBUTE = "TASKSTATUS";
+    public static final String TASK_ID_ATTRIBUTE = "TASKID";
+    public static final String TASK_TYPE_ATTRIBUTE = "TASKTYPE";
+    public static final String TASK_NAME_ATTRIBUTE = "TASKNAME";
+    public static final String TASK_START_TIME_ATTRIBUTE = "TASKSTARTTIME";
+    public static final String TASK_END_TIME_ATTRIBUTE = "TASKENDTIME";
+    public static final String NOT_DONE_VALUE = "NOT DONE";
+    public static final String DONE_VALUE = "DONE";
+
+    public String taskName;
+    public String taskID;
+    public boolean taskStatus;
+    public String taskDate;
+    public int taskWorkload;
+    public String taskDescription;
+    public String taskPattern;
+    public String taskStartTime;
+    public String taskEndTime;
+    public Task task;
+
+    /**
+     * Default constructor
+     * 
+     */
+    public TaskPaneModel() {
+        taskName = "";
+        taskID = "";
+        taskStatus = true;
+        taskDate = "";
+        taskWorkload = common.RECTANGLE_COLOR_GREY;
+        taskDescription = "None";
+        taskPattern = "";
+        taskStartTime = "Not Set";
+        taskEndTime = "Not Set";
+        task = null;
+    }
+
+    @Override
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> result = new HashMap<String, String>();
+        result.put(VIEW_ATTRIBUTE, VIEW_TASK_PANE);
+        result.put(TASK_NAME_ATTRIBUTE, taskName);
+        result.put(TASK_ID_ATTRIBUTE, taskID);
+        if (taskStatus) {
+            result.put(TASK_STATUS_ATTRIBUTE, DONE_VALUE);
+        } else {
+            result.put(TASK_STATUS_ATTRIBUTE, NOT_DONE_VALUE);
+        }
+        result.put(TASK_DUE_DATE_ATTRIBUTE, taskDate);
+        result.put(TASK_WORKLOAD_ATTRIBUTE, taskWorkload + common.EMPTY_STRING);
+        result.put(TASK_DESCRIPTION_ATTRIBUTE, taskDescription);
+        result.put(TASK_START_TIME_ATTRIBUTE, taskStartTime);
+        result.put(TASK_END_TIME_ATTRIBUTE, taskEndTime);
+        result.put(TASK_TYPE_ATTRIBUTE, task.getClass().getCanonicalName());
+        return result;
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\TaskPaneModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\TextPaneModel.java
+	 */
+
+public class TextPaneModel implements IModel {
+    // State Attributes
+    public static final String TEXT_BODY_ATTRIBUTE = "TEXTBODY";
+    public static final String TITLE_ATTRIBUTE = "TITLE";
+
+    public String title;
+
+    public String textBody;
+
+    public TextPaneModel() {
+        title = "";
+        textBody = "";
+    }
+
+    @Override
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> result = new HashMap();
+        result.put(VIEW_ATTRIBUTE, VIEW_TEXT_PANE);
+        result.put(TITLE_ATTRIBUTE, title);
+        result.put(TEXT_BODY_ATTRIBUTE, textBody);
+        return result;
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\TextPaneModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\TutorialPaneModel.java
+	 */
+
+public class TutorialPaneModel implements IModel {
+
+    // Special Constants
+    private static final String PAGE_ATTRIBUTE = "PAGE";
+    
+    // Class variables
+    public int page = 0;
+    
+    public TutorialPaneModel(){
+        page = 0;
+    }
+    @Override
+    public HashMap<String, String> toHashMap() {
+        HashMap<String, String> result = new HashMap();
+        result.put(VIEW_ATTRIBUTE, VIEW_TUTORIAL_PANE);
+        result.put(PAGE_ATTRIBUTE, page + common.EMPTY_STRING);
+        return result;
+    }
+
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\model\TutorialPaneModel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\test\CalendarPaneTest.java
+	 */
+
+public class CalendarPaneTest {
+
+    private static CalendarPaneController controller = null;
+
+    @Rule
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+
+    /**
+     * Method to generate a task list with no malformed attributes
+     * 
+     * @return list of tasks
+     */
+    public ArrayList<Task> generateList() {
+        ArrayList<Task> result = new ArrayList<Task>();
+        Calendar deadline = Calendar.getInstance();
+        deadline.add(Calendar.MONTH, 2);
+
+        FloatTask task1 = new FloatTask("Test on floating", "1", true,
+                Calendar.getInstance(), "low", "This is a test floating task",
+                Calendar.getInstance(), Calendar.getInstance());
+
+        
+        ArrayList<Calendar> listOfTestDays = new ArrayList<Calendar>();
+        Calendar eachDate = Calendar.getInstance();
+        eachDate.add(Calendar.DATE, 1);
+        listOfTestDays.add(eachDate);
+        eachDate.add(Calendar.DATE, 1);
+        listOfTestDays.add(eachDate);
+        eachDate.add(Calendar.DATE, 1);
+        listOfTestDays.add(eachDate);
+        
+        RepeatedTask task2 = new RepeatedTask("Test on repeated task", "2",
+                true, Calendar.getInstance(), "High",
+                "This is a test repeated task", Calendar.getInstance(),
+                deadline, null, listOfTestDays, deadline, 1);
+
+        DeadLineTask task3 = new DeadLineTask("Test on Deadline", "3",
+                true, Calendar.getInstance(), "medium",
+                "This is a test Deadline task", deadline, deadline, deadline);
+
+        result.add(task1);
+        result.add(task2);
+
+        return result;
+    }
+
+    /**
+     * Generates a general case
+     * 
+     * @return model with general case
+     */
+    @Test
+    public void testCase1() {
+        CalendarPaneModel testCase = new CalendarPaneModel();
+        testCase.currentCalendar = Calendar.getInstance();
+        testCase.currentTaskList = generateList();
+        try {
+            controller = new CalendarPaneController(testCase);
+            assertTrue("General Case passed", true);
+        } catch (Exception err) {
+            fail("Failed general case");
+        }
+
+    }
+
+    /**
+     * Boundary test for the "empty" partition in terms on arraylist
+     * 
+     * @return model with general case
+     */
+    @Test
+    public void testCase2() {
+        CalendarPaneModel testCase = new CalendarPaneModel();
+        testCase.currentCalendar = Calendar.getInstance();
+        testCase.currentTaskList = new ArrayList<Task>();
+
+        try {
+            controller = new CalendarPaneController(testCase);
+            assertTrue("Test Case 2 passed", true);
+        } catch (Exception err) {
+            fail("Failed Test Case 2");
+        }
+    }
+
+    /**
+     * Boundary test for the "null" partition in terms on arraylist
+     * 
+     * @return model with general case
+     */
+    @Test
+    public void testCase3() {
+        CalendarPaneModel testCase = new CalendarPaneModel();
+        testCase.currentCalendar = Calendar.getInstance();
+        testCase.currentTaskList = null;
+
+        try {
+            controller = new CalendarPaneController(testCase);
+            assertTrue("Test Case 3 passed", true);
+        } catch (Exception err) {
+            fail("Failed Test Case 3");
+        }
+    }
+
+    /**
+     * Boundary test for the "null" partition in terms on Calendar
+     * 
+     * @return model with general case
+     */
+    @Test
+    public void testCase4() {
+        CalendarPaneModel testCase = new CalendarPaneModel();
+        testCase.currentCalendar = null;
+        testCase.currentTaskList = generateList();
+
+        try {
+            controller = new CalendarPaneController(testCase);
+            assertTrue("Test Case 4 passed", true);
+        } catch (Exception err) {
+            fail("Failed Test Case 4");
+        }
+    }
+
+    /**
+     * Boundary test for the "zero" partition in terms on Calendar
+     * 
+     * @return model with general case
+     */
+    @Test
+    public void testCase5() {
+        CalendarPaneModel testCase = new CalendarPaneModel();
+        testCase.currentCalendar = Calendar.getInstance();
+        testCase.currentCalendar.set(0, 0, 0);
+        testCase.currentTaskList = generateList();
+
+        try {
+            controller = new CalendarPaneController(testCase);
+            assertTrue("Test Case 5 passed", true);
+        } catch (Exception err) {
+            fail("Failed Test Case 5");
+        }
+    }
+
+    /**
+     * Boundary test for the "negative" partition in terms on Calendar
+     * 
+     * @return model with general case
+     */
+    @Test
+    public void testCase6() {
+        CalendarPaneModel testCase = new CalendarPaneModel();
+        testCase.currentCalendar = Calendar.getInstance();
+        testCase.currentCalendar.set(-1, -1, -1);
+        testCase.currentTaskList = generateList();
+
+        try {
+            controller = new CalendarPaneController(testCase);
+            assertTrue("Test Case 6 passed", true);
+        } catch (Exception err) {
+            fail("Failed Test Case 6");
+        }
+    }
+
+    /**
+     * Boundary test for the "Max" partition in terms on Calendar
+     * 
+     * @return model with general case
+     */
+    @Test
+    public void testCase7() {
+        CalendarPaneModel testCase = new CalendarPaneModel();
+        testCase.currentCalendar = Calendar.getInstance();
+        testCase.currentCalendar.set(Integer.MAX_VALUE, Integer.MAX_VALUE,
+                Integer.MAX_VALUE);
+        testCase.currentTaskList = generateList();
+
+        try {
+            controller = new CalendarPaneController(testCase);
+            assertTrue("Test Case 7 passed", true);
+        } catch (Exception err) {
+            fail("Failed Test Case 7");
+        }
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\test\CalendarPaneTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\test\TestDriver.java
+	 */
+
+public class TestDriver extends Application {
+
+    // Class variables
+    private static Parent TestArea = null;
+    private static boolean isTestingFacade = false;
+
+    // Location of current DLL library
+    private static final String DLL_PATH = "/JNILibrary64";
+
+    /**
+     * Main Method to test the UI component
+     * 
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please key in UI component to test:");
+        try {
+            switch (sc.nextLine()) {
+            case "CalendarPane":
+                CalendarPaneModel calendarModel = new CalendarPaneModel();
+                calendarModel.currentCalendar = Calendar.getInstance();
+                calendarModel.currentMonth = Calendar.getInstance().get(
+                        Calendar.MONTH)
+                        + common.OFFSET_BY_ONE;
+                calendarModel.currentYear = Calendar.getInstance().get(
+                        Calendar.YEAR);
+                CalendarPaneController calendarPane = new CalendarPaneController(
+                        calendarModel);
+                TestArea = calendarPane;
+                break;
+            case "CellDate":
+                break;
+            case "TutorialPane":
+                TutorialPaneModel tutorialModel = new TutorialPaneModel();
+                tutorialModel.page = 0;
+                TutorialPaneController controller = new TutorialPaneController(tutorialModel);
+                TestArea = controller;
+                break;
+            case "Root":
+                RootModel rootModel = new RootModel();
+                RootController root = new RootController(rootModel);
+                TestArea = root;
+                break;
+            case "TaskPane":
+                TaskPaneModel taskPaneModel = new TaskPaneModel();
+                taskPaneModel.taskName = "Test";
+                taskPaneModel.taskID = "T35+";
+                taskPaneModel.taskDate = calendarToString.parseDate(Calendar
+                        .getInstance());
+                taskPaneModel.taskStatus = false;
+                taskPaneModel.taskWorkload = common.RECTANGLE_COLOR_GREEN;
+                taskPaneModel.taskDescription = "Test\ntest test";
+                TaskPaneController taskPane = new TaskPaneController(
+                        taskPaneModel);
+                TestArea = taskPane;
+                break;
+
+            case "ListPane":
+                ListPaneModel listPaneModel = new ListPaneModel();
+                listPaneModel.currentTitle = "Test List";
+                listPaneModel.currentItemList = null;
+                ListPaneController listPane = new ListPaneController(
+                        listPaneModel);
+                TestArea = listPane;
+                break;
+            case "Hook":
+                new TestDriver().startHookTest();
+                return;
+            case "TextPane":
+                TextPaneModel textPaneModel = new TextPaneModel();
+                textPaneModel.title = "Title Text";
+                textPaneModel.textBody = "WEIRD WEIRD\n WEIRD\n WEIRD WEIRD\n WEIRD\n WEIRD WEIRD\n WEIRD\n ";
+                TextPaneController textPaneController = new TextPaneController(textPaneModel);
+                TestArea = textPaneController;
+                break;
+            case "Facade":
+                isTestingFacade = true;
+            }
+            launch();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    private void startHookTest() {
+        System.out.println("Starting hook test...");
+        System.loadLibrary(DLL_PATH);
+        // create an event source - reads from stdin
+        final DLLConnector eventSource = new DLLConnector();
+
+        // create an observer
+        final KeyPressHandler responseHandler = new KeyPressHandler();
+
+        // subscribe the observer to the event source
+        eventSource.addObserver(responseHandler);
+
+        // starts the event thread
+        Thread thread = new Thread(eventSource);
+        thread.start();
+    }
+
+    @Override
+    public void start(Stage stage) {
+        if (isTestingFacade) {
+            UIFacade ui = new UIFacade();
+            ui.start(stage);
+        } else {
+            Scene scene = new Scene(TestArea);
+
+            stage.setScene(scene);
+            stage.show();
+        }
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\test\TestDriver.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\UIFacade.java
+	 */
+
+public class UIFacade extends Application implements Observer {
+    // Special Constants
+    private static final String TITLE = "Taskaler";
+    private static final String DEFAULT_VIEW_CALENDAR = "CALENDAR";
+    private static final String DEFAULT_VIEW_LIST = "LIST";
+    
+    // User Profile Configs
+    private static String userDefaultView = DEFAULT_VIEW_CALENDAR;
+
+    // File Constants
+    private static final String ICON_PNG = "/res/icon.png";
+
+    // Class Variables
+    private RootController rootController = null;
+    private Stage primaryStage = null;
+
+    @Override
+    public void start(Stage stage) {
+        try {
+            
+            userDefaultView = Configuration.getInstance().getDefaultView();
+            stage.getIcons().add(
+                    new Image(getClass().getResourceAsStream(ICON_PNG)));
+            stage.setTitle(TITLE);
+            stage.setResizable(false);
+
+            RootModel model = new RootModel();
+            model.totalFloating = TaskList.getInstance().floatToArray().size();
+            model.totalNotDone = TaskList.getInstance().getNumOfIncomplete();
+
+            rootController = new RootController(model);
+            Parent pane = rootController;
+            Scene scene = new Scene(pane, 400, 499);
+
+            stage.setScene(scene);
+            stage.sizeToScene();
+
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent we) {
+                    DLLConnector.isStopped.set(true);
+                }
+            });
+            
+            stage.show();
+            primaryStage = stage;
+            
+            if(Configuration.getInstance().getIsFirstRun()){
+                Stage tutorialStage = new Stage();
+                tutorialStage.initStyle(StageStyle.UNDECORATED);
+                TutorialPaneModel tutorialModel = new TutorialPaneModel();
+                tutorialModel.page = 0;
+                TutorialPaneController tutController = new TutorialPaneController(tutorialModel);
+                Parent secondaryParent = tutController;
+                Scene secondaryScene = new Scene(secondaryParent);
+                tutorialStage.setScene(secondaryScene);
+                tutorialStage.sizeToScene();
+                stage.toBack();
+                tutorialStage.toFront();
+                tutorialStage.show();
+            }
+            
+            createHook();
+            // createCleanUp();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Method to create the hotkey hook
+     * 
+     */
+    private void createHook() {
+        try {
+
+            // Create the source of the key press
+            final DLLConnector eventSource = new DLLConnector();
+
+            // subscribe the observer to the event source
+            eventSource.addObserver(this);
+
+            // starts the event thread
+            Thread thread = new Thread(eventSource);
+            thread.start();
+        } catch (UnsatisfiedLinkError err) {
+            CommonLogger.getInstance().exceptionLogger(err, Level.WARNING);
+        } catch (Exception err) {
+            CommonLogger.getInstance().exceptionLogger(err, Level.WARNING);
+        }
+    }
+
+    
+
+    /**
+     * Method to render default view for the list of task
+     */
+    public void display(ArrayList<Task> list) {
+        display(userDefaultView, list);
+    }
+
+    /**
+     * Method to render a dynamic list
+     * 
+     * @param title
+     *            Title of the list view
+     * @param headers
+     *            Array of sub headers
+     * @param arrayOfTasks
+     *            Arraya of array list
+     */
+    public void display(String title, ArrayList<String> headers,
+            ArrayList<ArrayList<Task>> arrayOfTasks) {
+        
+        try {
+            rootController.displayDynamicList(title, headers, arrayOfTasks);
+        } catch (IOException e) {
+            rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        }
+    }
+
+    /**
+     * Method to render a view, either in list or calendar.
+     * 
+     * @param args
+     *            Arguments to determine the view properties
+     * @param list
+     *            The list of tasks to be displayed
+     */
+    public void display(String args, ArrayList<Task> list) {
+        if (list == null) {
+            list = new ArrayList<Task>();
+        }
+        try {
+            if (args.compareToIgnoreCase(DEFAULT_VIEW_LIST) == 0) {
+                rootController.displayList("All Current Tasks", list);
+            } else if (args.compareToIgnoreCase(DEFAULT_VIEW_CALENDAR) == 0) {
+                rootController.displayCalendar(list, Calendar.getInstance());
+            } else {
+                rootController.displayList(args, list);
+            }
+        } catch (IOException e) {
+            rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        }
+    }
+
+    /**
+     * Method to display the calendar for a specified month
+     * 
+     * @param month
+     *            Month to be displayed
+     * @param list
+     *            List of tasks
+     */
+    public void displayMonth(String date, ArrayList<Task> list) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("MM/yyyy");
+        try {
+            cal.setTime(format.parse(date));
+            rootController.displayCalendar(list, cal);
+        } catch (IOException e) {
+            rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        } catch (Exception e) {
+            rootController.showToast("Parse Exception encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        }
+    }
+
+    /**
+     * Method to render a view in Task view.
+     * 
+     */
+    public void display(Task t) {
+        if (t == null) {
+            rootController.showToast("No task to be displayed");
+        } else {
+            try {
+                rootController.displayTask(t);
+            } catch (IOException e) {
+                rootController.showToast("IO error encountered!");
+                CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+            }
+        }
+    }
+
+    /**
+     * Method to show the toast notification.
+     * 
+     * @param t
+     *            String to be displayed
+     */
+    public void display(String t) {
+        if (t != null && !t.isEmpty()) {
+            rootController.showToast(t);
+        }
+    }
+
+    /**
+     * Method to show a text pane view
+     * 
+     * @param title
+     *            title of the text view
+     * @param text
+     *            body of the text view
+     */
+    public void display(String title, String text) {
+        try {
+            rootController.displayText(title, text);
+        } catch (IOException e) {
+            rootController.showToast("IO error encountered!");
+            CommonLogger.getInstance().exceptionLogger(e, Level.SEVERE);
+        }
+    }
+
+    /**
+     * Method to obtain the current state of the view being displayed
+     * 
+     * @return Hashmap representation of the state of view
+     */
+    public HashMap<String, String> getCurrentState() {
+        return rootController.getState();
+    }
+
+    @Override
+    public void update(Observable arg0, Object arg1) {
+        if (arg1 instanceof String) {
+            if (((String) arg1).compareToIgnoreCase("WM_HOTKEY") == 0) {
+                Platform.runLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (primaryStage.isIconified()) {
+                            rootController.giveFocus();
+                            primaryStage.setIconified(false);
+                            primaryStage.toFront();
+                        } else {
+                            primaryStage.setIconified(true);
+                        }
+                    }
+                });
+            } else {
+                System.out.println("No Idea who called this event");
+            }
+        } else if (arg1 instanceof OperationRecord) {
+            rootController.update(TaskList.getInstance().getNumOfIncomplete(),
+                    TaskList.getInstance().floatToArray().size());
+        }
+    }
+
+    /**
+     * Public method to display the confirmation interface
+     * 
+     * @return True if the confirmation is received; False otherwise
+     */
+    public Boolean showConfirmation() {
+        return rootController.showConfirmation();
+    }
+}
+
+	// End of segment: C:\Users\Kiwi\Desktop\CS2103\cs2103aug2014-w10-2j\src\taskaler\ui\UIFacade.java
+
+
+
+
+
